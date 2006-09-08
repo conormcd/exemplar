@@ -1,0 +1,797 @@
+<?xml version="1.0"?>
+<!--
+	vim:filetype=ant:ts=4
+-->
+<!--
+	Copyright (c) 2004, 2005, 2006
+	Conor McDermottroe.  All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions
+	are met:
+	1. Redistributions of source code must retain the above copyright
+	   notice, this list of conditions and the following disclaimer.
+	2. Redistributions in binary form must reproduce the above copyright
+	   notice, this list of conditions and the following disclaimer in the
+	   documentation and/or other materials provided with the distribution.
+	3. Neither the name of the author nor the names of any contributors to
+	   the software may be used to endorse or promote products derived from
+	   this software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+	"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+	LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+	A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+	HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+	TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+	OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+	OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+	NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+<project name="exemplar" default="jar" basedir=".">
+	<!-- Load external properties files. -->
+	<property file="build/conf/local.properties" />
+	<property file="build/conf/build.properties" />
+
+	<!--
+			Configuration targets
+	-->
+	<target	name="build-configure"
+			depends="resource-availability,task-definitions"
+	/>
+	<target	name="resource-availability"
+			depends="task-availability,jar-availability"
+	/>
+	<target name="task-availability">
+		<available	classname="${cup-ant-task}"
+					property="${cup-ant-task}.present"
+		/>
+		<available	classname="${jflex-ant-task}"
+					property="${jflex-ant-task}.present"
+		/>
+		<condition property="tasks.available">
+			<and>
+				<isset property="${cup-ant-task}.present" />
+				<isset property="${jflex-ant-task}.present" />
+			</and>
+		</condition>
+	</target>
+	<target name="jar-availability" depends="whichjar-task">
+		<whichjar property="ant.jarfile" class="${ant-task-class}" />
+		<whichjar property="cup.jarfile" class="${cup-runtime-scanner-class}" />
+		<whichjar property="junit.jarfile" class="${junit-testcase-class}" />
+		<condition property="jars.available">
+			<and>
+				<isset property="ant.jarfile" />
+				<isset property="cup.jarfile" />
+				<isset property="junit.jarfile" />
+			</and>
+		</condition>
+	</target>
+	<target	name="task-definitions"
+			depends="task-availability"
+			if="tasks.available"
+	>
+		<taskdef name="cup" classname="${cup-ant-task}" />
+		<taskdef name="jflex" classname="${jflex-ant-task}" />
+	</target>
+	<target name="set-up-classpaths" if="jars.available">
+		<path id="build-classpath">
+			<pathelement location="${classes}" />
+			<pathelement location="${ant.jarfile}" />
+			<pathelement location="${cup.jarfile}" />
+		</path>
+		<path id="test-classpath">
+			<pathelement location="${classes}" />
+			<pathelement location="${ant.jarfile}" />
+			<pathelement location="${cup.jarfile}" />
+			<pathelement location="${junit.jarfile}" />
+		</path>
+		<path id="tools-classpath">
+			<pathelement location="tools" />
+		</path>
+		<path id="jar-classpath">
+			<pathelement location="${dist}/Exemplar.jar" />
+		</path>
+	</target>
+	<target name="whichjar-task" depends="tools-build,set-up-classpaths">
+		<typedef
+			name="whichjar"
+			classname="build.com.mcdermottroe.exemplar.tasks.WhichJar"
+			classpathref="tools-classpath"
+			adapter="org.apache.tools.ant.TaskAdapter"
+			adaptto="org.apache.tools.ant.Task"
+		/>
+	</target>
+	<target name="tools-build">
+		<javac
+				srcdir="tools/build"
+				debug="true"
+				debuglevel="lines,vars,source"
+				source="1.4"
+				target="1.4"
+		>
+			<compilerarg value="+Z0" compiler="jikes" />
+		</javac>
+	</target>
+
+	<!--
+			Build targets.
+	-->
+	<target name="pre-build">
+		<mkdir dir="${classes}" />
+		<copy todir="${classes}">
+			<fileset dir="${res}" includes="*.properties" />
+			<fileset dir="${res}" includes="com/**" />
+		</copy>
+	</target>
+	<target name="pre-build-parser" if="${parser-file}.present">
+		<uptodate
+					property="${parser-file}.isUpToDate"
+					srcfile="${parser-spec}"
+					targetfile="${src}/${namespace}/input/dtd/${parser-file}"
+		/>
+	</target>
+	<target name="build-lexer" depends="build-configure">
+		<jflex file="${lexer-spec}" skeleton="${lexer-skeleton}" />
+	</target>
+	<target	name="build-parser"
+			depends="build-configure,pre-build-parser,build-lexer"
+			unless="${parser-file}.isUpToDate"
+	>
+		<cup	package="${package}.input.dtd"
+				srcfile="${src}/${namespace}/input/dtd/Parser.cup"
+				parser="${parser-name}"
+				symbols="${parser-symbols}"
+				nopositions="true"
+				compact_red="true"
+				interface="true"
+		/>
+		<replace	file="${parser-file}"
+					token="extends java_cup.runtime.lr_parser"
+					value="extends java_cup.runtime.lr_parser implements InputModule"
+					/> 
+		<move	file="${parser-file}"
+				tofile="${src}/${namespace}/input/dtd/${parser-file}"
+		/>
+		<move	file="${parser-symbols}.java"
+				tofile="${src}/${namespace}/input/dtd/${parser-symbols}.java"
+		/>
+	</target>
+	<target	name="build"
+			depends="pre-build,build-lexer,build-parser,set-up-classpaths"
+	>
+		<javac
+				classpathref="build-classpath"
+				srcdir="${src}"
+				destdir="${classes}"
+				debug="true"
+				debuglevel="lines,vars,source"
+				source="1.4"
+				target="1.4"
+		>
+			<compilerarg value="+Z0" compiler="jikes" />
+		</javac>
+	</target>
+
+	<!--
+			JAR creation targets
+	-->
+	<target name="pre-jar" depends="build-configure,clean-jar">
+		<mkdir dir="${dist}" />
+		<unjar src="${cup.jarfile}" dest="classes">
+			<patternset>
+				<include name="java_cup/runtime/*" />
+			</patternset>
+		</unjar>
+	</target>
+	<target	name="jar"
+			depends="build,pre-jar"
+			description="Create the JAR file containing the finished product."
+	>
+		<jar	destfile="${dist}/Exemplar.jar"
+				basedir="${classes}"
+				index="true"
+		>
+			<manifest>
+				<attribute	name="Main-Class"
+							value="${package}.ui.cli.Main"
+				/>
+			</manifest>
+		</jar>
+	</target>
+
+	<!--
+			Distribution targets 
+	-->
+	<target name="dist" depends="clean,dist-source,dist-binary" />
+	<target	name="dist-binary"
+			depends="dist-binary-tbz,dist-binary-tgz,dist-binary-zip"
+	/>
+	<target name="dist-binary-common" depends="jar,doc-manual">
+		<mkdir dir="${dist}/bin-dist" />
+		<copy file="LICENSE" todir="${dist}/bin-dist" />
+		<copy file="README" todir="${dist}/bin-dist" />
+
+		<mkdir dir="${dist}/bin-dist/lib" />
+		<copy file="${dist}/Exemplar.jar" todir="${dist}/bin-dist/lib" />
+
+		<mkdir dir="${dist}/bin-dist/doc/manual" />
+		<copy todir="${dist}/bin-dist/doc/manual">
+			<fileset dir="${doc}/manual/html" />
+			<fileset dir="${doc}/manual/manpage" />
+		</copy>
+	</target>
+	<target name="dist-binary-tbz" depends="version,dist-binary-common">
+		<tar	destfile="${dist}/${project}-${version}.tar.bz2"
+				basedir="${dist}/bin-dist"
+				compression="bzip2"
+		/>
+	</target>
+	<target name="dist-binary-tgz" depends="version,dist-binary-common">
+		<tar	destfile="${dist}/${project}-${version}.tar.gz"
+				basedir="${dist}/bin-dist"
+				compression="gzip"
+		/>
+	</target>
+	<target name="dist-binary-zip" depends="version,dist-binary-common">
+		<zip destfile="${dist}/${project}-${version}.zip">
+			<fileset dir="${dist}/bin-dist" />
+		</zip>
+	</target>
+	<target	name="dist-source"
+			depends="dist-source-tbz,dist-source-tgz,dist-source-zip"
+	/>
+	<target name="dist-source-tbz" depends="version">
+		<mkdir dir="${dist}" />
+		<tar	destfile="${dist}/${project}-${version}-src.tar.bz2"
+				basedir="${basedir}"
+				excludes="${dist}/**"
+				compression="bzip2"
+		/>
+	</target>
+	<target name="dist-source-tgz" depends="version">
+		<mkdir dir="${dist}" />
+		<tar	destfile="${dist}/${project}-${version}-src.tar.gz"
+				basedir="${basedir}"
+				excludes="${dist}/**"
+				compression="gzip"
+		/>
+	</target>
+	<target name="dist-source-zip" depends="version">
+		<mkdir dir="${dist}" />
+		<zip destfile="${dist}/${project}-${version}-src.zip">
+			<fileset dir="${basedir}">
+				<exclude name="${dist}/**" />
+			</fileset>
+		</zip>
+	</target>
+
+	<!--
+			Testing targets
+	-->
+	<target	name="test"
+			depends="test-junit,test-checkstyle"
+			description="Run all available tests on the codebase."
+	/>
+	<target name="test-build-tools" depends="jar,set-up-classpaths">
+		<javac
+				srcdir="tools/test"
+				classpathref="test-classpath"
+				destdir="${classes}"
+				debug="true"
+				debuglevel="lines,vars,source"
+				source="1.4"
+				target="1.4"
+		>
+			<compilerarg value="+Z0" compiler="jikes" />
+		</javac>
+	</target>
+	<target name="build-tests" depends="jar,set-up-classpaths">
+		<javac
+				classpathref="test-classpath"
+				destdir="${classes}"
+				debug="true"
+				debuglevel="lines,vars,source"
+				source="1.4"
+				target="1.4"
+		>
+			<compilerarg value="+Z0" compiler="jikes" />
+			<src path="tests" />
+		</javac>
+	</target>
+	<target	name="test-checkstyle"
+			depends="set-up-classpaths,jar"
+			description="Check that the code conforms to the project style."
+	>
+		<taskdef resource="checkstyletask.properties" />
+		<checkstyle
+			config="tests/checkstyle/common_config.xml"
+			classpathref="jar-classpath"
+			failOnViolation="false"
+			failureProperty="checkstyle.common.failed"
+		>
+			<fileset dir="${src}/${namespace}">
+				<include name="**/*.java" />
+				<exclude name="input/dtd/Lexer.java" />
+				<exclude name="input/dtd/Parser.java" />
+				<exclude name="input/dtd/ParserSymbols.java" />
+			</fileset>
+			<fileset dir="tests/junit">
+				<include name="**/*.java" />
+			</fileset>
+		</checkstyle>
+		<checkstyle
+			config="tests/checkstyle/import_control_src_config.xml"
+			classpathref="jar-classpath"
+			failOnViolation="false"
+			failureProperty="checkstyle.import.src.failed"
+		>
+			<fileset dir="${src}/${namespace}">
+				<include name="**/*.java" />
+				<exclude name="input/dtd/Lexer.java" />
+				<exclude name="input/dtd/Parser.java" />
+				<exclude name="input/dtd/ParserSymbols.java" />
+			</fileset>
+		</checkstyle>
+		<checkstyle
+			config="tests/checkstyle/import_control_junit_config.xml"
+			classpathref="jar-classpath"
+			failOnViolation="false"
+			failureProperty="checkstyle.import.junit.failed"
+		>
+			<fileset dir="tests/junit">
+				<include name="**/*.java" />
+			</fileset>
+		</checkstyle>
+		<checkstyle
+			config="tests/checkstyle/generic_config.xml"
+			classpathref="jar-classpath"
+			failOnViolation="false"
+			failureProperty="checkstyle.generic.failed"
+		>
+			<fileset dir="${src}/${namespace}">
+				<include name="**/*.java" />
+				<exclude name="Constants.java" />
+				<exclude name="DBC.java" />
+				<exclude name="input/dtd/Lexer.java" />
+				<exclude name="input/dtd/Parser.java" />
+				<exclude name="input/dtd/ParserSymbols.java" />
+				<exclude name="output/dtd/**" />
+				<exclude name="output/java/**" />
+				<exclude name="output/xslt/**" />
+				<exclude name="ui/Message.java" />
+				<exclude name="ui/ant/Task.java" />
+			</fileset>
+			<fileset dir="tests/junit">
+				<include name="**/*.java" />
+			</fileset>
+		</checkstyle>
+		<checkstyle
+			config="tests/checkstyle/return_count_config.xml"
+			classpathref="jar-classpath"
+			failOnViolation="false"
+			failureProperty="checkstyle.return.count.failed"
+		>
+			<fileset dir="${src}/${namespace}">
+				<include name="**/*.java" />
+				<exclude name="input/dtd/Lexer.java" />
+				<exclude name="input/dtd/Parser.java" />
+				<exclude name="input/dtd/ParserSymbols.java" />
+			</fileset>
+		</checkstyle>
+		<checkstyle
+			config="tests/checkstyle/string_control_config.xml"
+			classpathref="jar-classpath"
+			failOnViolation="false"
+			failureProperty="checkstyle.string.control.failed"
+		>
+			<fileset dir="${src}/${namespace}">
+				<include name="**/*.java" />
+				<exclude name="Constants.java" />
+				<exclude name="input/dtd/Lexer.java" />
+				<exclude name="input/dtd/Parser.java" />
+				<exclude name="input/dtd/ParserSymbols.java" />
+				<exclude name="output/dtd/**" />
+				<exclude name="output/java/**" />
+				<exclude name="output/xslt/**" />
+				<exclude name="ui/Message.java" />
+			</fileset>
+		</checkstyle>
+		<checkstyle
+			config="tests/checkstyle/Constants_config.xml"
+			classpathref="jar-classpath"
+			failOnViolation="false"
+			failureProperty="checkstyle.Constants.failed"
+		>
+			<fileset dir="${src}/${namespace}">
+				<include name="Constants.java" />
+			</fileset>
+		</checkstyle>
+		<checkstyle
+			config="tests/checkstyle/DBC_config.xml"
+			classpathref="jar-classpath"
+			failOnViolation="false"
+			failureProperty="checkstyle.DBC.failed"
+		>
+			<fileset dir="${src}/${namespace}">
+				<include name="DBC.java" />
+			</fileset>
+		</checkstyle>
+		<checkstyle
+			config="tests/checkstyle/DTD_Parser_Files_config.xml"
+			classpathref="jar-classpath"
+			failOnViolation="false"
+			failureProperty="checkstyle.DTD.Parser.Files.failed"
+		>
+			<fileset dir="${src}/${namespace}">
+				<include name="input/dtd/Lexer.java" />
+				<include name="input/dtd/Parser.java" />
+				<include name="input/dtd/ParserSymbols.java" />
+			</fileset>
+		</checkstyle>
+		<checkstyle
+			config="tests/checkstyle/Output_Files_config.xml"
+			classpathref="jar-classpath"
+			failOnViolation="false"
+			failureProperty="checkstyle.Output.Files.failed"
+		>
+			<fileset dir="${src}/${namespace}">
+				<include name="output/dtd/**" />
+				<include name="output/java/**" />
+				<include name="output/xslt/**" />
+			</fileset>
+		</checkstyle>
+		<checkstyle
+			config="tests/checkstyle/UI_Message_config.xml"
+			classpathref="jar-classpath"
+			failOnViolation="false"
+			failureProperty="checkstyle.UI.Message.failed"
+		>
+			<fileset dir="${src}/${namespace}">
+				<include name="ui/Message.java" />
+			</fileset>
+		</checkstyle>
+		<checkstyle
+			config="tests/checkstyle/UI_Ant_Task_config.xml"
+			classpathref="jar-classpath"
+			failOnViolation="false"
+			failureProperty="checkstyle.UI.Ant.Task.failed"
+		>
+			<fileset dir="${src}/${namespace}">
+				<include name="ui/ant/Task.java" />
+			</fileset>
+		</checkstyle>
+
+		<condition property="checkstyle.failed">
+			<or>
+				<isset property="checkstyle.common.failed" />
+				<isset property="checkstyle.import.src.failed" />
+				<isset property="checkstyle.import.junit.failed" />
+				<isset property="checkstyle.generic.failed" />
+				<isset property="checkstyle.return.count.failed" />
+				<isset property="checkstyle.string.control.failed" />
+				<isset property="checkstyle.Constants.failed" />
+				<isset property="checkstyle.DBC.failed" />
+				<isset property="checkstyle.DTD.Parser.Files.failed" />
+				<isset property="checkstyle.Output.Files.failed" />
+				<isset property="checkstyle.UI.Message.failed" />
+				<isset property="checkstyle.UI.Ant.Task.failed" />
+			</or>
+		</condition>
+		<fail if="checkstyle.failed" message="CheckStyle failed" />
+	</target>
+	<target	name="test-junit"
+			depends="build-tests,set-up-classpaths"
+			description="Run all of the JUnit tests."
+	>
+		<mkdir dir="tests/junit/results" />
+		<junit>
+			<classpath>
+				<path refid="test-classpath" />
+			</classpath>
+			<formatter type="xml" />
+			<batchtest todir="tests/junit/results">
+				<fileset dir="${classes}">
+					<include name="**/*Test.class" />
+				</fileset>
+			</batchtest>
+		</junit>
+		<mkdir dir="tests/junit/results/html" />
+		<junitreport todir="tests/junit/results/html">
+			<fileset dir="tests/junit/results">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="tests/junit/results/html" />
+		</junitreport>
+	</target>
+	<target	name="test-permutations"
+			depends="test-build-tools"
+			description="Run the program with all permutations of options. Currently incomplete."
+	>
+		<exec executable="ant">
+			<arg line="-lib" />
+			<arg pathref="jar-classpath" />
+			<arg line="test-permutations-subant" />
+		</exec>
+	</target>		
+	<target name="test-permutations-subant">
+		<typedef
+			name="runallpermutations"
+			classname="test.com.mcdermottroe.exemplar.tasks.RunAllPermutations"
+			classpathref="test-classpath"
+			adapter="org.apache.tools.ant.TaskAdapter"
+			adaptto="org.apache.tools.ant.Task"
+		/>
+		<runallpermutations>
+			<argumenthint name="input" value="dtds/docbook-xml-44/docbookx.dtd" />
+			<argumenthint name="vocabulary" value="NonDefaultVocabulary" />
+		</runallpermutations>
+	</target>
+
+	<!--
+			Documentation targets
+	-->
+	<target	name="doc"
+			depends="doc-api,doc-manual,doc-handbook"
+			description="Create all of the documentation for the project."
+	/>
+	<target	name="doc-api"
+			depends="build-parser"
+			description="Generate all of the API documentation using Javadoc"
+	>
+		<javadoc
+			access="private"
+			author="no"
+			classpath="${junit.jarfile}:${cup.jarfile}:${ant.jarfile}"
+			destDir="${doc}/api"
+			linksource="yes"
+			source="1.4"
+			use="true"
+		>
+			<link href="${url-api-ant}" />
+			<link href="${url-api-cup}" />
+			<link href="${url-api-java}" />
+			<link href="${url-api-junit}" />
+			<fileset dir="." />
+		</javadoc>
+	</target>
+	<target name="doc-manual" depends="doc-manual-man,doc-manual-html" />
+	<target name="doc-create-manual" depends="jar,xmlcatalog">
+		<delete includeEmptyDirs="true" quiet="true">
+			<fileset dir="tools/doc/manual">
+				<include name="*.class" />
+			</fileset>
+		</delete>
+		<javac
+				srcdir="tools/doc"
+				classpathref="jar-classpath"
+				debug="true"
+				debuglevel="lines,vars,source"
+				source="1.4"
+				target="1.4"
+		>
+			<compilerarg value="+Z0" compiler="jikes" />
+		</javac>
+		<java classname="doc.com.mcdermottroe.exemplar.manual.CreateManual">
+			<classpath>
+				<path refid="jar-classpath" />
+				<pathelement path="tools" />
+			</classpath>
+			<arg value="${doc}/src/manual/autogenerated.xsl" />
+			<arg value="${basedir}/dtds/docbook-xml-44/docbookx.dtd" />
+		</java>
+		<xslt	style="${doc}/src/manual/autogenerated.xsl"
+				in="${doc}/src/manual/manual.xml"
+				out="${doc}/src/manual/manual-processed.xml"
+		>
+			<xmlcatalog refid="globalcatalog" />
+		</xslt>
+		<delete file="${doc}/src/manual/autogenerated.xsl" quiet="true" />
+		<delete includeEmptyDirs="true" quiet="true">
+			<fileset dir="tools/doc/manual">
+				<include name="*.class" />
+			</fileset>
+		</delete>
+	</target>
+	<target	name="doc-manual-html"
+			depends="doc-create-manual,xmlcatalog"
+			description="Create the HTML version of the user manual."
+	>
+		<xslt	style="${docbook-xhtml-single-xsl}" 
+				in="${doc}/src/manual/manual-processed.xml"
+				out="${doc}/manual/html/manual.html"
+		>
+			<xmlcatalog refid="globalcatalog" />
+		</xslt>		
+	</target>
+	<target	name="doc-manual-man"
+			depends="doc-create-manual,xmlcatalog"
+			description="Create the man(1) version of the user manual."
+	>
+		<xslt
+				style="${docbook-man-xsl}" 
+				in="${doc}/src/manual/manual-processed.xml"
+				out="${doc}/manual/manpage/exemplar.1"
+		>
+			<xmlcatalog refid="globalcatalog" />
+		</xslt>
+	</target>
+	<target name="doc-handbook" depends="doc-handbook-html,doc-handbook-pdf" />
+	<target	name="doc-handbook-html"
+			depends="xmlcatalog"
+			description="Create the XHTML version of the developer's handbook."
+	>
+		<!-- Ensure we're working with a clean set -->
+		<delete quiet="true">
+			<fileset dir="doc/src/handbook">
+				<include name="*.html" />
+				<include name="*.xhtml" />
+			</fileset>
+		</delete>
+
+		<!-- Run the DocBook XSL stylesheets -->
+		<xslt style="${docbook-xhtml-chunked-xsl}" destdir=".">
+			<param name="chunker.output.doctype-public" expression="-//W3C//DTD XHTML 1.0 Strict//EN" />
+			<param name="chunker.output.doctype-system" expression="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
+			<param name="chunker.output.encoding" expression="UTF-8" />
+			<param name="chunker.output.indent" expression="yes" />
+			<param name="glossentry.show.acronym" expression="yes" />
+			<param name="html.cleanup" expression="1" />
+			<param name="html.ext" expression=".xhtml" />
+			<param name="html.stylesheet" expression="handbook.css" />
+			<param name="make.valid.html" expression="1" />
+			<patternset>
+				<include name="${doc}/src/handbook/*.xml" />
+			</patternset>
+			<xmlcatalog refid="globalcatalog" />
+		</xslt>
+		
+		<!-- Work around bugs in DocBook XSL -->
+		<replace dir="${doc}/src/handbook" token="h2 =&quot;&quot;" value="h2">
+			<include name="*.xhtml" />
+		</replace>
+		<replace dir="${doc}/src/handbook" token="span =&quot;&quot;" value="span">
+			<include name="*.xhtml" />
+		</replace>
+
+		<!-- Deploy the result -->
+		<move todir="${doc}/handbook/html/">
+			<fileset dir="${doc}/src/handbook/">
+				<include name="*.xhtml" />
+			</fileset>
+		</move>
+		<copy file="${doc}/src/handbook/handbook.css" todir="${doc}/handbook/html/" />
+		<copy todir="${doc}/handbook/html/images">
+			<fileset dir="${doc}/src/handbook/images">
+				<include name="*.png" />
+			</fileset>
+		</copy>
+
+		<!-- Clean up -->
+		<delete file="${doc}/src/handbook/handbook.html" quiet="true" />
+	</target>
+	<target name="doc-handbook-pdf"
+			depends="xmlcatalog"
+			description="Create the PDF version of the developer's handbook."
+	>
+		<taskdef name="fop" classname="${fop-ant-task}" />
+		<xslt	style="${docbook-xslfo-xsl}"
+				in="${doc}/src/handbook/handbook.xml"
+				out="${doc}/src/handbook/handbook.fo"
+		>
+			<param name="draft.mode" expression="no" />
+			<param name="fop.extensions" expression="1" />
+			<param name="img.src.path" expression="doc/src/handbook/" />
+			<param name="use.extensions" expression="1" />
+			<xmlcatalog refid="globalcatalog" />
+		</xslt>
+		<fop>
+			<fileset dir="${doc}/src/handbook/">
+				<include name="handbook.fo" />
+			</fileset>
+		</fop>
+		<delete file="${doc}/src/handbook/handbook.fo" quiet="true" />
+		<move todir="${doc}/handbook/pdf/">
+			<fileset dir="${doc}/src/handbook/">
+				<include name="*.pdf" />
+			</fileset>
+		</move>
+	</target>	
+	
+	<!--
+			Cleaning targets
+	-->
+	<target name="clean"
+			depends="clean-dynamic-files,clean-jar,clean-doc,clean-tools,clean-tests"
+			description="Remove all files generated by any part of the build process."
+	>
+		<delete includeEmptyDirs="true" quiet="true">
+			<fileset dir="${classes}" />
+		</delete>
+	</target>
+	<target	name="clean-dynamic-files"
+			depends="clean-parser-files,clean-lexer-file"
+	/>
+	<target name="clean-lexer-file">
+		<delete file="${lexer-file}" quiet="true" />
+	</target>
+	<target name="clean-parser-files">
+		<delete	file="${src}/${namespace}/input/dtd/${parser-file}"
+				quiet="true"
+		/>
+		<delete	file="${src}/${namespace}/input/dtd/${parser-symbols}.java"
+				quiet="true"
+		/>
+	</target>
+	<target name="clean-jar">
+		<delete includeEmptyDirs="true" quiet="true">
+			<fileset dir="${dist}" />
+		</delete>
+	</target>
+	<target	name="clean-doc"
+			depends="clean-doc-api,clean-doc-manual,clean-doc-handbook"
+	/>
+	<target name="clean-doc-api">
+		<delete includeEmptyDirs="true" quiet="true">
+			<fileset dir="${doc}/api" />
+		</delete>
+	</target>
+	<target name="clean-doc-handbook">
+		<delete includeEmptyDirs="true" quiet="true">
+			<fileset dir="${doc}/handbook" />
+		</delete>
+	</target>
+	<target name="clean-doc-manual">
+		<delete includeEmptyDirs="true" quiet="true">
+			<fileset dir="${doc}/manual" />
+		</delete>
+		<delete file="${doc}/src/manual/autogenerated.xsl" quiet="true" />
+		<delete file="${doc}/src/manual/manual-processed.xml" quiet="true" />
+	</target>
+	<target name="clean-tools">
+		<delete includeEmptyDirs="true" quiet="true">
+			<fileset dir="tools" includes="**/*.class" />
+		</delete>
+	</target>
+	<target	name="clean-tests"
+			depends="clean-tests-junit-results,clean-tests-permutations"
+	/>
+	<target name="clean-tests-junit-results">
+		<delete includeEmptyDirs="true" quiet="true">
+			<fileset dir="tests/junit/results" />
+		</delete>
+	</target>
+	<target name="clean-tests-permutations">
+		<delete includeEmptyDirs="true" quiet="true">
+			<fileset dir="tests/permutations" />
+		</delete>
+	</target>
+
+	<!--
+			Miscellaneous targets
+	-->
+	<target name="xmlcatalog">
+		<xmlcatalog id="globalcatalog">
+			<dtd	publicId="-//OASIS//DTD DocBook XML V4.2//EN"
+					location="dtds/docbook-xml-42/docbookx.dtd"
+			/>
+			<dtd	publicId="-//OASIS//DTD DocBook XML V4.4//EN"
+					location="dtds/docbook-xml-44/docbookx.dtd"
+			/>
+		</xmlcatalog>
+	</target>
+	<target name="version">
+		<antcall target="jar" />
+		<java	jar="${dist}/Exemplar.jar"
+				fork="true"
+				failonerror="true"
+				outputproperty="version"
+		>
+			<arg value="--version" />
+		</java>
+		<antcall target="clean" />
+	</target>
+</project>

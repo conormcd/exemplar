@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="311.31131"
+   height="279.52206"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.44"
+   version="1.0"
+   sodipodi:docbase="/Users/conor/Projects/exemplar/doc/src/handbook/images"
+   sodipodi:docname="overall_architecture.svg">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Mend"
+       style="overflow:visible">
+      <path
+         id="path3029"
+         d="M 0,0 L 5,-5 L -12.5,0 L 5,5 L 0,0 z "
+         style="fill-rule:evenodd;stroke:black;stroke-width:1pt;marker-start:none"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Mstart"
+       style="overflow:visible">
+      <path
+         id="path3032"
+         d="M 0,0 L 5,-5 L -12.5,0 L 5,5 L 0,0 z "
+         style="fill-rule:evenodd;stroke:black;stroke-width:1pt;marker-start:none"
+         transform="matrix(0.4,0,0,0.4,4,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="white"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="1"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4840988"
+     inkscape:cx="269.99816"
+     inkscape:cy="154.05515"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     width="400px"
+     height="300px"
+     showgrid="true"
+     inkscape:window-width="1024"
+     inkscape:window-height="678"
+     inkscape:window-x="0"
+     inkscape:window-y="22" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-20,-10.47797)">
+    <g
+       id="g1884"
+       transform="translate(55.5,9.176414)">
+      <rect
+         y="125"
+         x="145"
+         height="30.323591"
+         width="119.92693"
+         id="rect1882"
+         style="fill:white;fill-opacity:1;stroke:black" />
+      <flowRoot
+         transform="translate(-3.873047,0.146031)"
+         id="flowRoot1872"
+         xml:space="preserve"><flowRegion
+           id="flowRegion1874"><rect
+             y="128.39249"
+             x="149.06055"
+             height="21.607513"
+             width="120.93945"
+             id="rect1876" /></flowRegion><flowPara
+           style="text-align:center;text-anchor:middle"
+           id="flowPara1878">Model</flowPara><flowPara
+           style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans"
+           id="flowPara1880">(com.mcdermottroe.exemplar.model.*)</flowPara></flowRoot>    </g>
+    <g
+       id="g1904"
+       transform="translate(74.5,70.5)" />
+    <g
+       id="g1927"
+       transform="translate(75.5,8.994154)">
+      <rect
+         y="190"
+         x="125"
+         height="30.505846"
+         width="130.31131"
+         id="rect1925"
+         style="fill:white;fill-opacity:1;stroke:black;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none" />
+      <flowRoot
+         transform="translate(1.375,-5.603969)"
+         id="flowRoot1915"
+         xml:space="preserve"><flowRegion
+           id="flowRegion1917"><rect
+             y="199.16493"
+             x="124.63466"
+             height="30.835068"
+             width="125.36534"
+             id="rect1919" /></flowRegion><flowPara
+           style="text-align:center;text-anchor:middle"
+           id="flowPara1921">Output Module</flowPara><flowPara
+           style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans"
+           id="flowPara1923">(com.mcdermottroe.exemplar.output.*)</flowPara></flowRoot>    </g>
+    <g
+       id="g1947"
+       transform="translate(70.5,-125.8774)">
+      <rect
+         y="195"
+         x="130"
+         height="30.377354"
+         width="125.31131"
+         id="rect1945"
+         style="fill:white;fill-opacity:1;stroke:black;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none" />
+      <flowRoot
+         transform="translate(-2.039063,8.396031)"
+         id="flowRoot1935"
+         xml:space="preserve"><flowRegion
+           id="flowRegion1937"><rect
+             y="190.16963"
+             x="120.01624"
+             height="40.079227"
+             width="147.03098"
+             id="rect1939" /></flowRegion><flowPara
+           style="text-align:center;text-anchor:middle"
+           id="flowPara1941">Input Module</flowPara><flowPara
+           style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans"
+           id="flowPara1943">(com.mcdermottroe.exemplar.input.*)</flowPara></flowRoot>    </g>
+    <g
+       id="g1967"
+       transform="translate(-129.5,64.0104)">
+      <rect
+         y="70"
+         x="150"
+         height="30.489599"
+         width="115.49719"
+         id="rect1965"
+         style="fill:white;fill-opacity:1;stroke:black;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none" />
+      <flowRoot
+         transform="translate(-20.22852,-2.353969)"
+         id="flowRoot1955"
+         xml:space="preserve"><flowRegion
+           id="flowRegion1957"><rect
+             y="75.910629"
+             x="168.50989"
+             height="24.089371"
+             width="116.49011"
+             id="rect1959" /></flowRegion><flowPara
+           style="text-align:center;text-anchor:middle"
+           id="flowPara1961">UI Module</flowPara><flowPara
+           style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans"
+           id="flowPara1963">(com.mcdermottroe.exemplar.ui.*)</flowPara></flowRoot>    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Mend);stroke-opacity:1"
+       d="M 200,95.000004 L 115.85072,133.5871"
+       id="path3047"
+       inkscape:connector-type="polyline" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Mend);stroke-opacity:1"
+       d="M 200,150 L 137.09158,150.5134"
+       id="path4821"
+       inkscape:connector-type="polyline" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Mend);stroke-opacity:1;display:inline"
+       d="M 265,100 L 265.2005,132.59143"
+       id="path5708"
+       inkscape:connector-type="polyline" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow1Mstart);marker-end:none;stroke-opacity:1"
+       d="M 265,165 L 265.53239,198.30533"
+       id="path6595"
+       inkscape:connector-type="polyline" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Mend);stroke-opacity:1"
+       d="M 200,205 L 115.84168,165.42975"
+       id="path8367"
+       inkscape:connector-type="polyline" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow1Mstart);stroke-opacity:1"
+       d="M 200,80.000008 L 90.57382,133.08689"
+       id="path9256"
+       inkscape:connector-type="polyline" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow1Mstart);stroke-opacity:1"
+       d="M 200,220 L 90.23691,165.42975"
+       id="path10143"
+       inkscape:connector-type="polyline" />
+    <g
+       id="g11042"
+       transform="translate(-11.84106,-4.522026)">
+      <path
+         transform="translate(-6.68515,-6.048187)"
+         d="M 316.18515 38.3092 A 31.079468 16.761013 0 1 1  254.02621,38.3092 A 31.079468 16.761013 0 1 1  316.18515 38.3092 z"
+         sodipodi:ry="16.761013"
+         sodipodi:rx="31.079468"
+         sodipodi:cy="38.3092"
+         sodipodi:cx="285.10568"
+         id="path11040"
+         style="fill:white;fill-opacity:1;stroke:black;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
+         sodipodi:type="arc" />
+      <flowRoot
+         transform="translate(9.902344,17.46554)"
+         id="flowRoot11030"
+         xml:space="preserve"><flowRegion
+           id="flowRegion11032"><rect
+             y="10.935687"
+             x="249.30954"
+             height="38.07024"
+             width="65.022629"
+             id="rect11034" /></flowRegion><flowPara
+           style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"
+           id="flowPara11036">Input File</flowPara></flowRoot>    </g>
+    <g
+       id="g11049"
+       transform="translate(-11.84106,240.478)">
+      <path
+         transform="translate(-6.68515,-6.048187)"
+         d="M 316.18515 38.3092 A 31.079468 16.761013 0 1 1  254.02621,38.3092 A 31.079468 16.761013 0 1 1  316.18515 38.3092 z"
+         sodipodi:ry="16.761013"
+         sodipodi:rx="31.079468"
+         sodipodi:cy="38.3092"
+         sodipodi:cx="285.10568"
+         id="path11051"
+         style="fill:white;fill-opacity:1;stroke:black;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
+         sodipodi:type="arc" />
+      <flowRoot
+         transform="translate(10.23828,15.46554)"
+         id="flowRoot11053"
+         xml:space="preserve"><flowRegion
+           id="flowRegion11055"><rect
+             y="10.935687"
+             x="249.30954"
+             height="38.07024"
+             width="65.022629"
+             id="rect11057" /></flowRegion><flowPara
+           style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"
+           id="flowPara11059">Output File</flowPara></flowRoot>    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Mend);stroke-opacity:1"
+       d="M 265,230 L 265.14407,255.36011"
+       id="path11061"
+       inkscape:connector-type="polyline" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Mend);stroke-opacity:1"
+       d="M 265,70 L 264.90916,44.858172"
+       id="path11948"
+       inkscape:connector-type="polyline" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot12835"
+       transform="matrix(0.906308,-0.422618,0.422618,0.906308,77.10446,67.42392)"><flowRegion
+         id="flowRegion12837"><rect
+           id="rect12839"
+           width="113.20001"
+           height="25.941669"
+           x="42.113098"
+           y="79.327362" /></flowRegion><flowPara
+         id="flowPara12841"
+         style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans">Query Options</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot12843"
+       transform="translate(104.8818,60.04642)"><flowRegion
+         id="flowRegion12845"><rect
+           id="rect12847"
+           width="113.20001"
+           height="25.941669"
+           x="42.113098"
+           y="79.327362" /></flowRegion><flowPara
+         id="flowPara12849"
+         style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans">Query Options</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot12851"
+       transform="matrix(0.906308,0.422618,-0.422618,0.906308,147.5597,82.35647)"><flowRegion
+         id="flowRegion12853"><rect
+           id="rect12855"
+           width="113.20001"
+           height="25.941669"
+           x="42.113098"
+           y="79.327362" /></flowRegion><flowPara
+         id="flowPara12857"
+         style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans">Query Options</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot12859"
+       transform="matrix(0.906308,-0.422618,0.422618,0.906308,77.27429,72.62417)"><flowRegion
+         id="flowRegion12861"><rect
+           id="rect12863"
+           width="142.37115"
+           height="30.139046"
+           x="17.628847"
+           y="49.860954" /></flowRegion><flowPara
+         id="flowPara12865"
+         style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans">Select Input Module</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot12867"
+       transform="matrix(0.906308,0.422618,-0.422618,0.906308,180.8393,-5.314913)"><flowRegion
+         id="flowRegion12869"><rect
+           id="rect12871"
+           width="138.80478"
+           height="22.57262"
+           x="21.561907"
+           y="197.58095" /></flowRegion><flowPara
+         id="flowPara12873"
+         style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans">Select Output Module</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot12875"
+       transform="translate(138.1826,3.671422)"><flowRegion
+         id="flowRegion12877"><rect
+           id="rect12879"
+           width="112.68169"
+           height="18.105303"
+           x="134.3604"
+           y="235.67853" /></flowRegion><flowPara
+         id="flowPara12881"
+         style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans">Write File</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot12883"
+       transform="translate(160.5361,17.24662)"><flowRegion
+         id="flowRegion12885"><rect
+           id="rect12887"
+           width="75.756393"
+           height="19.534668"
+           x="113.87283"
+           y="37.473114" /></flowRegion><flowPara
+         id="flowPara12889"
+         style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans">Read File</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot12891"
+       transform="translate(228.8506,84.24662)"><flowRegion
+         id="flowRegion12893"><rect
+           id="rect12895"
+           width="129.37144"
+           height="31.66905"
+           x="45.819054"
+           y="30.476166" /></flowRegion><flowPara
+         id="flowPara12897"
+         style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans">Create model</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot12899"
+       transform="translate(-2.618164,9.271031)"><flowRegion
+         id="flowRegion12901"><rect
+           id="rect12903"
+           width="85.910721"
+           height="25.604765"
+           x="277.27264"
+           y="169.28094" /></flowRegion><flowPara
+         id="flowPara12905"
+         style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans">Query Model</flowPara></flowRoot>  </g>
+</svg>

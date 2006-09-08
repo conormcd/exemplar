@@ -1,0 +1,621 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book	PUBLIC
+				"-//OASIS//DTD DocBook XML V4.4//EN"
+				"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"
+>
+<!--
+	vim:filetype=docbk:ts=4
+-->
+<!--
+	Copyright (c) 2005, 2006
+	Conor McDermottroe.  All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions
+	are met:
+	1. Redistributions of source code must retain the above copyright
+	   notice, this list of conditions and the following disclaimer.
+	2. Redistributions in binary form must reproduce the above copyright
+	   notice, this list of conditions and the following disclaimer in the
+	   documentation and/or other materials provided with the distribution.
+	3. Neither the name of the author nor the names of any contributors to
+	   the software may be used to endorse or promote products derived from
+	   this software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+	"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+	LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+	A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+	HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+	TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+	OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+	OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+	NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+<book lang="en">
+    <bookinfo>
+        <title>Exemplar Developer's Handbook</title>
+
+        <author>
+            <firstname>Conor</firstname>
+
+            <surname>McDermottroe</surname>
+        </author>
+
+        <copyright>
+            <year>2005</year>
+
+            <year>2006</year>
+
+            <holder>Conor McDermottroe</holder>
+        </copyright>
+    </bookinfo>
+
+    <preface id="P_INTRO">
+        <title id="P_INTRO_NAME">Introduction</title>
+
+        <para>This book is designed as a higher-level companion to the
+        <firstterm linkend="G_API">API</firstterm> documentation which can be
+        produced directly from the source. In some parts of this documentation
+        it is assumed that you have read the <glossterm
+        linkend="G_API">API</glossterm> documentation or at least have it
+        available. A copy of the <glossterm linkend="G_API">API</glossterm>
+        documentation should be available at the location from which you
+        obtained this book.</para>
+
+        <para>The purpose of this book is to provide prospective and current
+        developers with an overview of how Exemplar is put together. Some
+        low-level implementation details will be discussed here but, for the
+        most part, documentation for low-level details is documented in the
+        code (either with JavaDoc or the code itself).</para>
+
+        <para>As with all documentation this book may lag behind the code. If
+        in doubt, trust the code or get help (see <xref
+        endterm="C_GET_HELP_NAME" linkend="C_GET_HELP" /> for details). If you
+        submit a patch for the code it would be appreciated if you submit a
+        corresponding patch for this documentation. The source for this
+        documentation is available with the source for the program.</para>
+    </preface>
+
+    <chapter id="C_GOALS">
+        <title id="C_GOALS_NAME">Project Goals &amp; Philosophy</title>
+
+        <para>Exemplar is a program created to make it easier to work with
+        XML. It began life as a program to generate the smallest possible
+        parser for a given vocabulary of XML. While it still retains the
+        capability to do this, it is now a more general program intended to
+        support conversion of specifications of XML vocabularies (DTDs,
+        Schemas, etc) into useful code.</para>
+
+        <para>Exemplar is designed to support plug-in moduless to implement
+        input translators, output producers and user/application interfaces.
+        This should make it easier to add features to Exemplar and/or
+        integrate it with third-party products. This is described later in
+        <xref endterm="C_ARCH_NAME" linkend="C_ARCH" />.</para>
+    </chapter>
+
+    <chapter id="C_ARCH">
+        <title id="C_ARCH_NAME">Overall Architecture</title>
+
+        <sect1 id="S_ARCH_MODULES">
+            <title id="S_ARCH_MODULES_NAME">Modules &amp; How They
+            Interact</title>
+
+            <para>Here is a diagram explaining the overall architecture of the
+            program: <figure id="F_OVERALL_ARCH">
+                    <title id="F_OVERALL_ARCH_NAME">Overall
+                    architecture</title>
+
+                    <mediaobject>
+                        <imageobject>
+                            <imagedata fileref="images/overall_architecture.png"
+                                       width="311" />
+                        </imageobject>
+                    </mediaobject>
+                </figure></para>
+
+            <para>Here is a diagram explaining the data flow within the
+            program:<figure id="F_DATA_FLOW">
+                    <title id="F_DATA_FLOW_NAME">Data flow through the
+                    program.</title>
+
+                    <mediaobject>
+                        <imageobject>
+                            <imagedata fileref="images/data_flow_diagram.png"
+                                       width="391" />
+                        </imageobject>
+                    </mediaobject>
+                </figure></para>
+        </sect1>
+    </chapter>
+
+    <chapter id="C_INPUT">
+        <title id="C_INPUT_NAME">Input Modules</title>
+
+        <sect1 id="S_INPUT_CHARACTER">
+            <title id="S_INPUT_CHARACTER_NAME">Input Module
+            characteristics</title>
+
+            <para>Describe input module interface and layout here.</para>
+        </sect1>
+
+        <sect1 id="S_INPUT_DTD">
+            <title id="S_INPUT_DTD_NAME">The <glossterm
+            linkend="G_DTD">DTD</glossterm> Input Module</title>
+
+            <para>Describe the <glossterm linkend="G_DTD">DTD</glossterm>
+            input module in detail here.</para>
+        </sect1>
+
+        <sect1 id="S_INPUT_CREATE">
+            <title id="S_INPUT_CREATE_NAME">How To: Create A New Input
+            Module</title>
+
+            <para>Describe the construction of an input module for a fictional
+            simplistic <glossterm linkend="G_DTD">DTD</glossterm> format
+            here.</para>
+        </sect1>
+    </chapter>
+
+    <chapter id="C_MODEL">
+        <title id="C_MODEL_NAME">Model Module</title>
+
+        <sect1 id="S_MODEL_FEATURES">
+            <title id="S_MODEL_FEATURES_NAME">Features</title>
+
+            <para>Describe the features, both used and unused, that the
+            current model is capable of handling.</para>
+        </sect1>
+
+        <sect1 id="S_MODEL_LIMITS">
+            <title id="S_MODEL_LIMITS_NAME">Limitations</title>
+
+            <para>Describe the limitations of the current model.</para>
+        </sect1>
+    </chapter>
+
+    <chapter id="C_OUTPUT">
+        <title id="C_OUTPUT_NAME">Output Modules</title>
+
+        <sect1 id="S_OUTPUT_CHARACTER">
+            <title id="S_OUTPUT_CHARACTER_NAME">Output Module
+            Characteristics</title>
+
+            <para>Describe output module interface and layout here.</para>
+        </sect1>
+
+        <sect1 id="S_OUTPUT_CREATE">
+            <title id="S_OUTPUT_CREATE_NAME">How To: Create A New Output
+            Module</title>
+
+            <para>Describe the creation of a <glossterm
+            linkend="G_DTD">DTD</glossterm> output module here.</para>
+        </sect1>
+    </chapter>
+
+    <chapter id="C_UI">
+        <title id="C_UI_NAME">User Interface Modules</title>
+
+        <sect1 id="S_UI_CHARACTER">
+            <title id="S_UI_CHARACTER_NAME"><glossterm
+            linkend="G_UI">UI</glossterm> module characteristics</title>
+
+            <para>Describe the <glossterm linkend="G_UI">UI</glossterm> module
+            interface and layout here.</para>
+        </sect1>
+
+        <sect1 id="S_UI_CREATE">
+            <title id="S_UI_CREATE_NAME">How To: Create A New <glossterm
+            linkend="G_UI">UI</glossterm> Module</title>
+
+            <para>Show how to make a new <glossterm
+            linkend="G_UI">UI</glossterm> module.</para>
+        </sect1>
+
+        <sect1 id="S_UI_LOGGING">
+            <title id="S_UI_LOGGING_NAME">Logging Subsystem</title>
+
+            <sect2 id="S_UI_LOGGING_USING">
+                <title id="S_UI_LOGGING_USING_NAME">Using The Logging
+                System</title>
+
+                <para>To use the logging system, you need to do two
+                things:</para>
+            </sect2>
+
+            <sect2 id="S_UI_LOGGING_FOR_UI_MAKERS">
+                <title id="S_UI_LOGGING_FOR_UI_MAKERS_NAME">The Logging System
+                For UI Creators</title>
+
+                <para>Describe the way in which logging is done.</para>
+            </sect2>
+        </sect1>
+
+        <sect1 id="S_UI_L10N">
+            <title id="S_UI_L10N_NAME">Localised Messages</title>
+
+            <para>Describe the way messages are done in the program.</para>
+
+            <sect2 id="S_UI_L10N_ADD">
+                <title id="S_UI_L10N_ADD_NAME">How To: Add A New Message To
+                The Program</title>
+
+                <para>Show the methods.</para>
+            </sect2>
+        </sect1>
+
+        <sect1 id="S_UI_OPTIONS">
+            <title id="S_UI_OPTIONS_NAME">Options Processing</title>
+
+            <para>Describe how options processing is done.</para>
+
+            <sect2 id="S_UI_OPTIONS_USE">
+                <title id="S_UI_OPTIONS_USE_NAME">How To: Use Options</title>
+
+                <para>Show get()</para>
+            </sect2>
+
+            <sect2 id="S_UI_OPTIONS_ADD">
+                <title id="S_UI_OPTIONS_ADD_NAME">How To: Add A New
+                Option</title>
+
+                <para>Show how to introduce a new option</para>
+            </sect2>
+        </sect1>
+    </chapter>
+
+    <chapter id="C_ERROR">
+        <title id="C_ERROR_NAME">Debugging And Error Handling Features</title>
+
+        <sect1 id="S_ERROR_EXCEPT">
+            <title id="S_ERROR_EXCEPT_NAME">Exception Handling</title>
+
+            <para>Describe how the exception handling works in the
+            program.</para>
+
+            <sect2 id="S_ERROR_EXCEPT_CREATE">
+                <title id="S_ERROR_EXCEPT_CREATE_NAME">How To: Create Your Own
+                Exceptions</title>
+
+                <para>All exceptions in Exemplar are subclasses of
+                <classname>com.mcdermottroe.exemplar.Exception</classname>
+                which allows for consistent error handling throughout the
+                application. The easiest way to create your own exception is
+                to copy one of the existing exceptions and change the name.
+                All exceptions must implement the four constructors
+                <methodname>Exception()</methodname>,
+                <methodname>Exception(<replaceable>String</replaceable>)</methodname>,
+                <methodname>Exception(<replaceable>String</replaceable>,
+                <replaceable>Throwable</replaceable>)</methodname>, and
+                <methodname>Exception(<replaceable>Throwable</replaceable>)</methodname>
+                so that the exception chaining facilities of Java can be
+                used.</para>
+            </sect2>
+        </sect1>
+
+        <sect1 id="S_ERROR_ASSERT">
+            <title id="S_ERROR_ASSERT_NAME">Assertion Mechanism</title>
+
+            <para>Describe the assertion mechanism here. Refer to
+            <citation>Meyer97</citation> where appropriate.</para>
+        </sect1>
+    </chapter>
+
+    <chapter id="C_TESTING">
+        <title id="C_TESTING_NAME">Testing Framework</title>
+
+        <para>Describe the testing framework here.</para>
+    </chapter>
+
+    <chapter id="C_BUILD">
+        <title id="C_BUILD_NAME">Build System</title>
+
+        <para>Describe the build system here.</para>
+    </chapter>
+
+    <chapter id="C_GET_HELP">
+        <title id="C_GET_HELP_NAME">How To Get Help</title>
+
+        <para>Contact details here.</para>
+    </chapter>
+
+    <appendix id="A_GLOSSARY">
+        <title id="A_GLOSSARY_NAME">Glossary</title>
+
+        <para>The reader should be familiar with most, if not all, of the
+        following terms. They are included here only for completeness.</para>
+
+        <glossary id="G_GLOSSARY">
+            <glossentry id="G_API" xreflabel="API">
+                <glossterm>Application Program Interface</glossterm>
+
+                <acronym>API</acronym>
+
+                <glossdef>
+                    <para>The set of classes, methods and fields in a program
+                    or library which may be used by developers or users to
+                    interact with it.</para>
+                </glossdef>
+            </glossentry>
+
+            <glossentry id="G_DTD" xreflabel="DTD">
+                <glossterm>Document Type Definition</glossterm>
+
+                <acronym>DTD</acronym>
+
+                <glossdef>
+                    <para>A formal description of a vocabulary of
+                    <acronym>XML</acronym> or <acronym>SGML</acronym> which
+                    defines the permissible structure of all documents
+                    conforming to that <acronym>DTD</acronym>.</para>
+                </glossdef>
+            </glossentry>
+
+            <glossentry id="G_UI" xreflabel="UI">
+                <glossterm>User Interface</glossterm>
+
+                <acronym>UI</acronym>
+
+                <glossdef>
+                    <para>The portion of the program with which the user
+                    interacts. See <xref endterm="C_UI_NAME" linkend="C_UI" />
+                    for how user interfaces are implemented in
+                    Exemplar.</para>
+                </glossdef>
+            </glossentry>
+
+            <glossentry>
+                <glossterm>Extensible Markup Language</glossterm>
+
+                <acronym>XML</acronym>
+
+                <glossdef>
+                    <para>A standard which defines a way in which markup
+                    languages can be written. See <citation>Bray00</citation>
+                    for details.</para>
+                </glossdef>
+            </glossentry>
+        </glossary>
+    </appendix>
+
+    <appendix id="A_BIBLIO">
+        <title id="A_BIBLIO_NAME">Bibliography</title>
+
+        <para>This bibliography contains both references to other texts
+        mentioned above and to ones which would be useful to many developers
+        working on Exemplar. All of the books below are well worth
+        reading.</para>
+
+        <bibliography id="B_BIBLIO" xreflabel="Bibliography">
+            <bibliodiv id="S_BIBLIO_BOOKS">
+                <title id="S_BIBLIO_BOOKS_NAME">Books</title>
+
+                <para></para>
+
+                <biblioentry id="Aho86" xreflabel="Aho86">
+                    <abbrev>Aho86</abbrev>
+
+                    <authorgroup>
+                        <author>
+                            <firstname>Alfred</firstname>
+
+                            <othername>V.</othername>
+
+                            <surname>Aho</surname>
+                        </author>
+
+                        <author>
+                            <firstname>Ravi</firstname>
+
+                            <surname>Sethi</surname>
+                        </author>
+
+                        <author>
+                            <firstname>Jeffrey</firstname>
+
+                            <othername>D.</othername>
+
+                            <surname>Ullman</surname>
+                        </author>
+                    </authorgroup>
+
+                    <pubdate>1986</pubdate>
+
+                    <title>Compilers: Principles, Techniques, and
+                    Tools</title>
+
+                    <publisher>
+                        <publishername>Addison-Wesley</publishername>
+                    </publisher>
+                </biblioentry>
+
+                <biblioentry id="Gamma94" xreflabel="Gamma94">
+                    <abbrev>Gamma94</abbrev>
+
+                    <authorgroup>
+                        <author>
+                            <firstname>Erich</firstname>
+
+                            <surname>Gamma</surname>
+                        </author>
+
+                        <author>
+                            <firstname>Richard</firstname>
+
+                            <surname>Helm</surname>
+                        </author>
+
+                        <author>
+                            <firstname>Ralph</firstname>
+
+                            <surname>Johnson</surname>
+                        </author>
+
+                        <author>
+                            <firstname>John</firstname>
+
+                            <surname>Vlissides</surname>
+                        </author>
+                    </authorgroup>
+
+                    <pubdate>1994</pubdate>
+
+                    <title>Design Patterns: Elements of Reusable
+                    Object-Oriented Software</title>
+
+                    <publisher>
+                        <publishername>Addison-Wesley</publishername>
+                    </publisher>
+                </biblioentry>
+
+                <biblioentry id="Gosling00" xreflabel="Gosling00">
+                    <abbrev>Gosling00</abbrev>
+
+                    <authorgroup>
+                        <author>
+                            <firstname>James</firstname>
+
+                            <surname>Gosling</surname>
+                        </author>
+
+                        <author>
+                            <firstname>Bill</firstname>
+
+                            <surname>Joy</surname>
+                        </author>
+
+                        <author>
+                            <firstname>Guy</firstname>
+
+                            <surname>Steele</surname>
+                        </author>
+
+                        <author>
+                            <firstname>Gilad</firstname>
+
+                            <surname>Bracha</surname>
+                        </author>
+                    </authorgroup>
+
+                    <pubdate>2000</pubdate>
+
+                    <title>The Java Language Specification</title>
+
+                    <edition>Second Edition</edition>
+
+                    <publisher>
+                        <publishername>Sun Microsystems</publishername>
+                    </publisher>
+                </biblioentry>
+
+                <biblioentry id="Meyer97" xreflabel="Meyer97">
+                    <abbrev>Meyer97</abbrev>
+
+                    <author>
+                        <firstname>Bertrand</firstname>
+
+                        <surname>Meyer</surname>
+                    </author>
+
+                    <pubdate>1997</pubdate>
+
+                    <title>Object Oriented Software Construction</title>
+
+                    <edition>Second Edition</edition>
+
+                    <publisher>
+                        <publishername>Prentice-Hall</publishername>
+                    </publisher>
+                </biblioentry>
+            </bibliodiv>
+
+            <bibliodiv id="S_BIBLIO_SPECS">
+                <title id="S_BIBLIO_SPECS_NAME">Specifications</title>
+
+                <para></para>
+
+                <biblioentry id="Bray00" xreflabel="Bray00">
+                    <abbrev>Bray00</abbrev>
+
+                    <authorgroup>
+                        <editor>
+                            <firstname>Tim</firstname>
+
+                            <surname>Bray</surname>
+
+                            <affiliation>
+                                <orgname>Textuality</orgname>
+                            </affiliation>
+
+                            <affiliation>
+                                <orgname>Netscape</orgname>
+                            </affiliation>
+                        </editor>
+
+                        <editor>
+                            <firstname>Jean</firstname>
+
+                            <surname>Paoli</surname>
+
+                            <affiliation>
+                                <orgname>Microsoft</orgname>
+                            </affiliation>
+                        </editor>
+
+                        <editor>
+                            <firstname>C. M.</firstname>
+
+                            <surname>Sperberg-McQueen</surname>
+
+                            <affiliation>
+                                <orgname>University of Illinois at Chicago</orgname>
+                            </affiliation>
+
+                            <affiliation>
+                                <orgname>Text Encoding initiative</orgname>
+                            </affiliation>
+                        </editor>
+
+                        <editor>
+                            <firstname>Eve</firstname>
+
+                            <surname>Maler</surname>
+
+                            <affiliation>
+                                <orgname>Sun Microsystems, Inc.</orgname>
+                            </affiliation>
+                        </editor>
+                    </authorgroup>
+
+                    <pubdate>6th October 2000</pubdate>
+
+                    <title>Extensible Markup Language (XML) 1.0</title>
+
+                    <edition>Second Edition</edition>
+
+                    <publisher>
+                        <publishername>W3C</publishername>
+                    </publisher>
+
+                    <bibliosource
+                    class="uri">http://www.w3.org/TR/2000/REC-xml-20001006</bibliosource>
+                </biblioentry>
+            </bibliodiv>
+
+            <bibliodiv id="S_BIBLIO_SOFTWARE">
+                <title id="S_BIBLIO_SOFTWARE_NAME">Software
+                Documentation</title>
+
+                <para></para>
+
+                <biblioentry xreflabel="Ant">
+                    <title>Apache Ant Documentation</title>
+
+                    <corpauthor>The Apache Ant Project</corpauthor>
+                </biblioentry>
+            </bibliodiv>
+        </bibliography>
+    </appendix>
+</book>

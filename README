@@ -1,0 +1,196 @@
+About
+-----
+
+Exemplar is a program designed to make it easier to work with XML. It began
+life as a program to generate the smallest possible parser for a given
+vocabulary of XML. While it still retains the capability to do this, it is now
+a more general program intended to support conversion of specifications of XML
+vocabularies (DTDs, Schemas, etc) into useful code.
+
+Exemplar is designed to support plug-in moduless to implement input
+translators, output producers and user/application interfaces. This should make
+it easier to add features to Exemplar and/or integrate it with third-party
+products.
+
+How To Build
+------------
+
+If you got Exemplar as a source distribution, you have to build it before you
+can use it. If you can't or don't want to build Exemplar, then go back to where
+you got the source distribution and fetch the binary version instead.
+
+Building a JAR should be as easy as typing `ant jar' in the directory that you
+found this README file. The resulting Exemplar.jar can be found in the `dist'
+directory.
+
+Of course, sometimes it just isn't that easy. :-) You must have the following:
+
+1) A Java compiler
+2) Ant
+3) JFlex
+4) CUP
+
+The JFlex and CUP JAR files must be in your classpath.
+
+To build any other part of the project, consult the Developer's Handbook.
+
+How to Use
+----------
+
+Read the documentation. :-) OK, here's a quick intro.
+
+As a command line app:
+
+java -jar /path/to/Exemplar.jar --input /path/to/vocabulary.dtd
+	--output-language Java --output-api SAX2 --vocabulary vocabulary
+
+As an Ant task:
+
+<taskdef name="exemplar" classname="com.mcdermottroe.exemplar.ui.ant.Task" />
+<exemplar	input="/path/to/vocabulary.dtd"
+			output-language="Java"
+			output-api="SAX2"
+			vocabulary="vocabulary"
+/>
+
+Now read the documentation. :-)
+
+What to do if you find a bug
+----------------------------
+
+Try to reproduce it. The easier it is to reproduce, the easier it is to fix.
+Send me a bug report with as much information as possible. The following is the
+minimum I reccommend:
+
+1) The JVM you're using.
+2) Where you got Exemplar and how you compiled it (if you did).
+3) The output of --help
+4) The input that you need to use to reproduce the bug
+5) The output (if any) when the bug has been tickled.
+6) The output (if different) when you run Exemplar with --debug
+
+The more detail you send, the better.
+
+Send all bug reports to exemplar-bugs@mcdermottroe.com.
+
+If you're willing to have a go at fixing the bug, feel free to do so. I'll
+answer any questions about the code that you need.
+
+Once you've submitted your bug I'll try and get back to you with my first
+impressions of the bug and how long it will be before I can fix it. You can
+probably count on bugs being processed in the following order:
+
+1) Bugs that are submitted with code to fix the error and JUnit tests to
+   ensure that the bug won't sneak back into the code in future.
+2) Bugs that are submitted with code to fix the error.
+3) Bugs that are submitted with JUnit code to reproduce the error.
+4) Bugs that are submitted with instructions on how to reproduce the error.
+5) Bugs that can be reproduced.
+6) Bugs that are intermittent and hard to pin down.
+7) Bugs that have fixes supplied under a license incompatible with that
+   of Exemplar.
+
+Licensing
+---------
+
+The license for Exemplar is found in the LICENSE file and in every source file.
+
+The following are not covered by the license for Exemplar:
+ * All files under dtds/docbook-xml-42
+
+   The license can be found in the dtds/docbook-xml-42/docbookx.dtd file.
+
+   This directory is only needed for testing and can be removed without
+   affecting the functionality of Exemplar.
+
+ * All files under dtds/docbook-xml-44
+
+   The license can be found in the dtds/docbook-xml-44/docbookx.dtd file.
+
+   This directory is only needed for testing and can be removed without
+   affecting the functionality of Exemplar.
+
+ * The file res/skeleton.nested
+
+   This file is from the JFlex distribution and is licensed as follows:
+
+	Copyright (c) 2006, Gerwin Klein
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+	* Redistributions of source code must retain the above copyright notice,
+	  this list of conditions and the following disclaimer.
+	* Redistributions in binary form must reproduce the above copyright notice,
+	  this list of conditions and the following disclaimer in the documentation
+	  and/or other materials provided with the distribution.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+	AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+	IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+	ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+	LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+	CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+	POSSIBILITY OF SUCH DAMAGE.
+ 
+   This file is required and Exemplar will not build correctly without it.
+
+ * All files under java_cup in the generated JAR file
+
+   When Exemplar is built, it copies portions of the CUP parser runtime into
+   the Exemplar JAR file. All of these files are under the CUP license which is
+   as follows:
+
+	Copyright 1996-1999 by Scott Hudson, Frank Flannery, C. Scott Ananian
+
+	Permission to use, copy, modify, and distribute this software and its
+	documentation for any purpose and without fee is hereby granted, provided
+	that the above copyright notice appear in all copies and that both the
+	copyright notice and this permission notice and warranty disclaimer appear
+	in supporting documentation, and that the names of the authors or their
+	employers not be used in advertising or publicity pertaining to
+	distribution of the software without specific, written prior permission.
+
+	The authors and their employers disclaim all warranties with regard to this
+	software, including all implied warranties of merchantability and fitness.
+	In no event shall the authors or their employers be liable for any special,
+	indirect or consequential damages or any damages whatsoever resulting from
+	loss of use, data or profits, whether in an action of contract, negligence
+	or other tortious action, arising out of or in connection with the use or
+	performance of this software. 
+
+Any software produced by Exemplar is not covered by the license, even those
+parts which are copied from files that *are* covered by the license. If you
+need something clearer legally, then contact me and we can work something out.
+
+If the license for Exemplar is not suitable for your needs I am open to
+supplying the program to you under a different license. If you or your company
+refuses to use the default license, please contact me and describe why you
+can't use it and I'll try to accomodate you. I can't guarantee that we'll come
+to an agreement, but I'll try to be as flexible as possible.
+
+Packaging
+---------
+
+If you would like to package Exemplar for distribution via your favourite
+operating system's package management system please let me know. I can provide
+extra targets in the build to produce packing lists or any other meta-data you
+need for packaging the program.
+
+Please Contribute
+-----------------
+
+Exemplar is an open source project and as such I encourage all users to get
+involved in its development as much as possible. You don't need to be a coder
+to help out; writing documentation, finding bugs and making suggestions about
+what you think should be included in Exemplar are all helpful activities.
+
+The only hard and fast rule about contributing is that your contributions must
+be supplied under a license compatible with that of Exemplar. Ideally, they
+would be under the same BSD-style license. If you don't have the right to
+contribute material, please don't! I don't want any legal battles!

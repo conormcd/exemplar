@@ -1,0 +1,192 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC	"-//Puppy Crawl//DTD Check Configuration 1.2//EN"
+						"http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+<!--
+	vim:filetype=xml:ts=4
+-->
+<!--
+	Copyright (c) 2006
+	Conor McDermottroe.  All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions
+	are met:
+	1. Redistributions of source code must retain the above copyright
+	   notice, this list of conditions and the following disclaimer.
+	2. Redistributions in binary form must reproduce the above copyright
+	   notice, this list of conditions and the following disclaimer in the
+	   documentation and/or other materials provided with the distribution.
+	3. Neither the name of the author nor the names of any contributors to
+	   the software may be used to endorse or promote products derived from
+	   this software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+	"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+	LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+	A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+	HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+	TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+	OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+	OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+	NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+<module name="Checker">
+	<module name="NewlineAtEndOfFile" />
+
+	<module name="TreeWalker">
+		<!-- TreeWalker properties -->
+		<property name="tabWidth" value="4" />
+
+		<!--
+			JavaDoc checks
+		-->
+		<module name="JavadocType">
+			<property name="authorFormat" value=".+" />
+		</module>
+		<module name="JavadocMethod">
+			<!-- <property name="allowUndeclaredRTE" value="true" /> -->
+		</module>
+		<module name="JavadocVariable" />
+		<module name="JavadocStyle">
+			<property name="checkFirstSentence" value="true" />
+			<property name="checkEmptyJavadoc" value="true" />
+			<property name="checkHtml" value="true" />
+		</module>
+
+		<!--
+			Header
+		-->
+		<module name="RegexpHeader">
+			<property name="headerFile" value="tests/checkstyle/java.header" />
+		</module>
+		
+		<!--
+			Imports
+		-->
+		<module name="AvoidStarImport" />
+		<module name="IllegalImport" />
+		<module name="ImportOrder">
+			<property name="groups" value="java,org.apache,junit.framework,com.mcdermottroe,junit.com.mcdermottroe" />
+			<property name="separated" value="true" />
+		</module>
+		<module name="RedundantImport" />
+		<module name="UnusedImports" />
+
+		<!--
+			Size Violations
+		-->
+		<module name="AnonInnerLength" />
+		<module name="ExecutableStatementCount">
+			<property name="max" value="50" />
+		</module>
+		<module name="FileLength" />
+		<module name="MethodLength">
+			<property name="countEmpty" value="false" />
+		</module>
+		<module name="ParameterNumber" />
+
+		<!--
+			Whitespace
+		-->
+		<module name="EmptyForInitializerPad">
+			<property name="option" value="space" />
+		</module>
+		<module name="EmptyForIteratorPad">
+			<property name="option" value="space" />
+		</module>
+		<module name="NoWhitespaceAfter" />
+		<module name="NoWhitespaceBefore" />
+		<module name="ParenPad">
+			<property name="option" value="nospace" />
+		</module>
+		<module name="TypecastParenPad">
+			<property name="option" value="nospace" />
+		</module>
+		<module name="WhitespaceAfter">
+			<property name="tokens" value="COMMA, SEMI"/>
+		</module>
+		<module name="WhitespaceAround">
+			<property name="tokens" value="COMMA, SEMI"/>
+		</module>
+
+		<!--
+			Modifiers
+		-->
+		<module name="ModifierOrder" />
+		<module name="RedundantModifier" />
+
+		<!--
+			Block tests
+		-->
+		<module name="EmptyBlock">
+			<property name="option" value="text" />
+		</module>
+		<module name="LeftCurly">
+			<property name="option" value="nlow" />
+		</module>
+		<module name="NeedBraces" />
+		<module name="RightCurly">
+			<property name="option" value="same" />
+		</module>
+		<module name="AvoidNestedBlocks" />
+
+		<!--
+			Coding
+		-->
+		<module name="ArrayTrailingComma" />
+		<module name="AvoidInlineConditionals" />
+		<module name="CovariantEquals" />
+		<module name="DeclarationOrder" />
+		<module name="DefaultComesLast" />
+		<module name="DoubleCheckedLocking" />
+		<module name="EmptyStatement" />
+		<module name="EqualsHashCode" />
+		<module name="FallThrough" />
+		<module name="HiddenField" />
+		<module name="IllegalCatch" />
+		<module name="IllegalThrows" />
+		<module name="InnerAssignment" />
+		<module name="MagicNumber">
+			<property name="tokens" value="NUM_INT, NUM_LONG" />
+			<property name="ignoreNumbers" value="-1,0,1,2,2,3,4,5,6,7,8,9" />
+		</module>
+		<module name="MagicNumber">
+			<property name="tokens" value="NUM_DOUBLE, NUM_FLOAT" />
+			<property name="ignoreNumbers" value="0.0,1.0,1000.0" />
+		</module>
+		<module name="MissingSwitchDefault" />
+		<module name="MultipleVariableDeclarations" />
+		<module name="PackageDeclaration" />
+		<module name="ParameterAssignment" />
+		<module name="RedundantThrows" />
+		<module name="StringLiteralEquality" />
+		<module name="SuperClone" />
+		<module name="SuperFinalize" />
+		<module name="UnnecessaryParentheses" />
+
+		<!--
+			Class Design
+		-->
+		<module name="FinalClass" />
+		<module name="HideUtilityClassConstructor"/>
+		<module name="MutableException" />
+
+		<!--
+			Miscellaneous
+		-->
+		<module name="ArrayTypeStyle" />
+		<module name="GenericIllegalRegexp">
+			<property name="format" value="(//|@)noinspection" />
+			<property name="message" value="IntelliJ inspection suppression statement" />
+		</module>
+		<module name="TodoComment">
+			<property name="format" value="(TODO|XXX|FIXME)" />
+		</module>
+		<module name="UncommentedMain">
+			<property name="excludedClasses" value="\.Main$"/>
+		</module>
+		<module name="UpperEll" />
+	</module>
+</module>

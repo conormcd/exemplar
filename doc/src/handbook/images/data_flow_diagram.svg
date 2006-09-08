@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="400"
+   height="330"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.44"
+   version="1.0"
+   sodipodi:docbase="/Applications/Inkscape.app"
+   sodipodi:docname="Exemplar Data Flow.svg">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Mend"
+       style="overflow:visible">
+      <path
+         id="path3072"
+         d="M 0,0 L 5,-5 L -12.5,0 L 5,5 L 0,0 z "
+         style="fill-rule:evenodd;stroke:black;stroke-width:1pt;marker-start:none"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Mstart"
+       style="overflow:visible">
+      <path
+         id="path3075"
+         d="M 0,0 L 5,-5 L -12.5,0 L 5,5 L 0,0 z "
+         style="fill-rule:evenodd;stroke:black;stroke-width:1pt;marker-start:none"
+         transform="matrix(0.4,0,0,0.4,4,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lstart"
+       style="overflow:visible">
+      <path
+         id="path3081"
+         d="M 0,0 L 5,-5 L -12.5,0 L 5,5 L 0,0 z "
+         style="fill-rule:evenodd;stroke:black;stroke-width:1pt;marker-start:none"
+         transform="matrix(0.8,0,0,0.8,10,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="white"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="1"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.8284271"
+     inkscape:cx="115.51377"
+     inkscape:cy="97.741428"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     width="400px"
+     height="330px"
+     showgrid="true"
+     inkscape:window-width="1024"
+     inkscape:window-height="678"
+     inkscape:window-x="0"
+     inkscape:window-y="22" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g1884"
+       transform="translate(-4.5,-9.823602)">
+      <rect
+         y="125"
+         x="145"
+         height="30.323591"
+         width="119.92693"
+         id="rect1882"
+         style="fill:white;fill-opacity:1;stroke:black" />
+      <flowRoot
+         transform="translate(-3.873047,0.146031)"
+         id="flowRoot1872"
+         xml:space="preserve"><flowRegion
+           id="flowRegion1874"><rect
+             y="128.39249"
+             x="149.06055"
+             height="21.607513"
+             width="120.93945"
+             id="rect1876" /></flowRegion><flowPara
+           style="text-align:center;text-anchor:middle"
+           id="flowPara1878">Model</flowPara><flowPara
+           style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans"
+           id="flowPara1880">(com.mcdermottroe.exemplar.model)</flowPara></flowRoot>    </g>
+    <g
+       id="g1904"
+       transform="translate(55.5,30.5)">
+      <rect
+         y="35"
+         x="80"
+         height="30"
+         width="130"
+         id="rect1902"
+         style="fill:white;fill-opacity:1;stroke:black" />
+      <flowRoot
+         transform="translate(-1.329102,-0.125906)"
+         id="flowRoot1892"
+         xml:space="preserve"><flowRegion
+           id="flowRegion1894"><rect
+             y="38.830898"
+             x="82.672234"
+             height="21.169102"
+             width="127.32777"
+             id="rect1896" /></flowRegion><flowPara
+           style="text-align:center;text-anchor:middle"
+           id="flowPara1898">DTD Input Module</flowPara><flowPara
+           style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans"
+           id="flowPara1900">(com.mcdermottroe.exemplar.input.dtd)</flowPara></flowRoot>    </g>
+    <g
+       id="g1944"
+       transform="translate(49.5,115.5)">
+      <rect
+         y="50"
+         x="210"
+         height="30"
+         width="135"
+         id="rect1942"
+         style="fill:white;fill-opacity:1;stroke:black" />
+      <flowRoot
+         transform="translate(-19.84473,4.235213)"
+         style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"
+         id="flowRoot1930"
+         xml:space="preserve"><flowRegion
+           id="flowRegion1932"><rect
+             style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"
+             y="51.553085"
+             x="234.27525"
+             height="18.446915"
+             width="130.72475"
+             id="rect1934" /></flowRegion><flowPara
+           id="flowPara1936"
+           style="text-align:center;text-anchor:middle">XSLT Output Module</flowPara><flowPara
+           style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans"
+           id="flowPara1940">(com.mcdermottroe.exemplar.output.xslt)</flowPara><flowPara
+           id="flowPara1938"
+           style="text-align:center;text-anchor:middle" /></flowRoot>    </g>
+    <g
+       id="g1990"
+       transform="translate(-49.5,99.47912)">
+      <rect
+         y="115"
+         x="90"
+         height="45.020878"
+         width="154.88518"
+         id="rect1965"
+         style="fill:white;fill-opacity:1;stroke:black" />
+      <flowRoot
+         transform="translate(53.36328,13.33353)"
+         id="flowRoot1953"
+         xml:space="preserve"><flowRegion
+           id="flowRegion1955"><rect
+             y="105.21921"
+             x="36.32568"
+             height="44.780792"
+             width="153.67432"
+             id="rect1957" /></flowRegion><flowPara
+           style="text-align:center;text-anchor:middle"
+           id="flowPara1959">Java (SAX1)</flowPara><flowPara
+           style="text-align:center;text-anchor:middle"
+           id="flowPara1961">Output Module</flowPara><flowPara
+           style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans"
+           id="flowPara1963">(com.mcdermottroe.exemplar.output.java.sax1)</flowPara></flowRoot>    </g>
+    <g
+       id="g1981"
+       transform="translate(45.5,29.02971)">
+      <rect
+         y="185"
+         x="160"
+         height="45.470295"
+         width="155.31943"
+         id="rect1979"
+         style="fill:white;fill-opacity:1;stroke:black" />
+      <flowRoot
+         transform="translate(123.3633,83.33353)"
+         id="flowRoot1967"
+         xml:space="preserve"><flowRegion
+           id="flowRegion1969"><rect
+             y="105.21921"
+             x="36.32568"
+             height="44.780792"
+             width="153.67432"
+             id="rect1971" /></flowRegion><flowPara
+           style="text-align:center;text-anchor:middle"
+           id="flowPara1973">Java (SAX2)</flowPara><flowPara
+           style="text-align:center;text-anchor:middle"
+           id="flowPara1975">Output Module</flowPara><flowPara
+           style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans"
+           id="flowPara1977">(com.mcdermottroe.exemplar.output.java.sax2)</flowPara></flowRoot>    </g>
+    <g
+       id="g1999"
+       transform="translate(-205.5,115.5)">
+      <rect
+         y="50"
+         x="210"
+         height="30"
+         width="135"
+         id="rect2001"
+         style="fill:white;fill-opacity:1;stroke:black" />
+      <flowRoot
+         transform="translate(-19.84473,4.235213)"
+         style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"
+         id="flowRoot2003"
+         xml:space="preserve"><flowRegion
+           id="flowRegion2005"><rect
+             style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"
+             y="51.553085"
+             x="234.27525"
+             height="18.446915"
+             width="130.72475"
+             id="rect2007" /></flowRegion><flowPara
+           id="flowPara2009"
+           style="text-align:center;text-anchor:middle">DTD Output Module</flowPara><flowPara
+           style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans"
+           id="flowPara2011">(com.mcdermottroe.exemplar.output.dtd)</flowPara><flowPara
+           id="flowPara2013" /></flowRoot>    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow1Mstart);stroke-opacity:1"
+       d="M 200,115 L 199.75767,95.796893"
+       id="path2021"
+       inkscape:connector-type="polyline" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-end:url(#Arrow1Mend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;display:inline"
+       d="M 200,145 L 135.25,213.25"
+       id="path3979"
+       inkscape:connector-type="polyline" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-end:url(#Arrow1Mend);stroke-opacity:1"
+       d="M 200,145 L 265.25,213"
+       id="path4868"
+       inkscape:connector-type="polyline" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Mend);stroke-opacity:1"
+       d="M 200,145 L 305.25,165.25"
+       id="path5755"
+       inkscape:connector-type="polyline" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Mend);stroke-opacity:1"
+       d="M 200,145 L 95.25,165.25"
+       id="path6642"
+       inkscape:connector-type="polyline" />
+    <g
+       id="g7561"
+       transform="translate(-55,30)">
+      <path
+         transform="matrix(0.824007,0,0,0.798118,19.15758,38.30767)"
+         d="M 227.33483 289.92374 A 24.925514 24.925514 0 1 1  177.4838,289.92374 A 24.925514 24.925514 0 1 1  227.33483 289.92374 z"
+         sodipodi:ry="24.925514"
+         sodipodi:rx="24.925514"
+         sodipodi:cy="289.92374"
+         sodipodi:cx="202.40932"
+         id="path7559"
+         style="fill:white;fill-opacity:1;stroke:black;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
+         sodipodi:type="arc" />
+      <flowRoot
+         transform="translate(40.04297,-5.038364)"
+         id="flowRoot7529"
+         xml:space="preserve"><flowRegion
+           id="flowRegion7531"><rect
+             y="263.93756"
+             x="103.23759"
+             height="46.062439"
+             width="86.762413"
+             id="rect7533" /></flowRegion><flowPara
+           style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans"
+           id="flowPara7535">Java</flowPara><flowPara
+           style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans"
+           id="flowPara7537">Source</flowPara><flowPara
+           style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans"
+           id="flowPara7539">Code</flowPara></flowRoot>    </g>
+    <g
+       id="g7570"
+       transform="translate(-155,30)">
+      <path
+         transform="matrix(0.824007,0,0,0.798118,19.15758,38.30767)"
+         d="M 227.33483 289.92374 A 24.925514 24.925514 0 1 1  177.4838,289.92374 A 24.925514 24.925514 0 1 1  227.33483 289.92374 z"
+         sodipodi:ry="24.925514"
+         sodipodi:rx="24.925514"
+         sodipodi:cy="289.92374"
+         sodipodi:cx="202.40932"
+         id="path7572"
+         style="fill:white;fill-opacity:1;stroke:black;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
+         sodipodi:type="arc" />
+      <flowRoot
+         transform="translate(40.04297,-5.038364)"
+         id="flowRoot7574"
+         xml:space="preserve"><flowRegion
+           id="flowRegion7576"><rect
+             y="263.93756"
+             x="103.23759"
+             height="46.062439"
+             width="86.762413"
+             id="rect7578" /></flowRegion><flowPara
+           style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans"
+           id="flowPara7584">XML</flowPara><flowPara
+           style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans"
+           id="flowPara7639">DTD</flowPara></flowRoot>    </g>
+    <g
+       id="g7586"
+       transform="translate(80,30)">
+      <path
+         transform="matrix(0.824007,0,0,0.798118,19.15758,38.30767)"
+         d="M 227.33483 289.92374 A 24.925514 24.925514 0 1 1  177.4838,289.92374 A 24.925514 24.925514 0 1 1  227.33483 289.92374 z"
+         sodipodi:ry="24.925514"
+         sodipodi:rx="24.925514"
+         sodipodi:cy="289.92374"
+         sodipodi:cx="202.40932"
+         id="path7588"
+         style="fill:white;fill-opacity:1;stroke:black;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
+         sodipodi:type="arc" />
+      <flowRoot
+         transform="translate(40.04297,-5.038364)"
+         id="flowRoot7590"
+         xml:space="preserve"><flowRegion
+           id="flowRegion7592"><rect
+             y="263.93756"
+             x="103.23759"
+             height="46.062439"
+             width="86.762413"
+             id="rect7594" /></flowRegion><flowPara
+           style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans"
+           id="flowPara7596">Java</flowPara><flowPara
+           style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans"
+           id="flowPara7598">Source</flowPara><flowPara
+           style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans"
+           id="flowPara7600">Code</flowPara></flowRoot>    </g>
+    <g
+       id="g7602"
+       transform="translate(183.1114,30.59796)">
+      <path
+         transform="matrix(0.824007,0,0,0.798118,19.15758,38.30767)"
+         d="M 227.33483 289.92374 A 24.925514 24.925514 0 1 1  177.4838,289.92374 A 24.925514 24.925514 0 1 1  227.33483 289.92374 z"
+         sodipodi:ry="24.925514"
+         sodipodi:rx="24.925514"
+         sodipodi:cy="289.92374"
+         sodipodi:cx="202.40932"
+         id="path7604"
+         style="fill:white;fill-opacity:1;stroke:black;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
+         sodipodi:type="arc" />
+      <flowRoot
+         transform="translate(40.04297,-5.038364)"
+         id="flowRoot7606"
+         xml:space="preserve"><flowRegion
+           id="flowRegion7608"><rect
+             y="263.93756"
+             x="103.23759"
+             height="46.062439"
+             width="86.762413"
+             id="rect7610" /></flowRegion><flowPara
+           style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans"
+           id="flowPara7616">XSLT</flowPara><flowPara
+           style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans"
+           id="flowPara7646">Stylesheet</flowPara></flowRoot>    </g>
+    <g
+       id="g7618"
+       transform="translate(15,-245)">
+      <path
+         transform="matrix(0.824007,0,0,0.798118,19.15758,38.30767)"
+         d="M 227.33483 289.92374 A 24.925514 24.925514 0 1 1  177.4838,289.92374 A 24.925514 24.925514 0 1 1  227.33483 289.92374 z"
+         sodipodi:ry="24.925514"
+         sodipodi:rx="24.925514"
+         sodipodi:cy="289.92374"
+         sodipodi:cx="202.40932"
+         id="path7620"
+         style="fill:white;fill-opacity:1;stroke:black;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
+         sodipodi:type="arc" />
+      <flowRoot
+         transform="translate(40.04297,-5.038364)"
+         id="flowRoot7622"
+         xml:space="preserve"><flowRegion
+           id="flowRegion7624"><rect
+             y="263.93756"
+             x="103.23759"
+             height="46.062439"
+             width="86.762413"
+             id="rect7626" /></flowRegion><flowPara
+           style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans"
+           id="flowPara7632">XML</flowPara><flowPara
+           style="font-size:6px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans"
+           id="flowPara7653">DTD</flowPara></flowRoot>    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
+       d="M 200,45 L 200,64.500001"
+       id="path7655"
+       inkscape:connector-type="polyline" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
+       d="M 265,260 L 265.16504,278.73476"
+       id="path8542"
+       inkscape:connector-type="polyline" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
+       d="M 370,195 L 370.52395,279.79542"
+       id="path9429"
+       inkscape:connector-type="polyline" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
+       d="M 130,260 L 130.4612,279.08831"
+       id="path10316"
+       inkscape:connector-type="polyline" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline;marker-end:url(#Arrow1Mend)"
+       d="M 30,195 L 29.698485,278.73476"
+       id="path11203"
+       inkscape:connector-type="polyline" />
+  </g>
+</svg>

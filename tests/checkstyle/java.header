@@ -1,0 +1,29 @@
+^// (vim):filetype=java:ts=4$
+^/\*$
+^\tCopyright \(c\)\s+((\d{4}-|(\d{4}, )+)?200[3-6])$
+^\tConor McDermottroe\.  All rights reserved\.$
+^$
+^\tRedistribution and use in source and binary forms, with or without$
+^\tmodification, are permitted provided that the following conditions$
+^\tare met:$
+^\t1\. Redistributions of source code must retain the above copyright$
+^\t   notice, this list of conditions and the following disclaimer\.$
+^\t2\. Redistributions in binary form must reproduce the above copyright$
+^\t   notice, this list of conditions and the following disclaimer in the$
+^\t   documentation and/or other materials provided with the distribution\.$
+^\t3\. Neither the name of the author nor the names of any contributors to$
+^\t   the software may be used to endorse or promote products derived from$
+^\t   this software without specific prior written permission\.$
+^$
+^\tTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS$
+^\t"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT$
+^\tLIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR$
+^\tA PARTICULAR PURPOSE ARE DISCLAIMED\. IN NO EVENT SHALL THE COPYRIGHT$
+^\tHOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,$
+^\tSPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES \(INCLUDING, BUT NOT LIMITED$
+^\tTO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,$
+^\tOR PROFITS; OR BUSINESS INTERRUPTION\) HOWEVER CAUSED AND ON ANY THEORY$
+^\tOF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT \(INCLUDING$
+^\tNEGLIGENCE OR OTHERWISE\) ARISING IN ANY WAY OUT OF THE USE OF THIS$
+^\tSOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE\.$
+^\*/$
