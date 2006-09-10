@@ -72,7 +72,6 @@
 	</target>
 	<target	name="task-definitions"
 			depends="task-availability"
-			if="tasks.available"
 	>
 		<taskdef name="cup" classname="${cup-ant-task}" />
 		<taskdef name="jflex" classname="${jflex-ant-task}" />
