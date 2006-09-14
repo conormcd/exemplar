@@ -617,6 +617,14 @@
 		>
 			<xmlcatalog refid="globalcatalog" />
 		</xslt>
+		<!--
+			Account for lame XSLT processors which don't accept the out
+			attribute.
+		-->
+		<move	file="${basedir}/exemplar.1"
+				todir="${doc}/manual/manpage/"
+				failonerror="false"
+		/>
 	</target>
 	<target name="doc-handbook" depends="doc-handbook-html,doc-handbook-pdf" />
 	<target	name="doc-handbook-html"
