@@ -29,8 +29,6 @@
 */
 package com.mcdermottroe.exemplar.model;
 
-import com.mcdermottroe.exemplar.Constants;
-
 /** In many places XML elements are referred to by name, but only a placeholder
 	is needed as the actual {@link XMLElement} object is created later.
 
@@ -39,7 +37,7 @@ import com.mcdermottroe.exemplar.Constants;
 */
 public class XMLElementReference
 extends XMLObject
-implements XMLObject.HasMinMax, XMLObject.HasName
+implements XMLObject.HasName
 {
 	/** A no-arg constructor to aid in testing.
 
@@ -51,25 +49,19 @@ implements XMLObject.HasMinMax, XMLObject.HasName
 	{
 		super();
 		setName("");
-		setMinMaxOccurs(0, 1);
 	}
 
 	/** Create a reference to an element or seqence of elements.
 
 		@param	elementName			The name of the element to refer to.
-		@param	minOccur			The minimum number of times that this
-									element may appear in this reference.
-		@param	maxOccur			The maximum number of times that this
-									element may appear in this reference.
 		@throws	XMLObjectException	if any of the initialising methods called
 									throws an exception.
 	*/
-	public XMLElementReference(String elementName, int minOccur, int maxOccur)
+	public XMLElementReference(String elementName)
 	throws XMLObjectException
 	{
 		super();
 		setName(elementName);
-		setMinMaxOccurs(minOccur, maxOccur);
 	}
 
 	/** {@inheritDoc} */
@@ -79,15 +71,7 @@ implements XMLObject.HasMinMax, XMLObject.HasName
 				getClass().getName()
 			)
 		);
-
 		desc.append(name);
-		desc.append(Constants.Character.COMMA);
-		desc.append(Constants.Character.SPACE);
-		desc.append(minOccurs);
-		desc.append(Constants.Character.COMMA);
-		desc.append(Constants.Character.SPACE);
-		desc.append(maxOccurs);
-
 		desc.append(toStringSuffix());
 
 		return desc.toString();

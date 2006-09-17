@@ -100,7 +100,6 @@ public class XMLDocumentType {
 		separateObjects();
 		associateAttlistsWithElements();
 		calculateFeatures();
-		optimiseElementContentSpecs();
 	}
 
 	/** Make an {@link XMLDocumentType} out of a {@link List} of markup
@@ -127,7 +126,6 @@ public class XMLDocumentType {
 		separateObjects();
 		associateAttlistsWithElements();
 		calculateFeatures();
-		optimiseElementContentSpecs();
 	}
 
 	/** Determine what features of DTDs/Schemas the current {@link
@@ -266,16 +264,6 @@ public class XMLDocumentType {
 
 		DBC.ENSURE(attlists != null);
 		DBC.ENSURE(elements != null);
-	}
-
-	/** Remove unnecessary boxing of items within the {@link
-		XMLElement#contentSpec} portions of {@link XMLElement}s.
-	*/
-	private void optimiseElementContentSpecs() {
-		for (Iterator it = elements.keySet().iterator(); it.hasNext(); ) {
-			XMLElement element = (XMLElement)elements.get(it.next());
-			element.optimiseContentSpec();
-		}
 	}
 
 	/** Given a feature, determine if the current document type uses it.

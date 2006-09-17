@@ -47,6 +47,7 @@ import com.mcdermottroe.exemplar.model.XMLElement;
 import com.mcdermottroe.exemplar.model.XMLElementReference;
 import com.mcdermottroe.exemplar.model.XMLEntity;
 import com.mcdermottroe.exemplar.model.XMLExternalIdentifier;
+import com.mcdermottroe.exemplar.model.XMLMixedContent;
 import com.mcdermottroe.exemplar.model.XMLNotation;
 import com.mcdermottroe.exemplar.model.XMLObject;
 import com.mcdermottroe.exemplar.model.XMLSequence;
@@ -1332,100 +1333,90 @@ Char_NO_APOS_STAR				::=	/* ε */
 // Page 22
 children						::= choice:c
 										{:
-											RESULT = new XMLSequence();
 											DBC.ASSERT(c instanceof XMLAlternative);
-											XMLAlternative alt = (XMLAlternative)c;
-											alt.setMinMaxOccurs(1, 1);
-											((XMLSequence)RESULT).addObject(alt);
+											RESULT = new XMLSequence();
+											((XMLSequence)RESULT).addObject((XMLAlternative)c);
+											((XMLSequence)RESULT).setMinMaxOccurs(1, 1);
 										:} |
 									choice:c QMARK
 										{:
-											RESULT = new XMLSequence();
 											DBC.ASSERT(c instanceof XMLAlternative);
-											XMLAlternative alt = (XMLAlternative)c;
-											alt.setMinMaxOccurs(0, 1);
-											((XMLSequence)RESULT).addObject(alt);
+											RESULT = new XMLSequence();
+											((XMLSequence)RESULT).addObject((XMLAlternative)c);
+											((XMLSequence)RESULT).setMinMaxOccurs(0, 1);
 										:} |
 									choice:c STAR
 										{:
-											RESULT = new XMLSequence();
 											DBC.ASSERT(c instanceof XMLAlternative);
-											XMLAlternative alt = (XMLAlternative)c;
-											alt.setMinMaxOccurs(0, Constants.INFINITY);
-											((XMLSequence)RESULT).addObject(alt);
+											RESULT = new XMLSequence();
+											((XMLSequence)RESULT).addObject((XMLAlternative)c);
+											((XMLSequence)RESULT).setMinMaxOccurs(0, Constants.INFINITY);
 										:} |
 									choice:c PLUS
 										{:
-											RESULT = new XMLSequence();
 											DBC.ASSERT(c instanceof XMLAlternative);
-											XMLAlternative alt = (XMLAlternative)c;
-											alt.setMinMaxOccurs(1, Constants.INFINITY);
-											((XMLSequence)RESULT).addObject(alt);
+											RESULT = new XMLSequence();
+											((XMLSequence)RESULT).addObject((XMLAlternative)c);
+											((XMLSequence)RESULT).setMinMaxOccurs(1, Constants.INFINITY);
 										:} |
 									seq:s
 										{:
-											RESULT = new XMLSequence();
 											DBC.ASSERT(s instanceof XMLSequence);
-											XMLSequence se = (XMLSequence)s;
-											se.setMinMaxOccurs(1, 1);
-											((XMLSequence)RESULT).addObject(se);
+											RESULT = new XMLSequence();
+											((XMLSequence)RESULT).addObject((XMLSequence)s);
+											((XMLSequence)RESULT).setMinMaxOccurs(1, 1);
 										:} |
 									seq:s QMARK
 										{:
-											RESULT = new XMLSequence();
 											DBC.ASSERT(s instanceof XMLSequence);
-											XMLSequence se = (XMLSequence)s;
-											se.setMinMaxOccurs(0, 1);
-											((XMLSequence)RESULT).addObject(se);
+											RESULT = new XMLSequence();
+											((XMLSequence)RESULT).addObject((XMLSequence)s);
+											((XMLSequence)RESULT).setMinMaxOccurs(0, 1);
 										:} |
 									seq:s STAR
 										{:
-											RESULT = new XMLSequence();
 											DBC.ASSERT(s instanceof XMLSequence);
-											XMLSequence se = (XMLSequence)s;
-											se.setMinMaxOccurs(0, Constants.INFINITY);
-											((XMLSequence)RESULT).addObject(se);
+											RESULT = new XMLSequence();
+											((XMLSequence)RESULT).addObject((XMLSequence)s);
+											((XMLSequence)RESULT).setMinMaxOccurs(0, Constants.INFINITY);
 										:} |
 									seq:s PLUS
 										{:
-											RESULT = new XMLSequence();
 											DBC.ASSERT(s instanceof XMLSequence);
-											XMLSequence se = (XMLSequence)s;
-											se.setMinMaxOccurs(1, Constants.INFINITY);
-											((XMLSequence)RESULT).addObject(se);
+											RESULT = new XMLSequence();
+											((XMLSequence)RESULT).addObject((XMLSequence)s);
+											((XMLSequence)RESULT).setMinMaxOccurs(1, Constants.INFINITY);
 										:};
 // Page 22
 choice							::= LPAREN_FOLLOWED_BY_OPT_S cp:a PIPE_SURROUNDED_WITH_OPT_S cp:b RPAREN_PRECEDED_BY_OPT_S
 										{:
-											RESULT = new XMLAlternative();
 											DBC.ASSERT(a instanceof XMLObject);
 											DBC.ASSERT(b instanceof XMLObject);
+											RESULT = new XMLAlternative();
 											((XMLAlternative)RESULT).addObject((XMLObject)a);
 											((XMLAlternative)RESULT).addObject((XMLObject)b);
-											((XMLAlternative)RESULT).setMinMaxOccurs(1, 1);
 										:} |
 									LPAREN_FOLLOWED_BY_OPT_S cp:a PIPE_SURROUNDED_WITH_OPT_S cp:b choice_cpLIST:c RPAREN_PRECEDED_BY_OPT_S
 										{:
-											RESULT = new XMLAlternative();
 											DBC.ASSERT(a instanceof XMLObject);
 											DBC.ASSERT(b instanceof XMLObject);
 											DBC.ASSERT(c instanceof XMLObject);
+											RESULT = new XMLAlternative();
 											((XMLAlternative)RESULT).addObject((XMLObject)a);
 											((XMLAlternative)RESULT).addObject((XMLObject)b);
 											((XMLAlternative)RESULT).append((XMLObject)c);
-											((XMLAlternative)RESULT).setMinMaxOccurs(1, 1);
 										:};
 // (S? '|' S? cp)+
 choice_cpLIST					::= PIPE_SURROUNDED_WITH_OPT_S cp:cp
 										{:
-											RESULT = new XMLAlternative();
 											DBC.ASSERT(cp instanceof XMLObject);
+											RESULT = new XMLAlternative();
 											((XMLAlternative)RESULT).addObject((XMLObject)cp);
 										:} |
 									choice_cpLIST:cpList PIPE_SURROUNDED_WITH_OPT_S cp:cp
 										{:
-											RESULT = cpList;
 											DBC.ASSERT(cp instanceof XMLObject);
+											RESULT = cpList;
 											((XMLAlternative)RESULT).addObject((XMLObject)cp);
 										:};
 // S? ',' S?
@@ -1454,10 +1445,10 @@ contentspec						::= EMPTY
 										{:
 											RESULT = new XMLElement(XMLElement.ANY);
 										:} |
-									Mixed:alternative
+									Mixed:mixed
 										{:
-											DBC.ASSERT(alternative instanceof XMLAlternative);
-											RESULT = new XMLElement((XMLAlternative)alternative);
+											DBC.ASSERT(mixed instanceof XMLMixedContent);
+											RESULT = new XMLElement((XMLMixedContent)mixed);
 										:} |
 									children:sequence
 										{:
@@ -1467,75 +1458,83 @@ contentspec						::= EMPTY
 // Page 22
 cp								::= Name:name
 										{:
-											RESULT = new XMLElementReference(name.toString(), 1, 1);
+											RESULT = new XMLSequence();
+											((XMLSequence)RESULT).addObject(new XMLElementReference(name.toString()));
+											((XMLSequence)RESULT).setMinMaxOccurs(1, 1);
 										:} |
 									Name:name QMARK
 										{:
-											RESULT = new XMLElementReference(name.toString(), 0, 1);
+											RESULT = new XMLSequence();
+											((XMLSequence)RESULT).addObject(new XMLElementReference(name.toString()));
+											((XMLSequence)RESULT).setMinMaxOccurs(0, 1);
 										:} |
 									Name:name STAR
 										{:
-											RESULT = new XMLElementReference(name.toString(), 0, Constants.INFINITY);
+											RESULT = new XMLSequence();
+											((XMLSequence)RESULT).addObject(new XMLElementReference(name.toString()));
+											((XMLSequence)RESULT).setMinMaxOccurs(0, Constants.INFINITY);
 										:} |
 									Name:name PLUS
 										{:
-											RESULT = new XMLElementReference(name.toString(), 1, Constants.INFINITY);
+											RESULT = new XMLSequence();
+											((XMLSequence)RESULT).addObject(new XMLElementReference(name.toString()));
+											((XMLSequence)RESULT).setMinMaxOccurs(1, Constants.INFINITY);
 										:} |
 									choice:c
 										{:
 											DBC.ASSERT(c instanceof XMLAlternative);
-											XMLAlternative alt = (XMLAlternative)c;
-											alt.setMinMaxOccurs(1, 1);
-											RESULT = alt;
+											RESULT = new XMLSequence();
+											((XMLSequence)RESULT).addObject((XMLAlternative)c);
+											((XMLSequence)RESULT).setMinMaxOccurs(1, 1);
 										:} |
 									choice:c QMARK
 										{:
 											DBC.ASSERT(c instanceof XMLAlternative);
-											XMLAlternative alt = (XMLAlternative)c;
-											alt.setMinMaxOccurs(0, 1);
-											RESULT = alt;
+											RESULT = new XMLSequence();
+											((XMLSequence)RESULT).addObject((XMLAlternative)c);
+											((XMLSequence)RESULT).setMinMaxOccurs(0, 1);
 										:} |
 									choice:c STAR
 										{:
 											DBC.ASSERT(c instanceof XMLAlternative);
-											XMLAlternative alt = (XMLAlternative)c;
-											alt.setMinMaxOccurs(0, Constants.INFINITY);
-											RESULT = alt;
+											RESULT = new XMLSequence();
+											((XMLSequence)RESULT).addObject((XMLAlternative)c);
+											((XMLSequence)RESULT).setMinMaxOccurs(0, Constants.INFINITY);
 										:} |
 									choice:c PLUS
 										{:
 											DBC.ASSERT(c instanceof XMLAlternative);
-											XMLAlternative alt = (XMLAlternative)c;
-											alt.setMinMaxOccurs(1, Constants.INFINITY);
-											RESULT = alt;
+											RESULT = new XMLSequence();
+											((XMLSequence)RESULT).addObject((XMLAlternative)c);
+											((XMLSequence)RESULT).setMinMaxOccurs(1, Constants.INFINITY);
 										:} |
 									seq:s
 										{:
 											DBC.ASSERT(s instanceof XMLSequence);
-											XMLSequence seq = (XMLSequence)s;
-											seq.setMinMaxOccurs(1, 1);
-											RESULT = seq;
+											RESULT = new XMLSequence();
+											((XMLSequence)RESULT).addObject((XMLSequence)s);
+											((XMLSequence)RESULT).setMinMaxOccurs(1, 1);
 										:} |
 									seq:s QMARK
 										{:
 											DBC.ASSERT(s instanceof XMLSequence);
-											XMLSequence seq = (XMLSequence)s;
-											seq.setMinMaxOccurs(0, 1);
-											RESULT = seq;
+											RESULT = new XMLSequence();
+											((XMLSequence)RESULT).addObject((XMLSequence)s);
+											((XMLSequence)RESULT).setMinMaxOccurs(0, 1);
 										:} |
 									seq:s STAR
 										{:
 											DBC.ASSERT(s instanceof XMLSequence);
-											XMLSequence seq = (XMLSequence)s;
-											seq.setMinMaxOccurs(0, Constants.INFINITY);
-											RESULT = seq;
+											RESULT = new XMLSequence();
+											((XMLSequence)RESULT).addObject((XMLSequence)s);
+											((XMLSequence)RESULT).setMinMaxOccurs(0, Constants.INFINITY);
 										:} |
 									seq:s PLUS
 										{:
 											DBC.ASSERT(s instanceof XMLSequence);
-											XMLSequence seq = (XMLSequence)s;
-											seq.setMinMaxOccurs(1, Constants.INFINITY);
-											RESULT = seq;
+											RESULT = new XMLSequence();
+											((XMLSequence)RESULT).addObject((XMLSequence)s);
+											((XMLSequence)RESULT).setMinMaxOccurs(1, Constants.INFINITY);
 										:};
 // Page 13
 DeclSep							::= s;
@@ -2224,33 +2223,34 @@ markupDecl						::= elementdecl:e
 											RESULT = null;
 										:};
 // Page 23
-Mixed							::= LPAREN_FOLLOWED_BY_OPT_S HASH_PCDATA Mixed_NameLIST:alt RPAREN_PRECEDED_BY_OPT_S STAR
+Mixed							::= LPAREN_FOLLOWED_BY_OPT_S HASH_PCDATA Mixed_NameLIST:mixed RPAREN_PRECEDED_BY_OPT_S STAR
 										{:
-											RESULT = new XMLAlternative();
-											((XMLAlternative)RESULT).addObject(new XMLContent());
-											DBC.ASSERT(alt instanceof XMLAlternative);
-											((XMLAlternative)RESULT).append((XMLAlternative)alt);
+											RESULT = new XMLMixedContent();
+											((XMLMixedContent)RESULT).addObject(new XMLContent());
+											DBC.ASSERT(mixed instanceof XMLMixedContent);
+											((XMLMixedContent)RESULT).append((XMLMixedContent)mixed);
 										:} |
 									LPAREN_FOLLOWED_BY_OPT_S HASH_PCDATA RPAREN_PRECEDED_BY_OPT_S STAR
 										{:
-											RESULT = new XMLAlternative();
-											((XMLAlternative)RESULT).addObject(new XMLContent());
+											RESULT = new XMLMixedContent();
+											((XMLMixedContent)RESULT).addObject(new XMLContent());
 										:} |
 									LPAREN_FOLLOWED_BY_OPT_S HASH_PCDATA RPAREN_PRECEDED_BY_OPT_S
 										{:
-											RESULT = new XMLAlternative();
-											((XMLAlternative)RESULT).addObject(new XMLContent());
+											RESULT = new XMLMixedContent();
+											((XMLMixedContent)RESULT).addObject(new XMLContent());
 										:};
 // (S? '|' S? Name)+
 Mixed_NameLIST					::= PIPE_SURROUNDED_WITH_OPT_S Name:name
 										{:
-											RESULT = new XMLAlternative();
-											((XMLAlternative)RESULT).addObject(new XMLElementReference(name.toString(), 1, 1));
+											RESULT = new XMLMixedContent();
+											((XMLMixedContent)RESULT).addObject(new XMLElementReference(name.toString()));
 										:} |
-									Mixed_NameLIST:alt PIPE_SURROUNDED_WITH_OPT_S Name:name
+									Mixed_NameLIST:mixed PIPE_SURROUNDED_WITH_OPT_S Name:name
 										{:
-											RESULT = alt;
-											((XMLAlternative)RESULT).addObject(new XMLElementReference(name.toString(), 1, 1));
+											DBC.ASSERT(mixed instanceof XMLMixedContent);
+											RESULT = mixed;
+											((XMLMixedContent)RESULT).addObject(new XMLElementReference(name.toString()));
 										:};
 // Page 8
 Name							::= NameStartChar:a NameChar_STAR:b

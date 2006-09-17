@@ -29,8 +29,6 @@
 */
 package com.mcdermottroe.exemplar.model;
 
-import java.util.Iterator;
-
 import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
@@ -42,7 +40,7 @@ import com.mcdermottroe.exemplar.Utils;
 */
 public class XMLElement
 extends XMLObject
-implements Constants.XML.Element, XMLObject.HasMinMax, XMLObject.HasName
+implements Constants.XML.Element, XMLObject.HasName
 {
 	/** The type of content this XMLElement may hold. This should be one of the
 		types declared in {@link
@@ -84,7 +82,7 @@ implements Constants.XML.Element, XMLObject.HasMinMax, XMLObject.HasName
 
 		@param	cSpec	The content specification for this element.
 	*/
-	public XMLElement(XMLAlternative cSpec) {
+	public XMLElement(XMLMixedContent cSpec) {
 		super();
 		DBC.REQUIRE(cSpec != null);
 		contentType = MIXED;
@@ -150,138 +148,6 @@ implements Constants.XML.Element, XMLObject.HasMinMax, XMLObject.HasName
 	*/
 	public XMLAttributeList getAttlist() {
 		return attlist;
-	}
-
-	/** Remove unnecessary boxing of items within the contentspec. This is
-		simply a driver for {@link #doOptimiseContentSpec(XMLObject)}.
-	*/
-	public void optimiseContentSpec() {
-		switch (contentType) {
-			case MIXED:
-			case CHILDREN:
-				contentSpec = doOptimiseContentSpec(contentSpec);
-				break;
-			case ANY:
-			case EMPTY:
-				// Nothing to optimise
-				break;
-			default:
-				DBC.UNREACHABLE_CODE();
-		}
-	}
-
-	/** Recursive worker for the alteration of contentspec trees to remove
-		extra boxing of components introduced during the parsing of the
-		vocabulary specification.
-
-		For example, the contentspecs <code>(((foo)))</code> and
-		<code>((bar+)?)</code> can be reduced to <code>(foo)</code> and
-		<code>(bar*)</code> respectively.
-
-		@param	contentSpecPart	A contentspec or part thereof which is to be
-								altered.
-		@return					A contentspec or part thereof which has been
-								reduced in complexity yet describes the same
-								content specification as
-								<code>contentSpecPart</code>.
-	*/
-	private static XMLObject doOptimiseContentSpec(XMLObject contentSpecPart) {
-		DBC.REQUIRE(contentSpecPart != null);
-
-		if (!(contentSpecPart instanceof XMLAlternativeOrSequence)) {
-			return contentSpecPart;
-		}
-
-		// Save the input XMLObject for comparison later
-		XMLObject newContentSpecPart = contentSpecPart;
-
-		XMLAlternativeOrSequence xo;
-		xo = (XMLAlternativeOrSequence)newContentSpecPart;
-
-		// Recursively optimise the children
-		for (Iterator it = xo.iterator(); it.hasNext(); ) {
-			XMLObject child = (XMLObject)it.next();
-			child = doOptimiseContentSpec(child);
-			DBC.ASSERT(child != null);
-		}
-
-		// With the removal of spurious parentheses and by making use of some
-		// simple identies the expressions can be simplified quite a bit.
-		if (xo.numElements() == 1) {
-			Iterator it = xo.iterator();
-			DBC.ASSERT(it.hasNext());
-			XMLObject singleElement = (XMLObject)it.next();
-			DBC.ASSERT(!it.hasNext());
-
-			int min = -1;
-			int max = -1;
-			if (singleElement instanceof XMLObject.HasMinMax) {
-				try {
-					int innerMin = singleElement.getMinOccurs();
-					int innerMax = singleElement.getMaxOccurs();
-					int outerMin = xo.getMinOccurs();
-					int outerMax = xo.getMaxOccurs();
-
-					// Only the types allowed for in DTDs ('', '?', '*' and
-					// '+') will be dealt with because it gets far too tricky
-					// otherwise.
-					//
-					// Some day this will have to be replaced with a more
-					// general algorithm to allow for the types that may be
-					// expressed in W3C Schema.
-					if	(
-							(innerMin == 0 || innerMin == 1) &&
-							(innerMax == 1 || innerMax == Constants.INFINITY) &&
-							(outerMin == 0 || outerMin == 1) &&
-							(outerMax == 1 || outerMax == Constants.INFINITY)
-						)
-					{
-						if (innerMin == 0) {
-							min = 0;
-						} else {
-							min = outerMin;
-						}
-						if (innerMax == 1) {
-							max = outerMax;
-						} else {
-							max = Constants.INFINITY;
-						}
-					}
-				} catch (XMLObjectException e) {
-					DBC.UNREACHABLE_CODE();
-				}
-			}
-
-			if	(
-					min != -1 &&
-// ALWAYS TRUE:		max != -1 &&
-					!(singleElement instanceof XMLContent)
-				)
-			{
-				newContentSpecPart = singleElement;
-				try {
-					newContentSpecPart.setMinMaxOccurs(min, max);
-				} catch (XMLObjectException e) {
-					DBC.UNREACHABLE_CODE();
-				}
-			}
-		}
-
-		// If nothing has changed, then it's OK to return. If stuff has
-		// changed, then recurse again.
-		if (!contentSpecPart.equals(newContentSpecPart)) {
-			newContentSpecPart = doOptimiseContentSpec(newContentSpecPart);
-		}
-
-		// Make sure that there's at least one XMLAlternativeOrSequence around
-		// this element.
-		if (!(newContentSpecPart instanceof XMLAlternativeOrSequence)) {
-			XMLObject tmp = newContentSpecPart;
-			newContentSpecPart = new XMLAlternative();
-			((XMLAlternativeOrSequence)newContentSpecPart).append(tmp);
-		}
-
-		return newContentSpecPart;
 	}
 
 	/** {@inheritDoc} */

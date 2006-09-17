@@ -177,7 +177,10 @@ implements Constants.UI.CLI
 		exit(ExitStatus.getExitCode(EXIT_SUCCESS), null, null);
 	}
 
-	/** Display a version message. */
+	/** Display a version message.
+
+		@return	The version of the program, unadorned.
+	*/
 	private static String versionMessage() {
 		return	Constants.PROGRAM_VERSION +
 				Constants.EOL;

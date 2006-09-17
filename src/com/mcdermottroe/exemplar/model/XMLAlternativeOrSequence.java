@@ -46,7 +46,6 @@ import com.mcdermottroe.exemplar.Utils;
 */
 public abstract class XMLAlternativeOrSequence
 extends XMLObject
-implements XMLObject.HasMinMax
 {
 	/** The contents of the collection. */
 	private List contents;

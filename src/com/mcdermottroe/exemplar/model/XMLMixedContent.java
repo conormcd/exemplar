@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2004, 2005, 2006
+	Copyright (c) 2006
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -32,70 +32,21 @@ package com.mcdermottroe.exemplar.model;
 import java.util.Iterator;
 
 import com.mcdermottroe.exemplar.Constants;
-import com.mcdermottroe.exemplar.DBC;
 
-/** An {@link XMLObject} which represents sequences of {@link XMLObject}s.
+/** An {@link com.mcdermottroe.exemplar.model.XMLObject} which represents the
+	concept of mixed content in XML.  This roughly corresponds to the
+	<code>(#PCDATA|A|B)*</code> structure found in DTDs.
 
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class XMLSequence
+public class XMLMixedContent
 extends XMLAlternativeOrSequence
 {
-	/** The maximum number of times this {@link XMLSequence} may occur. */
-	private int maxOccurs;
-
-	/** The minimum number of times this {@link XMLSequence} must occur. */
-	private int minOccurs;
-
-	/** Constructor which just initialises the private fields. */
-	public XMLSequence() {
-		super();
-		maxOccurs = 1;
-		minOccurs = 1;
-	}
-
-	/** Get the maximum number of times the {@link XMLSequence} may be
-		repeated.
-
-		@return						The maximum number of times the {@link
-									XMLSequence} may be repeated.
-	*/
-	public int getMaxOccurs() {
-		return maxOccurs;
-	}
-
-	/** Get the minimum number of times the {@link XMLSequence} must be
-		repeated.
-
-		@return						The minimum number of times the {@link
-									XMLSequence} may be repeated.
-	*/
-	public int getMinOccurs() {
-		return minOccurs;
-	}
-
-	/** Set the minimum and maximum number of times the {@link XMLSequence} may
-		be repeated.
-
-		@param	min					The minimum number of times the {@link
-									XMLSequence} may be repeated.
-		@param	max					The maximum number of times the {@link
-									XMLSequence} may be repeated.
-	*/
-	public void setMinMaxOccurs(int min, int max) {
-		DBC.REQUIRE(min >= 0 && max >= 0);
-		DBC.REQUIRE(min <= Constants.INFINITY && max <= Constants.INFINITY);
-		DBC.REQUIRE(min <= max);
-
-		maxOccurs = max;
-		minOccurs = min;
-	}
-
 	/** {@inheritDoc} */
 	public String toString() {
 		StringBuffer desc = new StringBuffer(
-			XMLObject.toStringPrefix(
+			toStringPrefix(
 				getClass().getName()
 			)
 		);
@@ -106,15 +57,14 @@ extends XMLAlternativeOrSequence
 			desc.append(it.next().toString());
 			desc.append(Constants.Character.RIGHT_PAREN);
 			while (it.hasNext()) {
-				desc.append(Constants.Character.COMMA);
-				desc.append(Constants.Character.SPACE);
+				desc.append(Constants.Character.PIPE);
 				desc.append(Constants.Character.LEFT_PAREN);
 				desc.append(it.next().toString());
 				desc.append(Constants.Character.RIGHT_PAREN);
 			}
 		}
 
-		desc.append(XMLObject.toStringSuffix());
+		desc.append(toStringSuffix());
 
 		return desc.toString();
 	}

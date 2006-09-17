@@ -39,7 +39,6 @@ import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.model.XMLAlternative;
-import com.mcdermottroe.exemplar.model.XMLAlternativeOrSequence;
 import com.mcdermottroe.exemplar.model.XMLAttribute;
 import com.mcdermottroe.exemplar.model.XMLAttributeList;
 import com.mcdermottroe.exemplar.model.XMLContent;
@@ -48,9 +47,11 @@ import com.mcdermottroe.exemplar.model.XMLElement;
 import com.mcdermottroe.exemplar.model.XMLElementReference;
 import com.mcdermottroe.exemplar.model.XMLEntity;
 import com.mcdermottroe.exemplar.model.XMLExternalIdentifier;
+import com.mcdermottroe.exemplar.model.XMLMixedContent;
 import com.mcdermottroe.exemplar.model.XMLNotation;
 import com.mcdermottroe.exemplar.model.XMLObject;
 import com.mcdermottroe.exemplar.model.XMLObjectException;
+import com.mcdermottroe.exemplar.model.XMLSequence;
 import com.mcdermottroe.exemplar.output.OutputException;
 import com.mcdermottroe.exemplar.output.OutputUtils;
 import com.mcdermottroe.exemplar.output.XMLParserGeneratorException;
@@ -424,36 +425,26 @@ implements Constants.XML
 	private static String objectTreeToContentSpec(Object o) {
 		StringBuffer ret = new StringBuffer();
 
-		if (o instanceof XMLAlternativeOrSequence) {
-			XMLAlternativeOrSequence xo = (XMLAlternativeOrSequence)o;
-			Iterator it = xo.iterator();
-			DBC.ASSERT(it.hasNext());
+		if (o instanceof XMLSequence) {
+			XMLSequence seq = (XMLSequence)o;
 
+			// Create the sequence
+			Iterator it = seq.iterator();
+			DBC.ASSERT(it != null);
 			ret.append(Constants.Character.LEFT_PAREN);
 			ret.append(objectTreeToContentSpec(it.next()));
 			while (it.hasNext()) {
-				if (o instanceof XMLAlternative) {
-					ret.append(Constants.Character.PIPE);
-				} else {
-					ret.append(Constants.Character.COMMA);
-				}
+				ret.append(Constants.Character.COMMA);
+				ret.append(Constants.Character.SPACE);
 				ret.append(objectTreeToContentSpec(it.next()));
 			}
 			ret.append(Constants.Character.RIGHT_PAREN);
 
-			int min = -1;
-			int max = -1;
-			try {
-				min = xo.getMinOccurs();
-				DBC.ASSERT(min >= 0);
-				max = xo.getMaxOccurs();
-				DBC.ASSERT(max > 0);
-			} catch (XMLObjectException e) {
-				// Should never get here
-				// becuase these  objects
-				// always have a max and min
-				DBC.UNREACHABLE_CODE();
-			}
+			// Now put the ?, + or * on where appropriate
+			int min = seq.getMinOccurs();
+			DBC.ASSERT(min >= 0);
+			int max = seq.getMaxOccurs();
+			DBC.ASSERT(max >= 0);
 			if (min == 0) {
 				if (max == 1) {
 					ret.append(Constants.Character.QUESTION_MARK);
@@ -465,27 +456,56 @@ implements Constants.XML
 					ret.append(Constants.Character.PLUS);
 				}
 			}
+		} else if (o instanceof XMLAlternative) {
+			XMLAlternative alt = (XMLAlternative)o;
+
+			// Create the alternative list
+			Iterator it = alt.iterator();
+			DBC.ASSERT(it != null);
+			ret.append(Constants.Character.LEFT_PAREN);
+			ret.append(objectTreeToContentSpec(it.next()));
+			while (it.hasNext()) {
+				ret.append(Constants.Character.SPACE);
+				ret.append(Constants.Character.PIPE);
+				ret.append(Constants.Character.SPACE);
+				ret.append(objectTreeToContentSpec(it.next()));
+			}
+			ret.append(Constants.Character.RIGHT_PAREN);
+		} else if (o instanceof XMLMixedContent) {
+			XMLMixedContent mixed = (XMLMixedContent)o;
+
+			// Create the alternative list
+			Iterator it = mixed.iterator();
+			DBC.ASSERT(it != null);
+			ret.append(Constants.Character.LEFT_PAREN);
+			XMLObject first = (XMLObject)it.next();
+			DBC.ASSERT(first instanceof XMLContent);
+			ret.append(objectTreeToContentSpec(first));
+			if (it.hasNext()) {
+				while (it.hasNext()) {
+					ret.append(Constants.Character.SPACE);
+					ret.append(Constants.Character.PIPE);
+					ret.append(Constants.Character.SPACE);
+					ret.append(objectTreeToContentSpec(it.next()));
+				}
+				ret.append(Constants.Character.RIGHT_PAREN);
+				ret.append(Constants.Character.STAR);
+			} else {
+				ret.append(Constants.Character.RIGHT_PAREN);
+			}
 		} else if (o instanceof XMLContent) {
 			ret.append("#PCDATA");
 		} else if (o instanceof XMLElementReference) {
-			XMLObject xo = (XMLObject)o;
+			XMLElementReference elementRef = (XMLElementReference)o;
+			String name = "";
 			try {
-				ret.append(xo.getName());
-				if (xo.getMinOccurs() == 0) {
-					if (xo.getMaxOccurs() == 1) {
-						ret.append(Constants.Character.QUESTION_MARK);
-					} else {
-						ret.append(Constants.Character.STAR);
-					}
-				} else {
-					if (xo.getMinOccurs() > 1) {
-						ret.append(Constants.Character.PLUS);
-					}
-				}
+				name = elementRef.getName();
 			} catch (XMLObjectException e) {
 				DBC.UNREACHABLE_CODE();
 			}
+			ret.append(name);
 		} else {
+			System.err.println(o.getClass().toString());
 			DBC.UNREACHABLE_CODE();
 		}
 

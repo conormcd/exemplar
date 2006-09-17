@@ -35,59 +35,12 @@ import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.ui.Message;
 
 /** The superclass for most objects contained within an {@link
-	XMLDocumentType}. The structure of this class may seem a little strange to
-	some people, but it is my way of implementing multiple inheritance in Java.
-	All of the superclasses are merged into this one and access to the methods
-	are controlled by implementing various internal interfaces.
-	<p />
-	As an example, the class declaration <code>public class {@link XMLElement}
-	extends {@link XMLObject} implements {@link XMLObject.HasMinMax}, {@link
-	XMLObject.HasName}</code> would be more naturally expressed as something
-	like <code>public class {@link XMLElement} extends {@link XMLObject},
-	NameableObject, RepeatableObject</code> if Java supported multiple
-	inheritance.
+	XMLDocumentType}.
 
 	@author	Conor McDermottroe
 	@since	0.1
 */
 public abstract class XMLObject {
-	/** Interface which must be implemented by {@link XMLObject}s wishing to
-		have min and max operations.
-	*/
-	protected interface HasMinMax {
-		/** Get the maximum number of times the {@link XMLObject} may be
-			repeated.
-
-			@return						The maximum number of times the {@link
-										XMLObject} may be repeated.
-			@throws XMLObjectException	if calling this method is an unupported
-										action.
-		*/
-		int getMaxOccurs() throws XMLObjectException;
-
-		/** Get the minimum number of times the {@link XMLObject} may be
-			repeated.
-
-			@return						The minimum number of times the {@link
-										XMLObject} may be repeated.
-			@throws XMLObjectException	if calling this method is an unupported
-										action.
-		*/
-		int getMinOccurs() throws XMLObjectException;
-
-		/** Set the minimum and maximum number of times the {@link XMLObject}
-			may be repeated.
-
-			@param	min					The minimum number of times the {@link
-										XMLObject} may be repeated.
-			@param	max					The maximum number of times the {@link
-										XMLObject} may be repeated.
-			@throws	XMLObjectException	if calling this method is an unupported
-										action.
-		*/
-		void setMinMaxOccurs(int min, int max) throws XMLObjectException;
-	}
-
 	/** Interface which must be implemented by {@link XMLObject}s wishing to
 		have name operations.
 	*/
@@ -112,21 +65,9 @@ public abstract class XMLObject {
 	/** The name of this {@link XMLObject}. */
 	protected String name;
 
-	/** The minimum number of times this {@link XMLObject}
-		may occur.
-	*/
-	protected int minOccurs;
-
-	/** The maximum number of times this {@link XMLObject}
-		may occur.
-	*/
-	protected int maxOccurs;
-
 	/** Constructor which just initialises storage. */
 	protected XMLObject() {
 		name = null;
-		minOccurs = 0;
-		maxOccurs = Constants.INFINITY;
 	}
 
 	/** Access method to set the name of this
@@ -167,63 +108,6 @@ public abstract class XMLObject {
 		return name;
 	}
 
-	/** Access method to set the minimum and maximum times this
-		{@link XMLObject} may appear in the current context.
-
-		@param	min					The new value for minOccurs.
-		@param	max					The new value for maxOccurs.
-		@throws	XMLObjectException	if calling this method is an unupported
-									action.
-	*/
-	public final void setMinMaxOccurs(int min, int max)
-	throws XMLObjectException
-	{
-		DBC.REQUIRE(min >= 0 && max >= 0 && min <= max);
-
-		// Make sure it's a supported operation
-		if (!(this instanceof HasMinMax)) {
-			throw new XMLObjectException(Message.XMLOBJECT_UNSUPPORTED_ACTION);
-		}
-
-		// Set the values
-		minOccurs = min;
-		maxOccurs = max;
-	}
-
-	/** Access method to retrieve the minOccurs value.
-
-		@return						The value of the minOccurs field
-		@throws	XMLObjectException	if calling this method is an unupported
-									action.
-	*/
-	public final int getMinOccurs()
-	throws XMLObjectException
-	{
-		// Make sure it's a supported operation
-		if (!(this instanceof HasMinMax)) {
-			throw new XMLObjectException(Message.XMLOBJECT_UNSUPPORTED_ACTION);
-		}
-
-		return minOccurs;
-	}
-
-	/** Access method to retrieve the maxOccurs value.
-
-		@return						The value of the maxOccurs field
-		@throws	XMLObjectException	if calling this method is an unupported
-									action.
-	*/
-	public final int getMaxOccurs()
-	throws XMLObjectException
-	{
-		// Make sure it's a supported operation
-		if (!(this instanceof HasMinMax)) {
-			throw new XMLObjectException(Message.XMLOBJECT_UNSUPPORTED_ACTION);
-		}
-
-		return maxOccurs;
-	}
-
 	/** See {@link Object#equals(Object)}.
 
 		@param	o	The object to compare against.
@@ -241,18 +125,6 @@ public abstract class XMLObject {
 		}
 
 		XMLObject other = (XMLObject)o;
-		if (other instanceof HasMinMax) {
-			try {
-				if (maxOccurs != other.getMaxOccurs()) {
-					return false;
-				}
-				if (minOccurs != other.getMinOccurs()) {
-					return false;
-				}
-			} catch (XMLObjectException e) {
-				DBC.UNREACHABLE_CODE();
-			}
-		}
 		if (other instanceof HasName) {
 			try {
 				if (!Utils.areDeeplyEqual(name, other.getName())) {
@@ -271,12 +143,6 @@ public abstract class XMLObject {
 	*/
 	public int hashCode() {
 		int hashCode = 0;
-		if (this instanceof HasMinMax) {
-			hashCode += minOccurs;
-			hashCode *= Constants.HASHCODE_MAGIC_NUMBER;
-			hashCode += maxOccurs;
-			hashCode *= Constants.HASHCODE_MAGIC_NUMBER;
-		}
 		if (this instanceof HasName) {
 			if (name != null) {
 				hashCode += name.hashCode();
