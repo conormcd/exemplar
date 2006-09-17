@@ -32,10 +32,10 @@ package junit.com.mcdermottroe.exemplar.model;
 import junit.com.mcdermottroe.exemplar.AbstractClassTestCase;
 
 /** Test class for {@link
-	com.mcdermottroe.exemplar.model.XMLAlternativeOrSequence}.
+	com.mcdermottroe.exemplar.model.XMLAggregateObject}.
 
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class XMLAlternativeOrSequenceTest extends AbstractClassTestCase {
+public class XMLAggregateObjectTest extends AbstractClassTestCase {
 }

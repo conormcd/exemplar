@@ -40,7 +40,7 @@ import com.mcdermottroe.exemplar.DBC;
 	@since	0.1
 */
 public class XMLSequence
-extends XMLAlternativeOrSequence
+extends XMLAggregateObject
 {
 	/** The maximum number of times this {@link XMLSequence} may occur. */
 	private int maxOccurs;

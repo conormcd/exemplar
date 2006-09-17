@@ -44,14 +44,14 @@ import com.mcdermottroe.exemplar.Utils;
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public abstract class XMLAlternativeOrSequence
+public abstract class XMLAggregateObject
 extends XMLObject
 {
 	/** The contents of the collection. */
 	private List contents;
 
 	/** Simple constructor. */
-	protected XMLAlternativeOrSequence() {
+	protected XMLAggregateObject() {
 		super();
 		contents = new ArrayList();
 	}
@@ -98,8 +98,8 @@ extends XMLObject
 		DBC.REQUIRE(other != null);
 		DBC.REQUIRE(contents != null);
 
-		if (other instanceof XMLAlternativeOrSequence) {
-			XMLAlternativeOrSequence o = (XMLAlternativeOrSequence)other;
+		if (other instanceof XMLAggregateObject) {
+			XMLAggregateObject o = (XMLAggregateObject)other;
 			for (Iterator it = o.iterator(); it.hasNext(); ) {
 				contents.add(it.next());
 			}
@@ -125,11 +125,11 @@ extends XMLObject
 		if (this == o) {
 			return true;
 		}
-		if (o == null || !(o instanceof XMLAlternativeOrSequence)) {
+		if (o == null || !(o instanceof XMLAggregateObject)) {
 			return false;
 		}
 
-		XMLAlternativeOrSequence other = (XMLAlternativeOrSequence)o;
+		XMLAggregateObject other = (XMLAggregateObject)o;
 		if (super.equals(other)) {
 			if (Utils.areDeeplyEqual(contents, other.getContents())) {
 				return true;
