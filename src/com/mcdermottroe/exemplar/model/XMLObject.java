@@ -30,9 +30,6 @@
 package com.mcdermottroe.exemplar.model;
 
 import com.mcdermottroe.exemplar.Constants;
-import com.mcdermottroe.exemplar.DBC;
-import com.mcdermottroe.exemplar.Utils;
-import com.mcdermottroe.exemplar.ui.Message;
 
 /** The superclass for most objects contained within an {@link
 	XMLDocumentType}.
@@ -41,73 +38,6 @@ import com.mcdermottroe.exemplar.ui.Message;
 	@since	0.1
 */
 public abstract class XMLObject {
-	/** Interface which must be implemented by {@link XMLObject}s wishing to
-		have name operations.
-	*/
-	protected interface HasName {
-		/** Get the name of the {@link XMLObject}.
-
-			@return						The name of the {@link XMLObject}.
-			@throws	XMLObjectException	if calling this method is an unupported
-										action.
-		*/
-		String getName() throws XMLObjectException;
-
-		/** Set the name of the {@link XMLObject}.
-
-			@param	name				The name to call the {@link XMLObject}.
-			@throws	XMLObjectException	if calling this method is an unupported
-										action.
-		*/
-		void setName(String name) throws XMLObjectException;
-	}
-
-	/** The name of this {@link XMLObject}. */
-	protected String name;
-
-	/** Constructor which just initialises storage. */
-	protected XMLObject() {
-		name = null;
-	}
-
-	/** Access method to set the name of this
-		{@link XMLObject}.
-
-		@param	newName				The name of this {@link XMLObject}.
-		@throws	XMLObjectException	if calling this method is an unupported
-									action.
-	*/
-	public final void setName(String newName)
-	throws XMLObjectException
-	{
-		DBC.REQUIRE(newName != null);
-
-		// Make sure it's a supported operation
-		if (!(this instanceof HasName)) {
-			throw new XMLObjectException(Message.XMLOBJECT_UNSUPPORTED_ACTION);
-		}
-
-		name = newName;
-	}
-
-	/** Access method to retrieve the name of this
-		{@link XMLObject}.
-
-		@return						The name of the {@link XMLObject}.
-		@throws	XMLObjectException	if calling this method is an unupported
-									action.
-	*/
-	public final String getName()
-	throws XMLObjectException
-	{
-		// Make sure it's a supported operation
-		if (!(this instanceof HasName)) {
-			throw new XMLObjectException(Message.XMLOBJECT_UNSUPPORTED_ACTION);
-		}
-
-		return name;
-	}
-
 	/** See {@link Object#equals(Object)}.
 
 		@param	o	The object to compare against.
@@ -120,20 +50,10 @@ public abstract class XMLObject {
 		if (o == null) {
 			return false;
 		}
-		if (!getClass().equals(o.getClass())) {
+		if (!(o instanceof XMLObject)) {
 			return false;
 		}
 
-		XMLObject other = (XMLObject)o;
-		if (other instanceof HasName) {
-			try {
-				if (!Utils.areDeeplyEqual(name, other.getName())) {
-					return false;
-				}
-			} catch (XMLObjectException e) {
-				DBC.UNREACHABLE_CODE();
-			}
-		}
 		return true;
 	}
 
@@ -142,14 +62,7 @@ public abstract class XMLObject {
 		@return	A hash code.
 	*/
 	public int hashCode() {
-		int hashCode = 0;
-		if (this instanceof HasName) {
-			if (name != null) {
-				hashCode += name.hashCode();
-			}
-			hashCode *= Constants.HASHCODE_MAGIC_NUMBER;
-		}
-		return hashCode;
+		return getClass().getName().hashCode();
 	}
 
 	/** All {@link XMLObject#toString()} methods have a common format, this is 

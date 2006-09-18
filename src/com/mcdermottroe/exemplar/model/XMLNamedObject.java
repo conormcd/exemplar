@@ -27,14 +27,79 @@
 	NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package junit.com.mcdermottroe.exemplar.model;
+package com.mcdermottroe.exemplar.model;
 
-import junit.com.mcdermottroe.exemplar.ExceptionClassTestCase;
+import com.mcdermottroe.exemplar.Constants;
+import com.mcdermottroe.exemplar.DBC;
+import com.mcdermottroe.exemplar.Utils;
 
-/** Test class for {@link com.mcdermottroe.exemplar.model.XMLObjectException}.
+/** A feature-adding subclass of {@link XMLObject} which adds a name to the
+	base {@link XMLObject}.
 
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class XMLObjectExceptionTest extends ExceptionClassTestCase {
+public abstract class XMLNamedObject
+extends XMLObject
+{
+	/** The name of the {@link XMLObject}. */
+	protected String name;
+
+	/** Constructor which just initialises storage. */
+	protected XMLNamedObject() {
+		name = null;
+	}
+
+	/** Access method to set the name of this {@link XMLObject}.
+
+		@param	newName	The name of this {@link XMLObject}.
+	*/
+	public void setName(String newName) {
+		DBC.REQUIRE(newName != null);
+		name = newName;
+	}
+
+	/** Access method to retrieve the name of this {@link XMLObject}.
+
+		@return	The name of the {@link XMLObject}.
+	*/
+	public String getName() {
+		return name;
+	}
+
+	/** {@inheritDoc} */
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null) {
+			return false;
+		}
+		if (!(o instanceof XMLNamedObject)) {
+			return false;
+		}
+
+		XMLNamedObject other = (XMLNamedObject)o;
+		if (super.equals(o)) {
+			return Utils.areDeeplyEqual(name, other.getName());
+		}
+
+		return false;
+	}
+
+	/** See {@link Object#hashCode()}.
+
+		@return	A hash code.
+	*/
+	public int hashCode() {
+		int hashCode = super.hashCode();
+		if (hashCode != 0) {
+			hashCode *= Constants.HASHCODE_MAGIC_NUMBER;
+		}
+		if (name != null) {
+			hashCode += name.hashCode();
+		}
+		hashCode *= Constants.HASHCODE_MAGIC_NUMBER;
+		return hashCode;
+	}
 }

@@ -40,8 +40,7 @@ import com.mcdermottroe.exemplar.ui.Message;
 	@since	0.1
 */
 public class XMLNotation
-extends XMLObject
-implements XMLObject.HasName
+extends XMLNamedObject
 {
 	/** The ExternalID or PublicID of the {@link XMLNotation}. */
 	private XMLExternalIdentifier extID;

@@ -36,17 +36,10 @@ package com.mcdermottroe.exemplar.model;
 	@since	0.1
 */
 public class XMLElementReference
-extends XMLObject
-implements XMLObject.HasName
+extends XMLNamedObject
 {
-	/** A no-arg constructor to aid in testing.
-
-		@throws XMLObjectException	if any of the initialising methods called
-									throws an exception.
-	*/
-	public XMLElementReference()
-	throws XMLObjectException
-	{
+	/** A no-arg constructor to aid in testing. */
+	public XMLElementReference() {
 		super();
 		setName("");
 	}
@@ -54,12 +47,8 @@ implements XMLObject.HasName
 	/** Create a reference to an element or seqence of elements.
 
 		@param	elementName			The name of the element to refer to.
-		@throws	XMLObjectException	if any of the initialising methods called
-									throws an exception.
 	*/
-	public XMLElementReference(String elementName)
-	throws XMLObjectException
-	{
+	public XMLElementReference(String elementName) {
 		super();
 		setName(elementName);
 	}

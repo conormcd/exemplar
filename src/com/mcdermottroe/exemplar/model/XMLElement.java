@@ -39,8 +39,8 @@ import com.mcdermottroe.exemplar.Utils;
 	@since	0.1
 */
 public class XMLElement
-extends XMLObject
-implements Constants.XML.Element, XMLObject.HasName
+extends XMLNamedObject
+implements Constants.XML.Element
 {
 	/** The type of content this XMLElement may hold. This should be one of the
 		types declared in {@link

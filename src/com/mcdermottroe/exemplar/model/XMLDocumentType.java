@@ -189,30 +189,18 @@ public class XMLDocumentType {
 			XMLObject xmlObject = (XMLObject)it.next();
 
 			boolean classified = false;
-			try {
-				if (xmlObject instanceof XMLAttributeList) {
-					attlists.put(xmlObject.getName(), xmlObject);
-					classified = true;
-				} else if (xmlObject instanceof XMLElement) {
-					elements.put(xmlObject.getName(), xmlObject);
-					classified = true;
-				} else if (xmlObject instanceof XMLEntity) {
-					entities.put(xmlObject.getName(), xmlObject);
-					classified = true;
-				} else if (xmlObject instanceof XMLNotation) {
-					notations.put(xmlObject.getName(), xmlObject);
-					classified = true;
-				}
-			} catch (XMLObjectException e) {
-				// All the above types have names so this exception will never
-				// be thrown
-				DBC.UNREACHABLE_CODE();
-				throw new XMLDocumentTypeException(
-					Message.XMLDOCTYPE_XMLOBJECT_IN_MARKUPDECLS(
-						xmlObject.toString()
-					),
-					e
-				);
+			if (xmlObject instanceof XMLAttributeList) {
+				attlists.put(((XMLNamedObject)xmlObject).getName(), xmlObject);
+				classified = true;
+			} else if (xmlObject instanceof XMLElement) {
+				elements.put(((XMLNamedObject)xmlObject).getName(), xmlObject);
+				classified = true;
+			} else if (xmlObject instanceof XMLEntity) {
+				entities.put(((XMLNamedObject)xmlObject).getName(), xmlObject);
+				classified = true;
+			} else if (xmlObject instanceof XMLNotation) {
+				notations.put(((XMLNamedObject)xmlObject).getName(), xmlObject);
+				classified = true;
 			}
 
 			// If the xmlObject was not classified then it means it wasn't

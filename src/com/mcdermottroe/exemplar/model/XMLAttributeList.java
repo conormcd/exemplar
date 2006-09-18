@@ -44,8 +44,7 @@ import com.mcdermottroe.exemplar.Utils;
 	@since	0.1
 */
 public class XMLAttributeList
-extends XMLObject
-implements XMLObject.HasName
+extends XMLNamedObject
 {
 	/** The list of attributes. */
 	private List attributes;

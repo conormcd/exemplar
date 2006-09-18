@@ -40,8 +40,8 @@ import com.mcdermottroe.exemplar.ui.Message;
 	@since	0.1
 */
 public class XMLEntity
-extends XMLObject
-implements Constants.XML.Entity, XMLObject.HasName
+extends XMLNamedObject
+implements Constants.XML.Entity
 {
 	/** The type of entity this is. This should be one of the types defined in
 		{@link com.mcdermottroe.exemplar.Constants.XML.Entity}.

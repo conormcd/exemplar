@@ -50,7 +50,6 @@ import com.mcdermottroe.exemplar.model.XMLExternalIdentifier;
 import com.mcdermottroe.exemplar.model.XMLMixedContent;
 import com.mcdermottroe.exemplar.model.XMLNotation;
 import com.mcdermottroe.exemplar.model.XMLObject;
-import com.mcdermottroe.exemplar.model.XMLObjectException;
 import com.mcdermottroe.exemplar.model.XMLSequence;
 import com.mcdermottroe.exemplar.output.OutputException;
 import com.mcdermottroe.exemplar.output.OutputUtils;
@@ -496,14 +495,7 @@ implements Constants.XML
 		} else if (o instanceof XMLContent) {
 			ret.append("#PCDATA");
 		} else if (o instanceof XMLElementReference) {
-			XMLElementReference elementRef = (XMLElementReference)o;
-			String name = "";
-			try {
-				name = elementRef.getName();
-			} catch (XMLObjectException e) {
-				DBC.UNREACHABLE_CODE();
-			}
-			ret.append(name);
+			ret.append(((XMLElementReference)o).getName());
 		} else {
 			System.err.println(o.getClass().toString());
 			DBC.UNREACHABLE_CODE();
