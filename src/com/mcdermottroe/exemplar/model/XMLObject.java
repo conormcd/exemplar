@@ -65,32 +65,23 @@ public abstract class XMLObject {
 		return getClass().getName().hashCode();
 	}
 
-	/** All {@link XMLObject#toString()} methods have a common format, this is 
-		the first portion of it.
+	/** A helper to make implementing {@link Object#toString()} easier for
+		children of {@link XMLObject}s.
 
-		@param	className	The name of the class to describe.
-		@return				A {@link String} which should only be used within a
-							{@link XMLObject#toString()} method.
+		@param	className		The name of the class to describe.
+		@param	classDetails	The details of the contents of the object. 
+		@return					A {@link String} which should only be used
+								within a {@link XMLObject#toString()} method.
 	*/
-	protected static String toStringPrefix(String className) {
-		StringBuffer prefix = new StringBuffer(className);
-		prefix.append(Constants.Character.SPACE);
-		prefix.append(Constants.Character.EQUALS);
-		prefix.append(Constants.Character.SPACE);
-		prefix.append(Constants.Character.LEFT_PAREN);
-		return prefix.toString();
-	}
-
-	/** All {@link XMLObject#toString()} methods have a common format, this is 
-		the last portion of it.
-
-		@return A {@link String} which should only be used within a {@link 
-				XMLObject#toString()} method.
-	*/
-	protected static String toStringSuffix() {
-		StringBuffer suffix = new StringBuffer(1);
-		suffix.append(Constants.Character.RIGHT_PAREN);
-		return suffix.toString();
+	static String toString(String className, String classDetails) {
+		StringBuffer description = new StringBuffer(className);
+		description.append(Constants.Character.SPACE);
+		description.append(Constants.Character.EQUALS);
+		description.append(Constants.Character.SPACE);
+		description.append(Constants.Character.LEFT_PAREN);
+		description.append(classDetails);
+		description.append(Constants.Character.RIGHT_PAREN);
+		return description.toString();
 	}
 
 	/** See {@link Object#toString()}.

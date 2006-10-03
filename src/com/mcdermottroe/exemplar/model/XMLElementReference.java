@@ -55,14 +55,6 @@ extends XMLNamedObject
 
 	/** {@inheritDoc} */
 	public String toString() {
-		StringBuffer desc = new StringBuffer(
-			toStringPrefix(
-				getClass().getName()
-			)
-		);
-		desc.append(name);
-		desc.append(toStringSuffix());
-
-		return desc.toString();
+		return toString(getClass().getName(), name);
 	}
 }

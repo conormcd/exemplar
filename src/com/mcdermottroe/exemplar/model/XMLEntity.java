@@ -273,12 +273,7 @@ implements Constants.XML.Entity
 
 	/** {@inheritDoc} */
 	public String toString() {
-		StringBuffer desc = new StringBuffer(
-			toStringPrefix(
-				getClass().getName()
-			)
-		);
-
+		StringBuffer desc = new StringBuffer();
 		desc.append(name);
 		desc.append(Constants.Character.COMMA);
 		desc.append(Constants.Character.SPACE);
@@ -296,8 +291,6 @@ implements Constants.XML.Entity
 			desc.append(Message.XMLOBJECT_NOT_CONFIGURED);
 		}
 
-		desc.append(toStringSuffix());
-
-		return desc.toString();
+		return toString(getClass().getName(), desc.toString());
 	}
 }

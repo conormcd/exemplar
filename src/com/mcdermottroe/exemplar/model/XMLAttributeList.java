@@ -93,12 +93,7 @@ extends XMLNamedObject
 
 	/** {@inheritDoc} */
 	public String toString() {
-		StringBuffer desc = new StringBuffer(
-			toStringPrefix(
-				getClass().getName()
-			)
-		);
-
+		StringBuffer desc = new StringBuffer();
 		Iterator it = attributes();
 		if (it.hasNext()) {
 			desc.append(Constants.Character.LEFT_PAREN);
@@ -113,9 +108,7 @@ extends XMLNamedObject
 			}
 		}
 
-		desc.append(toStringSuffix());
-
-		return desc.toString();
+		return toString(getClass().getName(), desc.toString());
 	}
 
 	/** {@inheritDoc} */

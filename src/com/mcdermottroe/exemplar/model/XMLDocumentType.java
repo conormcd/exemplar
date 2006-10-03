@@ -35,7 +35,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.ui.Message;
@@ -403,22 +402,6 @@ public class XMLDocumentType {
 		@return	A descriptive {@link String}.
 	*/
 	public String toString() {
-		StringBuffer desc = new StringBuffer(
-			XMLObject.toStringPrefix(
-				getClass().getName()
-			)
-		);
-
-		Iterator it = markupDecls.iterator();
-		if (it.hasNext()) {
-			desc.append(it.next().toString());
-			while (it.hasNext()) {
-				desc.append(Constants.Character.COMMA);
-				desc.append(Constants.Character.SPACE);
-				desc.append(it.next().toString());
-			}
-		}
-
-		return desc.toString();
+		return getClass().getName();
 	}
 }

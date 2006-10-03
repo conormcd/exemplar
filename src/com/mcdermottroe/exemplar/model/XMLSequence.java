@@ -29,8 +29,6 @@
 */
 package com.mcdermottroe.exemplar.model;
 
-import java.util.Iterator;
-
 import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
 
@@ -94,28 +92,6 @@ extends XMLAggregateObject
 
 	/** {@inheritDoc} */
 	public String toString() {
-		StringBuffer desc = new StringBuffer(
-			XMLObject.toStringPrefix(
-				getClass().getName()
-			)
-		);
-
-		Iterator it = iterator();
-		if (it.hasNext()) {
-			desc.append(Constants.Character.LEFT_PAREN);
-			desc.append(it.next().toString());
-			desc.append(Constants.Character.RIGHT_PAREN);
-			while (it.hasNext()) {
-				desc.append(Constants.Character.COMMA);
-				desc.append(Constants.Character.SPACE);
-				desc.append(Constants.Character.LEFT_PAREN);
-				desc.append(it.next().toString());
-				desc.append(Constants.Character.RIGHT_PAREN);
-			}
-		}
-
-		desc.append(XMLObject.toStringSuffix());
-
-		return desc.toString();
+		return toString(getClass().getName(), Constants.Character.COMMA);
 	}
 }

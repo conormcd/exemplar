@@ -318,12 +318,7 @@ implements Constants.XML.Attribute, Comparable
 		@return	A descriptive {@link String}.
 	*/
 	public String toString() {
-		StringBuffer desc = new StringBuffer(
-			XMLObject.toStringPrefix(
-				getClass().getName()
-			)
-		);
-
+		StringBuffer desc = new StringBuffer();
 		desc.append(name);
 		desc.append(Constants.Character.COMMA);
 		desc.append(Constants.Character.SPACE);
@@ -360,8 +355,6 @@ implements Constants.XML.Attribute, Comparable
 			desc.append(defaultDeclType);
 		}
 
-		desc.append(XMLObject.toStringSuffix());
-
-		return desc.toString();
+		return XMLObject.toString(getClass().getName(), desc.toString());
 	}
 }

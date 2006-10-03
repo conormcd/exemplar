@@ -112,12 +112,7 @@ extends XMLNamedObject
 
 	/** {@inheritDoc} */
 	public String toString() {
-		StringBuffer desc = new StringBuffer(
-			toStringPrefix(
-				getClass().getName()
-			)
-		);
-
+		StringBuffer desc = new StringBuffer();
 		desc.append(name);
 		desc.append(Constants.Character.COMMA);
 		desc.append(Constants.Character.SPACE);
@@ -129,8 +124,6 @@ extends XMLNamedObject
 		}
 		desc.append(Constants.Character.RIGHT_PAREN);
 
-		desc.append(toStringSuffix());
-
-		return desc.toString();
+		return toString(getClass().getName(), desc.toString());
 	}
 }

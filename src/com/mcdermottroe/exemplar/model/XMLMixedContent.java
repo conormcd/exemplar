@@ -29,8 +29,6 @@
 */
 package com.mcdermottroe.exemplar.model;
 
-import java.util.Iterator;
-
 import com.mcdermottroe.exemplar.Constants;
 
 /** An {@link com.mcdermottroe.exemplar.model.XMLObject} which represents the
@@ -46,26 +44,12 @@ extends XMLAggregateObject
 	/** {@inheritDoc} */
 	public String toString() {
 		StringBuffer desc = new StringBuffer(
-			toStringPrefix(
-				getClass().getName()
+			toString(
+				getClass().getName(),
+				Constants.Character.PIPE
 			)
 		);
-
-		Iterator it = iterator();
-		if (it.hasNext()) {
-			desc.append(Constants.Character.LEFT_PAREN);
-			desc.append(it.next().toString());
-			desc.append(Constants.Character.RIGHT_PAREN);
-			while (it.hasNext()) {
-				desc.append(Constants.Character.PIPE);
-				desc.append(Constants.Character.LEFT_PAREN);
-				desc.append(it.next().toString());
-				desc.append(Constants.Character.RIGHT_PAREN);
-			}
-		}
-
-		desc.append(toStringSuffix());
-
+		desc.append(Constants.Character.STAR);
 		return desc.toString();
 	}
 }

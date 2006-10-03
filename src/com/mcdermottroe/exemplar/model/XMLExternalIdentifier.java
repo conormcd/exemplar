@@ -83,20 +83,13 @@ public class XMLExternalIdentifier {
 		@return	A descriptive {@link String}.
 	*/
 	public String toString() {
-		StringBuffer desc = new StringBuffer(
-			XMLObject.toStringPrefix(
-				getClass().getName()
-			)
-		);
-
+		StringBuffer desc = new StringBuffer();
 		desc.append(systemID);
 		desc.append(Constants.Character.COMMA);
 		desc.append(Constants.Character.SPACE);
 		desc.append(publicID);
 
-		desc.append(XMLObject.toStringSuffix());
-
-		return desc.toString();
+		return XMLObject.toString(getClass().getName(), desc.toString());
 	}
 
 	/** See {@link Object#equals(Object)}.

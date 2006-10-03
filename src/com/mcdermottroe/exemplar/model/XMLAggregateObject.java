@@ -125,7 +125,7 @@ extends XMLObject
 		if (this == o) {
 			return true;
 		}
-		if (o == null || !(o instanceof XMLAggregateObject)) {
+		if (o == null || !(o.getClass().equals(getClass()))) {
 			return false;
 		}
 
@@ -146,5 +146,28 @@ extends XMLObject
 		hashCode += contents.hashCode();
 
 		return hashCode;
+	}
+
+	/** Helper for doing most of the work of making {@link Object#toString()}
+		for {@link XMLAggregateObject} objects.
+
+		@param	className	The name of the aggregate object.
+		@param	separator	The separator to display
+		@return				A descriptive {@link String} for an {@link
+							XMLAggregateObject}.
+	*/
+	protected String toString(String className, char separator) {
+		String contentDescription = "";
+		Iterator it = contents.iterator();
+		if (it.hasNext()) {
+			StringBuffer descBuffer = new StringBuffer(it.next().toString());
+			while (it.hasNext()) {
+				descBuffer.append(separator);
+				descBuffer.append(it.next().toString());
+			}
+			contentDescription = descBuffer.toString();
+		}
+
+		return toString(className, contentDescription);
 	}
 }

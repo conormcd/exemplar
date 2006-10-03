@@ -39,6 +39,6 @@ extends XMLObject
 {
 	/** {@inheritDoc} */
 	public String toString() {
-		return getClass().getName();
+		return toString(getClass().getName(), "");
 	}
 }

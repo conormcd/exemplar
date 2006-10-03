@@ -152,12 +152,7 @@ implements Constants.XML.Element
 
 	/** {@inheritDoc} */
 	public String toString() {
-		StringBuffer desc = new StringBuffer(
-			toStringPrefix(
-				getClass().getName()
-			)
-		);
-
+		StringBuffer desc = new StringBuffer();
 		desc.append(name);
 		if (attlist != null) {
 			desc.append(Constants.Character.COMMA);
@@ -167,9 +162,7 @@ implements Constants.XML.Element
 			desc.append(Constants.Character.LEFT_PAREN);
 		}
 
-		desc.append(toStringSuffix());
-
-		return desc.toString();
+		return toString(getClass().getName(), desc.toString());
 	}
 
 	/** {@inheritDoc} */
