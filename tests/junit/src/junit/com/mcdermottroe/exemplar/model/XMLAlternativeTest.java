@@ -29,6 +29,13 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
+import java.util.ArrayList;
+
+import com.mcdermottroe.exemplar.model.XMLAlternative;
+import com.mcdermottroe.exemplar.model.XMLElementReference;
+import com.mcdermottroe.exemplar.model.XMLMixedContent;
+import com.mcdermottroe.exemplar.model.XMLSequence;
+
 import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
 
 /** Test class for {@link com.mcdermottroe.exemplar.model.XMLAlternative}.
@@ -37,4 +44,46 @@ import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
 	@since	0.1
 */
 public class XMLAlternativeTest extends NormalClassTestCase {
+	/** {@inheritDoc} */
+	public void setUp() throws Exception {
+		super.setUp();
+
+		sampleObjects = new ArrayList();
+
+		XMLAlternative sampleAlternative = new XMLAlternative();
+		XMLElementReference sampleElementReference = new XMLElementReference();
+		XMLMixedContent sampleMixedContent = new XMLMixedContent();
+		XMLSequence sampleSequence = new XMLSequence();
+
+		// Sample A
+		sampleObjects.add(sampleAlternative);
+
+		// Sample B
+		XMLAlternative sampleB = new XMLAlternative();
+		sampleB.addObject(sampleAlternative);
+		sampleObjects.add(sampleB);
+
+		// Sample C
+		XMLAlternative sampleC = new XMLAlternative();
+		sampleC.addObject(sampleElementReference);
+		sampleObjects.add(sampleC);
+
+		// Sample D
+		XMLAlternative sampleD = new XMLAlternative();
+		sampleD.addObject(sampleMixedContent);
+		sampleObjects.add(sampleD);
+
+		// Sample E
+		XMLAlternative sampleE = new XMLAlternative();
+		sampleE.addObject(sampleSequence);
+		sampleObjects.add(sampleE);
+
+		// Sample F
+		XMLAlternative sampleF = new XMLAlternative();
+		sampleF.addObject(sampleAlternative);
+		sampleF.addObject(sampleElementReference);
+		sampleF.addObject(sampleMixedContent);
+		sampleF.addObject(sampleSequence);
+		sampleObjects.add(sampleF);
+	}
 }
