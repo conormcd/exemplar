@@ -670,6 +670,11 @@
 				<include name="*.xhtml" />
 			</fileset>
 		</move>
+		<move todir="${doc}/handbook/html/">
+			<fileset dir=".">
+				<include name="*.xhtml" />
+			</fileset>
+		</move>
 		<copy file="${doc}/src/handbook/handbook.css" todir="${doc}/handbook/html/" />
 		<copy todir="${doc}/handbook/html/images">
 			<fileset dir="${doc}/src/handbook/images">
@@ -695,7 +700,7 @@
 			<param name="use.extensions" expression="1" />
 			<xmlcatalog refid="globalcatalog" />
 		</xslt>
-		<fop>
+		<fop basedir="${doc}/src/handbook/">
 			<fileset dir="${doc}/src/handbook/">
 				<include name="handbook.fo" />
 			</fileset>
