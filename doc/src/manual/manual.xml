@@ -414,8 +414,9 @@
 			</para>
 		</refsect2>
 		<refsect2>
-			<title>0.0.5 (2006-01-31)</title>
-			<para>Fixing of the showstopper bugs which block the 0.1 release.
+			<title>0.0.5 (2006-10-05)</title>
+			<para>All the bugs which were showstoppers for the 0.1 release were
+					fixed.
 			</para>
 		</refsect2>
 		<refsect2>
