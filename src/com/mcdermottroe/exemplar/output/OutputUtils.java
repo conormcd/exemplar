@@ -76,7 +76,7 @@ public final class OutputUtils {
 			generatorName.length() - Constants.Output.CLASS.length() - 1
 		);
 		return ResourceBundle.getBundle(
-			genName + Constants.Output.CODE_FRAGMENTS_FILE_EXTENSION
+			genName + Constants.Output.CODE_FRAGMENTS_FILE_NAME
 		);
 	}
 

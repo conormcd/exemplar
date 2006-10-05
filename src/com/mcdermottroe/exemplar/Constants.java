@@ -274,7 +274,7 @@ public interface Constants {
 		/** The extension that all code fragments resource bundle files must
 			have.
 		*/
-		String CODE_FRAGMENTS_FILE_EXTENSION = ".codeFragments";
+		String CODE_FRAGMENTS_FILE_NAME = ".codeFragments";
 
 		/** DTD output module constants. */
 		interface DTD {
