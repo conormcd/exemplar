@@ -71,7 +71,9 @@ minimum I reccommend:
 
 The more detail you send, the better.
 
-Send all bug reports to exemplar-bugs@mcdermottroe.com.
+Submit all bug reports to the issue tracker. The list of known issues is
+located at http://code.google.com/p/exemplar/issues/list and you can submit
+your bug there.
 
 If you're willing to have a go at fixing the bug, feel free to do so. I'll
 answer any questions about the code that you need.
