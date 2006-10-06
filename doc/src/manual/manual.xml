@@ -360,9 +360,10 @@
 				unfortunately it was not possible to declare that it would be
 				delivered &quot;when it&apos;s ready&quot;. :-)
 		</para>
-		<para>As of %%DATE%%, Exemplar has been an Open Source project
-				available for all interested parties. A brief description of
-				all known versions of the project is laid out below.
+		<para>As of the 6th of October 2006, Exemplar has been an Open Source
+				project available for all interested parties. A brief
+				description of all known versions of the project is laid out
+				below.
 		</para>
 		<note>
 			<title>Version Numbering</title>
@@ -426,7 +427,7 @@
 			</para>
 		</refsect2>
 		<refsect2>
-			<title>0.1 (2006-02-01)</title>
+			<title>0.1 (2006-10-06)</title>
 			<para>Initial public release.</para>
 		</refsect2>
 	</refsect1>
