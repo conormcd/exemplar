@@ -76,15 +76,17 @@ implements Constants.UI.CLI
 			new Formatter() {
 				@Override public String format(LogRecord record) {
 					String message = record.getMessage();
+					if (message == null) {
+						return "";
+					}
+
 					if (message.matches(Constants.Regex.TRAILING_WHITESPACE)) {
-						message = message.replaceAll(
+						return message.replaceAll(
 							Constants.Regex.TRAILING_WHITESPACE,
 							Constants.EOL
 						);
-					} else {
-						message += Constants.EOL;
 					}
-					return message;
+					return message + Constants.EOL;
 				}
 			}
 		);
