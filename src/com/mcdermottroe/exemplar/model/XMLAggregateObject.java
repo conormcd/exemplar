@@ -83,33 +83,41 @@ implements Iterable<XMLObject>
 	public void addObject(XMLObject xo) {
 		DBC.REQUIRE(xo != null);
 		DBC.REQUIRE(contents != null);
+		if (xo == null || contents == null) {
+			return;
+		}
 
 		contents.add(xo);
 
 		DBC.ENSURE(contents != null);
 	}
 
-	/** Append another {@link com.mcdermottroe.exemplar.model.XMLObject} to
+	/** Append an {@link com.mcdermottroe.exemplar.model.XMLElementReference}
+		to this object.
+
+		@param	elementRef	The {@link
+							com.mcdermottroe.exemplar.model.XMLElementReference}
+							to add.
+	*/
+	public void append(XMLElementReference elementRef) {
+		addObject(elementRef);
+	}
+
+	/** Append another {@link com.mcdermottroe.exemplar.model.XMLAggregateObject} to
 		this one.
 
 		@param	other	The other {@link
-						com.mcdermottroe.exemplar.model.XMLObject}.
+						com.mcdermottroe.exemplar.model.XMLAggregateObject}.
 	*/
-	public void append(XMLObject other) {
+	public void append(XMLAggregateObject other) {
 		DBC.REQUIRE(other != null);
-		DBC.REQUIRE(contents != null);
-
-		if (other instanceof XMLAggregateObject) {
-			for (XMLObject xmlObject : (XMLAggregateObject)other) {
-				contents.add(xmlObject);
-			}
-		} else if (other instanceof XMLElementReference) {
-			contents.add(other);
-		} else {
-			DBC.UNREACHABLE_CODE();
+		if (other == null) {
+			return;
 		}
 
-		DBC.ENSURE(contents != null);
+		for (XMLObject xmlObject : other) {
+			addObject(xmlObject);
+		}
 	}
 
 	/** Getter for the contents member.

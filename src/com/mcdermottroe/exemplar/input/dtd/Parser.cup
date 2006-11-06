@@ -292,10 +292,8 @@ start with extSubset;
 // Page 24
 AttDef							::= s Name:name s AttType:attribute s DefaultDecl:defaultDecl
 										{:
-											DBC.ASSERT(attribute instanceof XMLAttribute);
-											DBC.ASSERT(defaultDecl instanceof XMLAttribute);
-											((XMLAttribute)attribute).setName(name.toString());
-											((XMLAttribute)attribute).setDefaultDecl((XMLAttribute)defaultDecl);
+											attribute.setName(name);
+											attribute.setDefaultDecl(defaultDecl);
 											RESULT = attribute;
 										:};
 // AttDef*
@@ -305,16 +303,13 @@ AttDef_STAR						::= /* ε */
 										:} |
 									AttDef_STAR:attlist AttDef:attdef
 										{:
-											DBC.ASSERT(attlist instanceof XMLAttributeList);
-											DBC.ASSERT(attdef instanceof XMLAttribute);
-											((XMLAttributeList)attlist).addAttribute((XMLAttribute)attdef);
+											attlist.addAttribute(attdef);
 											RESULT = attlist;
 										:};
 // Page 24
 AttlistDecl						::=	ATTLIST_HEAD s Name:name AttDef_STAR:attlist GT_PRECEDED_BY_OPT_S
 										{:
-											DBC.ASSERT(attlist instanceof XMLAttributeList);
-											((XMLAttributeList)attlist).setName(name.toString());
+											attlist.setName(name);
 											RESULT = attlist;
 										:};
 // Page 25
@@ -346,11 +341,11 @@ AttValue_QUOT_STRING			::= /* ε */
 										:} |
 									AttValue_QUOT_STRING:a AttValue_QUOT_STRING_CHAR:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:} |
 									AttValue_QUOT_STRING:a Reference:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:};
 // The characters allowed between quote marks in an AttValue production
 AttValue_QUOT_STRING_CHAR		::= CHAR:value
@@ -592,11 +587,11 @@ AttValue_APOS_STRING			::= /* ε */
 										:} |
 									AttValue_APOS_STRING:a AttValue_APOS_STRING_CHAR:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:} |
 									AttValue_APOS_STRING:a Reference:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:};
 // The characters allowed between apostrophes in an AttValue production
 AttValue_APOS_STRING_CHAR		::= CHAR:value
@@ -631,105 +626,105 @@ AttValue_APOS_STRING_CHAR		::= CHAR:value
 										{:
 											RESULT = value;
 										:} |
-									COMMA
+									COMMA:value
 										{:
-											RESULT = ",";
+											RESULT = value;
 										:} |
 									DIGIT:value
 										{:
 											RESULT = value;
 										:} |
-									DOLLAR
+									DOLLAR:value
 										{:
-											RESULT = "$";
+											RESULT = value;
 										:} |
-									DOT
+									DOT:value
 										{:
-											RESULT = ".";
+											RESULT = value;
 										:} |
-									EQUALS
+									EQUALS:value
 										{:
-											RESULT = "=";
+											RESULT = value;
 										:} |
-									EXCLAM
+									EXCLAM:value
 										{:
-											RESULT = "!";
+											RESULT = value;
 										:} |
 									EXTENDER:value
 										{:
 											RESULT = value;
 										:} |
-									GT
+									GT:value
 										{:
-											RESULT = ">";
+											RESULT = value;
 										:} |
-									HASH
+									HASH:value
 										{:
-											RESULT = "#";
+											RESULT = value;
 										:} |
 									IDEOGRAPHIC:value
 										{:
 											RESULT = value;
 										:} |
-									LBRACE
+									LBRACE:value
 										{:
-											RESULT = "{";
+											RESULT = value;
 										:} |
-									LPAREN
+									LPAREN:value
 										{:
-											RESULT = "(";
+											RESULT = value;
 										:} |
-									LSQUARE
+									LSQUARE:value
 										{:
-											RESULT = "[";
+											RESULT = value;
 										:} |
-									MINUS
+									MINUS:value
 										{:
-											RESULT = "-";
+											RESULT = value;
 										:} |
-									PERCENT
+									PERCENT:value
 										{:
-											RESULT = "%";
+											RESULT = value;
 										:} |
-									PLUS
+									PLUS:value
 										{:
-											RESULT = "+";
+											RESULT = value;
 										:} |
-									QMARK
+									QMARK:value
 										{:
-											RESULT = "?";
+											RESULT = value;
 										:} |
-									QUOT
+									QUOT:value
 										{:
-											RESULT = "\"";
+											RESULT = value;
 										:} |
-									RBRACE
+									RBRACE:value
 										{:
-											RESULT = "}";
+											RESULT = value;
 										:} |
-									RPAREN
+									RPAREN:value
 										{:
-											RESULT = ")";
+											RESULT = value;
 										:} |
-									RSQUARE
+									RSQUARE:value
 										{:
-											RESULT = "]";
+											RESULT = value;
 										:} |
 									S:value
 										{:
 											RESULT = value;
 										:} |
-									SEMI
+									SEMI:value
 										{:
-											RESULT = ";";
+											RESULT = value;
 										:} |
-									SLASH
+									SLASH:value
 										{:
-											RESULT = "/";
+											RESULT = value;
 										:} |
-									STAR
+									STAR:value
 										{:
-											RESULT = "*";
+											RESULT = value;
 										:} |
 									TILDE:value
 										{:
@@ -836,149 +831,149 @@ Char_NO_QUOT					::= CHAR:value
 										{:
 											RESULT = value;
 										:} |
-									AMP
+									AMP:value
 										{:
-											RESULT = "&";
+											RESULT = value;
 										:} |
-									APOS
+									APOS:value
 										{:
-											RESULT = "'";
+											RESULT = value;
 										:} |
-									AT
+									AT:value
 										{:
-											RESULT = "@";
+											RESULT = value;
 										:} |
-									BACKTICK
+									BACKTICK:value
 										{:
-											RESULT = "`";
+											RESULT = value;
 										:} |
 									BASECHAR:value
 										{:
 											RESULT = value;
 										:} |
-									BSLASH
+									BSLASH:value
 										{:
-											RESULT = "\\";
+											RESULT = value;
 										:} |
-									CARAT
+									CARAT:value
 										{:
-											RESULT = "^";
+											RESULT = value;
 										:} |
-									COLON
+									COLON:value
 										{:
-											RESULT = ":";
+											RESULT = value;
 										:} |
 									COMBININGCHAR:value
 										{:
 											RESULT = value;
 										:} |
-									COMMA
+									COMMA:value
 										{:
-											RESULT = ",";
+											RESULT = value;
 										:} |
 									DIGIT:value
 										{:
 											RESULT = value;
 										:} |
-									DOLLAR
+									DOLLAR:value
 										{:
-											RESULT = "$";
+											RESULT = value;
 										:} |
-									DOT
+									DOT:value
 										{:
-											RESULT = ".";
+											RESULT = value;
 										:} |
-									EQUALS
+									EQUALS:value
 										{:
-											RESULT = "=";
+											RESULT = value;
 										:} |
-									EXCLAM
+									EXCLAM:value
 										{:
-											RESULT = "!";
+											RESULT = value;
 										:} |
 									EXTENDER:value
 										{:
 											RESULT = value;
 										:} |
-									GT
+									GT:value
 										{:
-											RESULT = ">";
+											RESULT = value;
 										:} |
-									HASH
+									HASH:value
 										{:
-											RESULT = "#";
+											RESULT = value;
 										:} |
 									IDEOGRAPHIC:value
 										{:
 											RESULT = value;
 										:} |
-									LBRACE
+									LBRACE:value
 										{:
-											RESULT = "{";
+											RESULT = value;
 										:} |
-									LPAREN
+									LPAREN:value
 										{:
-											RESULT = "(";
+											RESULT = value;
 										:} |
-									LSQUARE
+									LSQUARE:value
 										{:
-											RESULT = "[";
+											RESULT = value;
 										:} |
-									LT
+									LT:value
 										{:
-											RESULT = "<";
+											RESULT = value;
 										:} |
-									MINUS
+									MINUS:value
 										{:
-											RESULT = "-";
+											RESULT = value;
 										:} |
-									PERCENT
+									PERCENT:value
 										{:
-											RESULT = "%";
+											RESULT = value;
 										:} |
-									PLUS
+									PLUS:value
 										{:
-											RESULT = "+";
+											RESULT = value;
 										:} |
-									QMARK
+									QMARK:value
 										{:
-											RESULT = "?";
+											RESULT = value;
 										:} |
-									RBRACE
+									RBRACE:value
 										{:
-											RESULT = "}";
+											RESULT = value;
 										:} |
-									RPAREN
+									RPAREN:value
 										{:
-											RESULT = ")";
+											RESULT = value;
 										:} |
-									RSQUARE
+									RSQUARE:value
 										{:
-											RESULT = "]";
+											RESULT = value;
 										:} |
 									S:value
 										{:
 											RESULT = value;
 										:} |
-									SEMI
+									SEMI:value
 										{:
-											RESULT = ";";
+											RESULT = value;
 										:} |
-									SLASH
+									SLASH:value
 										{:
-											RESULT = "/";
+											RESULT = value;
 										:} |
-									STAR
+									STAR:value
 										{:
-											RESULT = "*";
+											RESULT = value;
 										:} |
-									TILDE
+									TILDE:value
 										{:
-											RESULT = "~";
+											RESULT = value;
 										:} |
-									UNDERSCORE
+									UNDERSCORE:value
 										{:
-											RESULT = "_";
+											RESULT = value;
 										:};
 // Char_NO_QUOT*
 Char_NO_QUOT_STAR				::=	/* ε */
@@ -987,252 +982,252 @@ Char_NO_QUOT_STAR				::=	/* ε */
 										:} |
 									Char_NO_QUOT_STAR:a Char_NO_QUOT:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:} |
-									Char_NO_QUOT_STAR:a HASH_PCDATA
+									Char_NO_QUOT_STAR:a HASH_PCDATA:hp
 										{:
-											RESULT = a.toString() + "#PCDATA";
+											RESULT = a + hp;
 										:} |
-									Char_NO_QUOT_STAR:a HASH_FIXED
+									Char_NO_QUOT_STAR:a HASH_FIXED:hf
 										{:
-											RESULT = a.toString() + "#FIXED";
+											RESULT = a + hf;
 										:} |
-									Char_NO_QUOT_STAR:a HASH_IMPLIED
+									Char_NO_QUOT_STAR:a HASH_IMPLIED:hi
 										{:
-											RESULT = a.toString() + "#IMPLIED";
+											RESULT = a + hi;
 										:} |
-									Char_NO_QUOT_STAR:a HASH_REQUIRED
+									Char_NO_QUOT_STAR:a HASH_REQUIRED:hr
 										{:
-											RESULT = a.toString() + "#REQUIRED";
+											RESULT = a + hr;
 										:} |
 									Char_NO_QUOT_STAR:a CDATA:cdata
 										{:
-											RESULT = a.toString() + cdata;
+											RESULT = a + cdata;
 										:} |
 									Char_NO_QUOT_STAR:a SYSTEM:system
 										{:
-											RESULT = a.toString() + system;
+											RESULT = a + system;
 										:} |
 									Char_NO_QUOT_STAR:a PUBLIC:pub
 										{:
-											RESULT = a.toString() + pub;
+											RESULT = a + pub;
 										:} |
 									Char_NO_QUOT_STAR:a NDATA_SURROUNDED_BY_S:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:} |
-									Char_NO_QUOT_STAR:a NOTATION
+									Char_NO_QUOT_STAR:a NOTATION:n
 										{:
-											RESULT = a.toString() + "NOTATION";
+											RESULT = a + n;
 										:} |
-									Char_NO_QUOT_STAR:a EMPTY
+									Char_NO_QUOT_STAR:a EMPTY:e
 										{:
-											RESULT = a.toString() + "EMPTY";
+											RESULT = a + e;
 										:} |
-									Char_NO_QUOT_STAR:a ANY
+									Char_NO_QUOT_STAR:a ANY:any
 										{:
-											RESULT = a.toString() + "ANY";
+											RESULT = a + any;
 										:} |
 									Char_NO_QUOT_STAR:a ID:id
 										{:
-											RESULT = a.toString() + id;
+											RESULT = a + id;
 										:} |
 									Char_NO_QUOT_STAR:a IDREF:idref
 										{:
-											RESULT = a.toString() + idref;
+											RESULT = a + idref;
 										:} |
 									Char_NO_QUOT_STAR:a IDREFS:idrefs
 										{:
-											RESULT = a.toString() + idrefs;
+											RESULT = a + idrefs;
 										:} |
 									Char_NO_QUOT_STAR:a ENTITY:entity
 										{:
-											RESULT = a.toString() + entity;
+											RESULT = a + entity;
 										:} |
 									Char_NO_QUOT_STAR:a ENTITIES:entities
 										{:
-											RESULT = a.toString() + entities;
+											RESULT = a + entities;
 										:} |
 									Char_NO_QUOT_STAR:a NMTOKEN:nmtoken
 										{:
-											RESULT = a.toString() + nmtoken;
+											RESULT = a + nmtoken;
 										:} |
 									Char_NO_QUOT_STAR:a NMTOKENS:nmtokens
 										{:
-											RESULT = a.toString() + nmtokens;
+											RESULT = a + nmtokens;
 										:} |
 									Char_NO_QUOT_STAR:a COMMA_SURROUNDED_BY_S:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:} |
 									Char_NO_QUOT_STAR:a COMMA_PRECEDED_BY_S:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:} |
 									Char_NO_QUOT_STAR:a COMMA_FOLLOWED_BY_S:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:} |
 									Char_NO_QUOT_STAR:a PIPE_SURROUNDED_BY_S:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:} |
 									Char_NO_QUOT_STAR:a PIPE_PRECEDED_BY_S:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:} |
 									Char_NO_QUOT_STAR:a PIPE_FOLLOWED_BY_S:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:};
 // Char - "'"
 Char_NO_APOS					::= CHAR:value
 										{:
 											RESULT = value;
 										:} |
-									AMP
+									AMP:value
 										{:
-											RESULT = "&";
+											RESULT = value;
 										:} |
-									AT
+									AT:value
 										{:
-											RESULT = "@";
+											RESULT = value;
 										:} |
-									BACKTICK
+									BACKTICK:value
 										{:
-											RESULT = "`";
+											RESULT = value;
 										:} |
 									BASECHAR:value
 										{:
 											RESULT = value;
 										:} |
-									BSLASH
+									BSLASH:value
 										{:
-											RESULT = "\\";
+											RESULT = value;
 										:} |
-									CARAT
+									CARAT:value
 										{:
-											RESULT = "^";
+											RESULT = value;
 										:} |
-									COLON
+									COLON:value
 										{:
-											RESULT = ":";
+											RESULT = value;
 										:} |
 									COMBININGCHAR:value
 										{:
 											RESULT = value;
 										:} |
-									COMMA
+									COMMA:value
 										{:
-											RESULT = ",";
+											RESULT = value;
 										:} |
 									DIGIT:value
 										{:
 											RESULT = value;
 										:} |
-									DOLLAR
+									DOLLAR:value
 										{:
-											RESULT = "$";
+											RESULT = value;
 										:} |
-									DOT
+									DOT:value
 										{:
-											RESULT = ".";
+											RESULT = value;
 										:} |
-									EQUALS
+									EQUALS:value
 										{:
-											RESULT = "=";
+											RESULT = value;
 										:} |
-									EXCLAM
+									EXCLAM:value
 										{:
-											RESULT = "!";
+											RESULT = value;
 										:} |
 									EXTENDER:value
 										{:
 											RESULT = value;
 										:} |
-									GT
+									GT:value
 										{:
-											RESULT = ">";
+											RESULT = value;
 										:} |
-									HASH
+									HASH:value
 										{:
-											RESULT = "#";
+											RESULT = value;
 										:} |
 									IDEOGRAPHIC:value
 										{:
 											RESULT = value;
 										:} |
-									LBRACE
+									LBRACE:value
 										{:
-											RESULT = "{";
+											RESULT = value;
 										:} |
-									LPAREN
+									LPAREN:value
 										{:
-											RESULT = "(";
+											RESULT = value;
 										:} |
-									LSQUARE
+									LSQUARE:value
 										{:
-											RESULT = "[";
+											RESULT = value;
 										:} |
-									LT
+									LT:value
 										{:
-											RESULT = "<";
+											RESULT = value;
 										:} |
-									MINUS
+									MINUS:value
 										{:
-											RESULT = "-";
+											RESULT = value;
 										:} |
-									PERCENT
+									PERCENT:value
 										{:
-											RESULT = "%";
+											RESULT = value;
 										:} |
-									PLUS
+									PLUS:value
 										{:
-											RESULT = "+";
+											RESULT = value;
 										:} |
-									QMARK
+									QMARK:value
 										{:
-											RESULT = "?";
+											RESULT = value;
 										:} |
-									QUOT
+									QUOT:value
 										{:
-											RESULT = "\"";
+											RESULT = value;
 										:} |
-									RBRACE
+									RBRACE:value
 										{:
-											RESULT = "}";
+											RESULT = value;
 										:} |
-									RPAREN
+									RPAREN:value
 										{:
-											RESULT = ")";
+											RESULT = value;
 										:} |
-									RSQUARE
+									RSQUARE:value
 										{:
-											RESULT = "]";
+											RESULT = value;
 										:} |
 									S:value
 										{:
 											RESULT = value;
 										:} |
-									SEMI
+									SEMI:value
 										{:
-											RESULT = ";";
+											RESULT = value;
 										:} |
-									SLASH
+									SLASH:value
 										{:
-											RESULT = "/";
+											RESULT = value;
 										:} |
-									STAR
+									STAR:value
 										{:
-											RESULT = "*";
+											RESULT = value;
 										:} |
-									TILDE
+									TILDE:value
 										{:
-											RESULT = "~";
+											RESULT = value;
 										:} |
-									UNDERSCORE
+									UNDERSCORE:value
 										{:
-											RESULT = "_";
+											RESULT = value;
 										:};
 // Char_NO_APOS*
 Char_NO_APOS_STAR				::=	/* ε */
@@ -1241,197 +1236,182 @@ Char_NO_APOS_STAR				::=	/* ε */
 										:} |
 									Char_NO_APOS_STAR:a Char_NO_APOS:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:} |
-									Char_NO_APOS_STAR:a HASH_PCDATA
+									Char_NO_APOS_STAR:a HASH_PCDATA:hash_pcdata
 										{:
-											RESULT = a.toString() + "#PCDATA";
+											RESULT = a + hash_pcdata;
 										:} |
-									Char_NO_APOS_STAR:a HASH_FIXED
+									Char_NO_APOS_STAR:a HASH_FIXED:hash_fixed
 										{:
-											RESULT = a.toString() + "#FIXED";
+											RESULT = a + hash_fixed;
 										:} |
-									Char_NO_APOS_STAR:a HASH_IMPLIED
+									Char_NO_APOS_STAR:a HASH_IMPLIED:hash_implied
 										{:
-											RESULT = a.toString() + "#IMPLIED";
+											RESULT = a + hash_implied;
 										:} |
-									Char_NO_APOS_STAR:a HASH_REQUIRED
+									Char_NO_APOS_STAR:a HASH_REQUIRED:hash_required
 										{:
-											RESULT = a.toString() + "#REQUIRED";
+											RESULT = a + hash_required;
 										:} |
 									Char_NO_APOS_STAR:a CDATA:b
 										{:
-											RESULT = a.toString() + b;
+											RESULT = a + b;
 										:} |
 									Char_NO_APOS_STAR:a SYSTEM:b
 										{:
-											RESULT = a.toString() + b;
+											RESULT = a + b;
 										:} |
 									Char_NO_APOS_STAR:a PUBLIC:b
 										{:
-											RESULT = a.toString() + b;
+											RESULT = a + b;
 										:} |
 									Char_NO_APOS_STAR:a NDATA_SURROUNDED_BY_S:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:} |
-									Char_NO_APOS_STAR:a NOTATION
+									Char_NO_APOS_STAR:a NOTATION:notation
 										{:
-											RESULT = a.toString() + "NOTATION";
+											RESULT = a + notation;
 										:} |
-									Char_NO_APOS_STAR:a EMPTY
+									Char_NO_APOS_STAR:a EMPTY:empty
 										{:
-											RESULT = a.toString() + "EMPTY";
+											RESULT = a + empty;
 										:} |
-									Char_NO_APOS_STAR:a ANY
+									Char_NO_APOS_STAR:a ANY:any
 										{:
-											RESULT = a.toString() + "ANY";
+											RESULT = a + any;
 										:} |
 									Char_NO_APOS_STAR:a ID:b
 										{:
-											RESULT = a.toString() + b;
+											RESULT = a + b;
 										:} |
 									Char_NO_APOS_STAR:a IDREF:b
 										{:
-											RESULT = a.toString() + b;
+											RESULT = a + b;
 										:} |
 									Char_NO_APOS_STAR:a IDREFS:b
 										{:
-											RESULT = a.toString() + b;
+											RESULT = a + b;
 										:} |
 									Char_NO_APOS_STAR:a ENTITY:b
 										{:
-											RESULT = a.toString() + b;
+											RESULT = a + b;
 										:} |
 									Char_NO_APOS_STAR:a ENTITIES:b
 										{:
-											RESULT = a.toString() + b;
+											RESULT = a + b;
 										:} |
 									Char_NO_APOS_STAR:a NMTOKEN:b
 										{:
-											RESULT = a.toString() + b;
+											RESULT = a + b;
 										:} |
 									Char_NO_APOS_STAR:a NMTOKENS:b
 										{:
-											RESULT = a.toString() + b;
+											RESULT = a + b;
 										:} |
 									Char_NO_APOS_STAR:a COMMA_SURROUNDED_BY_S:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:} |
 									Char_NO_APOS_STAR:a COMMA_PRECEDED_BY_S:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:} |
 									Char_NO_APOS_STAR:a COMMA_FOLLOWED_BY_S:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:} |
 									Char_NO_APOS_STAR:a PIPE_SURROUNDED_BY_S:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:} |
 									Char_NO_APOS_STAR:a PIPE_PRECEDED_BY_S:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:} |
 									Char_NO_APOS_STAR:a PIPE_FOLLOWED_BY_S:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:};
 // Page 22
 children						::= choice:c
 										{:
-											DBC.ASSERT(c instanceof XMLAlternative);
 											RESULT = new XMLSequence();
-											((XMLSequence)RESULT).addObject((XMLAlternative)c);
-											((XMLSequence)RESULT).setMinMaxOccurs(1, 1);
+											RESULT.addObject(c);
+											RESULT.setMinMaxOccurs(1, 1);
 										:} |
 									choice:c QMARK
 										{:
-											DBC.ASSERT(c instanceof XMLAlternative);
 											RESULT = new XMLSequence();
-											((XMLSequence)RESULT).addObject((XMLAlternative)c);
-											((XMLSequence)RESULT).setMinMaxOccurs(0, 1);
+											RESULT.addObject(c);
+											RESULT.setMinMaxOccurs(0, 1);
 										:} |
 									choice:c STAR
 										{:
-											DBC.ASSERT(c instanceof XMLAlternative);
 											RESULT = new XMLSequence();
-											((XMLSequence)RESULT).addObject((XMLAlternative)c);
-											((XMLSequence)RESULT).setMinMaxOccurs(0, Constants.INFINITY);
+											RESULT.addObject(c);
+											RESULT.setMinMaxOccurs(0, Constants.INFINITY);
 										:} |
 									choice:c PLUS
 										{:
-											DBC.ASSERT(c instanceof XMLAlternative);
 											RESULT = new XMLSequence();
-											((XMLSequence)RESULT).addObject((XMLAlternative)c);
-											((XMLSequence)RESULT).setMinMaxOccurs(1, Constants.INFINITY);
+											RESULT.addObject(c);
+											RESULT.setMinMaxOccurs(1, Constants.INFINITY);
 										:} |
 									seq:s
 										{:
-											DBC.ASSERT(s instanceof XMLSequence);
 											RESULT = new XMLSequence();
-											((XMLSequence)RESULT).addObject((XMLSequence)s);
-											((XMLSequence)RESULT).setMinMaxOccurs(1, 1);
+											RESULT.addObject(s);
+											RESULT.setMinMaxOccurs(1, 1);
 										:} |
 									seq:s QMARK
 										{:
-											DBC.ASSERT(s instanceof XMLSequence);
 											RESULT = new XMLSequence();
-											((XMLSequence)RESULT).addObject((XMLSequence)s);
-											((XMLSequence)RESULT).setMinMaxOccurs(0, 1);
+											RESULT.addObject(s);
+											RESULT.setMinMaxOccurs(0, 1);
 										:} |
 									seq:s STAR
 										{:
-											DBC.ASSERT(s instanceof XMLSequence);
 											RESULT = new XMLSequence();
-											((XMLSequence)RESULT).addObject((XMLSequence)s);
-											((XMLSequence)RESULT).setMinMaxOccurs(0, Constants.INFINITY);
+											RESULT.addObject(s);
+											RESULT.setMinMaxOccurs(0, Constants.INFINITY);
 										:} |
 									seq:s PLUS
 										{:
-											DBC.ASSERT(s instanceof XMLSequence);
 											RESULT = new XMLSequence();
-											((XMLSequence)RESULT).addObject((XMLSequence)s);
-											((XMLSequence)RESULT).setMinMaxOccurs(1, Constants.INFINITY);
+											RESULT.addObject(s);
+											RESULT.setMinMaxOccurs(1, Constants.INFINITY);
 										:};
 // Page 22
 choice							::= LPAREN_FOLLOWED_BY_OPT_S cp:a PIPE_SURROUNDED_WITH_OPT_S cp:b RPAREN_PRECEDED_BY_OPT_S
 										{:
-											DBC.ASSERT(a instanceof XMLObject);
-											DBC.ASSERT(b instanceof XMLObject);
 											RESULT = new XMLAlternative();
-											((XMLAlternative)RESULT).addObject((XMLObject)a);
-											((XMLAlternative)RESULT).addObject((XMLObject)b);
+											RESULT.addObject(a);
+											RESULT.addObject(b);
 										:} |
 									LPAREN_FOLLOWED_BY_OPT_S cp:a PIPE_SURROUNDED_WITH_OPT_S cp:b choice_cpLIST:c RPAREN_PRECEDED_BY_OPT_S
 										{:
-											DBC.ASSERT(a instanceof XMLObject);
-											DBC.ASSERT(b instanceof XMLObject);
-											DBC.ASSERT(c instanceof XMLObject);
 											RESULT = new XMLAlternative();
-											((XMLAlternative)RESULT).addObject((XMLObject)a);
-											((XMLAlternative)RESULT).addObject((XMLObject)b);
-											((XMLAlternative)RESULT).append((XMLObject)c);
+											RESULT.addObject(a);
+											RESULT.addObject(b);
+											RESULT.append(c);
 										:};
 // (S? '|' S? cp)+
 choice_cpLIST					::= PIPE_SURROUNDED_WITH_OPT_S cp:cp
 										{:
-											DBC.ASSERT(cp instanceof XMLObject);
 											RESULT = new XMLAlternative();
-											((XMLAlternative)RESULT).addObject((XMLObject)cp);
+											RESULT.addObject(cp);
 										:} |
 									choice_cpLIST:cpList PIPE_SURROUNDED_WITH_OPT_S cp:cp
 										{:
-											DBC.ASSERT(cp instanceof XMLObject);
 											RESULT = cpList;
-											((XMLAlternative)RESULT).addObject((XMLObject)cp);
+											RESULT.addObject(cp);
 										:};
 // S? ',' S?
-COMMA_SURROUNDED_BY_OPT_S		::= COMMA
+COMMA_SURROUNDED_BY_OPT_S		::= COMMA:value
 										{:
-											RESULT = ",";
+											RESULT = value;
 										:} |
 									COMMA_PRECEDED_BY_S:value
 										{:
@@ -1456,94 +1436,84 @@ contentspec						::= EMPTY
 										:} |
 									Mixed:mixed
 										{:
-											DBC.ASSERT(mixed instanceof XMLMixedContent);
-											RESULT = new XMLElement((XMLMixedContent)mixed);
+											RESULT = new XMLElement(mixed);
 										:} |
 									children:sequence
 										{:
-											DBC.ASSERT(sequence instanceof XMLSequence);
-											RESULT = new XMLElement((XMLSequence)sequence);
+											RESULT = new XMLElement(sequence);
 										:};
 // Page 22
 cp								::= Name:name
 										{:
 											RESULT = new XMLSequence();
-											((XMLSequence)RESULT).addObject(new XMLElementReference(name.toString()));
-											((XMLSequence)RESULT).setMinMaxOccurs(1, 1);
+											RESULT.addObject(new XMLElementReference(name));
+											RESULT.setMinMaxOccurs(1, 1);
 										:} |
 									Name:name QMARK
 										{:
 											RESULT = new XMLSequence();
-											((XMLSequence)RESULT).addObject(new XMLElementReference(name.toString()));
-											((XMLSequence)RESULT).setMinMaxOccurs(0, 1);
+											RESULT.addObject(new XMLElementReference(name));
+											RESULT.setMinMaxOccurs(0, 1);
 										:} |
 									Name:name STAR
 										{:
 											RESULT = new XMLSequence();
-											((XMLSequence)RESULT).addObject(new XMLElementReference(name.toString()));
-											((XMLSequence)RESULT).setMinMaxOccurs(0, Constants.INFINITY);
+											RESULT.addObject(new XMLElementReference(name));
+											RESULT.setMinMaxOccurs(0, Constants.INFINITY);
 										:} |
 									Name:name PLUS
 										{:
 											RESULT = new XMLSequence();
-											((XMLSequence)RESULT).addObject(new XMLElementReference(name.toString()));
-											((XMLSequence)RESULT).setMinMaxOccurs(1, Constants.INFINITY);
+											RESULT.addObject(new XMLElementReference(name));
+											RESULT.setMinMaxOccurs(1, Constants.INFINITY);
 										:} |
 									choice:c
 										{:
-											DBC.ASSERT(c instanceof XMLAlternative);
 											RESULT = new XMLSequence();
-											((XMLSequence)RESULT).addObject((XMLAlternative)c);
-											((XMLSequence)RESULT).setMinMaxOccurs(1, 1);
+											RESULT.addObject(c);
+											RESULT.setMinMaxOccurs(1, 1);
 										:} |
 									choice:c QMARK
 										{:
-											DBC.ASSERT(c instanceof XMLAlternative);
 											RESULT = new XMLSequence();
-											((XMLSequence)RESULT).addObject((XMLAlternative)c);
-											((XMLSequence)RESULT).setMinMaxOccurs(0, 1);
+											RESULT.addObject(c);
+											RESULT.setMinMaxOccurs(0, 1);
 										:} |
 									choice:c STAR
 										{:
-											DBC.ASSERT(c instanceof XMLAlternative);
 											RESULT = new XMLSequence();
-											((XMLSequence)RESULT).addObject((XMLAlternative)c);
-											((XMLSequence)RESULT).setMinMaxOccurs(0, Constants.INFINITY);
+											RESULT.addObject(c);
+											RESULT.setMinMaxOccurs(0, Constants.INFINITY);
 										:} |
 									choice:c PLUS
 										{:
-											DBC.ASSERT(c instanceof XMLAlternative);
 											RESULT = new XMLSequence();
-											((XMLSequence)RESULT).addObject((XMLAlternative)c);
-											((XMLSequence)RESULT).setMinMaxOccurs(1, Constants.INFINITY);
+											RESULT.addObject(c);
+											RESULT.setMinMaxOccurs(1, Constants.INFINITY);
 										:} |
 									seq:s
 										{:
-											DBC.ASSERT(s instanceof XMLSequence);
 											RESULT = new XMLSequence();
-											((XMLSequence)RESULT).addObject((XMLSequence)s);
-											((XMLSequence)RESULT).setMinMaxOccurs(1, 1);
+											RESULT.addObject(s);
+											RESULT.setMinMaxOccurs(1, 1);
 										:} |
 									seq:s QMARK
 										{:
-											DBC.ASSERT(s instanceof XMLSequence);
 											RESULT = new XMLSequence();
-											((XMLSequence)RESULT).addObject((XMLSequence)s);
-											((XMLSequence)RESULT).setMinMaxOccurs(0, 1);
+											RESULT.addObject(s);
+											RESULT.setMinMaxOccurs(0, 1);
 										:} |
 									seq:s STAR
 										{:
-											DBC.ASSERT(s instanceof XMLSequence);
 											RESULT = new XMLSequence();
-											((XMLSequence)RESULT).addObject((XMLSequence)s);
-											((XMLSequence)RESULT).setMinMaxOccurs(0, Constants.INFINITY);
+											RESULT.addObject(s);
+											RESULT.setMinMaxOccurs(0, Constants.INFINITY);
 										:} |
 									seq:s PLUS
 										{:
-											DBC.ASSERT(s instanceof XMLSequence);
 											RESULT = new XMLSequence();
-											((XMLSequence)RESULT).addObject((XMLSequence)s);
-											((XMLSequence)RESULT).setMinMaxOccurs(1, Constants.INFINITY);
+											RESULT.addObject(s);
+											RESULT.setMinMaxOccurs(1, Constants.INFINITY);
 										:};
 // Page 13
 DeclSep							::= s;
@@ -1551,28 +1521,28 @@ DeclSep							::= s;
 DefaultDecl						::= HASH_REQUIRED
 										{:
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setDefaultDecl(XMLAttribute.DefaultType.REQUIRED, null);
+											RESULT.setDefaultDecl(XMLAttribute.DefaultType.REQUIRED, null);
 										:} |
 									HASH_IMPLIED
 										{:
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setDefaultDecl(XMLAttribute.DefaultType.IMPLIED, null);
+											RESULT.setDefaultDecl(XMLAttribute.DefaultType.IMPLIED, null);
 										:} |
 									HASH_FIXED s AttValue:value
 										{:
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setDefaultDecl(XMLAttribute.DefaultType.FIXED, value.toString());
+											RESULT.setDefaultDecl(XMLAttribute.DefaultType.FIXED, value);
 										:} |
 									AttValue:value
 										{:
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setDefaultDecl(XMLAttribute.DefaultType.ATTVALUE, value.toString());
+											RESULT.setDefaultDecl(XMLAttribute.DefaultType.ATTVALUE, value);
 										:};
 // Page 21
 elementdecl						::= ELEMENT_HEAD s Name:name s contentspec:contents GT_PRECEDED_BY_OPT_S
 										{:
 											RESULT = contents;
-											((XMLElement)RESULT).setName(name.toString());
+											RESULT.setName(name);
 										:};
 // Page 35
 EntityDecl						::= GEDecl:gedecl
@@ -1582,17 +1552,15 @@ EntityDecl						::= GEDecl:gedecl
 // Page 35
 EntityDef						::= EntityValue:value
 										{:
-											RESULT = new XMLEntity(value.toString());
+											RESULT = new XMLEntity(value);
 										:} |
 									ExternalID:e
 										{:
-											DBC.ASSERT(e instanceof XMLExternalIdentifier);
-											RESULT = new XMLEntity((XMLExternalIdentifier)e);
+											RESULT = new XMLEntity(e);
 										:} |
 									ExternalID:e NDataDecl:n
 										{:
-											DBC.ASSERT(e instanceof XMLExternalIdentifier);
-											RESULT = new XMLEntity((XMLExternalIdentifier)e, n.toString());
+											RESULT = new XMLEntity(e, n);
 										:};
 // Page 33
 EntityRef						::= AMP Name:name SEMI
@@ -1616,168 +1584,168 @@ EntityValue_QUOT_STRING			::= /* ε */
 										:} |
 									EntityValue_QUOT_STRING:a EntityValue_QUOT_STRING_CHAR:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:} |
 									EntityValue_QUOT_STRING:a Reference:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:};
 // The characters allowed between quote marks in an EntityValue production
 EntityValue_QUOT_STRING_CHAR	::= CHAR:value
 										{:
 											RESULT = value;
 										:} |
-									APOS
+									APOS:value
 										{:
-											RESULT = "'";
+											RESULT = value;
 										:} |
-									AT
+									AT:value
 										{:
-											RESULT = "@";
+											RESULT = value;
 										:} |
-									BACKTICK
+									BACKTICK:value
 										{:
-											RESULT = "`";
+											RESULT = value;
 										:} |
 									BASECHAR:value
 										{:
 											RESULT = value;
 										:} |
-									BSLASH
+									BSLASH:value
 										{:
-											RESULT = "\\";
+											RESULT = value;
 										:} |
-									CARAT
+									CARAT:value
 										{:
-											RESULT = "^";
+											RESULT = value;
 										:} |
-									COLON
+									COLON:value
 										{:
-											RESULT = ":";
+											RESULT = value;
 										:} |
 									COMBININGCHAR:value
 										{:
 											RESULT = value;
 										:} |
-									COMMA
+									COMMA:value
 										{:
-											RESULT = ",";
+											RESULT = value;
 										:} |
 									DIGIT:value
 										{:
 											RESULT = value;
 										:} |
-									DOLLAR
+									DOLLAR:value
 										{:
-											RESULT = "$";
+											RESULT = value;
 										:} |
-									DOT
+									DOT:value
 										{:
-											RESULT = ".";
+											RESULT = value;
 										:} |
-									EQUALS
+									EQUALS:value
 										{:
-											RESULT = "=";
+											RESULT = value;
 										:} |
-									EXCLAM
+									EXCLAM:value
 										{:
-											RESULT = "!";
+											RESULT = value;
 										:} |
 									EXTENDER:value
 										{:
 											RESULT = value;
 										:} |
-									GT
+									GT:value
 										{:
-											RESULT = ">";
+											RESULT = value;
 										:} |
-									HASH
+									HASH:value
 										{:
-											RESULT = "#";
+											RESULT = value;
 										:} |
 									IDEOGRAPHIC:value
 										{:
 											RESULT = value;
 										:} |
-									LBRACE
+									LBRACE:value
 										{:
-											RESULT = "{";
+											RESULT = value;
 										:} |
-									LPAREN
+									LPAREN:value
 										{:
-											RESULT = "(";
+											RESULT = value;
 										:} |
-									LSQUARE
+									LSQUARE:value
 										{:
-											RESULT = "[";
+											RESULT = value;
 										:} |
-									LT
+									LT:value
 										{:
-											RESULT = "<";
+											RESULT = value;
 										:} |
-									MINUS
+									MINUS:value
 										{:
-											RESULT = "-";
+											RESULT = value;
 										:} |
-									PLUS
+									PLUS:value
 										{:
-											RESULT = "+";
+											RESULT = value;
 										:} |
-									QMARK
+									QMARK:value
 										{:
-											RESULT = "?";
+											RESULT = value;
 										:} |
-									RBRACE
+									RBRACE:value
 										{:
-											RESULT = "}";
+											RESULT = value;
 										:} |
-									RPAREN
+									RPAREN:value
 										{:
-											RESULT = ")";
+											RESULT = value;
 										:} |
-									RSQUARE
+									RSQUARE:value
 										{:
-											RESULT = "]";
+											RESULT = value;
 										:} |
 									S:value
 										{:
 											RESULT = value;
 										:} |
-									SEMI
+									SEMI:value
 										{:
-											RESULT = ";";
+											RESULT = value;
 										:} |
-									SLASH
+									SLASH:value
 										{:
-											RESULT = "/";
+											RESULT = value;
 										:} |
-									STAR
+									STAR:value
 										{:
-											RESULT = "*";
+											RESULT = value;
 										:} |
-									TILDE
+									TILDE:value
 										{:
-											RESULT = "~";
+											RESULT = value;
 										:} |
-									UNDERSCORE
+									UNDERSCORE:value
 										{:
-											RESULT = "_";
+											RESULT = value;
 										:} |
-									HASH_PCDATA
+									HASH_PCDATA:value
 										{:
-											RESULT = "#PCDATA";
+											RESULT = value;
 										:} |
-									HASH_FIXED
+									HASH_FIXED:value
 										{:
-											RESULT = "#FIXED";
+											RESULT = value;
 										:} |
-									HASH_IMPLIED
+									HASH_IMPLIED:value
 										{:
-											RESULT = "#IMPLIED";
+											RESULT = value;
 										:} |
-									HASH_REQUIRED
+									HASH_REQUIRED:value
 										{:
-											RESULT = "#REQUIRED";
+											RESULT = value;
 										:} |
 									CDATA:value
 										{:
@@ -1862,168 +1830,168 @@ EntityValue_APOS_STRING			::= /* ε */
 										:} |
 									EntityValue_APOS_STRING:a EntityValue_APOS_STRING_CHAR:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:} |
 									EntityValue_APOS_STRING:a Reference:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:};
 // The characters allowed between apostrophes in an EntityValue production
 EntityValue_APOS_STRING_CHAR	::= CHAR:value
 										{:
 											RESULT = value;
 										:} |
-									AT
+									AT:value
 										{:
-											RESULT = "@";
+											RESULT = value;
 										:} |
-									BACKTICK
+									BACKTICK:value
 										{:
-											RESULT = "`";
+											RESULT = value;
 										:} |
 									BASECHAR:value
 										{:
 											RESULT = value;
 										:} |
-									BSLASH
+									BSLASH:value
 										{:
-											RESULT = "\\";
+											RESULT = value;
 										:} |
-									CARAT
+									CARAT:value
 										{:
-											RESULT = "^";
+											RESULT = value;
 										:} |
-									COLON
+									COLON:value
 										{:
-											RESULT = ":";
+											RESULT = value;
 										:} |
 									COMBININGCHAR:value
 										{:
 											RESULT = value;
 										:} |
-									COMMA
+									COMMA:value
 										{:
-											RESULT = ",";
+											RESULT = value;
 										:} |
 									DIGIT:value
 										{:
 											RESULT = value;
 										:} |
-									DOLLAR
+									DOLLAR:value
 										{:
-											RESULT = "$";
+											RESULT = value;
 										:} |
-									DOT
+									DOT:value
 										{:
-											RESULT = ".";
+											RESULT = value;
 										:} |
-									EQUALS
+									EQUALS:value
 										{:
-											RESULT = "=";
+											RESULT = value;
 										:} |
-									EXCLAM
+									EXCLAM:value
 										{:
-											RESULT = "!";
+											RESULT = value;
 										:} |
 									EXTENDER:value
 										{:
 											RESULT = value;
 										:} |
-									GT
+									GT:value
 										{:
-											RESULT = ">";
+											RESULT = value;
 										:} |
-									HASH
+									HASH:value
 										{:
-											RESULT = "#";
+											RESULT = value;
 										:} |
 									IDEOGRAPHIC:value
 										{:
 											RESULT = value;
 										:} |
-									LBRACE
+									LBRACE:value
 										{:
-											RESULT = "{";
+											RESULT = value;
 										:} |
-									LPAREN
+									LPAREN:value
 										{:
-											RESULT = "(";
+											RESULT = value;
 										:} |
-									LSQUARE
+									LSQUARE:value
 										{:
-											RESULT = "[";
+											RESULT = value;
 										:} |
-									LT
+									LT:value
 										{:
-											RESULT = "<";
+											RESULT = value;
 										:} |
-									MINUS
+									MINUS:value
 										{:
-											RESULT = "-";
+											RESULT = value;
 										:} |
-									PLUS
+									PLUS:value
 										{:
-											RESULT = "+";
+											RESULT = value;
 										:} |
-									QMARK
+									QMARK:value
 										{:
-											RESULT = "?";
+											RESULT = value;
 										:} |
-									QUOT
+									QUOT:value
 										{:
-											RESULT = "\"";
+											RESULT = value;
 										:} |
-									RBRACE
+									RBRACE:value
 										{:
-											RESULT = "}";
+											RESULT = value;
 										:} |
-									RPAREN
+									RPAREN:value
 										{:
-											RESULT = ")";
+											RESULT = value;
 										:} |
-									RSQUARE
+									RSQUARE:value
 										{:
-											RESULT = "]";
+											RESULT = value;
 										:} |
 									S:value
 										{:
 											RESULT = value;
 										:} |
-									SEMI
+									SEMI:value
 										{:
-											RESULT = ";";
+											RESULT = value;
 										:} |
-									SLASH
+									SLASH:value
 										{:
-											RESULT = "/";
+											RESULT = value;
 										:} |
-									STAR
+									STAR:value
 										{:
-											RESULT = "*";
+											RESULT = value;
 										:} |
-									TILDE
+									TILDE:value
 										{:
-											RESULT = "~";
+											RESULT = value;
 										:} |
-									UNDERSCORE
+									UNDERSCORE:value
 										{:
-											RESULT = "_";
+											RESULT = value;
 										:} |
-									HASH_PCDATA
+									HASH_PCDATA:value
 										{:
-											RESULT = "#PCDATA";
+											RESULT = value;
 										:} |
-									HASH_FIXED
+									HASH_FIXED:value
 										{:
-											RESULT = "#FIXED";
+											RESULT = value;
 										:} |
-									HASH_IMPLIED
+									HASH_IMPLIED:value
 										{:
-											RESULT = "#IMPLIED";
+											RESULT = value;
 										:} |
-									HASH_REQUIRED
+									HASH_REQUIRED:value
 										{:
-											RESULT = "#REQUIRED";
+											RESULT = value;
 										:} |
 									CDATA:value
 										{:
@@ -2113,7 +2081,7 @@ EnumeratedType					::= NotationType:nType
 // Page 27
 Enumeration						::= LPAREN_FOLLOWED_BY_OPT_S Nmtoken:nmtoken RPAREN_PRECEDED_BY_OPT_S
 										{:
-											// The vector of all the values
+											// All the values
 											List<String> values = new ArrayList<String>();
 
 											// This Enumeration has only one possible value
@@ -2121,25 +2089,24 @@ Enumeration						::= LPAREN_FOLLOWED_BY_OPT_S Nmtoken:nmtoken RPAREN_PRECEDED_BY
 
 											// Make the new XMLAttribute, set its type and give it the values
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setType(XMLAttribute.ContentType.ENUMERATION, values);
+											RESULT.setType(XMLAttribute.ContentType.ENUMERATION, values);
 										:} |
 									LPAREN_FOLLOWED_BY_OPT_S Nmtoken:nmtoken Enumeration_NmtokenLIST:nmtokens RPAREN_PRECEDED_BY_OPT_S
 										{:
-											// The vector of all the values
+											// All the values
 											List<String> values = new ArrayList<String>();
 
 											// Add the first name to the vector
 											values.add(nmtoken);
 
 											// Add the rest of the names to the vector
-											DBC.ASSERT(nmtokens instanceof List);
 											for (Object token : nmtokens) {
 												values.add(token.toString());
 											}
 
 											// Make the new XMLAttribute, set its type and give it the values
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setType(XMLAttribute.ContentType.ENUMERATION, values);
+											RESULT.setType(XMLAttribute.ContentType.ENUMERATION, values);
 										:};
 // (S? '|' S? Nmtoken)+
 Enumeration_NmtokenLIST			::= PIPE_SURROUNDED_WITH_OPT_S Nmtoken:nmtoken
@@ -2152,12 +2119,10 @@ Enumeration_NmtokenLIST			::= PIPE_SURROUNDED_WITH_OPT_S Nmtoken:nmtoken
 										{:
 											List<String> newTokenList = new ArrayList<String>();
 
-											DBC.ASSERT(values instanceof List);
 											for (Object token : values) {
 												newTokenList.add(token.toString());
 											}
 
-											DBC.ASSERT(nmtoken instanceof String);
 											newTokenList.add(nmtoken);
 
 											RESULT = newTokenList;
@@ -2165,18 +2130,17 @@ Enumeration_NmtokenLIST			::= PIPE_SURROUNDED_WITH_OPT_S Nmtoken:nmtoken
 // Page 36
 ExternalID						::= SYSTEM s SystemLiteral:uri
 										{:
-											RESULT = new XMLExternalIdentifier(null, uri.toString());
+											RESULT = new XMLExternalIdentifier(null, uri);
 										:} |
 									PublicID:pubid s SystemLiteral:uri
 										{:
-											RESULT = new XMLExternalIdentifier(pubid.toString(), uri.toString());
+											RESULT = new XMLExternalIdentifier(pubid, uri);
 										:};
 // Page 14
 extSubset						::= extSubsetDecl:eSD
 										{:
 											List<XMLMarkupDeclaration> newExtSubSet = new ArrayList<XMLMarkupDeclaration>();
 
-											DBC.ASSERT(eSD instanceof List);
 											for (Object markupDecl : eSD) {
 												newExtSubSet.add((XMLMarkupDeclaration)markupDecl);
 											}
@@ -2190,15 +2154,12 @@ extSubsetDecl					::= /* ε */
 										:} |
 									markupDecl:a extSubsetDecl:b
 										{:
-											DBC.ASSERT(a == null || a instanceof XMLMarkupDeclaration);
-											DBC.ASSERT(b instanceof List);
-
 											List<XMLMarkupDeclaration> newDecls = new ArrayList<XMLMarkupDeclaration>();
-											
-											newDecls.add((XMLMarkupDeclaration)a);
+											newDecls.add(a);
 											for (Object listMarkup : b) {
 												newDecls.add((XMLMarkupDeclaration)listMarkup);
 											}
+
 											RESULT = newDecls;
 										:} |
 									DeclSep extSubsetDecl:eSD
@@ -2208,27 +2169,26 @@ extSubsetDecl					::= /* ε */
 // Page 35
 GEDecl							::= ENTITY_HEAD s Name:name s EntityDef:value GT_PRECEDED_BY_OPT_S
 										{:
-											DBC.ASSERT(value instanceof XMLEntity);
-											((XMLEntity)value).setName(name.toString());
+											value.setName(name);
 											RESULT = value;
 										:};
 // S? '>'
-GT_PRECEDED_BY_OPT_S			::= GT
+GT_PRECEDED_BY_OPT_S			::= GT:gt
 										{:
-											RESULT = ">";
+											RESULT = gt;
 										:} |
-									s:s GT
+									s:s GT:gt
 										{:
-											RESULT = s.toString() + ">";
+											RESULT = s + gt;
 										:};
 // '(' S?
-LPAREN_FOLLOWED_BY_OPT_S		::= LPAREN
+LPAREN_FOLLOWED_BY_OPT_S		::= LPAREN:lp
 										{:
-											RESULT = "(";
+											RESULT = lp;
 										:} |
-									LPAREN s:s
+									LPAREN:lp s:s
 										{:
-											RESULT = "(" + s.toString();
+											RESULT = lp + s;
 										:};
 // Page 13
 markupDecl						::= elementdecl:e
@@ -2256,36 +2216,34 @@ markupDecl						::= elementdecl:e
 Mixed							::= LPAREN_FOLLOWED_BY_OPT_S HASH_PCDATA Mixed_NameLIST:mixed RPAREN_PRECEDED_BY_OPT_S STAR
 										{:
 											RESULT = new XMLMixedContent();
-											((XMLMixedContent)RESULT).addObject(new XMLContent());
-											DBC.ASSERT(mixed instanceof XMLMixedContent);
-											((XMLMixedContent)RESULT).append((XMLMixedContent)mixed);
+											RESULT.addObject(new XMLContent());
+											RESULT.append(mixed);
 										:} |
 									LPAREN_FOLLOWED_BY_OPT_S HASH_PCDATA RPAREN_PRECEDED_BY_OPT_S STAR
 										{:
 											RESULT = new XMLMixedContent();
-											((XMLMixedContent)RESULT).addObject(new XMLContent());
+											RESULT.addObject(new XMLContent());
 										:} |
 									LPAREN_FOLLOWED_BY_OPT_S HASH_PCDATA RPAREN_PRECEDED_BY_OPT_S
 										{:
 											RESULT = new XMLMixedContent();
-											((XMLMixedContent)RESULT).addObject(new XMLContent());
+											RESULT.addObject(new XMLContent());
 										:};
 // (S? '|' S? Name)+
 Mixed_NameLIST					::= PIPE_SURROUNDED_WITH_OPT_S Name:name
 										{:
 											RESULT = new XMLMixedContent();
-											((XMLMixedContent)RESULT).addObject(new XMLElementReference(name.toString()));
+											RESULT.addObject(new XMLElementReference(name));
 										:} |
 									Mixed_NameLIST:mixed PIPE_SURROUNDED_WITH_OPT_S Name:name
 										{:
-											DBC.ASSERT(mixed instanceof XMLMixedContent);
 											RESULT = mixed;
-											((XMLMixedContent)RESULT).addObject(new XMLElementReference(name.toString()));
+											RESULT.addObject(new XMLElementReference(name));
 										:};
 // Page 8
 Name							::= NameStartChar:a NameChar_STAR:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:} |
 									CDATA:value
 										{:
@@ -2423,7 +2381,7 @@ NameChar_STAR					::= /* ε */
 										:} |
 									NameChar_STAR:a NameChar:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:};
 // Characters that may start a Name token
 NameStartChar					::= BASECHAR:value
@@ -2434,13 +2392,13 @@ NameStartChar					::= BASECHAR:value
 										{:
 											RESULT = value;
 										:} |
-									UNDERSCORE
+									UNDERSCORE:value
 										{:
-											RESULT = "_";
+											RESULT = value;
 										:} |
-									COLON
+									COLON:value
 										{:
-											RESULT = ":";
+											RESULT = value;
 										:};
 // Page 36
 NDataDecl						::=	NDATA_SURROUNDED_BY_S Name:name
@@ -2450,50 +2408,46 @@ NDataDecl						::=	NDATA_SURROUNDED_BY_S Name:name
 // Page 8
 Nmtoken							::= NameChar_STAR:a NameChar:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:};
 // Page 44
 NotationDecl					::= NOTATION_HEAD s Name:name s ExternalID:extID GT_PRECEDED_BY_OPT_S
 										{:
-											DBC.ASSERT(extID instanceof XMLExternalIdentifier);
-											RESULT = new XMLNotation(name.toString(), (XMLExternalIdentifier)extID);
+											RESULT = new XMLNotation(name, extID);
 										:} |
 									NOTATION_HEAD s Name:name s PublicID:pubID GT_PRECEDED_BY_OPT_S
 										{:
-											RESULT = new XMLNotation(name.toString(), new XMLExternalIdentifier(pubID.toString(), null));
+											RESULT = new XMLNotation(name, new XMLExternalIdentifier(pubID, null));
 										:};
 // Page 27
 NotationType					::= NOTATION s LPAREN_FOLLOWED_BY_OPT_S Name:name RPAREN_PRECEDED_BY_OPT_S
 										{:
-											// The vector of all the values
+											// All the values
 											List<String> values = new ArrayList<String>();
 
 											// This NotationType has only one possible value
-											String notationName = name.toString();
-											values.add(notationName);
+											values.add(name);
 
 											// Make the new XMLAttribute, set its type and give it the values
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setType(XMLAttribute.ContentType.NOTATION, values);
+											RESULT.setType(XMLAttribute.ContentType.NOTATION, values);
 										:} |
 									NOTATION s LPAREN_FOLLOWED_BY_OPT_S Name:name NotationType_NameLIST:names RPAREN_PRECEDED_BY_OPT_S
 										{:
-											// The vector of all the values
+											// All the values
 											List<String> values = new ArrayList<String>();
 
 											// Add the first name to the vector
-											String notationName = name.toString();
-											values.add(notationName);
+											values.add(name);
 
 											// Add the rest of the names to the vector
-											DBC.ASSERT(names instanceof List);
 											for (Object listName : names) {
 												values.add(listName.toString());
 											}
 
 											// Make the new XMLAttribute, set its type and give it the values
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setType(XMLAttribute.ContentType.NOTATION, values);
+											RESULT.setType(XMLAttribute.ContentType.NOTATION, values);
 										:};
 // (S? '|' S? Name)+
 NotationType_NameLIST			::= PIPE_SURROUNDED_WITH_OPT_S Name:name
@@ -2507,20 +2461,19 @@ NotationType_NameLIST			::= PIPE_SURROUNDED_WITH_OPT_S Name:name
 											List<String> newValues = new ArrayList<String>();
 											
 											// Copy in the values
-											DBC.ASSERT(values instanceof List);
 											for (Object newValue : values) {
 												newValues.add(newValue.toString());
 											}
 											
 											// Add the name on the end.
-											newValues.add(name.toString());
+											newValues.add(name);
 
 											RESULT = newValues;
 										:};
 // S? '|' S?
-PIPE_SURROUNDED_WITH_OPT_S		::= PIPE
+PIPE_SURROUNDED_WITH_OPT_S		::= PIPE:value
 										{:
-											RESULT = "|";
+											RESULT = value;
 										:} |
 									PIPE_PRECEDED_BY_S:value
 										{:
@@ -2558,13 +2511,13 @@ Reference						::= EntityRef:entityRefObject
 											RESULT = value;
 										:};
 // S? ')'
-RPAREN_PRECEDED_BY_OPT_S		::= RPAREN
+RPAREN_PRECEDED_BY_OPT_S		::= RPAREN:rp
 										{:
-											RESULT = ")";
+											RESULT = rp;
 										:} |
-									s:s RPAREN
+									s:s RPAREN:rp
 										{:
-											RESULT = s.toString() + ")";
+											RESULT = s + rp;
 										:};
 // S+
 s								::= S:value
@@ -2573,41 +2526,36 @@ s								::= S:value
 										:} |
 									s:a S:b
 										{:
-											RESULT = a.toString() + b.toString();
+											RESULT = a + b;
 										:};
 // Page 22
 seq								::= LPAREN_FOLLOWED_BY_OPT_S cp:cp RPAREN_PRECEDED_BY_OPT_S
 										{:
 											RESULT = new XMLSequence();
-											DBC.ASSERT(cp instanceof XMLObject);
-											((XMLSequence)RESULT).addObject((XMLObject)cp);
+											RESULT.addObject(cp);
 										:} |
 									LPAREN_FOLLOWED_BY_OPT_S cp:cp seq_cpLIST:seq RPAREN_PRECEDED_BY_OPT_S
 										{:
 											RESULT = new XMLSequence();
-											DBC.ASSERT(cp instanceof XMLObject);
-											DBC.ASSERT(seq instanceof XMLSequence);
-											((XMLSequence)RESULT).addObject((XMLObject)cp);
-											((XMLSequence)RESULT).append((XMLSequence)seq);
+											RESULT.addObject(cp);
+											RESULT.append(seq);
 										:};
 // (S? ',' S?)+
 seq_cpLIST						::= COMMA_SURROUNDED_BY_OPT_S cp:cp
 										{:
 											RESULT = new XMLSequence();
-											DBC.ASSERT(cp instanceof XMLObject);
-											((XMLSequence)RESULT).addObject((XMLObject)cp);
+											RESULT.addObject(cp);
 										:} |
 									seq_cpLIST:seq COMMA_SURROUNDED_BY_OPT_S cp:cp
 										{:
 											RESULT = seq;
-											DBC.ASSERT(cp instanceof XMLObject);
-											((XMLSequence)RESULT).addObject((XMLObject)cp);
+											RESULT.addObject(cp);
 										:};
 // Page 25
 StringType						::= CDATA
 										{:
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setType(XMLAttribute.ContentType.CDATA);
+											RESULT.setType(XMLAttribute.ContentType.CDATA);
 										:};
 // Page 9
 SystemLiteral					::= QUOT Char_NO_QUOT_STAR:value QUOT
@@ -2622,35 +2570,35 @@ SystemLiteral					::= QUOT Char_NO_QUOT_STAR:value QUOT
 TokenizedType					::= ID
 										{:
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setType(XMLAttribute.ContentType.ID);
+											RESULT.setType(XMLAttribute.ContentType.ID);
 										:} |
 									IDREF
 										{:
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setType(XMLAttribute.ContentType.IDREF);
+											RESULT.setType(XMLAttribute.ContentType.IDREF);
 										:} |
 									IDREFS
 										{:
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setType(XMLAttribute.ContentType.IDREFS);
+											RESULT.setType(XMLAttribute.ContentType.IDREFS);
 										:} |
 									ENTITY
 										{:
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setType(XMLAttribute.ContentType.ENTITY);
+											RESULT.setType(XMLAttribute.ContentType.ENTITY);
 										:} |
 									ENTITIES
 										{:
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setType(XMLAttribute.ContentType.ENTITIES);
+											RESULT.setType(XMLAttribute.ContentType.ENTITIES);
 										:} |
 									NMTOKEN
 										{:
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setType(XMLAttribute.ContentType.NMTOKEN);
+											RESULT.setType(XMLAttribute.ContentType.NMTOKEN);
 										:} |
 									NMTOKENS
 										{:
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setType(XMLAttribute.ContentType.NMTOKENS);
+											RESULT.setType(XMLAttribute.ContentType.NMTOKENS);
 										:};
