@@ -31,7 +31,6 @@ package com.mcdermottroe.exemplar.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -48,34 +47,34 @@ public class XMLDocumentType {
 	/** Enum value for {@link XMLDocumentType}s which define elements with
 		attribute lists.
 	*/
-	private static final Integer ATTLISTS = new Integer(0);
+	private static final int ATTLISTS = 0;
 
 	/** Enum value for {@link XMLDocumentType}s which define elements. */
-	private static final Integer ELEMENTS = new Integer(1);
+	private static final int ELEMENTS = 1;
 
 	/** Enum value for {@link XMLDocumentType}s which define entities. */
-	private static final Integer ENTITIES = new Integer(2);
+	private static final int ENTITIES = 2;
 
 	/** Enum value for {@link XMLDocumentType}s which define notations. */
-	private static final Integer NOTATIONS = new Integer(3);
+	private static final int NOTATIONS = 3;
 
 	/** A list of all the markup declarations in the document type. */
-	private List markupDecls;
+	private List<XMLMarkupDeclaration> markupDecls;
 
 	/** A map of all the features that this DTD/Schema uses. */
-	private Map feature;
+	private Map<Integer, Boolean> feature;
 
 	/** A map of all the elements in this DTD/Schema. */
-	private Map elements;
+	private Map<String, XMLMarkupDeclaration> elements;
 
 	/** A map of all the attribute lists in this DTD/Schema. */
-	private Map attlists;
+	private Map<String, XMLMarkupDeclaration> attlists;
 
 	/** A map of all the entities in this DTD/Schema. */
-	private Map entities;
+	private Map<String, XMLMarkupDeclaration> entities;
 
 	/** A map of all the notations in this DTD/Schema. */
-	private Map notations;
+	private Map<String, XMLMarkupDeclaration> notations;
 
 	/** A no-arg constructor to aid in testing. This effectively creates an
 		empty vocabulary description. It's useless for actually generating
@@ -89,7 +88,7 @@ public class XMLDocumentType {
 	public XMLDocumentType()
 	throws XMLDocumentTypeException
 	{
-		markupDecls = new ArrayList();
+		markupDecls = new ArrayList<XMLMarkupDeclaration>();
 		feature = null;
 		elements = null;
 		attlists = null;
@@ -110,12 +109,12 @@ public class XMLDocumentType {
 											called from here throw an {@link
 											XMLDocumentTypeException}.
 	*/
-	public XMLDocumentType(List markup)
+	public XMLDocumentType(List<XMLMarkupDeclaration> markup)
 	throws XMLDocumentTypeException
 	{
 		DBC.REQUIRE(markup != null);
 
-		markupDecls = new ArrayList(markup);
+		markupDecls = new ArrayList<XMLMarkupDeclaration>(markup);
 		feature = null;
 		elements = null;
 		attlists = null;
@@ -137,29 +136,13 @@ public class XMLDocumentType {
 		DBC.REQUIRE(notations != null);
 
 		// Ensure there is storage for the features
-		feature = new HashMap();
+		feature = new HashMap<Integer, Boolean>();
 
 		// Calculate some features
-		if (attlists.isEmpty()) {
-			feature.put(ATTLISTS, Boolean.FALSE);
-		} else {
-			feature.put(ATTLISTS, Boolean.TRUE);
-		}
-		if (elements.isEmpty()) {
-			feature.put(ELEMENTS, Boolean.FALSE);
-		} else {
-			feature.put(ELEMENTS, Boolean.TRUE);
-		}
-		if (entities.isEmpty()) {
-			feature.put(ENTITIES, Boolean.FALSE);
-		} else {
-			feature.put(ENTITIES, Boolean.TRUE);
-		}
-		if (notations.isEmpty()) {
-			feature.put(NOTATIONS, Boolean.FALSE);
-		} else {
-			feature.put(NOTATIONS, Boolean.TRUE);
-		}
+		feature.put(ATTLISTS, !attlists.isEmpty());
+		feature.put(ELEMENTS, !elements.isEmpty());
+		feature.put(ENTITIES, !entities.isEmpty());
+		feature.put(NOTATIONS, !notations.isEmpty());
 
 		DBC.ENSURE(feature != null);
 	}
@@ -177,28 +160,29 @@ public class XMLDocumentType {
 		DBC.REQUIRE(markupDecls != null);
 
 		// Allocate storage for the various hashes
-		attlists = new HashMap();
-		elements = new HashMap();
-		entities = new HashMap();
-		notations = new HashMap();
+		attlists = new HashMap<String, XMLMarkupDeclaration>();
+		elements = new HashMap<String, XMLMarkupDeclaration>();
+		entities = new HashMap<String, XMLMarkupDeclaration>();
+		notations = new HashMap<String, XMLMarkupDeclaration>();
 
 		// Go through the list of markup declarations and put the objects in
 		// the correct hashes.
-		for (Iterator it = markupDecls.iterator(); it.hasNext(); ) {
-			XMLObject xmlObject = (XMLObject)it.next();
-
+		for (XMLMarkupDeclaration xmlObject : markupDecls) {
 			boolean classified = false;
 			if (xmlObject instanceof XMLAttributeList) {
-				attlists.put(((XMLNamedObject)xmlObject).getName(), xmlObject);
+				attlists.put(xmlObject.getName(), xmlObject);
 				classified = true;
 			} else if (xmlObject instanceof XMLElement) {
-				elements.put(((XMLNamedObject)xmlObject).getName(), xmlObject);
+				elements.put(xmlObject.getName(), xmlObject);
 				classified = true;
 			} else if (xmlObject instanceof XMLEntity) {
-				entities.put(((XMLNamedObject)xmlObject).getName(), xmlObject);
+				entities.put(xmlObject.getName(), xmlObject);
 				classified = true;
 			} else if (xmlObject instanceof XMLNotation) {
-				notations.put(((XMLNamedObject)xmlObject).getName(), xmlObject);
+				notations.put(xmlObject.getName(), xmlObject);
+				classified = true;
+			} else if (xmlObject == null) {
+				// ignore
 				classified = true;
 			}
 
@@ -227,11 +211,7 @@ public class XMLDocumentType {
 		DBC.REQUIRE(attlists != null);
 		DBC.REQUIRE(elements != null);
 
-		for (Iterator it = attlists.keySet().iterator(); it.hasNext(); ) {
-			// The keys are Strings containing the name of the elements that
-			// the attribute lists belong to.
-			String name = (String)it.next();
-
+		for (String name : attlists.keySet()) {
 			// Get the XMLAttributeList and corresponding XMLElement
 			XMLAttributeList attlist = (XMLAttributeList)attlists.get(name);
 			DBC.ASSERT(attlist != null);
@@ -281,7 +261,7 @@ public class XMLDocumentType {
 		}
 
 		// Actually do the check
-		return ((Boolean)feature.get(featureName)).booleanValue();
+		return feature.get(featureName);
 	}
 
 	/** Shorthand for finding out if the current document type declares any
@@ -294,7 +274,7 @@ public class XMLDocumentType {
 		try {
 			return hasFeature(ATTLISTS);
 		} catch (XMLDocumentTypeException e) {
-			DBC.IGNORED_ERROR();
+			DBC.IGNORED_EXCEPTION(e);
 			return false;
 		}
 	}
@@ -309,7 +289,7 @@ public class XMLDocumentType {
 		try {
 			return hasFeature(ENTITIES);
 		} catch (XMLDocumentTypeException e) {
-			DBC.IGNORED_ERROR();
+			DBC.IGNORED_EXCEPTION(e);
 			return false;
 		}
 	}
@@ -319,9 +299,9 @@ public class XMLDocumentType {
 		@return	A {@link Map} (keyed on the names) of the elements declared in
 				this {@link XMLDocumentType}.
 	*/
-	public Map elements() {
+	public Map<String, XMLMarkupDeclaration> elements() {
 		DBC.REQUIRE(elements != null);
-		return new HashMap(elements);
+		return new HashMap<String, XMLMarkupDeclaration>(elements);
 	}
 
 	/** Accessor for attribute lists.
@@ -329,9 +309,9 @@ public class XMLDocumentType {
 		@return	A {@link Map} (keyed on the names) of the attribute lists
 				declared in this {@link XMLDocumentType}
 	*/
-	public Map attlists() {
+	public Map<String, XMLMarkupDeclaration> attlists() {
 		DBC.REQUIRE(attlists != null);
-		return new HashMap(attlists);
+		return new HashMap<String, XMLMarkupDeclaration>(attlists);
 	}
 
 	/** Accessor for entities.
@@ -339,9 +319,9 @@ public class XMLDocumentType {
 		@return A {@link Map} (keyed on the names) of the general entities
 				declared in this {@link XMLDocumentType}.
 	*/
-	public Map entities() {
+	public Map<String, XMLMarkupDeclaration> entities() {
 		DBC.REQUIRE(entities != null);
-		return new HashMap(entities);
+		return new HashMap<String, XMLMarkupDeclaration>(entities);
 	}
 
 	/** Accessor for notations.
@@ -349,9 +329,9 @@ public class XMLDocumentType {
 		@return	A {@link Map} (keyed on the names) of the notations declared in
 				this {@link XMLDocumentType}.
 	*/
-	public Map notations() {
+	public Map<String, XMLMarkupDeclaration> notations() {
 		DBC.REQUIRE(notations != null);
-		return new HashMap(notations);
+		return new HashMap<String, XMLMarkupDeclaration>(notations);
 	}
 
 	/** See {@link Object#equals(Object)}.
@@ -359,7 +339,7 @@ public class XMLDocumentType {
 		@param	o	The object to compare against.
 		@return		True if <code>this</code> is equal to <code>o</code>.
 	*/
-	public boolean equals(Object o) {
+	@Override public boolean equals(Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -387,21 +367,15 @@ public class XMLDocumentType {
 
 		@return	A hash code.
 	*/
-	public int hashCode() {
-		Object[] hashCodeVars = {
-			attlists,
-			elements,
-			entities,
-			notations,
-		};
-		return Utils.genericHashCode(hashCodeVars);
+	@Override public int hashCode() {
+		return Utils.genericHashCode(attlists, elements, entities, notations);
 	}
 
 	/** See {@link Object#toString()}.
 
 		@return	A descriptive {@link String}.
 	*/
-	public String toString() {
+	@Override public String toString() {
 		return getClass().getName();
 	}
 }

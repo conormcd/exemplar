@@ -84,27 +84,14 @@ public abstract class ExceptionClassTestCase extends ExemplarTestCase {
 			return;
 		}
 
-		Constructor noArg;
-		try {
-			Class[] args = {};
-			noArg = testedClass.getDeclaredConstructor(args);
-		} catch (NoSuchMethodException e) {
-			fail("Class does not have a no-arg constructor.");
-			return;
-		}
-
 		Object o;
 		try {
-			Object[] args = {};
-			o = noArg.newInstance(args);
+			o = testedClass.newInstance();
 		} catch (InstantiationException e) {
 			fail("Failed to instantiate the class.");
 			return;
 		} catch (IllegalAccessException e) {
 			fail("Forbidden from instantiating the class.");
-			return;
-		} catch (InvocationTargetException e) {
-			fail("An exception was thrown when instantiating the class.");
 			return;
 		}
 
@@ -124,8 +111,7 @@ public abstract class ExceptionClassTestCase extends ExemplarTestCase {
 
 		Constructor oneString;
 		try {
-			Class[] args = {String.class};
-			oneString = testedClass.getDeclaredConstructor(args);
+			oneString = testedClass.getDeclaredConstructor(String.class);
 		} catch (NoSuchMethodException e) {
 			fail("Class does not have a (String) constructor.");
 			return;
@@ -133,8 +119,7 @@ public abstract class ExceptionClassTestCase extends ExemplarTestCase {
 
 		Object o;
 		try {
-			Object[] args = {"test"};
-			o = oneString.newInstance(args);
+			o = oneString.newInstance("test");
 		} catch (InstantiationException e) {
 			fail("Failed to instantiate the class.");
 			return;
@@ -162,8 +147,7 @@ public abstract class ExceptionClassTestCase extends ExemplarTestCase {
 
 		Constructor oneThrowable;
 		try {
-			Class[] args = {Throwable.class};
-			oneThrowable = testedClass.getDeclaredConstructor(args);
+			oneThrowable = testedClass.getDeclaredConstructor(Throwable.class);
 		} catch (NoSuchMethodException e) {
 			fail("Class does not have a (Throwable) constructor.");
 			return;
@@ -171,8 +155,7 @@ public abstract class ExceptionClassTestCase extends ExemplarTestCase {
 
 		Object o;
 		try {
-			Object[] args = {new Throwable("test")};
-			o = oneThrowable.newInstance(args);
+			o = oneThrowable.newInstance(new Throwable("test"));
 		} catch (InstantiationException e) {
 			fail("Failed to instantiate the class.");
 			return;
@@ -200,17 +183,18 @@ public abstract class ExceptionClassTestCase extends ExemplarTestCase {
 
 		Constructor stringThrowable;
 		try {
-			Class[] args = {String.class, Throwable.class};
-			stringThrowable = testedClass.getDeclaredConstructor(args);
+			stringThrowable = testedClass.getDeclaredConstructor(
+				String.class,
+				Throwable.class
+			);
 		} catch (NoSuchMethodException e) {
-			fail("Class does not have a (String) constructor.");
+			fail("Class does not have a (String, Throwable) constructor.");
 			return;
 		}
 
 		Object o;
 		try {
-			Object[] args = {"test", new Throwable("test")};
-			o = stringThrowable.newInstance(args);
+			o = stringThrowable.newInstance("test", new Throwable("test"));
 		} catch (InstantiationException e) {
 			fail("Failed to instantiate the class.");
 			return;

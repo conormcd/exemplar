@@ -40,7 +40,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -54,37 +53,43 @@ import com.mcdermottroe.exemplar.ui.Message;
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class PEDeclTable
-implements Constants.XML.ParameterEntity
-{
+public class PEDeclTable {
+	/** Enumerated type for the type of parameter entity this is. */
+	public enum ParameterEntityType {
+		/** A parameter entity having an immediate value. */
+		VALUE,
+		/** A parameter entity referencing its content via a URI. */
+		URI
+	}
+
 	/**	A table of parameter entities that have immediate values not URI
 		references.
 	*/
-	private Map table;
+	private Map<String, String> table;
 
 	/** A table of parameter entities that have URI references. */
-	private Map fileTable;
+	private Map<String, String> fileTable;
 
 	/** Simple constructor, just initialises storage. */
 	public PEDeclTable() {
-		table = new HashMap();
-		fileTable = new HashMap();
+		table = new HashMap<String, String>();
+		fileTable = new HashMap<String, String>();
 	}
 
 	/** Getter for the table member.
 
 		@return A copy of the table member.
 	*/
-	public Map getTable() {
-		return new HashMap(table);
+	public Map<String, String> getTable() {
+		return new HashMap<String, String>(table);
 	}
 
 	/** Getter for the fileTable member.
 
 		@return A copy of the fileTable member.
 	*/
-	public Map getFileTable() {
-		return new HashMap(fileTable);
+	public Map<String, String> getFileTable() {
+		return new HashMap<String, String>(fileTable);
 	}
 
 	/** Add a new parameter entity to the symbol table.
@@ -101,12 +106,15 @@ implements Constants.XML.ParameterEntity
 											or the empty string or if the type
 											is not one of the predefined types.
 	*/
-	public void addNewPE(String name, String contents, int type)
+	public void addNewPE(String name, String contents, ParameterEntityType type)
 	throws ParameterEntityException
 	{
 		DBC.REQUIRE(name != null);
 		DBC.REQUIRE(contents != null);
-		DBC.REQUIRE(type == VALUE || type == URI);
+		DBC.REQUIRE(
+			type.equals(ParameterEntityType.VALUE) ||
+			type.equals(ParameterEntityType.URI)
+		);
 		if	(
 				name == null || name.length() == 0 ||
 				contents == null || contents.length() < 0
@@ -115,20 +123,21 @@ implements Constants.XML.ParameterEntity
 			throw new ParameterEntityException(Message.DTDPE_INVALID_PEDECL);
 		}
 
-		if (type == VALUE) {
-			// The parameter entity contains content only
-			if (!table.containsKey(name)) {
-				table.put(name, replacePERefs(contents));
-			}
-		} else if (type == URI) {
-			// The parameter entity contains a URI reference only
-			if (!fileTable.containsKey(name)) {
-				fileTable.put(name, replacePERefs(contents));
-			}
-		} else {
-			// type must be one of PE_VALUE or PE_URI
-			DBC.UNREACHABLE_CODE();
-			throw new ParameterEntityException(Message.DTDPE_UNKNOWN_PE_TYPE);
+		switch (type) {
+			case VALUE:
+				// The parameter entity contains content only
+				if (!table.containsKey(name)) {
+					table.put(name, replacePERefs(contents));
+				}
+				break;
+			case URI:
+				// The parameter entity contains a URI reference only
+				if (!fileTable.containsKey(name)) {
+					fileTable.put(name, replacePERefs(contents));
+				}
+				break;
+			default:
+				DBC.UNREACHABLE_CODE();
 		}
 	}
 
@@ -155,7 +164,7 @@ implements Constants.XML.ParameterEntity
 		Reader peRefReader;
 		if (fileTable.containsKey(name)) {
 			// Get the entry from the table
-			String fileTableEntry = fileTable.get(name).toString();
+			String fileTableEntry = fileTable.get(name);
 
 			try {
 				// Construct the path to the file
@@ -173,6 +182,7 @@ implements Constants.XML.ParameterEntity
 				);
 			} catch (FileNotFoundException e) {
 				// OK, so it's not a file, try and make a URL out of it
+				DBC.IGNORED_EXCEPTION(e);
 				try {
 					URL url = new URL(fileTableEntry);
 
@@ -196,7 +206,7 @@ implements Constants.XML.ParameterEntity
 		} else if (table.containsKey(name)) {
 			// Construct a string reader so that the contents can be properly
 			// lexically analysed.
-			String contents = replacePERefs((String)table.get(name)).trim();
+			String contents = replacePERefs(table.get(name)).trim();
 			peRefReader = new StringReader(contents);
 		} else {
 			throw new ParameterEntityException(
@@ -236,15 +246,15 @@ implements Constants.XML.ParameterEntity
 			// The text potentially has a parameter entity reference in it.
 
 			// Create vectors to store the indices of % and ; occurrences
-			List percentIndices = new ArrayList();
-			List semicolonIndices = new ArrayList();
+			List<Integer> percentIndices = new ArrayList<Integer>();
+			List<Integer> semicolonIndices = new ArrayList<Integer>();
 
 			// Get the indices of all the occurences of the % character
 			int percent = (int)Constants.Character.PERCENT;
 			int poffset = 0;
 			int index;
 			while ((index = text.indexOf(percent, poffset)) != -1) {
-				percentIndices.add(new Integer(index));
+				percentIndices.add(index);
 				poffset = index + 1;
 			}
 
@@ -252,24 +262,20 @@ implements Constants.XML.ParameterEntity
 			int semicolon = (int)Constants.Character.SEMI_COLON;
 			int soffset = 0;
 			while ((index = text.indexOf(semicolon, soffset)) != -1) {
-				semicolonIndices.add(new Integer(index));
+				semicolonIndices.add(index);
 				soffset = index + 1;
 			}
 
 			// Now use the indices of the % and ; characters to attempt
 			// replacement of references.
 			int strlenDiff = 0;
-			Iterator pIndices = percentIndices.iterator();
-			while (pIndices.hasNext()) {
+			for (int pIndex : percentIndices) {
 				int sIndex = 0;
-				int pIndex = ((Number)pIndices.next()).intValue();
-				Iterator sIndices = semicolonIndices.iterator();
-				while (sIndices.hasNext()) {
-					sIndex = ((Number)sIndices.next()).intValue();
+				for (int sI : semicolonIndices) {
+					sIndex = sI;
 					if (sIndex > pIndex) {
 						break;
 					}
-					sIndex = 0;
 				}
 
 				// Now that the upper and a lower bound for the start and end
@@ -302,7 +308,7 @@ implements Constants.XML.ParameterEntity
 
 						// Calculate the difference in string length that the
 						// substitution would cause
-						CharSequence rText = (CharSequence)table.get(peRefKey);
+						CharSequence rText = table.get(peRefKey);
 						strlenDiff += rText.length() - peRef.length();
 
 						// Actually perform the replacement.
@@ -331,7 +337,7 @@ implements Constants.XML.ParameterEntity
 
 		@return	A descriptive {@link String}.
 	*/
-	public String toString() {
+	@Override public String toString() {
 		return Message.DTDPEDECLTABLE(table.size(), fileTable.size());
 	}
 
@@ -340,7 +346,7 @@ implements Constants.XML.ParameterEntity
 		@param	o	The object to compare against.
 		@return		True if <code>this</code> is equal to <code>o</code>.
 	*/
-	public boolean equals(Object o) {
+	@Override public boolean equals(Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -363,11 +369,7 @@ implements Constants.XML.ParameterEntity
 
 		@return	A hash code.
 	*/
-	public int hashCode() {
-		Object[] hashCodeVars = {
-			table,
-			fileTable,
-		};
-		return Utils.genericHashCode(hashCodeVars);
+	@Override public int hashCode() {
+		return Utils.genericHashCode(table, fileTable);
 	}
 }

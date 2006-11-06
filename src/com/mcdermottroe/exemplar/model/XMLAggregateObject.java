@@ -46,14 +46,15 @@ import com.mcdermottroe.exemplar.Utils;
 */
 public abstract class XMLAggregateObject
 extends XMLObject
+implements Iterable<XMLObject>
 {
 	/** The contents of the collection. */
-	private List contents;
+	private List<XMLObject> contents;
 
 	/** Simple constructor. */
 	protected XMLAggregateObject() {
 		super();
-		contents = new ArrayList();
+		contents = new ArrayList<XMLObject>();
 	}
 
 	/** Return the number of elements in the object.
@@ -69,7 +70,7 @@ extends XMLObject
 
 		@return An {@link Iterator} over the contents in the object.
 	*/
-	public Iterator iterator() {
+	public Iterator<XMLObject> iterator() {
 		DBC.ASSERT(contents != null);
 		return contents.iterator();
 	}
@@ -99,9 +100,8 @@ extends XMLObject
 		DBC.REQUIRE(contents != null);
 
 		if (other instanceof XMLAggregateObject) {
-			XMLAggregateObject o = (XMLAggregateObject)other;
-			for (Iterator it = o.iterator(); it.hasNext(); ) {
-				contents.add(it.next());
+			for (XMLObject xmlObject : (XMLAggregateObject)other) {
+				contents.add(xmlObject);
 			}
 		} else if (other instanceof XMLElementReference) {
 			contents.add(other);
@@ -116,16 +116,16 @@ extends XMLObject
 
 		@return A copy of the contents member.
 	*/
-	public List getContents() {
-		return new ArrayList(contents);
+	public List<XMLObject> getContents() {
+		return new ArrayList<XMLObject>(contents);
 	}
 
 	/** {@inheritDoc} */
-	public boolean equals(Object o) {
+	@Override public boolean equals(Object o) {
 		if (this == o) {
 			return true;
 		}
-		if (o == null || !(o.getClass().equals(getClass()))) {
+		if (o == null || !o.getClass().equals(getClass())) {
 			return false;
 		}
 
@@ -139,7 +139,7 @@ extends XMLObject
 	}
 
 	/** {@inheritDoc} */
-	public int hashCode() {
+	@Override public int hashCode() {
 		int hashCode = super.hashCode();
 
 		hashCode *= Constants.HASHCODE_MAGIC_NUMBER;
@@ -157,17 +157,9 @@ extends XMLObject
 							XMLAggregateObject}.
 	*/
 	protected String toString(String className, char separator) {
-		String contentDescription = "";
-		Iterator it = contents.iterator();
-		if (it.hasNext()) {
-			StringBuffer descBuffer = new StringBuffer(it.next().toString());
-			while (it.hasNext()) {
-				descBuffer.append(separator);
-				descBuffer.append(it.next().toString());
-			}
-			contentDescription = descBuffer.toString();
-		}
-
-		return toString(className, contentDescription);
+		return XMLObject.toStringHelper(
+			className,
+			Utils.join(separator, contents)
+		);
 	}
 }

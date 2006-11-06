@@ -31,7 +31,6 @@ package com.mcdermottroe.exemplar.ui;
 
 import java.util.logging.Handler;
 import java.util.logging.Level;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import com.mcdermottroe.exemplar.Constants;
@@ -43,154 +42,49 @@ import com.mcdermottroe.exemplar.DBC;
 	@since	0.1
 */
 public final class LogUtils {
-	/** A default log handler that can be passed to {@link
-		#setLogHandler(Handler)} which will cause all logging to go to the bit
-		bucket.
-	*/
-	public static final Handler NO_OP_LOG_HANDLER = new NoOpLogHandler();
-
-	/**	The logger that everything should use. */
-	private static Logger theLogger;
-
-	/** A marker to set when a real logger has been added. */
-	private static boolean realLoggerSet;
-
-	/** The level of logging required. Should be one of the predefined levels
-		in {@link Level}.
-	*/
-	private static Level logLevel;
-
 	/** Private constructor to prevent instantiation of this class. */
 	private LogUtils() {
 		DBC.UNREACHABLE_CODE();
 	}
 
-	/** Set a no-op logger, mark the logger as not set and set the log level to
-		{@link Level.ALL}.
-	*/
-	static {
-		// Default values for everything.
-		theLogger = null;
-		realLoggerSet = false;
-		logLevel = Level.ALL;
+	/** Get the logger.
 
-		// Set a no-op method and reset the "set" flag.
-		setLogHandler(NO_OP_LOG_HANDLER);
-		realLoggerSet = false;
-	}
-
-	/** Assumes a logger has already been created and returns it for use. This
-		should never be called before {@link #setLogHandler(Handler)}. Then
-		again, {@link #setLogHandler(Handler)} should be called as early as
-		possible in the life of the program.
-
-		@return	A {@link Logger} object that has already been set up somewhere
-				else.
+		@return	A {@link Logger}.
 	*/
 	public static Logger getLogger() {
-		DBC.REQUIRE(theLogger != null);
-		DBC.REQUIRE(realLoggerSet);
-		if (theLogger == null) {
-			return null;
-		}
-
-		// Turn up the logging if debugging is on.
+		Logger logger = Logger.getLogger(Constants.PACKAGE);
 		if (Options.isDebugSet()) {
-			theLogger.setLevel(Level.ALL);
+			logger.setLevel(Level.ALL);
+		} else {
+			logger.setLevel(Level.INFO);
 		}
-
-		DBC.ENSURE(theLogger != null);
-		return theLogger;
+		return logger;
 	}
 
-	/** Set up a logger for the rest of the program to use. This creates a
-		logger for the base package, removes all other handlers for it and adds
-		the supplied handler. The logging level is then set to {@link
-		Level#SEVERE} if debug is not set and {@link Level#ALL} if debug is
-		set, unless another level had been set with {@link #setLogLevel(Level)}.
+	/** Set up a logger for the rest of the program to use. This takes the
+		logger for the base package, removes all other {@link Handler}s for it
+		and adds the supplied {@link Handler}. The logging level is then set to
+		{@link Level#SEVERE} if debug is not set and {@link Level#ALL} if debug
+		is set.
 
-		@param handler The handler to use to process the logs.
+		@param	handler	The {@link Handler} to use to process the logs.
 	*/
 	public static void setLogHandler(Handler handler) {
 		DBC.REQUIRE(handler != null);
-		if (handler == null) {
-			return;
-		}
 
-		// Create the logger.
 		Logger logger = Logger.getLogger(Constants.PACKAGE);
 
 		// Remove any/all the other Handlers
-		Handler[] handlers = logger.getHandlers();
-		for (int i = 0; i < handlers.length; i++) {
-			logger.removeHandler(handlers[i]);
+		for (Handler h : logger.getHandlers()) {
+			logger.removeHandler(h);
 		}
 
 		// Prevent the logger from using its parent handlers
 		logger.setUseParentHandlers(false);
 
 		// Add the provided handler
-		logger.addHandler(handler);
-
-		// Set the level of logging
-		if (logLevel == null) {
-			if (Options.isDebugSet()) {
-				logger.setLevel(Level.ALL);
-			} else {
-				logger.setLevel(Level.SEVERE);
-			}
-		} else {
-			logger.setLevel(logLevel);
+		if (handler != null) {
+			logger.addHandler(handler);
 		}
-
-		// Store the logger for later
-		theLogger = logger;
-
-		// Set the flag so that people can actually use the logger
-		realLoggerSet = true;
-	}
-
-	/** Set the level of logging.
-
-		@param level	The level at which to set the logging.
-	*/
-	public static void setLogLevel(Level level) {
-		DBC.REQUIRE(level != null);
-		if (level == null) {
-			return;
-		}
-
-		logLevel = level;
-		if (theLogger != null) {
-			theLogger.setLevel(level);
-		}
-	}
-
-	/** Find out the level of logging.
-
-		@return The log level currently set.
-	*/
-	public static Level getLogLevel() {
-		return logLevel;
-	}
-
-	/** This is a log handler that causes all logging operations handled by it
-		to be a no-op.
-
-		@author	Conor McDermottroe
-		@since	0.1
-	*/
-	private static class NoOpLogHandler extends Handler {
-		/** Nothing gets opened and hence nothing needs to be closed. */
-		public void close() {}
-
-		/** Nothing gets logged, so flushing does nothing. */
-		public void flush() {}
-
-		/** Throw away a log record.
-
-			@param lr	The {@link LogRecord} that never gets logged.
-		*/
-		public void publish(LogRecord lr) {}
 	}
 }

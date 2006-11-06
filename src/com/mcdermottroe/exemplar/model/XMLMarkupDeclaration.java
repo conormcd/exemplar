@@ -1,10 +1,5 @@
-<?xml version="1.0"?>
-<!DOCTYPE module PUBLIC	"-//Puppy Crawl//DTD Check Configuration 1.2//EN"
-						"http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
-<!--
-	vim:filetype=xml:ts=4
--->
-<!--
+// vim:filetype=java:ts=4
+/*
 	Copyright (c) 2006
 	Conor McDermottroe.  All rights reserved.
 
@@ -31,12 +26,18 @@
 	OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 	NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
--->
-<module name="Checker">
-	<module name="TreeWalker">
-	 	<module name="MultipleStringLiterals">
-			<property name="allowedDuplicates" value="0" />
-			<property name="ignoreStringsRegexp" value='^"(|debug|exclude|CDSect|CharRef|Comment|doctypedecl|PI|include|entities|input-type|input|output-api|output-language|output|vocabulary)"$' />
-		</module>
-	</module>
-</module>
+*/
+package com.mcdermottroe.exemplar.model;
+
+/** A marker interface to identify a top level XML description element.
+
+	@author	Conor McDermottroe
+	@since	0.2
+*/
+public interface XMLMarkupDeclaration {
+	/** Get the name of the markup declaration.
+
+		@return	The name of the markup declaration.
+	*/
+	String getName();
+}

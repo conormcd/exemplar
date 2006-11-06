@@ -97,6 +97,9 @@ public final class Message {
 	*/
 	public static String EXCEPTION_NO_MESSAGE = Constants.DEFAULT_MESSAGE;
 
+	/** Message to say that we are ignoring an exception. */
+	public static String IGNORING_EXCEPTION = Constants.DEFAULT_MESSAGE;
+
 	/** Warning that mandatory options were not set. */
 	public static String MANDATORY_OPTIONS_NOT_SET = Constants.DEFAULT_MESSAGE;
 
@@ -114,13 +117,15 @@ public final class Message {
 	public static String OPTION_LANGUAGE_REQUIRES_API = Constants.DEFAULT_MESSAGE;
 
 	/** Someone passed a null doctype to {@link
-		com.mcdermottroe.exemplar.output.OutputUtils#generateParser(XMLDocumentType,
+		com.mcdermottroe.exemplar.output.OutputUtils#generateParser(
+		com.mcdermottroe.exemplar.model.XMLDocumentType,
 		String, String, String)}.
 	*/
 	public static String SOURCE_GENERATOR_DOCTYPE_NULL = Constants.DEFAULT_MESSAGE;
 
 	/** Someone passed a null language to {@link
-		com.mcdermottroe.exemplar.output.OutputUtils#generateParser(XMLDocumentType,
+		com.mcdermottroe.exemplar.output.OutputUtils#generateParser(
+		com.mcdermottroe.exemplar.model.XMLDocumentType,
 		String, String, String)}.
 	*/
 	public static String SOURCE_GENERATOR_LANGUAGE_NULL = Constants.DEFAULT_MESSAGE;
@@ -249,6 +254,11 @@ public final class Message {
 	private static String MESSAGE_MISSING_MESSAGE_FORMAT = Constants.DEFAULT_MESSAGE;
 
 	/** {@link java.text.MessageFormat} string for {@link
+		#MISSING_MANDATORY_OPTION(String)}.
+	*/
+	private static String MISSING_MANDATORY_OPTION_MESSAGE_FORMAT = Constants.DEFAULT_MESSAGE;
+
+	/** {@link java.text.MessageFormat} string for {@link
 		#OPTION_DEFAULT(String)}.
 	*/
 	private static String OPTION_DEFAULT_MESSAGE_FORMAT = Constants.DEFAULT_MESSAGE;
@@ -336,11 +346,11 @@ public final class Message {
 		if (reason == null || caller == null) {
 			return null;
 		}
-		Object[] args = {
+		return Utils.formatMessage(
+			ASSERTION_MESSAGE_MESSAGE_FORMAT,
 			reason,
-			caller,
-		};
-		return Utils.formatMessage(ASSERTION_MESSAGE_MESSAGE_FORMAT, args);
+			caller
+		);
 	}
 
 	/** The input DTD was not found.
@@ -372,11 +382,11 @@ public final class Message {
 							#DTDPEDECLTABLE_MESSAGE_FORMAT}
 	*/
 	public static String DTDPEDECLTABLE(int peDecl, int uriPeDecl) {
-		Object[] args = {
-			new Integer(peDecl),
-			new Integer(uriPeDecl),
-		};
-		return Utils.formatMessage(DTDPEDECLTABLE_MESSAGE_FORMAT, args);
+		return Utils.formatMessage(
+			DTDPEDECLTABLE_MESSAGE_FORMAT,
+			peDecl,
+			uriPeDecl
+		);
 	}
 
 	/** The 2 parameter parameter entity exception.
@@ -392,11 +402,7 @@ public final class Message {
 		if (s == null || context == null) {
 			return null;
 		}
-		Object[] args = {
-			s,
-			context,
-		};
-		return Utils.formatMessage(DTDPEEXCEPTION_MESSAGE_FORMAT, args);
+		return Utils.formatMessage(DTDPEEXCEPTION_MESSAGE_FORMAT, s, context);
 	}
 
 	/** A reference to an undeclared parameter entity literal was encountered.
@@ -476,13 +482,10 @@ public final class Message {
 		if (fieldOrMethod == null || className == null) {
 			return null;
 		}
-		Object[] args = {
-			fieldOrMethod,
-			className,
-		};
 		return Utils.formatMessage(
 			GENERIC_SECURITY_EXCEPTION_MESSAGE_FORMAT,
-			args
+			fieldOrMethod,
+			className
 		);
 	}
 
@@ -501,11 +504,7 @@ public final class Message {
 		if (s == null || context == null) {
 			return null;
 		}
-		Object[] args = {
-			s,
-			context,
-		};
-		return Utils.formatMessage(LEXEREXCEPTION_MESSAGE_FORMAT, args);
+		return Utils.formatMessage(LEXEREXCEPTION_MESSAGE_FORMAT, s, context);
 	}
 
 	/** A localisation error occurred.
@@ -537,13 +536,10 @@ public final class Message {
 			return null;
 		}
 
-		Object[] args = {
-			entryName,
-			thisClass,
-		};
 		return Utils.formatMessage(
 			MESSAGE_EXTRA_BUNDLE_ENTRY_MESSAGE_FORMAT,
-			args
+			entryName,
+			thisClass
 		);
 	}
 
@@ -559,6 +555,23 @@ public final class Message {
 			return null;
 		}
 		return Utils.formatMessage(MESSAGE_MISSING_MESSAGE_FORMAT, s);
+	}
+
+	/** Tell the user which mandatory option is missing.
+
+		@param	optionName	The name of the missing option.
+		@return				A message formatted according to {@link
+							#MISSING_MANDATORY_OPTION_MESSAGE_FORMAT}.
+	*/
+	public static String MISSING_MANDATORY_OPTION(String optionName) {
+		DBC.REQUIRE(optionName != null);
+		if (optionName == null) {
+			return null;
+		}
+		return Utils.formatMessage(
+			MISSING_MANDATORY_OPTION_MESSAGE_FORMAT,
+			optionName
+		);
 	}
 
 	/** Tell the user the default value of an option.
@@ -621,7 +634,7 @@ public final class Message {
 		DBC.REQUIRE(time >= 0.0);
 		return Utils.formatMessage(
 			UI_PROGRESS_FINISHED_TIME_MESSAGE_FORMAT,
-			new Double(time)
+			time
 		);
 	}
 
@@ -681,11 +694,11 @@ public final class Message {
 									messages from the backing store.
 	*/
 	public static void localise() throws MessageException {
-		// Figure out what locale is the local default.
-		Locale locale = Locale.getDefault();
-
 		// Load the resource bundle with all the messages in it.
-		ResourceBundle messages = ResourceBundle.getBundle(Message.class.getName(), locale);
+		ResourceBundle messages = ResourceBundle.getBundle(
+			Message.class.getName(),
+			Locale.getDefault()
+		);
 
 		// Get the "static" messages
 		String couldNotLoadMessageMissing = "Localisation error: could not load MESSAGE_MISSING_MESSAGE_FORMAT";
@@ -708,15 +721,15 @@ public final class Message {
 		}
 		// Get all the other messages
 		try {
-			Field[] field = Message.class.getDeclaredFields();
-			for (int i = 0; i < field.length; i++) {
+			Field[] fields = Message.class.getDeclaredFields();
+			for (Field field : fields) {
 				// String fields are the only ones that matter
-				if (!String.class.equals(field[i].getType())) {
+				if (!String.class.equals(field.getType())) {
 					continue;
 				}
 
 				// Get the field name
-				String fieldName = field[i].getName();
+				String fieldName = field.getName();
 
 				// Get the message for this field
 				String message;
@@ -728,7 +741,7 @@ public final class Message {
 
 				// Set the value of the field
 				if (message != null) {
-					field[i].set(null, message);
+					field.set(null, message);
 				} else {
 					throw new MessageException(MESSAGE_MISSING(fieldName));
 				}
@@ -739,9 +752,9 @@ public final class Message {
 
 		// Check that all of the messages in the resource bundle
 		// have a corresponding member in this class
-		for (Enumeration entries = messages.getKeys(); entries.hasMoreElements(); ) {
+		for (Enumeration<String> entries = messages.getKeys(); entries.hasMoreElements(); ) {
 			DBC.ASSERT(entries != null);
-			String entry = (String)entries.nextElement();
+			String entry = entries.nextElement();
 			try {
 				Message.class.getDeclaredField(entry);
 			} catch (NoSuchFieldException e) {

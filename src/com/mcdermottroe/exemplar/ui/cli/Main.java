@@ -33,14 +33,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
+import java.util.logging.Handler;
 import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-import java.util.logging.StreamHandler;
 
 import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
-import com.mcdermottroe.exemplar.Exception;
 import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.input.InputException;
 import com.mcdermottroe.exemplar.input.InputUtils;
@@ -48,7 +47,7 @@ import com.mcdermottroe.exemplar.input.ParserException;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.output.OutputException;
 import com.mcdermottroe.exemplar.output.OutputUtils;
-import com.mcdermottroe.exemplar.ui.LogUtils;
+import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.MessageException;
 import com.mcdermottroe.exemplar.ui.Options;
@@ -71,24 +70,34 @@ implements Constants.UI.CLI
 		@param	args	The arguments passed to the program
 	*/
 	public static void main(String[] args) {
-		// Make a logger to handle error and status output
-		LogUtils.setLogHandler(
-			new StreamHandler(
-				System.out,
-				new Formatter() {
-					public String format(LogRecord record) {
-						return record.getMessage();
+		// Make a log handler to handle error and status output
+		Handler consoleHandler = new ConsoleHandler();
+		consoleHandler.setFormatter(
+			new Formatter() {
+				@Override public String format(LogRecord record) {
+					String message = record.getMessage();
+					if (message.matches(Constants.Regex.TRAILING_WHITESPACE)) {
+						message = message.replaceAll(
+							Constants.Regex.TRAILING_WHITESPACE,
+							Constants.EOL
+						);
+					} else {
+						message += Constants.EOL;
 					}
+					return message;
 				}
-			)
+			}
 		);
-		Logger logger = LogUtils.getLogger();
+		Log.registerHandler(consoleHandler);
+		// CLI apps should be quiet unless something goes wrong.
+		Log.setLevel(Log.LogLevel.WARNING);
 
 		// Localise the program if possible
 		try {
 			Message.localise();
 		} catch (MessageException e) {
-			exit(ExitStatus.getExitCode(EXIT_FAIL_L10N), logger, e);
+			Options.setUIFinished();
+			abort(ExitStatus.getExitCode(EXIT_FAIL_L10N), e);
 		}
 
 		// Process the arguments
@@ -96,26 +105,20 @@ implements Constants.UI.CLI
 			String helpOption = OPTION_PREFIX + HELP_OPTION_NAME;
 			String versionOption = OPTION_PREFIX + VERSION_OPTION_NAME;
 			if (args[i].equals(helpOption)) {
-				exit(
-					ExitStatus.getExitCode(EXIT_SUCCESS),
-					logger,
-					usageMessage()
-				);
+				Options.setUIFinished();
+				cleanExit(usageMessage());
 			} else if (args[i].equals(versionOption)) {
-				exit(
-					ExitStatus.getExitCode(EXIT_SUCCESS),
-					logger,
-					versionMessage()
-				);
+				Options.setUIFinished();
+				cleanExit(versionMessage());
 			} else if (args[i].startsWith(OPTION_PREFIX)) {
 				String argName = args[i].substring(OPTION_PREFIX.length());
 
 				if (!Options.isLegal(argName)) {
-					exit(
-							ExitStatus.getExitCode(EXIT_FAIL_ARGS),
-							logger,
-							Message.OPTIONS_NO_SUCH_OPTION(args[i])
-						);
+					Options.setUIFinished();
+					abort(
+						ExitStatus.getExitCode(EXIT_FAIL_ARGS),
+						Message.OPTIONS_NO_SUCH_OPTION(args[i])
+					);
 				}
 
 				if (Options.isSwitch(argName)) {
@@ -125,26 +128,22 @@ implements Constants.UI.CLI
 					i++;
 				}
 			} else {
-				exit(
+				Options.setUIFinished();
+				abort(
 						ExitStatus.getExitCode(EXIT_FAIL_ARGS),
-						logger,
 						Message.OPTIONS_NO_SUCH_OPTION(args[i])
-					);
+				);
 			}
 		}
 		Options.setUIFinished();
 
 		// Make sure that all of the mandatory options were set.
 		if (!Options.allMandatoryOptionsSet()) {
-			exit(
+			abort(
 					ExitStatus.getExitCode(EXIT_FAIL_ARGS),
-					logger,
 					Message.MANDATORY_OPTIONS_NOT_SET
-				);
+			);
 		}
-
-		// Reset the logger to catch --debug in case it was set.
-		logger = LogUtils.getLogger();
 
 		// The internal description of the XML document type
 		XMLDocumentType doctype = null;
@@ -156,9 +155,9 @@ implements Constants.UI.CLI
 							Options.getString("input-type")
 						);
 		} catch (InputException e) {
-			exit(ExitStatus.getExitCode(EXIT_FAIL_INPUT), logger, e);
+			abort(ExitStatus.getExitCode(EXIT_FAIL_INPUT), e);
 		} catch (ParserException e) {
-			exit(ExitStatus.getExitCode(EXIT_FAIL_INPUT), logger, e);
+			abort(ExitStatus.getExitCode(EXIT_FAIL_INPUT), e);
 		}
 
 		// Create the output
@@ -170,11 +169,11 @@ implements Constants.UI.CLI
 				Options.getString("output-api")
 			);
 		} catch (OutputException e) {
-			exit(ExitStatus.getExitCode(EXIT_FAIL_CODE_GEN), logger, e);
+			abort(ExitStatus.getExitCode(EXIT_FAIL_CODE_GEN), e);
 		}
 
 		// Indicate success
-		exit(ExitStatus.getExitCode(EXIT_SUCCESS), null, null);
+		cleanExit(null);
 	}
 
 	/** Display a version message.
@@ -230,7 +229,7 @@ implements Constants.UI.CLI
 		}
 
 		// The usage message to construct
-		StringBuffer usage = new StringBuffer();
+		StringBuilder usage = new StringBuilder();
 
 		// Output any diagnostic message before doing anything else.
 		if (why.length() > 0) {
@@ -244,8 +243,8 @@ implements Constants.UI.CLI
 		usage.append(Constants.Character.SPACE);
 		usage.append(Constants.PROGRAM_VERSION);
 		usage.append(Constants.EOL);
-		for (int i = 0; i < Constants.COPYRIGHT_MESSAGE.length; i++) {
-			usage.append(Constants.COPYRIGHT_MESSAGE[i]);
+		for (String copyrightLine : Constants.COPYRIGHT_MESSAGE) {
+			usage.append(copyrightLine);
 			usage.append(Constants.EOL);
 		}
 		usage.append(Constants.EOL);
@@ -260,8 +259,7 @@ implements Constants.UI.CLI
 
 		// Find the column that option descriptions start in.
 		int optionDescColumn = 0;
-		for (Iterator it = Options.optionNameIterator(); it.hasNext(); ) {
-			String optionName = (String)it.next();
+		for (String optionName : Options.getAllOptionNames()) {
 			int length =	Constants.UI.INDENT.length() +
 							OPTION_PREFIX.length() +
 							optionName.length();
@@ -283,11 +281,11 @@ implements Constants.UI.CLI
 		// Enumerate the options
 		usage.append(optionsLine);
 		for	(
-				Iterator optionNames = Options.optionNameIterator();
+				Iterator<String> optionNames = Options.optionNameIterator();
 				optionNames.hasNext();
 			)
 		{
-			String optionName = (String)optionNames.next();
+			String optionName = optionNames.next();
 
 			// Indent the option
 			usage.append(Constants.UI.INDENT);
@@ -322,7 +320,8 @@ implements Constants.UI.CLI
 
 			// Construct a string to use to indent things to the column that
 			// the description is in.
-			StringBuffer descColumnIndent = new StringBuffer(optionDescColumn);
+			StringBuilder descColumnIndent;
+			descColumnIndent = new StringBuilder(optionDescColumn);
 			for (int j = 0; j < optionDescColumn; j++) {
 				descColumnIndent.append(Constants.Character.SPACE);
 			}
@@ -356,30 +355,22 @@ implements Constants.UI.CLI
 				usage.append(Constants.EOL);
 
 				// Get the set of potential Enum values
-				Map eo = Options.getEnumDescriptions(optionName);
-				DBC.ASSERT(eo != null);
-				Map enumOptions = new TreeMap(eo);
+				Map<String, String> enumOptions;
+				enumOptions = new TreeMap<String, String>(
+					Options.getEnumDescriptions(optionName)
+				);
 
 				// Find the length of the longest Enum value.
 				int longestEnumVal = 0;
-				for	(
-						Iterator it = enumOptions.keySet().iterator();
-						it.hasNext();
-					)
-				{
-					int len = ((CharSequence)it.next()).length();
+				for (String enumOption : enumOptions.keySet()) {
+					int len = enumOption.length();
 					if (len > longestEnumVal) {
 						longestEnumVal = len;
 					}
 				}
 
 				// Print out all potential Enum values and their descriptions.
-				for	(
-						Iterator it = enumOptions.keySet().iterator();
-						it.hasNext();
-					)
-				{
-					String enumValue = (String)it.next();
+				for (String enumValue : enumOptions.keySet()) {
 					usage.append(descColumnIndent);
 					usage.append(enumValue);
 					for
@@ -395,7 +386,7 @@ implements Constants.UI.CLI
 					usage.append(Constants.Character.SPACE);
 					usage.append(
 						wrapText(
-							(String)enumOptions.get(enumValue),
+							enumOptions.get(enumValue),
 							optionDescColumn + longestEnumVal + 3
 						)
 					);
@@ -418,7 +409,7 @@ implements Constants.UI.CLI
 
 			// If the option has a default, describe it now
 			String defaultValue = Options.describeDefault(optionName);
-			if (defaultValue != null && !(Options.isSwitch(optionName))) {
+			if (defaultValue != null && !Options.isSwitch(optionName)) {
 				usage.append(Constants.EOL);
 				usage.append(descColumnIndent);
 				usage.append(
@@ -460,7 +451,7 @@ implements Constants.UI.CLI
 
 		// Start wrapping
 		DBC.ASSERT(words[0].length() < longestAllowableWord);
-		StringBuffer wrappedText = new StringBuffer(words[0]);
+		StringBuilder wrappedText = new StringBuilder(words[0]);
 		int cursor = indent + words[0].length();
 		for (int i = 1; i < words.length; i++) {
 			DBC.ASSERT(words[i].length() < longestAllowableWord);
@@ -481,54 +472,31 @@ implements Constants.UI.CLI
 		return wrappedText.toString();
 	}
 
-	/** Shorthand for exiting the program.
+	/** Shorthand for a clean exit. The program will exit with the exit code
+		corresponding to {@link #EXIT_SUCCESS}.
 
-		@param	exitCode	The exit code to return to the calling shell.
-		@param	logger		The {@link Logger} to use to output messages. If
-							null this will output nothing.
-		@param	cause		Either an {@link Exception} or a message,
-							describing why the failure occurred. If a failure
-							had not occurred then this parameter MUST be null.
+		@param	message	A message to send to the user. If this is null, nothing
+						is sent.
 	*/
-	private static void exit(int exitCode, Logger logger, Object cause) {
-		DBC.REQUIRE(exitCode >= 0);
-		DBC.REQUIRE(
-			logger != null && cause != null ||
-			logger == null && cause == null
-		);
-		DBC.REQUIRE(
-			cause == null ||
-			cause instanceof String ||
-			cause instanceof Exception
-		);
-
-		// Exit early if the logger is null
-		if (logger == null) {
-			System.exit(exitCode);
-			return;
+	private static void cleanExit(Object message) {
+		Options.setUIFinished();
+		if (message != null) {
+			Log.setLevel(Log.LogLevel.INFO);
+			Log.info(message);
 		}
+		System.exit(ExitStatus.getExitCode(EXIT_SUCCESS));
+	}
 
-		// Make the diagnostic message
-		String message = "";
-		if (cause != null) {
-			if (cause instanceof Exception) {
-				message = cause.toString();
-			} else if (cause instanceof String) {
-				message = (String)cause;
-			} else {
-				DBC.UNREACHABLE_CODE();
-			}
+	/** Shorthand for an unclean exit.
+
+		@param	code	The value to pass to {@link System#exit(int)}.
+		@param	message	An optional message to log (only logged if non-null).
+	*/
+	private static void abort(int code, Object message) {
+		Options.setUIFinished();
+		if (message != null) {
+			Log.error(message);
 		}
-
-		// If a failure occurs during argument processing, then the usage
-		// statement must be printed.
-		if (exitCode == ExitStatus.getExitCode(EXIT_FAIL_ARGS)) {
-			logger.severe(usageMessage(message));
-		} else {
-			logger.severe(message);
-		}
-
-		// Now exit
-		System.exit(exitCode);
+		System.exit(code);
 	}
 }

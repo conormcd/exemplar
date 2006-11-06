@@ -83,7 +83,6 @@ extends XMLAggregateObject
 	*/
 	public void setMinMaxOccurs(int min, int max) {
 		DBC.REQUIRE(min >= 0 && max >= 0);
-		DBC.REQUIRE(min <= Constants.INFINITY && max <= Constants.INFINITY);
 		DBC.REQUIRE(min <= max);
 
 		maxOccurs = max;
@@ -91,7 +90,7 @@ extends XMLAggregateObject
 	}
 
 	/** {@inheritDoc} */
-	public String toString() {
+	@Override public String toString() {
 		return toString(getClass().getName(), Constants.Character.COMMA);
 	}
 }

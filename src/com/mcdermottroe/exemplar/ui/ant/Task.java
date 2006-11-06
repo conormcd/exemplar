@@ -33,10 +33,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
 import org.apache.tools.ant.BuildException;
 
@@ -49,7 +49,7 @@ import com.mcdermottroe.exemplar.input.ParserException;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.output.OutputException;
 import com.mcdermottroe.exemplar.output.OutputUtils;
-import com.mcdermottroe.exemplar.ui.LogUtils;
+import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.MessageException;
 import com.mcdermottroe.exemplar.ui.Options;
@@ -66,7 +66,7 @@ implements Constants.UI.Ant
 	/** Any errors encountered will be added to this list and this list will be
 		flushed periodically.
 	*/
-	private List errors;
+	private List<String> errors;
 
 	/** Create the task. This constructor may not throw a {@link
 		BuildException}, so in order to catch errors the error message is added
@@ -77,26 +77,26 @@ implements Constants.UI.Ant
 		super();
 
 		// Make a logger which will get picked up by the rest of the program.
-		LogUtils.setLogHandler(
+		Log.registerHandler(
 			new Handler() {
-				public void close() {}
-				public void flush() {}
-				public void publish(LogRecord record) {
+				@Override public void close() {}
+				@Override public void flush() {}
+				@Override public void publish(LogRecord record) {
 					log(record.getMessage());
 				}
 			}
 		);
 
 		// Make a new list for the errors
-		errors = new ArrayList();
+		errors = new ArrayList<String>();
 
 		// Localise the program, if possible.
 		try {
 			Message.localise();
 		} catch (MessageException e) {
 			errors.add(Message.ANT_LOCALISATION_ERROR);
-			for (Iterator it = e.getBackTraceIterator(); it.hasNext(); ) {
-				errors.add(Constants.UI.INDENT + it.next());
+			for (String traceElement : e.getBackTrace()) {
+				errors.add(Constants.UI.INDENT + traceElement);
 			}
 			return;
 		}
@@ -118,16 +118,20 @@ implements Constants.UI.Ant
 		//    method" failing case.
 		// 3) After 2) has completed, if the set is non-empty, then all of the
 		//    method names in the set correspond to "missing methods"
-		Method[] method = getClass().getDeclaredMethods();
-		Set defOptions = Options.getAllOptionNames();
-		if (method != null) {
-			for (int i = 0; i < method.length; i++) {
-				String methodName = method[i].getName();
+		Method[] methods = getClass().getDeclaredMethods();
+		Set<String> defOptions = Options.getAllOptionNames();
+		if (methods != null) {
+			for (Method method : methods) {
+				String methodName = method.getName();
 				if (methodName.startsWith(SETTER_PREFIX)) {
 					String optionName = methodNameToOptionName(methodName);
 					boolean foundMethod = false;
-					for (Iterator it = defOptions.iterator(); it.hasNext(); ) {
-						String definedOption = (String)it.next();
+					for	(
+							Iterator<String> it = defOptions.iterator();
+							it.hasNext();
+						)
+					{
+						String definedOption = it.next();
 						if (definedOption.equals(optionName)) {
 							it.remove();
 							foundMethod = true;
@@ -139,10 +143,10 @@ implements Constants.UI.Ant
 					}
 				}
 			}
-			for (Iterator it = defOptions.iterator(); it.hasNext(); ) {
+			for (Object defOption : defOptions) {
 				errors.add(
 					Message.ANT_MISSING_METHOD(
-						optionNameToMethodName((String)it.next())
+						optionNameToMethodName(defOption.toString())
 					)
 				);
 			}
@@ -152,14 +156,11 @@ implements Constants.UI.Ant
 	}
 
 	/** The execute method required by the Task. */
-	public void execute() {
+	@Override public void execute() {
 		super.execute();
 
 		// All of the options should be set by now.
 		Options.setUIFinished();
-
-		// Get the logger
-		Logger logger = LogUtils.getLogger();
 
 		// Record the start time
 		long startTime = System.currentTimeMillis();
@@ -168,21 +169,21 @@ implements Constants.UI.Ant
 		String blankLine = Character.toString(Constants.Character.SPACE);
 
 		// Print a header for the build
-		logger.severe(
+		Log.info(
 			Constants.PROGRAM_NAME +
 			Constants.Character.SPACE +
 			Constants.PROGRAM_VERSION
 		);
-		for (int i = 0; i < Constants.COPYRIGHT_MESSAGE.length; i++) {
-			logger.severe(Constants.COPYRIGHT_MESSAGE[i]);
+		for (String copyrightLine : Constants.COPYRIGHT_MESSAGE) {
+			Log.info(copyrightLine);
 		}
-		logger.severe(blankLine);
+		Log.info(blankLine);
 
 		// Fail the build if there were any errors thrown during the setup of
 		// the Task
 		if (!errors.isEmpty()) {
-			for (Iterator it = errors.iterator(); it.hasNext(); ) {
-				logger.severe((String)it.next());
+			for (String error : errors) {
+				Log.error(error);
 			}
 			throw new BuildException("");
 		}
@@ -193,7 +194,7 @@ implements Constants.UI.Ant
 		}
 
 		// Get all of the options
-		logger.severe(Message.UI_PROGRESS_OPTIONS);
+		Log.info(Message.UI_PROGRESS_OPTIONS);
 		String inputType = Options.getString("input-type");
 		DBC.ASSERT(inputType != null);
 		String input = Options.getString("input");
@@ -205,7 +206,7 @@ implements Constants.UI.Ant
 		DBC.ASSERT(output != null);
 
 		// Parse the input
-		logger.severe(Message.UI_PROGRESS_PARSING_INPUT(input));
+		Log.info(Message.UI_PROGRESS_PARSING_INPUT(input));
 		XMLDocumentType doctype = null;
 		try {
 			doctype = InputUtils.parse(input, inputType);
@@ -216,7 +217,7 @@ implements Constants.UI.Ant
 		}
 
 		// Generate the output
-		logger.severe(Message.UI_PROGRESS_GENERATING_PARSER);
+		Log.info(Message.UI_PROGRESS_GENERATING_PARSER);
 		try {
 			OutputUtils.generateParser(
 				doctype,
@@ -227,7 +228,7 @@ implements Constants.UI.Ant
 		} catch (OutputException e) {
 			die(Message.UI_PROGRESS_FAILED_TO_CREATE_OUTPUT, e);
 		}
-		logger.severe(Message.UI_PROGRESS_DONE);
+		Log.info(Message.UI_PROGRESS_DONE);
 
 		// Record the end time and generate the String number of seconds this
 		// task took.
@@ -235,8 +236,8 @@ implements Constants.UI.Ant
 		double elapsedTime = (double)(endTime - startTime) / 1000.0;
 
 		// Say that it's finished
-		logger.severe(blankLine);
-		logger.severe(Message.UI_PROGRESS_FINISHED_TIME(elapsedTime));
+		Log.info(blankLine);
+		Log.info(Message.UI_PROGRESS_FINISHED_TIME(elapsedTime));
 	}
 
 	/** Setter for the debug attribute of the task.
@@ -323,7 +324,7 @@ implements Constants.UI.Ant
 	*/
 	private static void optionSetHelper(String value) {
 		// Get the stack trace for where this has been called from.
-		StackTraceElement[] stackTrace = (new BuildException()).getStackTrace();
+		StackTraceElement[] stackTrace = new BuildException().getStackTrace();
 		DBC.ASSERT(stackTrace != null);
 		if (stackTrace == null) {
 			return;
@@ -352,7 +353,9 @@ implements Constants.UI.Ant
 		}
 
 		String methodName =	SETTER_PREFIX +
-							optName.substring(0, 1).toUpperCase() +
+							optName.substring(0, 1).toUpperCase(
+								Locale.getDefault()
+							) +
 							optName.substring(1);
 		methodName = methodName.replace(
 			Constants.Character.MINUS,
@@ -376,7 +379,7 @@ implements Constants.UI.Ant
 		DBC.REQUIRE(methodName.startsWith(SETTER_PREFIX));
 
 		String optionName = methodName.substring(SETTER_PREFIX.length());
-		optionName = optionName.toLowerCase();
+		optionName = optionName.toLowerCase(Locale.getDefault());
 		optionName = optionName.replace(
 			Constants.Character.UNDERSCORE,
 			Constants.Character.MINUS
@@ -392,13 +395,8 @@ implements Constants.UI.Ant
 	*/
 	private static void die(String message) {
 		DBC.REQUIRE(message != null);
-		Logger logger = LogUtils.getLogger();
-		if (logger != null) {
-			logger.severe(message);
-			throw new BuildException("");
-		} else {
-			throw new BuildException(message);
-		}
+		Log.error(message);
+		throw new BuildException("");
 	}
 
 	/** Abort the build with a diagnostic message, acknowledging the exception
@@ -412,21 +410,8 @@ implements Constants.UI.Ant
 		DBC.REQUIRE(message != null);
 		DBC.REQUIRE(e != null);
 
-		Logger logger = LogUtils.getLogger();
-
-		if (logger != null) {
-			logger.severe(message);
-			if (e != null) {
-				for (Iterator it = e.getBackTraceIterator(); it.hasNext(); ) {
-					logger.severe(
-						String.valueOf(Constants.Character.TAB) + it.next()
-					);
-				}
-			}
-			throw new BuildException("");
-		} else {
-			throw new BuildException(message);
-		}
+		Log.error(message, e);
+		throw new BuildException("");
 	}
 
 	/** See {@link Object#equals(Object)}.
@@ -434,7 +419,7 @@ implements Constants.UI.Ant
 		@param	o	The object to compare against.
 		@return		True if <code>this</code> is equal to <code>o</code>.
 	*/
-	public boolean equals(Object o) {
+	@Override public boolean equals(Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -448,7 +433,7 @@ implements Constants.UI.Ant
 
 		@return	A hash code.
 	*/
-	public int hashCode() {
+	@Override public int hashCode() {
 		if (errors != null) {
 			return errors.hashCode();
 		} else {

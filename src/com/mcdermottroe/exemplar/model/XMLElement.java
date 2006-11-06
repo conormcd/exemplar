@@ -40,13 +40,22 @@ import com.mcdermottroe.exemplar.Utils;
 */
 public class XMLElement
 extends XMLNamedObject
-implements Constants.XML.Element
+implements XMLMarkupDeclaration
 {
-	/** The type of content this XMLElement may hold. This should be one of the
-		types declared in {@link
-		com.mcdermottroe.exemplar.Constants.XML.Element}.
-	*/
-	private int contentType;
+	/** An enumerated type for the types of content type. */
+	public enum ContentType {
+		/** The element is always empty. */
+		EMPTY,
+		/** The element may contain any content. */
+		ANY,
+		/** The element contains mixed content. */
+		MIXED,
+		/** The element contains child elements. */
+		CHILDREN
+	}
+
+	/** The type of content this XMLElement may hold. */
+	private ContentType contentType;
 
 	/** A tree describing the arrangement of the contents of this {@link
 		#XMLElement}.
@@ -59,7 +68,7 @@ implements Constants.XML.Element
 	/** A no-arg constructor to aid in testing. */
 	public XMLElement() {
 		super();
-		contentType = ANY;
+		contentType = ContentType.ANY;
 		contentSpec = null;
 		attlist = null;
 	}
@@ -68,38 +77,35 @@ implements Constants.XML.Element
 
 		@param	cType	The type of content this {@link XMLElement} may hold.
 	*/
-	public XMLElement(int cType) {
+	public XMLElement(ContentType cType) {
 		super();
-		DBC.REQUIRE(cType >= 0);
 		contentType = cType;
 		contentSpec = null;
 		attlist = null;
 	}
 
 	/** Make a new {@link XMLElement} with the given content specification and
-		a content type of {@link
-		com.mcdermottroe.exemplar.Constants.XML.Element#MIXED}.
+		a content type of {@link ContentType#MIXED}.
 
 		@param	cSpec	The content specification for this element.
 	*/
 	public XMLElement(XMLMixedContent cSpec) {
 		super();
 		DBC.REQUIRE(cSpec != null);
-		contentType = MIXED;
+		contentType = ContentType.MIXED;
 		contentSpec = cSpec;
 		attlist = null;
 	}
 
 	/** Make a new {@link XMLElement} with the give content specification and a
-		content type of {@link
-		com.mcdermottroe.exemplar.Constants.XML.Element#CHILDREN}.
+		content type of {@link ContentType#CHILDREN}.
 
 		@param	cSpec	The content specification for this element.
 	*/
 	public XMLElement(XMLSequence cSpec) {
 		super();
 		DBC.REQUIRE(cSpec != null);
-		contentType = CHILDREN;
+		contentType = ContentType.CHILDREN;
 		contentSpec = cSpec;
 		attlist = null;
 	}
@@ -115,20 +121,9 @@ implements Constants.XML.Element
 	/** Access method to retrieve the type of content this {@link XMLElement}
 		may hold.
 
-		@return	One of {@link
-				com.mcdermottroe.exemplar.Constants.XML.Element#EMPTY}, {@link
-				com.mcdermottroe.exemplar.Constants.XML.Element#ANY}, {@link
-				com.mcdermottroe.exemplar.Constants.XML.Element#MIXED} or
-				{@link
-				com.mcdermottroe.exemplar.Constants.XML.Element#CHILDREN}.
+		@return	The content type of this element.
 	*/
-	public int getContentType() {
-		DBC.ENSURE	(
-						contentType == EMPTY ||
-						contentType == ANY ||
-						contentType == MIXED ||
-						contentType == CHILDREN
-					);
+	public ContentType getContentType() {
 		return contentType;
 	}
 
@@ -151,8 +146,8 @@ implements Constants.XML.Element
 	}
 
 	/** {@inheritDoc} */
-	public String toString() {
-		StringBuffer desc = new StringBuffer();
+	@Override public String toString() {
+		StringBuilder desc = new StringBuilder();
 		desc.append(name);
 		if (attlist != null) {
 			desc.append(Constants.Character.COMMA);
@@ -162,11 +157,11 @@ implements Constants.XML.Element
 			desc.append(Constants.Character.LEFT_PAREN);
 		}
 
-		return toString(getClass().getName(), desc.toString());
+		return XMLObject.toStringHelper(getClass().getName(), desc.toString());
 	}
 
 	/** {@inheritDoc} */
-	public boolean equals(Object o) {
+	@Override public boolean equals(Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -179,12 +174,12 @@ implements Constants.XML.Element
 			Object[] thisFields = {
 				attlist,
 				contentSpec,
-				new Integer(contentType),
+				contentType,
 			};
 			Object[] otherFields = {
 				other.getAttlist(),
 				other.getContentSpec(),
-				new Integer(other.getContentType()),
+				other.getContentType(),
 			};
 			return Utils.areAllDeeplyEqual(thisFields, otherFields);
 		}
@@ -193,20 +188,10 @@ implements Constants.XML.Element
 	}
 
 	/** {@inheritDoc} */
-	public int hashCode() {
+	@Override public int hashCode() {
 		int hashCode = super.hashCode();
-
 		hashCode *= Constants.HASHCODE_MAGIC_NUMBER;
-		if (attlist != null) {
-			hashCode += attlist.hashCode();
-		}
-		hashCode *= Constants.HASHCODE_MAGIC_NUMBER;
-		if (contentSpec != null) {
-			hashCode += contentSpec.hashCode();
-		}
-		hashCode *= Constants.HASHCODE_MAGIC_NUMBER;
-		hashCode += contentType;
-
+		hashCode += Utils.genericHashCode(attlist, contentSpec, contentType);
 		return hashCode;
 	}
 }

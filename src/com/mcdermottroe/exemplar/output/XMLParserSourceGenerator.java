@@ -31,6 +31,7 @@ package com.mcdermottroe.exemplar.output;
 
 import java.io.File;
 import java.util.Date;
+import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -38,6 +39,7 @@ import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
+import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.Options;
 
@@ -77,10 +79,7 @@ public abstract class XMLParserSourceGenerator extends XMLParserGenerator {
 		}
 
 		// Format the timestamp
-		Object[] args = {
-			new Date(),
-		};
-		timestamp = Utils.formatMessage(Constants.TIMESTAMP_FORMAT, args);
+		timestamp = Utils.formatMessage(Constants.TIMESTAMP_FORMAT, new Date());
 
 		DBC.ENSURE(codeFragments != null);
 		DBC.ENSURE(timestamp != null);
@@ -155,6 +154,15 @@ public abstract class XMLParserSourceGenerator extends XMLParserGenerator {
 						Will return null if anything goes wrong.
 	*/
 	public static XMLParserSourceGenerator create(String language, String api) {
+		Log.debug(
+			"Attempting to create an instance of " +
+			XMLParserSourceGenerator.class +
+			" for language \"" +
+			language +
+			"\" and API \"" +
+			api +
+			"\"."
+		);
 		DBC.REQUIRE(language != null);
 		if (language == null) {
 			return null;
@@ -164,39 +172,49 @@ public abstract class XMLParserSourceGenerator extends XMLParserGenerator {
 		try {
 			// Create the String version of the XMLParserSourceGenerator class
 			// name.
-			StringBuffer generatorClassName = new StringBuffer();
+			StringBuilder generatorClassName = new StringBuilder();
 			generatorClassName.append(Constants.Output.PACKAGE);
 			generatorClassName.append(Constants.Character.FULL_STOP);
-			generatorClassName.append(language.toLowerCase());
+			generatorClassName.append(
+				language.toLowerCase(Locale.getDefault())
+			);
 			if (api != null) {
 				generatorClassName.append(Constants.Character.FULL_STOP);
-				generatorClassName.append(api.toLowerCase());
+				generatorClassName.append(api.toLowerCase(Locale.getDefault()));
 			}
 			generatorClassName.append(Constants.Character.FULL_STOP);
 			generatorClassName.append(Constants.Output.CLASS);
 
 			// Now turn the class name into a class.
-			Class generatorClass = Class.forName(generatorClassName.toString());
+			Class<?> generatorClass;
+			generatorClass = Class.forName(generatorClassName.toString());
 
 			// Make sure that the class is of the approved type
-			Class correctClass = XMLParserSourceGenerator.class;
+			Class<? extends XMLParserGenerator> correctClass;
+			correctClass = XMLParserSourceGenerator.class;
 			if (correctClass.isAssignableFrom(generatorClass)) {
 				// Instantiate the class
 				Object newObject = generatorClass.newInstance();
 				generator = (XMLParserSourceGenerator)newObject;
 			}
 		} catch (ClassNotFoundException e) {
-			if (api != null) {
-				DBC.IGNORED_ERROR();
-			}
+			DBC.IGNORED_EXCEPTION(e);
 		} catch (IllegalAccessException e) {
-			DBC.IGNORED_ERROR();
+			DBC.IGNORED_EXCEPTION(e);
 		} catch (InstantiationException e) {
-			DBC.IGNORED_ERROR();
+			DBC.IGNORED_EXCEPTION(e);
 		} catch (SecurityException e) {
-			DBC.IGNORED_ERROR();
+			DBC.IGNORED_EXCEPTION(e);
 		}
 
+		if (generator != null) {
+			Log.debug(
+				"Created an instance of " +
+				generator.getClass().getName()
+			);
+		} else {
+			Log.debug("Failed to find a suitable generator.");
+		}
 		return generator;
 	}
 
@@ -362,10 +380,10 @@ public abstract class XMLParserSourceGenerator extends XMLParserGenerator {
 												)
 	throws XMLParserGeneratorException
 	{
-		if (!Options.isSet(enumName, enumProperty)) {
-			return loadCodeFragment(fragmentName);
-		} else {
+		if (Options.isSet(enumName, enumProperty)) {
 			return defaultValue;
+		} else {
+			return loadCodeFragment(fragmentName);
 		}
 	}
 }

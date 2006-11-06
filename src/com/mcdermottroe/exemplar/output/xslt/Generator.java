@@ -30,7 +30,6 @@
 package com.mcdermottroe.exemplar.output.xslt;
 
 import java.io.File;
-import java.util.Iterator;
 import java.util.Map;
 
 import com.mcdermottroe.exemplar.Constants;
@@ -39,6 +38,7 @@ import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.model.XMLAttribute;
 import com.mcdermottroe.exemplar.model.XMLAttributeList;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
+import com.mcdermottroe.exemplar.model.XMLMarkupDeclaration;
 import com.mcdermottroe.exemplar.output.OutputException;
 import com.mcdermottroe.exemplar.output.OutputUtils;
 import com.mcdermottroe.exemplar.output.XMLParserGeneratorException;
@@ -75,6 +75,7 @@ public class Generator extends XMLParserSourceGenerator {
 											if the output file cannot be
 											written to.
 	*/
+	@Override
 	public void generateParser(XMLDocumentType doctype, File targetDirectory)
 	throws XMLParserGeneratorException
 	{
@@ -95,7 +96,7 @@ public class Generator extends XMLParserSourceGenerator {
 		);
 
 		// Get the attribute lists
-		Map attlists = doctype.attlists();
+		Map<String, XMLMarkupDeclaration> attlists = doctype.attlists();
 
 		// Load all the code fragments.
 		String stylesheet = loadCodeFragment("stylesheet");
@@ -104,14 +105,9 @@ public class Generator extends XMLParserSourceGenerator {
 
 		// Run through the elements and create rules for each of them,
 		// processing attributes as necessary
-		StringBuffer body = new StringBuffer();
-		StringBuffer attributeMatchers = new StringBuffer();
-		for	(
-				Iterator it = doctype.elements().keySet().iterator();
-				it.hasNext();
-			)
-		{
-			String elementName = (String)it.next();
+		StringBuilder body = new StringBuilder();
+		StringBuilder attributeMatchers = new StringBuilder();
+		for (String elementName : doctype.elements().keySet()) {
 			DBC.ASSERT(elementName != null);
 
 			// Make the attribute matchers if they're called for.
@@ -121,20 +117,13 @@ public class Generator extends XMLParserSourceGenerator {
 				attlist = (XMLAttributeList)attlists.get(elementName);
 				if (attlist != null) {
 					// There are attributes for this element
-					for (
-							Iterator atts = attlist.attributes();
-							atts.hasNext();
-						)
-					{
-						String attName = ((XMLAttribute)atts.next()).getName();
+					for (XMLAttribute att : attlist) {
+						String attName = att.getName();
 						DBC.ASSERT(attName != null);
-						Object[] args = {
-							attName,
-						};
 						attributeMatchers.append(
 							Utils.formatMessage(
 								attributeTemplate,
-								args
+								attName
 							)
 						);
 					}
@@ -142,21 +131,25 @@ public class Generator extends XMLParserSourceGenerator {
 			}
 
 			// Make the element matcher
-			Object[] args = {
-				elementName,
-				attributeMatchers.toString(),
-			};
-			body.append(Utils.formatMessage(elementTemplate, args));
+			body.append(
+				Utils.formatMessage(
+					elementTemplate,
+					elementName,
+					attributeMatchers.toString()
+				)
+			);
 		}
 
-		Object[] args =	{
-							Constants.PROGRAM_NAME,
-							timestamp,
-							"",
-							body.toString(),
-						};
 		body.delete(0, body.length());
-		body.append(Utils.formatMessage(stylesheet, args));
+		body.append(
+			Utils.formatMessage(
+				stylesheet,
+				Constants.PROGRAM_NAME,
+				timestamp,
+				"",
+				body.toString()
+			)
+		);
 
 		// Try to write out the code
 		try {
@@ -172,12 +165,12 @@ public class Generator extends XMLParserSourceGenerator {
 	}
 
 	/** {@inheritDoc} */
-	public String describeLanguage() {
+	@Override public String describeLanguage() {
 		return "The XSL-T language";
 	}
 
 	/** {@inheritDoc} */
-	public String describeAPI() {
+	@Override public String describeAPI() {
 		DBC.UNREACHABLE_CODE();
 		return null;
 	}

@@ -45,24 +45,100 @@ import com.mcdermottroe.exemplar.ui.Message;
 	@since	0.1
 */
 public class XMLAttribute
-implements Constants.XML.Attribute, Comparable
+implements Comparable<XMLAttribute>
 {
+	/** Enumerated type for the content types of XML attributes. */
+	public enum ContentType {
+		/** Invalid content type, should never be used outside of this class. */
+		INVALID		("<<INVALID>>"),
+		/** An XML attribute with value type CDATA. */
+		CDATA		("CDATA"),
+		/** An XML attribute with value type ID. */
+		ID			("ID"),
+		/** An XML attribute with value type IDREF. */
+		IDREF		("IDREF"),
+		/** An XML attribute with value type IDREFS. */
+		IDREFS		("IDREFS"),
+		/** An XML attribute with value type ENTITY. */
+		ENTITY		("ENTITY"),
+		/** An XML attribute with value type ENTITIES. */
+		ENTITIES	("ENTITIES"),
+		/** An XML attribute with value type NMTOKEN. */
+		NMTOKEN		("NMTOKEN"),
+		/** An XML attribute with value type NMTOKENS. */
+		NMTOKENS	("NMTOKENS"),
+		/** An XML attribute with value type NOTATION. */
+		NOTATION	("NOTATION"),
+		/** An XML attribute with value type ENUMERATION. */
+		ENUMERATION	("ENUMERATION");
+
+		/** The {@link String} representation of the type of attribute. */
+		private String stringRepresentation;
+
+		/** Create a new content type.
+
+			@param stringRep	The {@link String} representation of this value.
+		*/
+		ContentType(String stringRep) {
+			stringRepresentation = stringRep;
+		}
+
+		/** Return the {@link String} representation of this value.
+
+			@return The {@link String} representation of this value.
+		*/
+		@Override public String toString() {
+			return stringRepresentation;
+		}
+	}
+
+	/** Enumerated type for the default type of XML attributes. */
+	public enum DefaultType {
+		/** Invalid default type. */
+		INVALID	("<<INVALID>>"),
+		/** Required default type. */
+		REQUIRED("REQUIRED"),
+		/** Implied default type. */
+		IMPLIED	("IMPLIED"),
+		/** Fixed default type. */
+		FIXED	("FIXED"),
+		/** Attvalue defualt type. */
+		ATTVALUE("ATTVALUE");
+
+		/** The {@link String} representation of the type of attribute. */
+		private String stringRepresentation;
+
+		/** Create a new content type.
+
+		 @param stringRep	The {@link String} representation of this value.
+		 */
+		DefaultType(String stringRep) {
+			stringRepresentation = stringRep;
+		}
+
+		/** Return the {@link String} representation of this value.
+
+			@return The {@link String} representation of this value.
+		*/
+		@Override public String toString() {
+			return stringRepresentation;
+		}
+	}
+
 	/** The name of this attribute. */
 	private String name;
 
-	/** The type of this attribute. Should be one of the predefined types. */
-	private String attributeType;
+	/** The type of this attribute. */
+	private ContentType attributeType;
 
 	/** Possible values for this attribute. This will only be set for
-		attributes of type {@link #NOTATION} or {@link #ENUMERATION}.
+		attributes of type {@link ContentType#NOTATION} or {@link
+		ContentType#ENUMERATION}.
 	*/
-	private List values;
+	private List<String> values;
 
-	/** The type of default value this attribute has. Should be one of the
-		predefined types in {@link
-		com.mcdermottroe.exemplar.Constants.XML.Attribute}.
-	*/
-	private String defaultDeclType;
+	/** The type of default value this attribute has. */
+	private DefaultType defaultDeclType;
 
 	/** The default value for this attribute. */
 	private String defaultValue;
@@ -70,9 +146,9 @@ implements Constants.XML.Attribute, Comparable
 	/** Create an invalid, empty XMLAttribute. */
 	public XMLAttribute() {
 		name = null;
-		attributeType = INVALID;
+		attributeType = ContentType.INVALID;
 		values = null;
-		defaultDeclType = INVALID;
+		defaultDeclType = DefaultType.INVALID;
 		defaultValue = null;
 	}
 
@@ -96,23 +172,23 @@ implements Constants.XML.Attribute, Comparable
 
 		@return The type of attribute this is.
 	*/
-	public String getType() {
+	public ContentType getType() {
 		return attributeType;
 	}
 
 	/** Method to set the type of this attribute.
 
 		@param	type	The type of this attribute. This should be one of the
-						predefined types but not {@link #NOTATION} or {@link
-						#ENUMERATION}.
+						predefined types but not {@link ContentType#NOTATION} or
+						{@link ContentType#ENUMERATION}.
 	*/
-	public void setType(String type) {
+	public void setType(ContentType type) {
 		DBC.REQUIRE(type != null);
 		if (type == null) {
 			return;
 		}
-		DBC.REQUIRE(!type.equals(NOTATION));
-		DBC.REQUIRE(!type.equals(ENUMERATION));
+		DBC.REQUIRE(!type.equals(ContentType.NOTATION));
+		DBC.REQUIRE(!type.equals(ContentType.ENUMERATION));
 
 		attributeType = type;
 		values = null;
@@ -121,22 +197,26 @@ implements Constants.XML.Attribute, Comparable
 	/** Method to set the type of this attribute.
 
 		@param	type	The type of this attribute. This should be either
-						{@link #NOTATION} or {@link #ENUMERATION}.
+						{@link ContentType#NOTATION} or {@link
+						ContentType#ENUMERATION}.
 		@param	vals	The range of values permissible for this attribute.
 	*/
-	public void setType(String type, List vals) {
+	public void setType(ContentType type, List<String> vals) {
 		DBC.REQUIRE(type != null);
 		if (type == null) {
 			return;
 		}
-		DBC.REQUIRE	(type.equals(NOTATION) || type.equals(ENUMERATION));
+		DBC.REQUIRE	(
+			type.equals(ContentType.NOTATION) ||
+			type.equals(ContentType.ENUMERATION)
+		);
 		DBC.REQUIRE(vals != null);
 		if (vals == null) {
 			return;
 		}
 
 		attributeType = type;
-		values = new ArrayList(vals);
+		values = new ArrayList<String>(vals);
 
 		DBC.ENSURE(values.size() == vals.size());
 	}
@@ -145,10 +225,10 @@ implements Constants.XML.Attribute, Comparable
 
 		@return A copy of the values.
 	*/
-	public List getValues() {
+	public List<String> getValues() {
 		if (values != null) {
 			Collections.sort(values);
-			return new ArrayList(values);
+			return new ArrayList<String>(values);
 		} else {
 			return null;
 		}
@@ -158,13 +238,13 @@ implements Constants.XML.Attribute, Comparable
 
 		@param	vals	The values to add to the attribute.
 	*/
-	public void setValues(List vals) {
+	public void setValues(List<String> vals) {
 		DBC.REQUIRE(vals != null);
 		if (vals == null) {
 			return;
 		}
 
-		values = new ArrayList(vals);
+		values = new ArrayList<String>(vals);
 
 		DBC.ENSURE(values.size() == vals.size());
 	}
@@ -174,7 +254,7 @@ implements Constants.XML.Attribute, Comparable
 		@return	The {@link #defaultDeclType} of this {@link
 				com.mcdermottroe.exemplar.model.XMLAttribute}.
 	*/
-	public String getDefaultDeclType() {
+	public DefaultType getDefaultDeclType() {
 		return defaultDeclType;
 	}
 
@@ -190,33 +270,16 @@ implements Constants.XML.Attribute, Comparable
 	/** Method to set the default type and value for this attribute.
 
 		@param type 	The type of default value this is. Should be one of
-						{@link #REQUIRED}, {@link #IMPLIED},
-						{@link #FIXED} and {@link #ATTVALUE}.
+						{@link DefaultType#REQUIRED}, {@link
+						DefaultType#IMPLIED}, {@link DefaultType#FIXED} and
+						{@link DefaultType#ATTVALUE}.
 		@param value	The default value for this attribute. Should be
-						<code>null</code> for {@link #REQUIRED} and
-						{@link #IMPLIED} types.
+						<code>null</code> for {@link DefaultType#REQUIRED} and
+						{@link DefaultType#IMPLIED} types.
 	*/
-	public void setDefaultDecl(String type, String value) {
-		DBC.REQUIRE	(
-						(
-							(type.equals(REQUIRED) || type.equals(IMPLIED)) &&
-							(value == null)
-						) ||
-						(
-							(type.equals(FIXED) || type.equals(ATTVALUE)) &&
-							(value != null)
-						)
-					);
-
+	public void setDefaultDecl(DefaultType type, String value) {
 		defaultDeclType = type;
 		defaultValue = value;
-
-		DBC.ENSURE	(
-						type.equals(REQUIRED) ||
-						type.equals(IMPLIED) ||
-						type.equals(FIXED) ||
-						type.equals(ATTVALUE)
-					);
 	}
 
 	/** Method to set the default type and value for this attribute to be equal
@@ -232,23 +295,6 @@ implements Constants.XML.Attribute, Comparable
 
 		defaultDeclType = other.getDefaultDeclType();
 		defaultValue = other.getDefaultValue();
-
-		DBC.ENSURE	(
-						(
-							(
-								defaultDeclType.equals(REQUIRED) ||
-								defaultDeclType.equals(IMPLIED)
-							) &&
-							(defaultValue == null)
-						) ||
-						(
-							(
-								defaultDeclType.equals(FIXED) ||
-								defaultDeclType.equals(ATTVALUE)
-							) &&
-							(defaultValue != null)
-						)
-					);
 	}
 
 	/** Compare this attribute declaration with another, the value by which
@@ -256,15 +302,14 @@ implements Constants.XML.Attribute, Comparable
 		java.util.Collection} of {@link XMLAttribute} objects is sorted, it is
 		ordered by their names.
 
-		@param	o	Another {@link Object} to compare this {@link XMLAttribute}
-					to.
-		@return		A negative integer, zero or a positive integer if this
-					object is less than, equal to or greater than the object
-					<code>o</code> respectively.
+		@param	other	Another {@link XMLAttribute} to compare this {@link
+						XMLAttribute} to.
+		@return			A negative integer, zero or a positive integer if this
+						object is less than, equal to or greater than the
+						object <code>other</code> respectively.
 	*/
-	public int compareTo(Object o) {
-		DBC.REQUIRE(o instanceof XMLAttribute);
-		return name.compareTo(((XMLAttribute)o).getName());
+	public int compareTo(XMLAttribute other) {
+		return name.compareTo(other.getName());
 	}
 
 	/** See {@link Object#equals(Object)}.
@@ -272,7 +317,7 @@ implements Constants.XML.Attribute, Comparable
 		@param	o	The object to compare against.
 		@return		True if <code>this</code> is equal to <code>o</code>.
 	*/
-	public boolean equals(Object o) {
+	@Override public boolean equals(Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -302,35 +347,34 @@ implements Constants.XML.Attribute, Comparable
 
 		@return	A hash code.
 	*/
-	public int hashCode() {
-		Object[] hashCodeVars = {
+	@Override public int hashCode() {
+		return Utils.genericHashCode(
 			name,
 			attributeType,
 			values,
 			defaultDeclType,
-			defaultValue,
-		};
-		return Utils.genericHashCode(hashCodeVars);
+			defaultValue
+		);
 	}
 
 	/** See {@link Object#toString()}.
 
 		@return	A descriptive {@link String}.
 	*/
-	public String toString() {
-		StringBuffer desc = new StringBuffer();
+	@Override public String toString() {
+		StringBuilder desc = new StringBuilder();
 		desc.append(name);
 		desc.append(Constants.Character.COMMA);
 		desc.append(Constants.Character.SPACE);
-		if (attributeType.equals(INVALID)) {
+		if (attributeType.equals(ContentType.INVALID)) {
 			desc.append(Message.XMLOBJECT_NOT_CONFIGURED);
 		} else if	(
-						attributeType.equals(NOTATION) ||
-						attributeType.equals(ENUMERATION)
+						attributeType.equals(ContentType.NOTATION) ||
+						attributeType.equals(ContentType.ENUMERATION)
 					)
 		{
-			if (attributeType.equals(NOTATION)) {
-				desc.append(NOTATION);
+			if (attributeType.equals(ContentType.NOTATION)) {
+				desc.append(ContentType.NOTATION.toString());
 			}
 			desc.append(Constants.Character.LEFT_PAREN);
 			desc.append(values.toString());
@@ -341,12 +385,12 @@ implements Constants.XML.Attribute, Comparable
 		desc.append(Constants.Character.COMMA);
 		desc.append(Constants.Character.SPACE);
 		if	(
-				defaultDeclType.equals(FIXED) ||
-				defaultDeclType.equals(ATTVALUE)
+				defaultDeclType.equals(DefaultType.FIXED) ||
+				defaultDeclType.equals(DefaultType.ATTVALUE)
 			)
 		{
-			if (defaultDeclType.equals(FIXED)) {
-				desc.append(FIXED);
+			if (defaultDeclType.equals(DefaultType.FIXED)) {
+				desc.append(DefaultType.FIXED);
 			}
 			desc.append(Constants.Character.LEFT_PAREN);
 			desc.append(defaultValue);
@@ -355,6 +399,6 @@ implements Constants.XML.Attribute, Comparable
 			desc.append(defaultDeclType);
 		}
 
-		return XMLObject.toString(getClass().getName(), desc.toString());
+		return XMLObject.toStringHelper(getClass().getName(), desc.toString());
 	}
 }

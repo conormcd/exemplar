@@ -30,7 +30,6 @@
 package test.com.mcdermottroe.exemplar.tasks;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -43,10 +42,10 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 
 import com.mcdermottroe.exemplar.ui.Options;
+import com.mcdermottroe.exemplar.Utils;
 
 /** Run exemplar with all option permutations via all UIs.
 
@@ -57,16 +56,16 @@ public class RunAllPermutations extends Task {
 	/** {@link com.mcdermottroe.exemplar.ui.Options.Argument}s can take any
 		value, hence to test them we need to supply "hint" values.
 	*/
-	private Set argumentHint;
+	private Set<ArgumentHint> argumentHints;
 
 	/** Create the task. */
 	public RunAllPermutations() {
 		super();
-		argumentHint = new HashSet();
+		argumentHints = new HashSet<ArgumentHint>();
 	}
 
 	/** Run all of the permutations. */
-	public void execute() {
+	@Override public void execute() {
 		SortedMap optionPossibilities = new TreeMap();
 		for (Iterator it = Options.optionNameIterator(); it.hasNext(); ) {
 			String optionName = (String)it.next();
@@ -75,9 +74,7 @@ public class RunAllPermutations extends Task {
 			if (Options.isArgument(optionName)) {
 				possibilities = new TreeSet();
 
-				Iterator hintIter = argumentHint.iterator();
-				while (hintIter.hasNext()) {
-					ArgumentHint aH = (ArgumentHint)hintIter.next();
+				for (ArgumentHint aH : argumentHints) {
 					if (optionName.equals(aH.getName())) {
 						possibilities.add(aH.getValue());
 					}
@@ -201,6 +198,10 @@ public class RunAllPermutations extends Task {
 
 			return 0;
 		}
+
+		@Override public final Object clone() {
+			return super.clone();
+		}
 	}
 
 	private static class OptionsPermutationIterator
@@ -279,7 +280,6 @@ public class RunAllPermutations extends Task {
 				}
 			}
 
-//			SortedMap retVal = new TreeMap();
 			for (int i = 0; i < index.length; i++) {
 				if (index[i] >= 0) {
 					System.out.print(" --");
@@ -288,16 +288,9 @@ public class RunAllPermutations extends Task {
 						Object optionValue = values[i].get(index[i]);
 						System.out.print(" ");
 						if (optionValue instanceof Set) {
-							String val = null;
-							for (Iterator it = ((Set)optionValue).iterator(); it.hasNext(); ) {
-								String next = (String)it.next();
-								if (val != null) {
-									val = val + "," + next;
-								} else {
-									val = next;
-								}
-							}
-							System.out.print(val);
+							System.out.print(
+								Utils.join(",", (Iterable)optionValue)
+							);
 						} else {
 							System.out.print(optionValue);
 						}
@@ -315,7 +308,7 @@ public class RunAllPermutations extends Task {
 
 	public ArgumentHint createArgumentHint() {
 		ArgumentHint argHint = new ArgumentHint();
-		argumentHint.add(argHint);
+		argumentHints.add(argHint);
 		return argHint;
 	}
 

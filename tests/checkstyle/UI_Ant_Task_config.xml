@@ -77,14 +77,6 @@
 		<module name="LineLength" />
 
 		<!--
-			Coding
-		-->
-	 	<module name="MultipleStringLiterals">
-			<property name="allowedDuplicates" value="0" />
-			<property name="ignoreStringsRegexp" value='^"(|exclude|CDSect|CharRef|Comment|doctypedecl|PI|include|entities|input-type|input|output-api|output-language|output|vocabulary)"$' />
-		</module>
-
-		<!--
 			Class Design
 		-->
 		<module name="VisibilityModifier">

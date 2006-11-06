@@ -49,7 +49,7 @@ import com.mcdermottroe.exemplar.DBC;
 */
 public final class ExitStatus {
 	/** The stash of all known exit codes. */
-	private static Set exitCodes;
+	private static Set<ExitCode> exitCodes;
 
 	/** Private constructor to prevent instantiation of this class. */
 	private ExitStatus() {
@@ -65,19 +65,19 @@ public final class ExitStatus {
 		{@link ResourceBundle} and load them into the stash.
 	*/
 	private static void initialise() {
-		exitCodes = new HashSet();
+		exitCodes = new HashSet<ExitCode>();
 
 		ResourceBundle rb = null;
 		try {
 			rb = ResourceBundle.getBundle(ExitStatus.class.getName());
 		} catch (MissingResourceException e) {
-			DBC.IGNORED_ERROR();
+			DBC.IGNORED_EXCEPTION(e);
 			abort();
 		}
 		DBC.ASSERT(rb != null);
 
-		for (Enumeration e = rb.getKeys(); e.hasMoreElements(); ) {
-			String exitSpec = (String)e.nextElement();
+		for (Enumeration<String> e = rb.getKeys(); e.hasMoreElements(); ) {
+			String exitSpec = e.nextElement();
 			String mnemonic = exitSpec.substring(
 				0,
 				exitSpec.indexOf((int)Constants.Character.FULL_STOP)
@@ -111,8 +111,7 @@ public final class ExitStatus {
 	public static int getExitCode(String mnemonic) {
 		DBC.REQUIRE(mnemonic != null);
 		initialise();
-		for (Iterator it = exitCodes.iterator(); it.hasNext(); ) {
-			ExitCode exitCode = (ExitCode)it.next();
+		for (ExitCode exitCode : exitCodes) {
 			if (exitCode.getMnemonic().equals(mnemonic)) {
 				return exitCode.getNumericForm();
 			}
@@ -131,15 +130,12 @@ public final class ExitStatus {
 
 		@return An Iterator over the exit codes.
 	*/
-	public static Iterator iterator() {
+	public static Iterator<String> iterator() {
 		initialise();
-		Map ret = new TreeMap();
-		for (Iterator it = exitCodes.iterator(); it.hasNext(); ) {
-			ExitCode exitCode = (ExitCode)it.next();
+		Map<Integer, String> ret = new TreeMap<Integer, String>();
+		for (ExitCode exitCode : exitCodes) {
 			ret.put(
-				new Integer(
-					exitCode.getNumericForm()
-				),
+				exitCode.getNumericForm(),
 				exitCode.getMnemonic()
 			);
 		}
@@ -154,8 +150,7 @@ public final class ExitStatus {
 	public static String getDescription(String mnemonic) {
 		DBC.REQUIRE(mnemonic != null);
 		initialise();
-		for (Iterator it = exitCodes.iterator(); it.hasNext(); ) {
-			ExitCode exitCode = (ExitCode)it.next();
+		for (ExitCode exitCode : exitCodes) {
 			if (exitCode.getMnemonic().equals(mnemonic)) {
 				return exitCode.getDescription();
 			}
@@ -221,7 +216,7 @@ public final class ExitStatus {
 
 			@return The value of the {@link #mnemonic} member.
 		*/
-		public String toString() {
+		@Override public String toString() {
 			return getMnemonic();
 		}
 	}

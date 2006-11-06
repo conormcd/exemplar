@@ -59,7 +59,7 @@ public class WhichJar extends WhichResource {
 
 		@param property The property that will be set.
 	*/
-	public void setProperty(String property) {
+	@Override public void setProperty(String property) {
 		resultPropertyName = property;
 		super.setProperty(property);
 	}
@@ -72,7 +72,7 @@ public class WhichJar extends WhichResource {
 		@throws	BuildException	if the resource was not found or if it was
 								found but was not in a JAR file.
 	*/
-	public void execute() {
+	@Override public void execute() {
 		super.execute();
 		String resultPropertyValue = getProject().getProperty(resultPropertyName);
 		if (resultPropertyValue != null && resultPropertyValue.startsWith("jar:file:")) {

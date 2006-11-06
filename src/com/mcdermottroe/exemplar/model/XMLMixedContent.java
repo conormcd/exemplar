@@ -42,8 +42,8 @@ public class XMLMixedContent
 extends XMLAggregateObject
 {
 	/** {@inheritDoc} */
-	public String toString() {
-		StringBuffer desc = new StringBuffer(
+	@Override public String toString() {
+		StringBuilder desc = new StringBuilder(
 			toString(
 				getClass().getName(),
 				Constants.Character.PIPE

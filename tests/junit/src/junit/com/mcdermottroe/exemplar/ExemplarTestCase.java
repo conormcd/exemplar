@@ -32,7 +32,6 @@ package junit.com.mcdermottroe.exemplar;
 import junit.framework.TestCase;
 
 import com.mcdermottroe.exemplar.Constants;
-import com.mcdermottroe.exemplar.ui.LogUtils;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.Options;
 
@@ -53,7 +52,7 @@ public abstract class ExemplarTestCase extends TestCase {
 		@see				#testedClass
 		@see				TestCase#setUp()
 	*/
-	public void setUp() throws Exception {
+	@Override public void setUp() throws Exception {
 		super.setUp();
 
 		testedClass = null;
@@ -78,7 +77,6 @@ public abstract class ExemplarTestCase extends TestCase {
 		}
 
 		Message.localise();
-		LogUtils.setLogHandler(LogUtils.NO_OP_LOG_HANDLER);
 		Options.set("debug", "true");
 		Options.setUIFinished();
 	}

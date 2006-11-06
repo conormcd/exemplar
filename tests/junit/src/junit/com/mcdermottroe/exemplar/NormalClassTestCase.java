@@ -33,7 +33,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Iterator;
 import java.util.List;
 
 /**	Base class for JUnit tests that test classes which produce "normal"
@@ -69,10 +68,10 @@ public abstract class NormalClassTestCase extends ExemplarTestCase {
 		performed and avoids only testing the no-arg constructor. This {@link
 		List} should be initialised in the {@link #setUp()} method.
 	*/
-	protected List sampleObjects;
+	protected List<Object> sampleObjects;
 
 	/** {@inheritDoc} */
-	public void setUp() throws Exception {
+	@Override public void setUp() throws Exception {
 		super.setUp();
 
 		allowPublicStaticMembers = false;
@@ -94,12 +93,9 @@ public abstract class NormalClassTestCase extends ExemplarTestCase {
 			return;
 		}
 
-		// Get the constructors
-		Constructor[] constructors = testedClass.getDeclaredConstructors();
-
 		// Make sure that they're all non-private.
-		for (int i = 0; i < constructors.length; i++) {
-			int modifiers = constructors[i].getModifiers();
+		for (Constructor constructor : testedClass.getDeclaredConstructors()) {
+			int modifiers = constructor.getModifiers();
 			if (Modifier.isPrivate(modifiers)) {
 				assertFalse(testName, Modifier.isPrivate(modifiers));
 				return;
@@ -124,9 +120,8 @@ public abstract class NormalClassTestCase extends ExemplarTestCase {
 			return;
 		}
 
-		Field[] fields = testedClass.getDeclaredFields();
-		for (int i = 0; i < fields.length; i++) {
-			int modifiers = fields[i].getModifiers();
+		for (Field field : testedClass.getDeclaredFields()) {
+			int modifiers = field.getModifiers();
 			if	(
 					!(
 						Modifier.isPrivate(modifiers) ||
@@ -168,9 +163,7 @@ public abstract class NormalClassTestCase extends ExemplarTestCase {
 		int repeat = 5;
 
 		if (sampleObjects != null) {
-			for (Iterator it = sampleObjects.iterator(); it.hasNext(); ) {
-				Object o = it.next();
-
+			for (Object o : sampleObjects) {
 				int initialHashCode = o.hashCode();
 				for (int i = 0; i < (repeat - 1); i++) {
 					if (initialHashCode != o.hashCode()) {
@@ -228,14 +221,9 @@ public abstract class NormalClassTestCase extends ExemplarTestCase {
 		}
 
 		if (sampleObjects != null) {
-			Object[] sample = sampleObjects.toArray();
-			for (int i = 0; i < sample.length; i++) {
-				for (int j = 0; j < sample.length; j++) {
-					if	(
-							sample[i].equals(sample[j]) &&
-							sample[i].hashCode() != sample[j].hashCode()
-						)
-					{
+			for (Object a : sampleObjects) {
+				for (Object b : sampleObjects) {
+					if (a.equals(b) && (a.hashCode() != b.hashCode())) {
 						fail(testName);
 						return;
 					}
@@ -284,15 +272,13 @@ public abstract class NormalClassTestCase extends ExemplarTestCase {
 		}
 
 		if (sampleObjects != null) {
-			for (Iterator i = sampleObjects.iterator(); i.hasNext(); ) {
-				Object o = i.next();
+			for (Object o : sampleObjects) {
 				if (o != null && !o.equals(o)) {
 					fail(testName);
 					return;
 				}
 			}
 			assertTrue(testName, true);
-			return;
 		} else {
 			if (testedClass == null) {
 				fail(testName);
@@ -314,7 +300,6 @@ public abstract class NormalClassTestCase extends ExemplarTestCase {
 				return;
 			}
 			assertTrue(testName, o.equals(o));
-			return;
 		}
 	}
 
@@ -335,14 +320,9 @@ public abstract class NormalClassTestCase extends ExemplarTestCase {
 		}
 
 		if (sampleObjects != null) {
-			Object[] sample = sampleObjects.toArray();
-			for (int i = 0; i < sample.length; i++) {
-				for (int j = 0; j < sample.length; j++) {
-					if	(
-							sample[i].equals(sample[j]) &&
-							!(sample[j].equals(sample[i]))
-						)
-					{
+			for (Object a : sampleObjects) {
+				for (Object b : sampleObjects) {
+					if (a.equals(b) && !(b.equals(a))) {
 						fail(testName);
 						return;
 					}
@@ -392,16 +372,10 @@ public abstract class NormalClassTestCase extends ExemplarTestCase {
 		}
 
 		if (sampleObjects != null) {
-			Object[] sample = sampleObjects.toArray();
-			for (int i = 0; i < sample.length; i++) {
-				for (int j = 0; j < sample.length; j++) {
-					for (int k = 0; k < sample.length; k++) {
-						if	(
-								sample[i].equals(sample[j]) &&
-								sample[j].equals(sample[k]) &&
-								!(sample[i].equals(sample[k]))
-							)
-						{
+			for (Object a : sampleObjects) {
+				for (Object b : sampleObjects) {
+					for (Object c : sampleObjects) {
+						if (a.equals(b) && b.equals(c) && !(a.equals(c))) {
 							fail(testName);
 							return;
 						}
@@ -455,12 +429,11 @@ public abstract class NormalClassTestCase extends ExemplarTestCase {
 		int repeats = 5;
 
 		if (sampleObjects != null) {
-			Object[] sample = sampleObjects.toArray();
-			for (int i = 0; i < sample.length; i++) {
-				for (int j = 0; j < sample.length; j++) {
-					boolean initialResult = sample[i].equals(sample[j]);
-					for (int k = 0; k < (repeats - 1); k++) {
-						if (initialResult != sample[i].equals(sample[j])) {
+			for (Object a : sampleObjects) {
+				for (Object b : sampleObjects) {
+					boolean initialResult = a.equals(b);
+					for (int i = 0; i < (repeats - 1); i++) {
+						if (initialResult != a.equals(b)) {
 							fail(testName);
 							return;
 						}
@@ -468,7 +441,6 @@ public abstract class NormalClassTestCase extends ExemplarTestCase {
 				}
 			}
 			assertTrue(testName, true);
-			return;
 		} else {
 			if (testedClass == null) {
 				fail(testName);
@@ -501,7 +473,6 @@ public abstract class NormalClassTestCase extends ExemplarTestCase {
 			}
 
 			assertTrue(testName, true);
-			return;
 		}
 	}
 
@@ -518,8 +489,7 @@ public abstract class NormalClassTestCase extends ExemplarTestCase {
 		}
 
 		if (sampleObjects != null) {
-			for (Iterator i = sampleObjects.iterator(); i.hasNext(); ) {
-				Object o = i.next();
+			for (Object o : sampleObjects) {
 				if (o.equals(null)) {
 					fail(testName);
 					return;
@@ -567,17 +537,12 @@ public abstract class NormalClassTestCase extends ExemplarTestCase {
 		}
 
 		if (sampleObjects != null) {
-			Object[] sample = sampleObjects.toArray();
-			for (int i = 0; i < sample.length; i++) {
-				for (int j = 0; j < sample.length; j++) {
-					if (sample[i] != null) {
+			for (Object a : sampleObjects) {
+				for (Object b : sampleObjects) {
+					if (a != null) {
 						if	(
-								(sample[i].equals(sample[j])) !=
-								(
-									sample[i].toString().equals(
-										sample[j].toString()
-									)
-								)
+								a.equals(b) !=
+								(a.toString().equals(b.toString()))
 							)
 						{
 							fail(testName);
@@ -624,21 +589,15 @@ public abstract class NormalClassTestCase extends ExemplarTestCase {
 		}
 
 		// Try and get the no-arg constructor.
-		Class[] noArgArgs = {};
 		Constructor noArgConstructor;
 		try {
-			noArgConstructor = testedClass.getDeclaredConstructor(noArgArgs);
+			noArgConstructor = testedClass.getDeclaredConstructor();
 		} catch (NoSuchMethodException e) {
 			return false;
 		}
 
 		// Make sure it's public, if not we can't use it.
-		int modifiers = noArgConstructor.getModifiers();
-		if (Modifier.isPublic(modifiers)) {
-			return true;
-		}
-
-		return false;
+		return Modifier.isPublic(noArgConstructor.getModifiers());
 	}
 
 	/** Test whether or not the tested class implements an {@link
@@ -657,18 +616,13 @@ public abstract class NormalClassTestCase extends ExemplarTestCase {
 		// Try and get the equals method.
 		Method equalsMethod;
 		try {
-			Class[] args = {Object.class};
-			equalsMethod = testedClass.getMethod("equals", args);
+			equalsMethod = testedClass.getMethod("equals", Object.class);
 		} catch (NoSuchMethodException e) {
 			return false;
 		}
 
 		// If we got an equals method then return true, else false.
-		if (equalsMethod != null) {
-			return true;
-		} else {
-			return false;
-		}
+		return equalsMethod != null;
 	}
 
 	/** Test whether or not the tested class implements a {@link
@@ -687,17 +641,13 @@ public abstract class NormalClassTestCase extends ExemplarTestCase {
 		// Try and get the hashCode method.
 		Method hashCodeMethod;
 		try {
-			hashCodeMethod = testedClass.getMethod("hashCode", null);
+			hashCodeMethod = testedClass.getMethod("hashCode");
 		} catch (NoSuchMethodException e) {
 			return false;
 		}
 
 		// If we got a hashCode method then return true, else false.
-		if (hashCodeMethod != null) {
-			return true;
-		} else {
-			return false;
-		}
+		return hashCodeMethod != null;
 	}
 
 
@@ -717,16 +667,12 @@ public abstract class NormalClassTestCase extends ExemplarTestCase {
 		// Try and get the toString() method.
 		Method toStringMethod;
 		try {
-			toStringMethod = testedClass.getMethod("toString", null);
+			toStringMethod = testedClass.getMethod("toString");
 		} catch (NoSuchMethodException e) {
 			return false;
 		}
 
 		// If we got an toString() method then return true, else false.
-		if (toStringMethod != null) {
-			return true;
-		} else {
-			return false;
-		}
+		return toStringMethod != null;
 	}
 }

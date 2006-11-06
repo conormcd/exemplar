@@ -38,7 +38,7 @@ public class XMLContent
 extends XMLObject
 {
 	/** {@inheritDoc} */
-	public String toString() {
-		return toString(getClass().getName(), "");
+	@Override public String toString() {
+		return XMLObject.toStringHelper(getClass().getName(), "");
 	}
 }

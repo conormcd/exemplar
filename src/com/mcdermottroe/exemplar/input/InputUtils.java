@@ -29,8 +29,8 @@
 */
 package com.mcdermottroe.exemplar.input;
 
-import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -38,6 +38,7 @@ import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
+import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
 
 /** Input handling utilities.
@@ -63,7 +64,7 @@ public final class InputUtils {
 										$PACKAGE.input.$name.Parser could not be
 										found.
 	*/
-	private static Class parserClass(String name)
+	private static Class<?> parserClass(String name)
 	throws ClassNotFoundException
 	{
 		DBC.REQUIRE(name != null);
@@ -71,13 +72,13 @@ public final class InputUtils {
 			return null;
 		}
 
-		StringBuffer parserClassName = new StringBuffer();
+		StringBuilder parserClassName = new StringBuilder();
 		parserClassName.append(Constants.Input.PACKAGE);
 		parserClassName.append(Constants.Character.FULL_STOP);
-		parserClassName.append(name.toLowerCase());
+		parserClassName.append(name.toLowerCase(Locale.getDefault()));
 		parserClassName.append(Constants.Character.FULL_STOP);
 		parserClassName.append(Constants.Input.CLASS);
-		Class parserClass = Class.forName(parserClassName.toString());
+		Class<?> parserClass = Class.forName(parserClassName.toString());
 
 		DBC.ENSURE(InputModule.class.isAssignableFrom(parserClass));
 		return parserClass;
@@ -104,6 +105,7 @@ public final class InputUtils {
 	public static XMLDocumentType parse(String inputFile, String inputType)
 	throws InputException, ParserException
 	{
+		Log.debug("Attempting to parse " + inputFile + " as a " + inputType);
 		DBC.REQUIRE(inputFile != null);
 		DBC.REQUIRE(inputType != null);
 		if (inputFile == null || inputType == null) {
@@ -112,8 +114,13 @@ public final class InputUtils {
 
 		try {
 			Object inputMod = parserClass(inputType).newInstance();
+			Log.debug(
+				"Created new parser instace: " +
+				inputMod.getClass().getName()
+			);
 			if (inputMod instanceof InputModule) {
 				InputModule inputModule = (InputModule)inputMod;
+				Log.debug("Handing off " + inputFile + " to parser");
 				return inputModule.parse(inputFile);
 			} else {
 				throw new InputException(Message.UNSUPPORTED_INPUT_TYPE);
@@ -143,28 +150,28 @@ public final class InputUtils {
 				legal input languages and the values are descriptions of those 
 				languages.
 	*/
-	public static SortedMap availableInputLanguages() {
-		SortedMap availableInputLanguages = new TreeMap();
+	public static SortedMap<String, String> availableInputLanguages() {
+		SortedMap<String, String> availableInputLanguages;
+		availableInputLanguages = new TreeMap<String, String>();
 
-		List packages = Utils.findSubPackages(Constants.Input.PACKAGE);
-		for (Iterator it = packages.iterator(); it.hasNext(); ) {
-			String packageName = (String)it.next();
+		List<String> packages = Utils.findSubPackages(Constants.Input.PACKAGE);
+		for (String packageName : packages) {
 			String inputMethod = packageName.substring(
 				Constants.Input.PACKAGE.length() + 1
 			);
 			if (inputMethod.indexOf((int)Constants.Character.FULL_STOP) == -1) {
 				try {
-					Class generatorClass = parserClass(inputMethod);
+					Class<?> generatorClass = parserClass(inputMethod);
 					Object gen = generatorClass.newInstance();
 					availableInputLanguages.put(inputMethod, gen.toString());
 				} catch (ClassNotFoundException e) {
-					// Ignore
+					DBC.IGNORED_EXCEPTION(e);
 				} catch (IllegalAccessException e) {
-					// Ignore
+					DBC.IGNORED_EXCEPTION(e);
 				} catch (InstantiationException e) {
-					// Ignore
+					DBC.IGNORED_EXCEPTION(e);
 				} catch (SecurityException e) {
-					// Ignore
+					DBC.IGNORED_EXCEPTION(e);
 				}
 			}
 		}

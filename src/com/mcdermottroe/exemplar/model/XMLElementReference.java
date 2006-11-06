@@ -54,7 +54,7 @@ extends XMLNamedObject
 	}
 
 	/** {@inheritDoc} */
-	public String toString() {
-		return toString(getClass().getName(), name);
+	@Override public String toString() {
+		return XMLObject.toStringHelper(getClass().getName(), name);
 	}
 }

@@ -32,6 +32,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import java_cup.runtime.ComplexSymbolFactory;
 import java_cup.runtime.Symbol;
 
 import com.mcdermottroe.exemplar.Constants;
@@ -47,11 +51,13 @@ import com.mcdermottroe.exemplar.model.XMLElement;
 import com.mcdermottroe.exemplar.model.XMLElementReference;
 import com.mcdermottroe.exemplar.model.XMLEntity;
 import com.mcdermottroe.exemplar.model.XMLExternalIdentifier;
+import com.mcdermottroe.exemplar.model.XMLMarkupDeclaration;
 import com.mcdermottroe.exemplar.model.XMLMixedContent;
 import com.mcdermottroe.exemplar.model.XMLNotation;
 import com.mcdermottroe.exemplar.model.XMLObject;
 import com.mcdermottroe.exemplar.model.XMLSequence;
 import com.mcdermottroe.exemplar.ui.Message;
+import com.mcdermottroe.exemplar.ui.Options;
 
 parser code {:
 	/** Implementation of {@link InputModule#parse(String)}.
@@ -124,6 +130,9 @@ parser code {:
 		DBC.REQUIRE(input != null);
 		DBC.REQUIRE(baseDir != null);
 
+		// Set the symbol factory
+		symbolFactory = new ComplexSymbolFactory();
+
 		// Create the lexer and set it as the scanner.
 		Lexer lex = new Lexer(input);
 		lex.setDtdPath(baseDir.getAbsolutePath());
@@ -143,138 +152,138 @@ parser code {:
 	}
 :}
 
-terminal ATTLIST_HEAD;
-terminal ELEMENT_HEAD;
-terminal ENTITY_HEAD;
-terminal NOTATION_HEAD;
-terminal HASH_PCDATA;
-terminal HASH_FIXED;
-terminal HASH_IMPLIED;
-terminal HASH_REQUIRED;
-terminal CDATA;
-terminal SYSTEM;
-terminal PUBLIC;
-terminal NDATA_SURROUNDED_BY_S;
-terminal NOTATION;
-terminal EMPTY;
-terminal ANY;
-terminal ID;
-terminal IDREF;
-terminal IDREFS;
-terminal ENTITY;
-terminal ENTITIES;
-terminal NMTOKEN;
-terminal NMTOKENS;
-terminal S;
-terminal AMP;
-terminal APOS;
-terminal AT;
-terminal BACKTICK;
-terminal BASECHAR;
-terminal BSLASH;
-terminal CARAT;
-terminal CHAR;
-terminal CHARREF;
-terminal COLON;
-terminal COMBININGCHAR;
-terminal COMMA;
-terminal COMMA_PRECEDED_BY_S;
-terminal COMMA_FOLLOWED_BY_S;
-terminal COMMA_SURROUNDED_BY_S;
-terminal COMMENT;
-terminal DIGIT;
-terminal DOLLAR;
-terminal DOT;
-terminal EQUALS;
-terminal EXCLAM;
-terminal EXTENDER;
-terminal GT;
-terminal HASH;
-terminal IDEOGRAPHIC;
-terminal LBRACE;
-terminal LPAREN;
-terminal LSQUARE;
-terminal LT;
-terminal MINUS;
-terminal PERCENT;
-terminal PIPE;
-terminal PIPE_PRECEDED_BY_S;
-terminal PIPE_FOLLOWED_BY_S;
-terminal PIPE_SURROUNDED_BY_S;
-terminal PLUS;
-terminal QMARK;
-terminal QUOT;
-terminal RBRACE;
-terminal RPAREN;
-terminal RSQUARE;
-terminal SEMI;
-terminal SLASH;
-terminal STAR;
-terminal TILDE;
-terminal UNDERSCORE;
+terminal String	ATTLIST_HEAD;
+terminal String	ELEMENT_HEAD;
+terminal String	ENTITY_HEAD;
+terminal String NOTATION_HEAD;
+terminal String	HASH_PCDATA;
+terminal String	HASH_FIXED;
+terminal String	HASH_IMPLIED;
+terminal String	HASH_REQUIRED;
+terminal String	CDATA;
+terminal String	SYSTEM;
+terminal String	PUBLIC;
+terminal String	NDATA_SURROUNDED_BY_S;
+terminal String	NOTATION;
+terminal String	EMPTY;
+terminal String	ANY;
+terminal String	ID;
+terminal String	IDREF;
+terminal String	IDREFS;
+terminal String	ENTITY;
+terminal String	ENTITIES;
+terminal String	NMTOKEN;
+terminal String	NMTOKENS;
+terminal String	S;
+terminal String	AMP;
+terminal String	APOS;
+terminal String	AT;
+terminal String	BACKTICK;
+terminal String	BASECHAR;
+terminal String	BSLASH;
+terminal String	CARAT;
+terminal String	CHAR;
+terminal String	CHARREF;
+terminal String	COLON;
+terminal String	COMBININGCHAR;
+terminal String	COMMA;
+terminal String	COMMA_PRECEDED_BY_S;
+terminal String	COMMA_FOLLOWED_BY_S;
+terminal String	COMMA_SURROUNDED_BY_S;
+terminal String	COMMENT;
+terminal String	DIGIT;
+terminal String	DOLLAR;
+terminal String	DOT;
+terminal String	EQUALS;
+terminal String	EXCLAM;
+terminal String	EXTENDER;
+terminal String	GT;
+terminal String	HASH;
+terminal String	IDEOGRAPHIC;
+terminal String	LBRACE;
+terminal String	LPAREN;
+terminal String	LSQUARE;
+terminal String	LT;
+terminal String	MINUS;
+terminal String	PERCENT;
+terminal String	PIPE;
+terminal String	PIPE_PRECEDED_BY_S;
+terminal String	PIPE_FOLLOWED_BY_S;
+terminal String	PIPE_SURROUNDED_BY_S;
+terminal String	PLUS;
+terminal String	QMARK;
+terminal String	QUOT;
+terminal String	RBRACE;
+terminal String	RPAREN;
+terminal String	RSQUARE;
+terminal String	SEMI;
+terminal String	SLASH;
+terminal String	STAR;
+terminal String	TILDE;
+terminal String	UNDERSCORE;
 
-non terminal AttDef;
-non terminal AttDef_STAR;
-non terminal AttlistDecl;
-non terminal AttType;
-non terminal AttValue;
-non terminal AttValue_QUOT_STRING;
-non terminal AttValue_QUOT_STRING_CHAR;
-non terminal AttValue_APOS_STRING;
-non terminal AttValue_APOS_STRING_CHAR;
-non terminal Char_NO_QUOT;
-non terminal Char_NO_QUOT_STAR;
-non terminal Char_NO_APOS;
-non terminal Char_NO_APOS_STAR;
-non terminal children;
-non terminal choice;
-non terminal choice_cpLIST;
-non terminal COMMA_SURROUNDED_BY_OPT_S;
-non terminal contentspec;
-non terminal cp;
-non terminal DeclSep;
-non terminal DefaultDecl;
-non terminal elementdecl;
-non terminal EntityDecl;
-non terminal EntityDef;
-non terminal EntityRef;
-non terminal EntityValue;
-non terminal EntityValue_QUOT_STRING;
-non terminal EntityValue_QUOT_STRING_CHAR;
-non terminal EntityValue_APOS_STRING;
-non terminal EntityValue_APOS_STRING_CHAR;
-non terminal Enumeration;
-non terminal Enumeration_NmtokenLIST;
-non terminal EnumeratedType;
-non terminal ExternalID;
-non terminal extSubset;
-non terminal extSubsetDecl;
-non terminal GEDecl;
-non terminal GT_PRECEDED_BY_OPT_S;
-non terminal LPAREN_FOLLOWED_BY_OPT_S;
-non terminal markupDecl;
-non terminal Mixed;
-non terminal Mixed_NameLIST;
-non terminal Name;
-non terminal NameChar;
-non terminal NameChar_STAR;
-non terminal NameStartChar;
-non terminal NDataDecl;
-non terminal Nmtoken;
-non terminal NotationDecl;
-non terminal NotationType;
-non terminal NotationType_NameLIST;
-non terminal PIPE_SURROUNDED_WITH_OPT_S;
-non terminal PubidLiteral;
-non terminal PublicID;
-non terminal Reference;
-non terminal RPAREN_PRECEDED_BY_OPT_S;
-non terminal s;
-non terminal seq;
-non terminal seq_cpLIST;
-non terminal StringType;
-non terminal SystemLiteral;
-non terminal TokenizedType;
+non terminal XMLAttribute				AttDef;
+non terminal XMLAttributeList			AttDef_STAR;
+non terminal XMLAttributeList			AttlistDecl;
+non terminal XMLAttribute				AttType;
+non terminal String						AttValue;
+non terminal String						AttValue_QUOT_STRING;
+non terminal String						AttValue_QUOT_STRING_CHAR;
+non terminal String						AttValue_APOS_STRING;
+non terminal String						AttValue_APOS_STRING_CHAR;
+non terminal String						Char_NO_QUOT;
+non terminal String						Char_NO_QUOT_STAR;
+non terminal String						Char_NO_APOS;
+non terminal String						Char_NO_APOS_STAR;
+non terminal XMLSequence				children;
+non terminal XMLAlternative				choice;
+non terminal XMLAlternative				choice_cpLIST;
+non terminal String						COMMA_SURROUNDED_BY_OPT_S;
+non terminal XMLElement					contentspec;
+non terminal XMLSequence				cp;
+non terminal String						DeclSep;
+non terminal XMLAttribute				DefaultDecl;
+non terminal XMLElement					elementdecl;
+non terminal XMLEntity					EntityDecl;
+non terminal XMLEntity					EntityDef;
+non terminal String						EntityRef;
+non terminal String						EntityValue;
+non terminal String						EntityValue_QUOT_STRING;
+non terminal String						EntityValue_QUOT_STRING_CHAR;
+non terminal String						EntityValue_APOS_STRING;
+non terminal String						EntityValue_APOS_STRING_CHAR;
+non terminal XMLAttribute				Enumeration;
+non terminal List						Enumeration_NmtokenLIST;
+non terminal XMLAttribute				EnumeratedType;
+non terminal XMLExternalIdentifier		ExternalID;
+non terminal XMLDocumentType			extSubset;
+non terminal List						extSubsetDecl;
+non terminal XMLEntity					GEDecl;
+non terminal String						GT_PRECEDED_BY_OPT_S;
+non terminal String						LPAREN_FOLLOWED_BY_OPT_S;
+non terminal XMLMarkupDeclaration		markupDecl;
+non terminal XMLMixedContent			Mixed;
+non terminal XMLMixedContent			Mixed_NameLIST;
+non terminal String						Name;
+non terminal String						NameChar;
+non terminal String						NameChar_STAR;
+non terminal String						NameStartChar;
+non terminal String						NDataDecl;
+non terminal String						Nmtoken;
+non terminal XMLNotation				NotationDecl;
+non terminal XMLAttribute				NotationType;
+non terminal List						NotationType_NameLIST;
+non terminal String						PIPE_SURROUNDED_WITH_OPT_S;
+non terminal String						PubidLiteral;
+non terminal String						PublicID;
+non terminal String						Reference;
+non terminal String						RPAREN_PRECEDED_BY_OPT_S;
+non terminal String						s;
+non terminal XMLSequence				seq;
+non terminal XMLSequence				seq_cpLIST;
+non terminal XMLAttribute				StringType;
+non terminal String						SystemLiteral;
+non terminal XMLAttribute				TokenizedType;
 
 precedence nonassoc BASECHAR, COLON, COMBININGCHAR, DIGIT, DOT, EXTENDER, IDEOGRAPHIC, MINUS, S, UNDERSCORE;
 
@@ -348,209 +357,209 @@ AttValue_QUOT_STRING_CHAR		::= CHAR:value
 										{:
 											RESULT = value;
 										:} |
-									APOS
+									APOS:value
 										{:
-											RESULT = "'";
+											RESULT = value;
 										:} |
-									AT
+									AT:value
 										{:
-											RESULT = "@";
+											RESULT = value;
 										:} |
-									BACKTICK
+									BACKTICK:value
 										{:
-											RESULT = "`";
+											RESULT = value;
 										:} |
 									BASECHAR:value
 										{:
 											RESULT = value;
 										:} |
-									BSLASH
+									BSLASH:value
 										{:
-											RESULT = "\\";
+											RESULT = value;
 										:} |
-									CARAT
+									CARAT:value
 										{:
-											RESULT = "^";
+											RESULT = value;
 										:} |
-									COLON
+									COLON:value
 										{:
-											RESULT = ":";
+											RESULT = value;
 										:} |
 									COMBININGCHAR:value
 										{:
 											RESULT = value;
 										:} |
-									COMMA
+									COMMA:value
 										{:
-											RESULT = ",";
+											RESULT = value;
 										:} |
 									DIGIT:value
 										{:
 											RESULT = value;
 										:} |
-									DOLLAR
+									DOLLAR:value
 										{:
-											RESULT = "$";
+											RESULT = value;
 										:} |
-									DOT
+									DOT:value
 										{:
-											RESULT = ".";
+											RESULT = value;
 										:} |
-									EQUALS
+									EQUALS:value
 										{:
-											RESULT = "=";
+											RESULT = value;
 										:} |
-									EXCLAM
+									EXCLAM:value
 										{:
-											RESULT = "!";
+											RESULT = value;
 										:} |
 									EXTENDER:value
 										{:
 											RESULT = value;
 										:} |
-									GT
+									GT:value
 										{:
-											RESULT = ">";
+											RESULT = value;
 										:} |
-									HASH
+									HASH:value
 										{:
-											RESULT = "#";
+											RESULT = value;
 										:} |
 									IDEOGRAPHIC:value
 										{:
 											RESULT = value;
 										:} |
-									LBRACE
+									LBRACE:value
 										{:
-											RESULT = "{";
+											RESULT = value;
 										:} |
-									LPAREN
+									LPAREN:value
 										{:
-											RESULT = "(";
+											RESULT = value;
 										:} |
-									LSQUARE
+									LSQUARE:value
 										{:
-											RESULT = "[";
+											RESULT = value;
 										:} |
-									MINUS
+									MINUS:value
 										{:
-											RESULT = "-";
+											RESULT = value;
 										:} |
-									PERCENT
+									PERCENT:value
 										{:
-											RESULT = "%";
+											RESULT = value;
 										:} |
-									PLUS
+									PLUS:value
 										{:
-											RESULT = "+";
+											RESULT = value;
 										:} |
-									QMARK
+									QMARK:value
 										{:
-											RESULT = "?";
+											RESULT = value;
 										:} |
-									RBRACE
+									RBRACE:value
 										{:
-											RESULT = "}";
+											RESULT = value;
 										:} |
-									RPAREN
+									RPAREN:value
 										{:
-											RESULT = ")";
+											RESULT = value;
 										:} |
-									RSQUARE
+									RSQUARE:value
 										{:
-											RESULT = "]";
+											RESULT = value;
 										:} |
 									S:value
 										{:
 											RESULT = value;
 										:} |
-									SEMI
+									SEMI:value
 										{:
-											RESULT = ";";
+											RESULT = value;
 										:} |
-									SLASH
+									SLASH:value
 										{:
-											RESULT = "/";
+											RESULT = value;
 										:} |
-									STAR
+									STAR:value
 										{:
-											RESULT = "*";
+											RESULT = value;
 										:} |
-									TILDE
+									TILDE:value
 										{:
-											RESULT = "~";
+											RESULT = value;
 										:} |
-									UNDERSCORE
+									UNDERSCORE:value
 										{:
-											RESULT = "_";
+											RESULT = value;
 										:} |
-									HASH_PCDATA
+									HASH_PCDATA:value
 										{:
-											RESULT = "#PCDATA";
+											RESULT = value;
 										:} |
-									HASH_FIXED
+									HASH_FIXED:value
 										{:
-											RESULT = "#FIXED";
+											RESULT = value;
 										:} |
-									HASH_IMPLIED
+									HASH_IMPLIED:value
 										{:
-											RESULT = "#IMPLIED";
+											RESULT = value;
 										:} |
-									HASH_REQUIRED
+									HASH_REQUIRED:value
 										{:
-											RESULT = "#REQUIRED";
+											RESULT = value;
 										:} |
-									CDATA
+									CDATA:value
 										{:
-											RESULT = Constants.XML.Attribute.CDATA;
+											RESULT = value;
 										:} |
-									SYSTEM
+									SYSTEM:value
 										{:
-											RESULT = Constants.XML.ExternalIdentifier.SYSTEM;
+											RESULT = value;
 										:} |
-									PUBLIC
+									PUBLIC:value
 										{:
-											RESULT = Constants.XML.ExternalIdentifier.PUBLIC;
+											RESULT = value;
 										:} |
 									NDATA_SURROUNDED_BY_S:value
 										{:
 											RESULT = value;
 										:} |
-									NOTATION
+									NOTATION:value
 										{:
-											RESULT = "NOTATION";
+											RESULT = value;
 										:} |
-									EMPTY
+									EMPTY:value
 										{:
-											RESULT = "EMPTY";
+											RESULT = value;
 										:} |
-									ANY
+									ANY:value
 										{:
-											RESULT = "ANY";
+											RESULT = value;
 										:} |
-									ID
+									ID:value
 										{:
-											RESULT = Constants.XML.Attribute.ID;
+											RESULT = value;
 										:} |
-									IDREFS
+									IDREFS:value
 										{:
-											RESULT = Constants.XML.Attribute.IDREFS;
+											RESULT = value;
 										:} |
-									ENTITY
+									ENTITY:value
 										{:
-											RESULT = Constants.XML.Attribute.ENTITY;
+											RESULT = value;
 										:} |
-									ENTITIES
+									ENTITIES:value
 										{:
-											RESULT = Constants.XML.Attribute.ENTITIES;
+											RESULT = value;
 										:} |
-									NMTOKEN
+									NMTOKEN:value
 										{:
-											RESULT = Constants.XML.Attribute.NMTOKEN;
+											RESULT = value;
 										:} |
-									NMTOKENS
+									NMTOKENS:value
 										{:
-											RESULT = Constants.XML.Attribute.NMTOKENS;
+											RESULT = value;
 										:} |
 									COMMA_SURROUNDED_BY_S:value
 										{:
@@ -594,29 +603,29 @@ AttValue_APOS_STRING_CHAR		::= CHAR:value
 										{:
 											RESULT = value;
 										:} |
-									AT
+									AT:value
 										{:
-											RESULT = "@";
+											RESULT = value;
 										:} |
-									BACKTICK
+									BACKTICK:value
 										{:
-											RESULT = "`";
+											RESULT = value;
 										:} |
 									BASECHAR:value
 										{:
 											RESULT = value;
 										:} |
-									BSLASH
+									BSLASH:value
 										{:
-											RESULT = "\\";
+											RESULT = value;
 										:} |
-									CARAT
+									CARAT:value
 										{:
-											RESULT = "^";
+											RESULT = value;
 										:} |
-									COLON
+									COLON:value
 										{:
-											RESULT = ":";
+											RESULT = value;
 										:} |
 									COMBININGCHAR:value
 										{:
@@ -722,81 +731,81 @@ AttValue_APOS_STRING_CHAR		::= CHAR:value
 										{:
 											RESULT = "*";
 										:} |
-									TILDE
+									TILDE:value
 										{:
-											RESULT = "~";
+											RESULT = value;
 										:} |
-									UNDERSCORE
+									UNDERSCORE:value
 										{:
-											RESULT = "_";
+											RESULT = value;
 										:} |
-									HASH_PCDATA
+									HASH_PCDATA:value
 										{:
-											RESULT = "#PCDATA";
+											RESULT = value;
 										:} |
-									HASH_FIXED
+									HASH_FIXED:value
 										{:
-											RESULT = "#FIXED";
+											RESULT = value;
 										:} |
-									HASH_IMPLIED
+									HASH_IMPLIED:value
 										{:
-											RESULT = "#IMPLIED";
+											RESULT = value;
 										:} |
-									HASH_REQUIRED
+									HASH_REQUIRED:value
 										{:
-											RESULT = "#REQUIRED";
+											RESULT = value;
 										:} |
-									CDATA
+									CDATA:value
 										{:
-											RESULT = Constants.XML.Attribute.CDATA;
+											RESULT = value;
 										:} |
-									SYSTEM
+									SYSTEM:value
 										{:
-											RESULT = Constants.XML.ExternalIdentifier.SYSTEM;
+											RESULT = value;
 										:} |
-									PUBLIC
+									PUBLIC:value
 										{:
-											RESULT = Constants.XML.ExternalIdentifier.PUBLIC;
+											RESULT = value;
 										:} |
 									NDATA_SURROUNDED_BY_S:value
 										{:
 											RESULT = value;
 										:} |
-									NOTATION
+									NOTATION:value
 										{:
-											RESULT = "NOTATION";
+											RESULT = value;
 										:} |
-									EMPTY
+									EMPTY:value
 										{:
-											RESULT = "EMPTY";
+											RESULT = value;
 										:} |
-									ANY
+									ANY:value
 										{:
-											RESULT = "ANY";
+											RESULT = value;
 										:} |
-									ID
+									ID:value
 										{:
-											RESULT = Constants.XML.Attribute.ID;
+											RESULT = value;
 										:} |
-									IDREFS
+									IDREFS:value
 										{:
-											RESULT = Constants.XML.Attribute.IDREFS;
+											RESULT = value;
 										:} |
-									ENTITY
+									ENTITY:value
 										{:
-											RESULT = Constants.XML.Attribute.ENTITY;
+											RESULT = value;
 										:} |
-									ENTITIES
+									ENTITIES:value
 										{:
-											RESULT = Constants.XML.Attribute.ENTITIES;
+											RESULT = value;
 										:} |
-									NMTOKEN
+									NMTOKEN:value
 										{:
-											RESULT = Constants.XML.Attribute.NMTOKEN;
+											RESULT = value;
 										:} |
-									NMTOKENS
+									NMTOKENS:value
 										{:
-											RESULT = Constants.XML.Attribute.NMTOKENS;
+											RESULT = value;
 										:} |
 									COMMA_SURROUNDED_BY_S:value
 										{:
@@ -996,17 +1005,17 @@ Char_NO_QUOT_STAR				::=	/* ε */
 										{:
 											RESULT = a.toString() + "#REQUIRED";
 										:} |
-									Char_NO_QUOT_STAR:a CDATA
+									Char_NO_QUOT_STAR:a CDATA:cdata
 										{:
-											RESULT = a.toString() + Constants.XML.Attribute.CDATA;
+											RESULT = a.toString() + cdata;
 										:} |
-									Char_NO_QUOT_STAR:a SYSTEM
+									Char_NO_QUOT_STAR:a SYSTEM:system
 										{:
-											RESULT = a.toString() + Constants.XML.ExternalIdentifier.SYSTEM;
+											RESULT = a.toString() + system;
 										:} |
-									Char_NO_QUOT_STAR:a PUBLIC
+									Char_NO_QUOT_STAR:a PUBLIC:pub
 										{:
-											RESULT = a.toString() + Constants.XML.ExternalIdentifier.PUBLIC;
+											RESULT = a.toString() + pub;
 										:} |
 									Char_NO_QUOT_STAR:a NDATA_SURROUNDED_BY_S:b
 										{:
@@ -1024,33 +1033,33 @@ Char_NO_QUOT_STAR				::=	/* ε */
 										{:
 											RESULT = a.toString() + "ANY";
 										:} |
-									Char_NO_QUOT_STAR:a ID
+									Char_NO_QUOT_STAR:a ID:id
 										{:
-											RESULT = a.toString() + Constants.XML.Attribute.ID;
+											RESULT = a.toString() + id;
 										:} |
-									Char_NO_QUOT_STAR:a IDREF
+									Char_NO_QUOT_STAR:a IDREF:idref
 										{:
-											RESULT = a.toString() + Constants.XML.Attribute.IDREF;
+											RESULT = a.toString() + idref;
 										:} |
-									Char_NO_QUOT_STAR:a IDREFS
+									Char_NO_QUOT_STAR:a IDREFS:idrefs
 										{:
-											RESULT = a.toString() + Constants.XML.Attribute.IDREFS;
+											RESULT = a.toString() + idrefs;
 										:} |
-									Char_NO_QUOT_STAR:a ENTITY
+									Char_NO_QUOT_STAR:a ENTITY:entity
 										{:
-											RESULT = a.toString() + Constants.XML.Attribute.ENTITY;
+											RESULT = a.toString() + entity;
 										:} |
-									Char_NO_QUOT_STAR:a ENTITIES
+									Char_NO_QUOT_STAR:a ENTITIES:entities
 										{:
-											RESULT = a.toString() + Constants.XML.Attribute.ENTITIES;
+											RESULT = a.toString() + entities;
 										:} |
-									Char_NO_QUOT_STAR:a NMTOKEN
+									Char_NO_QUOT_STAR:a NMTOKEN:nmtoken
 										{:
-											RESULT = a.toString() + Constants.XML.Attribute.NMTOKEN;
+											RESULT = a.toString() + nmtoken;
 										:} |
-									Char_NO_QUOT_STAR:a NMTOKENS
+									Char_NO_QUOT_STAR:a NMTOKENS:nmtokens
 										{:
-											RESULT = a.toString() + Constants.XML.Attribute.NMTOKENS;
+											RESULT = a.toString() + nmtokens;
 										:} |
 									Char_NO_QUOT_STAR:a COMMA_SURROUNDED_BY_S:b
 										{:
@@ -1250,17 +1259,17 @@ Char_NO_APOS_STAR				::=	/* ε */
 										{:
 											RESULT = a.toString() + "#REQUIRED";
 										:} |
-									Char_NO_APOS_STAR:a CDATA
+									Char_NO_APOS_STAR:a CDATA:b
 										{:
-											RESULT = a.toString() + Constants.XML.Attribute.CDATA;
+											RESULT = a.toString() + b;
 										:} |
-									Char_NO_APOS_STAR:a SYSTEM
+									Char_NO_APOS_STAR:a SYSTEM:b
 										{:
-											RESULT = a.toString() + Constants.XML.ExternalIdentifier.SYSTEM;
+											RESULT = a.toString() + b;
 										:} |
-									Char_NO_APOS_STAR:a PUBLIC
+									Char_NO_APOS_STAR:a PUBLIC:b
 										{:
-											RESULT = a.toString() + Constants.XML.ExternalIdentifier.PUBLIC;
+											RESULT = a.toString() + b;
 										:} |
 									Char_NO_APOS_STAR:a NDATA_SURROUNDED_BY_S:b
 										{:
@@ -1278,33 +1287,33 @@ Char_NO_APOS_STAR				::=	/* ε */
 										{:
 											RESULT = a.toString() + "ANY";
 										:} |
-									Char_NO_APOS_STAR:a ID
+									Char_NO_APOS_STAR:a ID:b
 										{:
-											RESULT = a.toString() + Constants.XML.Attribute.ID;
+											RESULT = a.toString() + b;
 										:} |
-									Char_NO_APOS_STAR:a IDREF
+									Char_NO_APOS_STAR:a IDREF:b
 										{:
-											RESULT = a.toString() + Constants.XML.Attribute.IDREF;
+											RESULT = a.toString() + b;
 										:} |
-									Char_NO_APOS_STAR:a IDREFS
+									Char_NO_APOS_STAR:a IDREFS:b
 										{:
-											RESULT = a.toString() + Constants.XML.Attribute.IDREFS;
+											RESULT = a.toString() + b;
 										:} |
-									Char_NO_APOS_STAR:a ENTITY
+									Char_NO_APOS_STAR:a ENTITY:b
 										{:
-											RESULT = a.toString() + Constants.XML.Attribute.ENTITY;
+											RESULT = a.toString() + b;
 										:} |
-									Char_NO_APOS_STAR:a ENTITIES
+									Char_NO_APOS_STAR:a ENTITIES:b
 										{:
-											RESULT = a.toString() + Constants.XML.Attribute.ENTITIES;
+											RESULT = a.toString() + b;
 										:} |
-									Char_NO_APOS_STAR:a NMTOKEN
+									Char_NO_APOS_STAR:a NMTOKEN:b
 										{:
-											RESULT = a.toString() + Constants.XML.Attribute.NMTOKEN;
+											RESULT = a.toString() + b;
 										:} |
-									Char_NO_APOS_STAR:a NMTOKENS
+									Char_NO_APOS_STAR:a NMTOKENS:b
 										{:
-											RESULT = a.toString() + Constants.XML.Attribute.NMTOKENS;
+											RESULT = a.toString() + b;
 										:} |
 									Char_NO_APOS_STAR:a COMMA_SURROUNDED_BY_S:b
 										{:
@@ -1439,11 +1448,11 @@ COMMA_SURROUNDED_BY_OPT_S		::= COMMA
 // Page 21
 contentspec						::= EMPTY
 										{:
-											RESULT = new XMLElement(XMLElement.EMPTY);
+											RESULT = new XMLElement(XMLElement.ContentType.EMPTY);
 										:} |
 									ANY
 										{:
-											RESULT = new XMLElement(XMLElement.ANY);
+											RESULT = new XMLElement(XMLElement.ContentType.ANY);
 										:} |
 									Mixed:mixed
 										{:
@@ -1542,22 +1551,22 @@ DeclSep							::= s;
 DefaultDecl						::= HASH_REQUIRED
 										{:
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setDefaultDecl(Constants.XML.Attribute.REQUIRED, null);
+											((XMLAttribute)RESULT).setDefaultDecl(XMLAttribute.DefaultType.REQUIRED, null);
 										:} |
 									HASH_IMPLIED
 										{:
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setDefaultDecl(Constants.XML.Attribute.IMPLIED, null);
+											((XMLAttribute)RESULT).setDefaultDecl(XMLAttribute.DefaultType.IMPLIED, null);
 										:} |
 									HASH_FIXED s AttValue:value
 										{:
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setDefaultDecl(Constants.XML.Attribute.FIXED, value.toString());
+											((XMLAttribute)RESULT).setDefaultDecl(XMLAttribute.DefaultType.FIXED, value.toString());
 										:} |
 									AttValue:value
 										{:
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setDefaultDecl(Constants.XML.Attribute.ATTVALUE, value.toString());
+											((XMLAttribute)RESULT).setDefaultDecl(XMLAttribute.DefaultType.ATTVALUE, value.toString());
 										:};
 // Page 21
 elementdecl						::= ELEMENT_HEAD s Name:name s contentspec:contents GT_PRECEDED_BY_OPT_S
@@ -1588,6 +1597,7 @@ EntityDef						::= EntityValue:value
 // Page 33
 EntityRef						::= AMP Name:name SEMI
 										{:
+											// XXX TODO: BUG XXX
 											RESULT = "entityLookup(" + name + ")";
 										:};
 // Page 9
@@ -1769,57 +1779,57 @@ EntityValue_QUOT_STRING_CHAR	::= CHAR:value
 										{:
 											RESULT = "#REQUIRED";
 										:} |
-									CDATA
+									CDATA:value
 										{:
-											RESULT = Constants.XML.Attribute.CDATA;
+											RESULT = value;
 										:} |
-									SYSTEM
+									SYSTEM:value
 										{:
-											RESULT = Constants.XML.ExternalIdentifier.SYSTEM;
+											RESULT = value;
 										:} |
-									PUBLIC
+									PUBLIC:value
 										{:
-											RESULT = Constants.XML.ExternalIdentifier.PUBLIC;
+											RESULT = value;
 										:} |
 									NDATA_SURROUNDED_BY_S:value
 										{:
 											RESULT = value;
 										:} |
-									NOTATION
+									NOTATION:value
 										{:
-											RESULT = "NOTATION";
+											RESULT = value;
 										:} |
-									EMPTY
+									EMPTY:value
 										{:
-											RESULT = "EMPTY";
+											RESULT = value;
 										:} |
-									ANY
+									ANY:value
 										{:
-											RESULT = "ANY";
+											RESULT = value;
 										:} |
-									ID
+									ID:value
 										{:
-											RESULT = Constants.XML.Attribute.ID;
+											RESULT = value;
 										:} |
-									IDREFS
+									IDREFS:value
 										{:
-											RESULT = Constants.XML.Attribute.IDREFS;
+											RESULT = value;
 										:} |
-									ENTITY
+									ENTITY:value
 										{:
-											RESULT = Constants.XML.Attribute.ENTITY;
+											RESULT = value;
 										:} |
-									ENTITIES
+									ENTITIES:value
 										{:
-											RESULT = Constants.XML.Attribute.ENTITIES;
+											RESULT = value;
 										:} |
-									NMTOKEN
+									NMTOKEN:value
 										{:
-											RESULT = Constants.XML.Attribute.NMTOKEN;
+											RESULT = value;
 										:} |
-									NMTOKENS
+									NMTOKENS:value
 										{:
-											RESULT = Constants.XML.Attribute.NMTOKENS;
+											RESULT = value;
 										:} |
 									COMMA_SURROUNDED_BY_S:value
 										{:
@@ -2015,57 +2025,57 @@ EntityValue_APOS_STRING_CHAR	::= CHAR:value
 										{:
 											RESULT = "#REQUIRED";
 										:} |
-									CDATA
+									CDATA:value
 										{:
-											RESULT = Constants.XML.Attribute.CDATA;
+											RESULT = value;
 										:} |
-									SYSTEM
+									SYSTEM:value
 										{:
-											RESULT = Constants.XML.ExternalIdentifier.SYSTEM;
+											RESULT = value;
 										:} |
-									PUBLIC
+									PUBLIC:value
 										{:
-											RESULT = Constants.XML.ExternalIdentifier.PUBLIC;
+											RESULT = value;
 										:} |
 									NDATA_SURROUNDED_BY_S:value
 										{:
 											RESULT = value;
 										:} |
-									NOTATION
+									NOTATION:value
 										{:
-											RESULT = "NOTATION";
+											RESULT = value;
 										:} |
-									EMPTY
+									EMPTY:value
 										{:
-											RESULT = "EMPTY";
+											RESULT = value;
 										:} |
-									ANY
+									ANY:value
 										{:
-											RESULT = "ANY";
+											RESULT = value;
 										:} |
-									ID
+									ID:value
 										{:
-											RESULT = Constants.XML.Attribute.ID;
+											RESULT = value;
 										:} |
-									IDREFS
+									IDREFS:value
 										{:
-											RESULT = Constants.XML.Attribute.IDREFS;
+											RESULT = value;
 										:} |
-									ENTITY
+									ENTITY:value
 										{:
-											RESULT = Constants.XML.Attribute.ENTITY;
+											RESULT = value;
 										:} |
-									ENTITIES
+									ENTITIES:value
 										{:
-											RESULT = Constants.XML.Attribute.ENTITIES;
+											RESULT = value;
 										:} |
-									NMTOKEN
+									NMTOKEN:value
 										{:
-											RESULT = Constants.XML.Attribute.NMTOKEN;
+											RESULT = value;
 										:} |
-									NMTOKENS
+									NMTOKENS:value
 										{:
-											RESULT = Constants.XML.Attribute.NMTOKENS;
+											RESULT = value;
 										:} |
 									COMMA_SURROUNDED_BY_S:value
 										{:
@@ -2104,43 +2114,53 @@ EnumeratedType					::= NotationType:nType
 Enumeration						::= LPAREN_FOLLOWED_BY_OPT_S Nmtoken:nmtoken RPAREN_PRECEDED_BY_OPT_S
 										{:
 											// The vector of all the values
-											ArrayList values = new ArrayList();
+											List<String> values = new ArrayList<String>();
 
 											// This Enumeration has only one possible value
 											values.add(nmtoken);
 
 											// Make the new XMLAttribute, set its type and give it the values
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setType(Constants.XML.Attribute.ENUMERATION, values);
+											((XMLAttribute)RESULT).setType(XMLAttribute.ContentType.ENUMERATION, values);
 										:} |
 									LPAREN_FOLLOWED_BY_OPT_S Nmtoken:nmtoken Enumeration_NmtokenLIST:nmtokens RPAREN_PRECEDED_BY_OPT_S
 										{:
 											// The vector of all the values
-											ArrayList values = new ArrayList();
+											List<String> values = new ArrayList<String>();
 
 											// Add the first name to the vector
 											values.add(nmtoken);
 
 											// Add the rest of the names to the vector
-											DBC.ASSERT(nmtokens instanceof ArrayList);
-											values.addAll((ArrayList)nmtokens);
+											DBC.ASSERT(nmtokens instanceof List);
+											for (Object token : nmtokens) {
+												values.add(token.toString());
+											}
 
 											// Make the new XMLAttribute, set its type and give it the values
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setType(Constants.XML.Attribute.ENUMERATION, values);
+											((XMLAttribute)RESULT).setType(XMLAttribute.ContentType.ENUMERATION, values);
 										:};
 // (S? '|' S? Nmtoken)+
 Enumeration_NmtokenLIST			::= PIPE_SURROUNDED_WITH_OPT_S Nmtoken:nmtoken
 										{:
-											ArrayList value = new ArrayList();
+											List<String> value = new ArrayList<String>();
 											value.add(nmtoken);
 											RESULT = value;
 										:} |
 									Enumeration_NmtokenLIST:values PIPE_SURROUNDED_WITH_OPT_S Nmtoken:nmtoken
 										{:
-											DBC.ASSERT(values instanceof ArrayList);
-											((ArrayList)values).add(nmtoken);
-											RESULT = values;
+											List<String> newTokenList = new ArrayList<String>();
+
+											DBC.ASSERT(values instanceof List);
+											for (Object token : values) {
+												newTokenList.add(token.toString());
+											}
+
+											DBC.ASSERT(nmtoken instanceof String);
+											newTokenList.add(nmtoken);
+
+											RESULT = newTokenList;
 										:};
 // Page 36
 ExternalID						::= SYSTEM s SystemLiteral:uri
@@ -2154,22 +2174,32 @@ ExternalID						::= SYSTEM s SystemLiteral:uri
 // Page 14
 extSubset						::= extSubsetDecl:eSD
 										{:
-											DBC.ASSERT(eSD instanceof ArrayList);
-											RESULT = new XMLDocumentType(((ArrayList)eSD));
+											List<XMLMarkupDeclaration> newExtSubSet = new ArrayList<XMLMarkupDeclaration>();
+
+											DBC.ASSERT(eSD instanceof List);
+											for (Object markupDecl : eSD) {
+												newExtSubSet.add((XMLMarkupDeclaration)markupDecl);
+											}
+											
+											RESULT = new XMLDocumentType(newExtSubSet);
 										:};
 // Page 14
 extSubsetDecl					::= /* ε */
 										{:
-											RESULT = new ArrayList();
+											RESULT = new ArrayList<XMLMarkupDeclaration>();
 										:} |
 									markupDecl:a extSubsetDecl:b
 										{:
-											if (a != null) {
-												DBC.ASSERT(a instanceof XMLObject);
-												DBC.ASSERT(b instanceof ArrayList);
-												((ArrayList)b).add((XMLObject)a);
+											DBC.ASSERT(a == null || a instanceof XMLMarkupDeclaration);
+											DBC.ASSERT(b instanceof List);
+
+											List<XMLMarkupDeclaration> newDecls = new ArrayList<XMLMarkupDeclaration>();
+											
+											newDecls.add((XMLMarkupDeclaration)a);
+											for (Object listMarkup : b) {
+												newDecls.add((XMLMarkupDeclaration)listMarkup);
 											}
-											RESULT = b;
+											RESULT = newDecls;
 										:} |
 									DeclSep extSubsetDecl:eSD
 										{:
@@ -2257,57 +2287,57 @@ Name							::= NameStartChar:a NameChar_STAR:b
 										{:
 											RESULT = a.toString() + b.toString();
 										:} |
-									CDATA
+									CDATA:value
 										{:
-											RESULT = Constants.XML.Attribute.CDATA;
+											RESULT = value;
 										:} |
-									SYSTEM
+									SYSTEM:value
 										{:
-											RESULT = Constants.XML.ExternalIdentifier.SYSTEM;
+											RESULT = value;
 										:} |
-									PUBLIC
+									PUBLIC:value
 										{:
-											RESULT = Constants.XML.ExternalIdentifier.PUBLIC;
+											RESULT = value;
 										:} |
-									NOTATION
+									NOTATION:value
 										{:
-											RESULT = "NOTATION";
+											RESULT = value;
 										:} |
-									EMPTY
+									EMPTY:value
 										{:
-											RESULT = "EMPTY";
+											RESULT = value;
 										:} |
-									ANY
+									ANY:value
 										{:
-											RESULT = "ANY";
+											RESULT = value;
 										:} |
-									ID
+									ID:value
 										{:
-											RESULT = Constants.XML.Attribute.ID;
+											RESULT = value;
 										:} |
-									IDREF
+									IDREF:value
 										{:
-											RESULT = Constants.XML.Attribute.IDREF;
+											RESULT = value;
 										:} |
-									IDREFS
+									IDREFS:value
 										{:
-											RESULT = Constants.XML.Attribute.IDREFS;
+											RESULT = value;
 										:} |
-									ENTITY
+									ENTITY:value
 										{:
-											RESULT = Constants.XML.Attribute.ENTITY;
+											RESULT = value;
 										:} |
-									ENTITIES
+									ENTITIES:value
 										{:
-											RESULT = Constants.XML.Attribute.ENTITIES;
+											RESULT = value;
 										:} |
-									NMTOKEN
+									NMTOKEN:value
 										{:
-											RESULT = Constants.XML.Attribute.NMTOKEN;
+											RESULT = value;
 										:} |
-									NMTOKENS
+									NMTOKENS:value
 										{:
-											RESULT = Constants.XML.Attribute.NMTOKENS;
+											RESULT = value;
 										:};
 // Page 8
 NameChar						::= NameStartChar:value
@@ -2318,13 +2348,13 @@ NameChar						::= NameStartChar:value
 										{:
 											RESULT = value;
 										:} |
-									DOT
+									DOT:value
 										{:
-											RESULT = ".";
+											RESULT = value;
 										:} |
-									MINUS
+									MINUS:value
 										{:
-											RESULT = "-";
+											RESULT = value;
 										:} |
 									COMBININGCHAR:value
 										{:
@@ -2334,57 +2364,57 @@ NameChar						::= NameStartChar:value
 										{:
 											RESULT = value;
 										:} |
-									CDATA
+									CDATA:value
 										{:
-											RESULT = Constants.XML.Attribute.CDATA;
+											RESULT = value;
 										:} |
-									SYSTEM
+									SYSTEM:value
 										{:
-											RESULT = Constants.XML.ExternalIdentifier.SYSTEM;
+											RESULT = value;
 										:} |
-									PUBLIC
+									PUBLIC:value
 										{:
-											RESULT = Constants.XML.ExternalIdentifier.PUBLIC;
+											RESULT = value;
 										:} |
-									NOTATION
+									NOTATION:value
 										{:
-											RESULT = "NOTATION";
+											RESULT = value;
 										:} |
-									EMPTY
+									EMPTY:value
 										{:
-											RESULT = "EMPTY";
+											RESULT = value;
 										:} |
-									ANY
+									ANY:value
 										{:
-											RESULT = "ANY";
+											RESULT = value;
 										:} |
-									ID
+									ID:value
 										{:
-											RESULT = Constants.XML.Attribute.ID;
+											RESULT = value;
 										:} |
-									IDREF
+									IDREF:value
 										{:
-											RESULT = Constants.XML.Attribute.IDREF;
+											RESULT = value;
 										:} |
-									IDREFS
+									IDREFS:value
 										{:
-											RESULT = Constants.XML.Attribute.IDREFS;
+											RESULT = value;
 										:} |
-									ENTITY
+									ENTITY:value
 										{:
-											RESULT = Constants.XML.Attribute.ENTITY;
+											RESULT = value;
 										:} |
-									ENTITIES
+									ENTITIES:value
 										{:
-											RESULT = Constants.XML.Attribute.ENTITIES;
+											RESULT = value;
 										:} |
-									NMTOKEN
+									NMTOKEN:value
 										{:
-											RESULT = Constants.XML.Attribute.NMTOKEN;
+											RESULT = value;
 										:} |
-									NMTOKENS
+									NMTOKENS:value
 										{:
-											RESULT = Constants.XML.Attribute.NMTOKENS;
+											RESULT = value;
 										:};
 // NameChar*
 NameChar_STAR					::= /* ε */
@@ -2436,42 +2466,56 @@ NotationDecl					::= NOTATION_HEAD s Name:name s ExternalID:extID GT_PRECEDED_BY
 NotationType					::= NOTATION s LPAREN_FOLLOWED_BY_OPT_S Name:name RPAREN_PRECEDED_BY_OPT_S
 										{:
 											// The vector of all the values
-											ArrayList values = new ArrayList();
+											List<String> values = new ArrayList<String>();
 
 											// This NotationType has only one possible value
-											values.add(name);
+											String notationName = name.toString();
+											values.add(notationName);
 
 											// Make the new XMLAttribute, set its type and give it the values
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setType(Constants.XML.Attribute.NOTATION, values);
+											((XMLAttribute)RESULT).setType(XMLAttribute.ContentType.NOTATION, values);
 										:} |
 									NOTATION s LPAREN_FOLLOWED_BY_OPT_S Name:name NotationType_NameLIST:names RPAREN_PRECEDED_BY_OPT_S
 										{:
 											// The vector of all the values
-											ArrayList values = new ArrayList();
+											List<String> values = new ArrayList<String>();
 
 											// Add the first name to the vector
-											values.add(name);
+											String notationName = name.toString();
+											values.add(notationName);
 
 											// Add the rest of the names to the vector
-											DBC.ASSERT(names instanceof ArrayList);
-											values.addAll((ArrayList)names);
+											DBC.ASSERT(names instanceof List);
+											for (Object listName : names) {
+												values.add(listName.toString());
+											}
 
 											// Make the new XMLAttribute, set its type and give it the values
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setType(Constants.XML.Attribute.NOTATION, values);
+											((XMLAttribute)RESULT).setType(XMLAttribute.ContentType.NOTATION, values);
 										:};
 // (S? '|' S? Name)+
 NotationType_NameLIST			::= PIPE_SURROUNDED_WITH_OPT_S Name:name
 										{:
-											ArrayList value = new ArrayList();
+											List<String> value = new ArrayList<String>();
 											value.add(name);
 											RESULT = value;
 										:} |
 									NotationType_NameLIST:values PIPE_SURROUNDED_WITH_OPT_S Name:name
 										{:
-											((ArrayList)values).add(name);
-											RESULT = values;
+											List<String> newValues = new ArrayList<String>();
+											
+											// Copy in the values
+											DBC.ASSERT(values instanceof List);
+											for (Object newValue : values) {
+												newValues.add(newValue.toString());
+											}
+											
+											// Add the name on the end.
+											newValues.add(name.toString());
+
+											RESULT = newValues;
 										:};
 // S? '|' S?
 PIPE_SURROUNDED_WITH_OPT_S		::= PIPE
@@ -2563,7 +2607,7 @@ seq_cpLIST						::= COMMA_SURROUNDED_BY_OPT_S cp:cp
 StringType						::= CDATA
 										{:
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setType(Constants.XML.Attribute.CDATA);
+											((XMLAttribute)RESULT).setType(XMLAttribute.ContentType.CDATA);
 										:};
 // Page 9
 SystemLiteral					::= QUOT Char_NO_QUOT_STAR:value QUOT
@@ -2578,35 +2622,35 @@ SystemLiteral					::= QUOT Char_NO_QUOT_STAR:value QUOT
 TokenizedType					::= ID
 										{:
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setType(Constants.XML.Attribute.ID);
+											((XMLAttribute)RESULT).setType(XMLAttribute.ContentType.ID);
 										:} |
 									IDREF
 										{:
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setType(Constants.XML.Attribute.IDREF);
+											((XMLAttribute)RESULT).setType(XMLAttribute.ContentType.IDREF);
 										:} |
 									IDREFS
 										{:
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setType(Constants.XML.Attribute.IDREFS);
+											((XMLAttribute)RESULT).setType(XMLAttribute.ContentType.IDREFS);
 										:} |
 									ENTITY
 										{:
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setType(Constants.XML.Attribute.ENTITY);
+											((XMLAttribute)RESULT).setType(XMLAttribute.ContentType.ENTITY);
 										:} |
 									ENTITIES
 										{:
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setType(Constants.XML.Attribute.ENTITIES);
+											((XMLAttribute)RESULT).setType(XMLAttribute.ContentType.ENTITIES);
 										:} |
 									NMTOKEN
 										{:
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setType(Constants.XML.Attribute.NMTOKEN);
+											((XMLAttribute)RESULT).setType(XMLAttribute.ContentType.NMTOKEN);
 										:} |
 									NMTOKENS
 										{:
 											RESULT = new XMLAttribute();
-											((XMLAttribute)RESULT).setType(Constants.XML.Attribute.NMTOKENS);
+											((XMLAttribute)RESULT).setType(XMLAttribute.ContentType.NMTOKENS);
 										:};

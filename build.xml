@@ -109,9 +109,11 @@
 				srcdir="tools/build"
 				debug="true"
 				debuglevel="lines,vars,source"
-				source="1.4"
-				target="1.4"
+				source="1.5"
+				target="1.5"
 		>
+			<compilerarg value="-Xlint:deprecation" />
+			<compilerarg value="-Xlint:unchecked" />
 			<compilerarg value="+Z0" compiler="jikes" />
 		</javac>
 	</target>
@@ -126,7 +128,7 @@
 			<fileset dir="${res}" includes="com/**" />
 		</copy>
 	</target>
-	<target name="pre-build-parser" if="${parser-file}.present">
+	<target name="pre-build-parser" depends="pre-build" if="${parser-file}.present">
 		<uptodate
 					property="${parser-file}.isUpToDate"
 					srcfile="${parser-spec}"
@@ -168,9 +170,11 @@
 				destdir="${classes}"
 				debug="true"
 				debuglevel="lines,vars,source"
-				source="1.4"
-				target="1.4"
+				source="1.5"
+				target="1.5"
 		>
+			<compilerarg value="-Xlint:deprecation" />
+			<compilerarg value="-Xlint:unchecked" />
 			<compilerarg value="+Z0" compiler="jikes" />
 		</javac>
 	</target>
@@ -282,9 +286,11 @@
 				destdir="${classes}"
 				debug="true"
 				debuglevel="lines,vars,source"
-				source="1.4"
-				target="1.4"
+				source="1.5"
+				target="1.5"
 		>
+			<compilerarg value="-Xlint:deprecation" />
+			<compilerarg value="-Xlint:unchecked" />
 			<compilerarg value="+Z0" compiler="jikes" />
 		</javac>
 	</target>
@@ -294,9 +300,11 @@
 				destdir="${classes}"
 				debug="true"
 				debuglevel="lines,vars,source"
-				source="1.4"
-				target="1.4"
+				source="1.5"
+				target="1.5"
 		>
+			<compilerarg value="-Xlint:deprecation" />
+			<compilerarg value="-Xlint:unchecked" />
 			<compilerarg value="+Z0" compiler="jikes" />
 			<src path="tests" />
 		</javac>
@@ -382,24 +390,6 @@
 			</fileset>
 		</checkstyle>
 		<checkstyle
-			config="tests/checkstyle/string_control_config.xml"
-			classpathref="jar-classpath"
-			failOnViolation="false"
-			failureProperty="checkstyle.string.control.failed"
-		>
-			<fileset dir="${src}/${namespace}">
-				<include name="**/*.java" />
-				<exclude name="Constants.java" />
-				<exclude name="input/dtd/Lexer.java" />
-				<exclude name="input/dtd/Parser.java" />
-				<exclude name="input/dtd/ParserSymbols.java" />
-				<exclude name="output/dtd/**" />
-				<exclude name="output/java/**" />
-				<exclude name="output/xslt/**" />
-				<exclude name="ui/Message.java" />
-			</fileset>
-		</checkstyle>
-		<checkstyle
 			config="tests/checkstyle/Constants_config.xml"
 			classpathref="jar-classpath"
 			failOnViolation="false"
@@ -471,7 +461,6 @@
 				<isset property="checkstyle.import.junit.failed" />
 				<isset property="checkstyle.generic.failed" />
 				<isset property="checkstyle.return.count.failed" />
-				<isset property="checkstyle.string.control.failed" />
 				<isset property="checkstyle.Constants.failed" />
 				<isset property="checkstyle.DBC.failed" />
 				<isset property="checkstyle.DTD.Parser.Files.failed" />
@@ -547,7 +536,7 @@
 			classpath="${junit.jarfile}:${cup.jarfile}:${ant.jarfile}"
 			destDir="${doc}/api"
 			linksource="yes"
-			source="1.4"
+			source="1.5"
 			use="true"
 		>
 			<link href="${url-api-ant}" />
@@ -569,9 +558,11 @@
 				classpathref="jar-classpath"
 				debug="true"
 				debuglevel="lines,vars,source"
-				source="1.4"
-				target="1.4"
+				source="1.5"
+				target="1.5"
 		>
+			<compilerarg value="-Xlint:deprecation" />
+			<compilerarg value="-Xlint:unchecked" />
 			<compilerarg value="+Z0" compiler="jikes" />
 		</javac>
 		<java classname="doc.com.mcdermottroe.exemplar.manual.CreateManual">

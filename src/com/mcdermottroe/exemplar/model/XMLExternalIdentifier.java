@@ -82,14 +82,14 @@ public class XMLExternalIdentifier {
 
 		@return	A descriptive {@link String}.
 	*/
-	public String toString() {
-		StringBuffer desc = new StringBuffer();
+	@Override public String toString() {
+		StringBuilder desc = new StringBuilder();
 		desc.append(systemID);
 		desc.append(Constants.Character.COMMA);
 		desc.append(Constants.Character.SPACE);
 		desc.append(publicID);
 
-		return XMLObject.toString(getClass().getName(), desc.toString());
+		return XMLObject.toStringHelper(getClass().getName(), desc.toString());
 	}
 
 	/** See {@link Object#equals(Object)}.
@@ -97,7 +97,7 @@ public class XMLExternalIdentifier {
 		@param	o	The object to compare against.
 		@return		True if <code>this</code> is equal to <code>o</code>.
 	*/
-	public boolean equals(Object o) {
+	@Override public boolean equals(Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -120,11 +120,7 @@ public class XMLExternalIdentifier {
 
 		@return	A hash code.
 	*/
-	public int hashCode() {
-		Object[] hashCodeVars = {
-			publicID,
-			systemID,
-		};
-		return Utils.genericHashCode(hashCodeVars);
+	@Override public int hashCode() {
+		return Utils.genericHashCode(publicID, systemID);
 	}
 }

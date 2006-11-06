@@ -33,7 +33,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.SortedMap;
@@ -170,7 +169,7 @@ public final class OutputUtils {
 				try {
 					output.close();
 				} catch (IOException e) {
-					// Ignore, there's nothing more that can be done.
+					DBC.IGNORED_EXCEPTION(e);
 				}
 			}
 		}
@@ -182,17 +181,20 @@ public final class OutputUtils {
 				languages and the values are the descriptions of those output
 				languages.
 	*/
-	public static SortedMap availableOutputLanguages() {
-		SortedMap availableOutputLanguages = new TreeMap();
+	public static SortedMap<String, String> availableOutputLanguages() {
+		SortedMap<String, String> availableOutputLanguages;
+		availableOutputLanguages = new TreeMap<String, String>();
 
-		SortedSet languageAPIPairs = availableOutputLanguageAPIPairs();
-		for (Iterator it = languageAPIPairs.iterator(); it.hasNext(); ) {
-			LanguageAPIPair pair = (LanguageAPIPair)it.next();
+		SortedSet<LanguageAPIPair> languageAPIPairs;
+		languageAPIPairs = availableLanguageAPIPairs();
+		for (LanguageAPIPair pair : languageAPIPairs) {
 			String language = pair.getLanguage();
 			String api = pair.getAPI();
 			XMLParserSourceGenerator gen;
 			gen = XMLParserSourceGenerator.create(language, api);
-			StringBuffer description = new StringBuffer(gen.describeLanguage());
+			StringBuilder description = new StringBuilder(
+				gen.describeLanguage()
+			);
 			LanguageAPIPair containedPair = new LanguageAPIPair(language, null);
 			if (!languageAPIPairs.contains(containedPair)) {
 				description.append(Message.OPTION_LANGUAGE_REQUIRES_API);
@@ -208,18 +210,19 @@ public final class OutputUtils {
 		@return A {@link SortedMap} where the keys are the available output
 				APIs and the values are the descriptions of those output APIs.
 	*/
-	public static SortedMap availableOutputAPIs() {
-		SortedMap availableOutputAPIs = new TreeMap();
+	public static SortedMap<String, String> availableOutputAPIs() {
+		SortedMap<String, String> availableOutputAPIs;
+		availableOutputAPIs = new TreeMap<String, String>();
 
-		SortedSet languageAPIPairs = availableOutputLanguageAPIPairs();
-		for (Iterator it = languageAPIPairs.iterator(); it.hasNext(); ) {
-			LanguageAPIPair pair = (LanguageAPIPair)it.next();
+		for (LanguageAPIPair pair : availableLanguageAPIPairs()) {
 			String language = pair.getLanguage();
 			String api = pair.getAPI();
 			if (api != null) {
 				XMLParserSourceGenerator gen;
 				gen = XMLParserSourceGenerator.create(language, api);
-				StringBuffer description = new StringBuffer(gen.describeAPI());
+				StringBuilder description = new StringBuilder(
+					gen.describeAPI()
+				);
 				description.append(Message.OPTION_LANGUAGE_OF_API(language));
 				availableOutputAPIs.put(api, description.toString());
 			}
@@ -233,12 +236,11 @@ public final class OutputUtils {
 		@return A {@link SortedSet} containing a {@link LanguageAPIPair} for
 				every legal combination of language and API.
 	*/
-	private static SortedSet availableOutputLanguageAPIPairs() {
-		SortedSet ret = new TreeSet();
+	private static SortedSet<LanguageAPIPair> availableLanguageAPIPairs() {
+		SortedSet<LanguageAPIPair> ret = new TreeSet<LanguageAPIPair>();
 
-		List packages = Utils.findSubPackages(Constants.Output.PACKAGE);
-		for (Iterator it = packages.iterator(); it.hasNext(); ) {
-			String packageName = (String)it.next();
+		List<String> pNames = Utils.findSubPackages(Constants.Output.PACKAGE);
+		for (String packageName : pNames) {
 			String outputLanguageAPI = packageName.substring(
 				Constants.Output.PACKAGE.length() + 1
 			);
@@ -247,7 +249,7 @@ public final class OutputUtils {
 			int fSI = outputLanguageAPI.indexOf(
 				(int)Constants.Character.FULL_STOP
 			);
-			if (fSI != -1) {
+			if (fSI >= 0) {
 				String lang = outputLanguageAPI.substring(0, fSI);
 				String api = outputLanguageAPI.substring(fSI + 1);
 				if (api.indexOf((int)Constants.Character.FULL_STOP) == -1) {
@@ -279,7 +281,9 @@ public final class OutputUtils {
 		@author	Conor McDermottroe
 		@since	0.1
 	*/
-	private static final class LanguageAPIPair implements Comparable {
+	private static final class LanguageAPIPair
+	implements Comparable<LanguageAPIPair>
+	{
 		/** The language. May not be null. */
 		private String language;
 
@@ -320,7 +324,7 @@ public final class OutputUtils {
 			@param	o	The object to compare against.
 			@return		True if <code>this</code> is equal to <code>o</code>.
 		*/
-		public boolean equals(Object o) {
+		@Override public boolean equals(Object o) {
 			if (this == o) {
 				return true;
 			}
@@ -343,69 +347,52 @@ public final class OutputUtils {
 
 			@return	A hash code.
 		*/
-		public int hashCode() {
-			Object[] hashCodeVars = {
-				language,
-				api,
-			};
-			return Utils.genericHashCode(hashCodeVars);
+		@Override public int hashCode() {
+			return Utils.genericHashCode(language, api);
 		}
 
 		/** See {@link Object#toString()}.
 
 			@return	A descriptive {@link String}.
 		*/
-		public String toString() {
-			return	Constants.Character.LEFT_CURLY +
-					language +
-					Constants.Character.COMMA +
-					Constants.Character.SPACE +
-					api +
-					Constants.Character.RIGHT_CURLY;
+		@Override public String toString() {
+			return Utils.cArrayStyle(language, api);
 		}
 
 		/** Implement {@link Comparable} so that {@link LanguageAPIPair}
 			objects can be contained in a sorted {@link java.util.Collection}.
 
-			@param	o	The object to compare this one to.
-			@return		-1, 0 or 1 if this object is less-than, equal to, or
-						greater than o, respectively.
+			@param	other	The object to compare this one to.
+			@return			-1, 0 or 1 if this object is less-than, equal to,
+							or greater than o, respectively.
 		*/
-		public int compareTo(Object o) {
+		public int compareTo(LanguageAPIPair other) {
 			// This is required by the general contract of
 			// Comparable.compareTo(Object)
-			DBC.REQUIRE(o != null);
-			if (o == null) {
+			DBC.REQUIRE(other != null);
+			if (other == null) {
 				throw new NullPointerException();
 			}
 
 			int result;
-			if (o instanceof LanguageAPIPair) {
-				LanguageAPIPair other = (LanguageAPIPair)o;
-
-				int langCompare = language.compareTo(other.getLanguage());
-				if (langCompare == 0) {
-					if (api == null) {
-						if (other.getAPI() == null) {
-							result = 0;
-						} else {
-							result = -1;
-						}
+			int langCompare = language.compareTo(other.getLanguage());
+			if (langCompare == 0) {
+				if (api == null) {
+					if (other.getAPI() == null) {
+						result = 0;
 					} else {
-						String otherAPI = other.getAPI();
-						if (otherAPI == null) {
-							result = 1;
-						} else {
-							result = api.compareTo(otherAPI);
-						}
+						result = -1;
 					}
 				} else {
-					result = langCompare;
+					String otherAPI = other.getAPI();
+					if (otherAPI == null) {
+						result = 1;
+					} else {
+						result = api.compareTo(otherAPI);
+					}
 				}
 			} else {
-				// Only LanguageAPIPair objects should be compared against.
-				DBC.IGNORED_ERROR();
-				result = -1;
+				result = langCompare;
 			}
 
 			return result;

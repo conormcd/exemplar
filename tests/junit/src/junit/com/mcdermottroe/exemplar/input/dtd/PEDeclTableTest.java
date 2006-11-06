@@ -29,21 +29,20 @@
 */
 package junit.com.mcdermottroe.exemplar.input.dtd;
 
-import com.mcdermottroe.exemplar.Constants;
+import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.input.dtd.PEDeclTable;
 import com.mcdermottroe.exemplar.input.dtd.ParameterEntityException;
 import com.mcdermottroe.exemplar.ui.Message;
 
 import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
 
-/** Test class for {@link com.mcdermottroe.exemplar.model.XMLAttribute}.
+/** Test class for {@link com.mcdermottroe.exemplar.input.dtd.PEDeclTable}.
 
 	@author	Conor McDermottroe
 	@since	0.1
 */
 public class PEDeclTableTest
 extends NormalClassTestCase
-implements Constants.XML.ParameterEntity
 {
 	/** Basic adding and replacement test. The tests that
 		are completed are as follows:
@@ -60,8 +59,9 @@ implements Constants.XML.ParameterEntity
 
 		String testOne = "Add an entity to the PEDeclTable.";
 		try {
-			pedt.addNewPE("foo", "bar", VALUE);
+			pedt.addNewPE("foo", "bar", PEDeclTable.ParameterEntityType.VALUE);
 		} catch (ParameterEntityException e) {
+			DBC.IGNORED_EXCEPTION(e);
 			fail(testOne);
 		}
 		assertEquals(
@@ -72,8 +72,9 @@ implements Constants.XML.ParameterEntity
 
 		String testTwo = "Add another entity to the PEDeclTable.";
 		try {
-			pedt.addNewPE("bar", "baz", VALUE);
+			pedt.addNewPE("bar", "baz", PEDeclTable.ParameterEntityType.VALUE);
 		} catch (ParameterEntityException e) {
+			DBC.IGNORED_EXCEPTION(e);
 			fail(testTwo);
 		}
 		assertEquals(
@@ -96,6 +97,7 @@ implements Constants.XML.ParameterEntity
 			pedt.replacePERefs("foo%baz;bar");
 			fail(testFour);
 		} catch (ParameterEntityException e) {
+			DBC.IGNORED_EXCEPTION(e);
 			assertTrue(testFour, true);
 		}
 	}
@@ -107,8 +109,13 @@ implements Constants.XML.ParameterEntity
 		test += "Add an entity which is a URI reference ";
 		test += "and not an immedaite value.";
 		try {
-			pedt.addNewPE("foo", "http://www.google.com", URI);
+			pedt.addNewPE(
+				"foo",
+				"http://www.google.com",
+				PEDeclTable.ParameterEntityType.URI
+			);
 		} catch (ParameterEntityException e) {
+			DBC.IGNORED_EXCEPTION(e);
 			fail(test);
 		}
 		assertEquals(

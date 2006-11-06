@@ -30,10 +30,7 @@
 package com.mcdermottroe.exemplar.output.java;
 
 import java.io.File;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
@@ -41,6 +38,7 @@ import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.model.XMLEntity;
 import com.mcdermottroe.exemplar.model.XMLExternalIdentifier;
+import com.mcdermottroe.exemplar.model.XMLMarkupDeclaration;
 import com.mcdermottroe.exemplar.output.OutputException;
 import com.mcdermottroe.exemplar.output.OutputUtils;
 import com.mcdermottroe.exemplar.output.XMLParserGeneratorException;
@@ -56,7 +54,6 @@ import com.mcdermottroe.exemplar.ui.Options;
 */
 public abstract class XMLJavaSourceGenerator
 extends XMLParserSourceGenerator
-implements Constants.XML
 {
 	/** Creates a source generator which produces Java parsers. Protected as
 		this is an abstract class.
@@ -81,6 +78,7 @@ implements Constants.XML
 		@throws	XMLParserGeneratorException if any of the generation methods
 											throw one.
 	*/
+	@Override
 	public void generateParser(XMLDocumentType doctype, File targetDirectory)
 	throws XMLParserGeneratorException
 	{
@@ -156,20 +154,13 @@ implements Constants.XML
 		String messageFormatTemplate = loadCodeFragment("JAVA_MAIN_TEMPLATE");
 		DBC.ASSERT(messageFormatTemplate != null);
 
-		// Work around the lack of variadic functions in Java < 1.5
-		Object[] args =	{
-							Constants.PROGRAM_NAME,
-							timestamp,
-							vocabulary,
-							Integer.toString(
-								Constants.Output.Java.BUFFER_SIZE
-							),
-						};
-
 		// Make the contents of the output file
 		String outputFileContents = Utils.formatMessage(
 			messageFormatTemplate,
-			args
+			Constants.PROGRAM_NAME,
+			timestamp,
+			vocabulary,
+			Integer.toString(Constants.Output.Java.BUFFER_SIZE)
 		);
 
 		// Write out the file
@@ -201,11 +192,11 @@ implements Constants.XML
 											could not be written to.
 	*/
 	private void generateParserJFlexFile(
-											String vocabulary,
-											boolean usesAttlists,
-											Map entities,
-											File outputFile
-										)
+		String vocabulary,
+		boolean usesAttlists,
+		Map<String, XMLMarkupDeclaration> entities,
+		File outputFile
+	)
 	throws XMLParserGeneratorException
 	{
 		DBC.REQUIRE(vocabulary != null);
@@ -251,20 +242,15 @@ implements Constants.XML
 			intEntResolver = loadCodeFragment("INTERNAL_ENT_RESOLVER");
 			if (Options.isSet("include", "entities")) {
 				if (entities != null) {
-					StringBuffer extEntities = new StringBuffer();
-					for (
-							Iterator it = entities.keySet().iterator();
-							it.hasNext();
-						)
-					{
-						String entityName = (String)it.next();
+					StringBuilder extEntities = new StringBuilder();
+					for (String entityName : entities.keySet()) {
 						XMLEntity entity = (XMLEntity)entities.get(entityName);
 						switch (entity.type()) {
-							case Entity.INTERNAL:
+							case INTERNAL:
 								// Do nothing, internal entities
 								// are handled elsewhere.
 								break;
-							case Entity.EXTERNAL_PARSED:
+							case EXTERNAL_PARSED:
 								// Get the external identifer (publicID and
 								// systemID) for this entity.
 								XMLExternalIdentifier extID;
@@ -289,14 +275,15 @@ implements Constants.XML
 									)
 								);
 								break;
-							case Entity.EXTERNAL_UNPARSED:
+							case EXTERNAL_UNPARSED:
 								// These are not handled by SAX, and virtually
 								// nobody uses them either.
 								break;
+							case UNINITIALISED:
 							default:
-								throw new XMLParserGeneratorException(
-									Message.XMLENTITY_UNKNOWN_TYPE
-								);
+								// We shouldn't get here ever.
+								DBC.UNREACHABLE_CODE();
+								break;
 						}
 					}
 					externalEntityRules = new String(extEntities);
@@ -320,30 +307,22 @@ implements Constants.XML
 			emptyElementRule = loadCodeFragment("EMPTY_TAG_NO_ATTLIST");
 		}
 
-		// Work around the lack of variadic functions in Java < 1.5
-		Object[] args =	{
-							Constants.PROGRAM_NAME,
-							timestamp,
-							vocabulary,
-							processingInstructionProcessor,
-							commentProcessor,
-							doctypeDeclProcessor,
-							cdSectProcessor,
-							emptyElementRule,
-							startElementRule,
-							predefinedEntities,
-							externalEntityRules,
-							charRefResolver,
-							intEntResolver,
-						};
-		for (int i = 0; i < args.length; i++) {
-			DBC.ASSERT(args[i] != null);
-		}
-
 		// Make the contents of the output file
 		String outputFileContents = Utils.formatMessage(
 			messageFormatTemplate,
-			args
+			Constants.PROGRAM_NAME,
+			timestamp,
+			vocabulary,
+			processingInstructionProcessor,
+			commentProcessor,
+			doctypeDeclProcessor,
+			cdSectProcessor,
+			emptyElementRule,
+			startElementRule,
+			predefinedEntities,
+			externalEntityRules,
+			charRefResolver,
+			intEntResolver
 		);
 		DBC.ASSERT(outputFileContents != null);
 
@@ -382,17 +361,12 @@ implements Constants.XML
 		String messageFormatTemplate = loadCodeFragment("BUILD_MAIN_TEMPLATE");
 		DBC.ASSERT(messageFormatTemplate != null);
 
-		// Work around the lack of variadic functions in Java < 1.5
-		Object[] args = {
-			Constants.PROGRAM_NAME,
-			timestamp,
-			vocabulary,
-		};
-
 		// Make the contents of the output file
 		String outputFileContents = Utils.formatMessage(
 			messageFormatTemplate,
-			args
+			Constants.PROGRAM_NAME,
+			timestamp,
+			vocabulary
 		);
 
 		// Write out the file
@@ -417,7 +391,10 @@ implements Constants.XML
 											loaded or if the output file could
 											not be opened.
 	*/
-	private void generateEntitiesFile(Map entities, File outputFile)
+	private void generateEntitiesFile(
+		Map<String, XMLMarkupDeclaration> entities,
+		File outputFile
+	)
 	throws XMLParserGeneratorException
 	{
 		DBC.REQUIRE(entities != null);
@@ -435,12 +412,10 @@ implements Constants.XML
 
 			// Go through all of the entities and insert all of the internal
 			// entities into the properties file string in sorted order.
-			StringBuffer entityProperties = new StringBuffer();
-			SortedSet entityNames = new TreeSet(entities.keySet());
-			for (Iterator it = entityNames.iterator(); it.hasNext(); ) {
-				String entityName = (String)it.next();
+			StringBuilder entityProperties = new StringBuilder();
+			for (String entityName : entities.keySet()) {
 				XMLEntity entity = (XMLEntity)entities.get(entityName);
-				if (entity.type() == Entity.INTERNAL) {
+				if (entity.type().equals(XMLEntity.EntityType.INTERNAL)) {
 					entityProperties.append(entityName);
 					entityProperties.append(Constants.Character.SPACE);
 					entityProperties.append(Constants.Character.EQUALS);
@@ -454,17 +429,12 @@ implements Constants.XML
 				}
 			}
 
-			// The variables to substitute
-			Object[] args =	{
-				Constants.PROGRAM_NAME,
-				timestamp,
-				entityProperties,
-			};
-
 			// Make the contents of the output file
 			String outputFileContents = Utils.formatMessage(
 				messageFormatTemplate,
-				args
+				Constants.PROGRAM_NAME,
+				timestamp,
+				entityProperties
 			);
 
 			// Write out the file.
@@ -482,7 +452,7 @@ implements Constants.XML
 	}
 
 	/** {@inheritDoc} */
-	public String describeLanguage() {
+	@Override public String describeLanguage() {
 		return "The Java language";
 	}
 }

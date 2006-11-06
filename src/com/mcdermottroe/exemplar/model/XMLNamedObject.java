@@ -47,6 +47,7 @@ extends XMLObject
 
 	/** Constructor which just initialises storage. */
 	protected XMLNamedObject() {
+		super();
 		name = null;
 	}
 
@@ -68,7 +69,7 @@ extends XMLObject
 	}
 
 	/** {@inheritDoc} */
-	public boolean equals(Object o) {
+	@Override public boolean equals(Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -91,7 +92,7 @@ extends XMLObject
 
 		@return	A hash code.
 	*/
-	public int hashCode() {
+	@Override public int hashCode() {
 		int hashCode = super.hashCode();
 		if (hashCode != 0) {
 			hashCode *= Constants.HASHCODE_MAGIC_NUMBER;

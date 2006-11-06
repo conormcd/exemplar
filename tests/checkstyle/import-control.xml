@@ -48,9 +48,10 @@
 	<allow class="com.mcdermottroe.exemplar.DBC" />
 	<allow class="com.mcdermottroe.exemplar.Exception" />
 	<allow class="com.mcdermottroe.exemplar.Utils" />
+	<allow class="com.mcdermottroe.exemplar.model.XMLDocumentType" />
+	<allow class="com.mcdermottroe.exemplar.ui.Log" />
 	<allow class="com.mcdermottroe.exemplar.ui.Message" />
 	<allow class="com.mcdermottroe.exemplar.ui.Options" />
-	<allow class="com.mcdermottroe.exemplar.model.XMLDocumentType" />
 	
 	<!-- Per-subpackage rules -->
 	<subpackage name="input">
@@ -81,7 +82,6 @@
 		<allow class="com.mcdermottroe.exemplar.input.ParserException" />
 		<allow class="com.mcdermottroe.exemplar.output.OutputException" />
 		<allow class="com.mcdermottroe.exemplar.output.OutputUtils" />
-		<allow class="com.mcdermottroe.exemplar.ui.LogUtils" />
 		<allow class="com.mcdermottroe.exemplar.ui.MessageException" />
 		<subpackage name="ant">
 			<allow pkg="org.apache.tools.ant" />

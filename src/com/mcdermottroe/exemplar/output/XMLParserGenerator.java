@@ -55,7 +55,7 @@ public abstract class XMLParserGenerator {
 
 		@return	A descriptive {@link String}.
 	*/
-	public String toString() {
+	@Override public String toString() {
 		return getClass().getName();
 	}
 
@@ -64,7 +64,7 @@ public abstract class XMLParserGenerator {
 		@param	o	The object to compare against.
 		@return		True if <code>this</code> is equal to <code>o</code>.
 	*/
-	public boolean equals(Object o) {
+	@Override public boolean equals(Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -72,8 +72,8 @@ public abstract class XMLParserGenerator {
 			return false;
 		}
 
-		Class thisClass = getClass();
-		Class otherClass = o.getClass();
+		Class<? extends XMLParserGenerator> thisClass = getClass();
+		Class<? extends Object> otherClass = o.getClass();
 		if	(
 				thisClass == null && otherClass == null ||
 				thisClass != null && thisClass.equals(otherClass)
@@ -89,7 +89,7 @@ public abstract class XMLParserGenerator {
 
 		@return	A hash code.
 	*/
-	public int hashCode() {
+	@Override public int hashCode() {
 		return getClass().hashCode();
 	}
 }

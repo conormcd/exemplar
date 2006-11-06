@@ -34,9 +34,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /** General purpose utility methods that can be used anywhere in the program.
@@ -51,37 +52,16 @@ public final class Utils {
 		@see #findPackages()
 		@see #findSubPackages(String)
 	*/
-	private static List allPackages = null;
+	private static List<String> allPackages = null;
 
 	/** Private constructor to prevent instantiation of this class. */
 	private Utils() {
 		DBC.UNREACHABLE_CODE();
 	}
 
-	/** Useful version of {@link #formatMessage(String, Object[])} for when
-		there's only one argument.
-
-		@param	format	The {@link MessageFormat} string to process.
-		@param	arg		The {@link Object} to interpolate.
-		@return			The message correctly formatted.
-		@see	#formatMessage(String,Object[])
-	*/
-	public static String formatMessage(String format, Object arg) {
-		DBC.REQUIRE(format != null);
-		DBC.REQUIRE(arg != null);
-		if (format == null || arg == null) {
-			return null;
-		}
-
-		Object[] args = {
-			arg,
-		};
-		return formatMessage(format, args);
-	}
-
 	/** Due to {@link MessageFormat} formats being completely lame with respect
 		to parsing strings with '{' characters in it, the {@link
-		MessageFormat#format(String, Object[])} method must be wrapped to
+		MessageFormat#format(String, Object...)} method must be wrapped to
 		prevent format strings containing code from being incorrectly
 		formatted.  This method takes care of all of the oddities except for
 		when the format contains null characters or if SubFormatPatterns are
@@ -92,7 +72,7 @@ public final class Utils {
 		@return			The message correctly formatted.
 		@see	java.text.MessageFormat
 	*/
-	public static String formatMessage(String format, Object[] args) {
+	public static String formatMessage(String format, Object... args) {
 		DBC.REQUIRE(format != null);
 		DBC.REQUIRE(args != null && args.length > 0);
 		if (format == null || args == null || args.length <= 0) {
@@ -170,7 +150,7 @@ public final class Utils {
 			return null;
 		}
 
-		StringBuffer returnValue = new StringBuffer(s.length());
+		StringBuilder returnValue = new StringBuilder(s.length());
 
 		char[] characters = s.toCharArray();
 		for (int i = 0; i < characters.length; i++) {
@@ -187,7 +167,7 @@ public final class Utils {
 						radix = Constants.BASE_HEXADECIMAL;
 					}
 
-					StringBuffer potentialNumber = new StringBuffer(
+					StringBuilder potentialNumber = new StringBuilder(
 						characters.length - i
 					);
 					int j;
@@ -205,7 +185,7 @@ public final class Utils {
 							radix
 						);
 					} catch (NumberFormatException e) {
-						// Ignore
+						DBC.IGNORED_EXCEPTION(e);
 					}
 
 					if (number >= 0) {
@@ -262,7 +242,7 @@ public final class Utils {
 		String canonicalJavaString = xmlStringToJavaCanonicalForm(s);
 		DBC.ASSERT(canonicalJavaString.length() % 6 ==0);
 
-		StringBuffer ret = new StringBuffer();
+		StringBuilder ret = new StringBuilder();
 		int n = 0;
 		for (int i = 0; i < canonicalJavaString.length(); i++) {
 			char curChar = canonicalJavaString.charAt(i);
@@ -307,9 +287,9 @@ public final class Utils {
 				classpath.
 		@see	ClassLoader
 	*/
-	public static List findPackages() {
+	private static List<String> findPackages() {
 		if (allPackages != null) {
-			return new ArrayList(allPackages);
+			return new ArrayList<String>(allPackages);
 		}
 
 		String packagePath = Constants.PACKAGE.replace(
@@ -317,24 +297,24 @@ public final class Utils {
 			Constants.Character.SLASH
 		);
 
-		List packages = new ArrayList();
+		List<String> packages = new ArrayList<String>();
 
 		// Search through the classpath
 		try {
 			ClassLoader cl = Utils.class.getClassLoader();
 			for	(
-					Enumeration e = cl.getResources(packagePath);
+					Enumeration<URL> e = cl.getResources(packagePath);
 					e.hasMoreElements();
 				)
 			{
-				URL url = (URL)e.nextElement();
+				URL url = e.nextElement();
 				if (url.toString().startsWith(Constants.URL_JAR_PREFIX)) {
 					packages.addAll(readPackagesFromJar(url));
 				}
 			}
 		} catch (IOException e) {
 			// Ignore this for the moment.
-			DBC.IGNORED_ERROR();
+			DBC.IGNORED_EXCEPTION(e);
 		}
 
 		allPackages = packages;
@@ -348,12 +328,11 @@ public final class Utils {
 							given package, not including
 							<code>packageName</code> itself.
 	*/
-	public static List findSubPackages(String packageName) {
-		List subPackages = new ArrayList();
+	public static List<String> findSubPackages(String packageName) {
+		List<String> subPackages = new ArrayList<String>();
 
-		List packages = findPackages();
-		for (Iterator it = packages.iterator(); it.hasNext(); ) {
-			String packName = (String)it.next();
+		List<String> packages = findPackages();
+		for (String packName : packages) {
 			if	(
 					packName.startsWith(packageName) &&
 					!packName.equals(packageName)
@@ -372,8 +351,8 @@ public final class Utils {
 		@param	url	The {@link URL} of the JAR file to read from.
 		@return		A list of packages contained within the JAR file
 	*/
-	public static List readPackagesFromJar(URL url) {
-		List packages = new ArrayList();
+	private static List<String> readPackagesFromJar(URL url) {
+		List<String> packages = new ArrayList<String>();
 
 		if (!url.toString().startsWith(Constants.URL_JAR_PREFIX)) {
 			return packages;
@@ -388,12 +367,13 @@ public final class Utils {
 		try {
 			jar = new JarFile(new File(jarFilePath));
 		} catch (IOException e) {
-			// Ignore
+			DBC.IGNORED_EXCEPTION(e);
 		}
 
 		if (jar != null) {
-			for (Enumeration e = jar.entries(); e.hasMoreElements(); ) {
-				String entry = e.nextElement().toString();
+			List<JarEntry> jarEntries = Collections.list(jar.entries());
+			for (JarEntry jarEntry : jarEntries) {
+				String entry = jarEntry.toString();
 				char lastChar = entry.charAt(entry.length() - 1);
 				if (lastChar == Constants.Character.SLASH) {
 					entry = entry.substring(0, entry.length() - 1);
@@ -450,31 +430,85 @@ public final class Utils {
 		return true;
 	}
 
-	/** Generate a hash code value based on an array of {@link Object}s, which
-		allows for most versions of {@link Object#hashCode()} to simply
-		generate an array of the relevant objects and then hand off to this
-		method.
+	/** Generate a hash code value based on a selection of {@link Object}s,
+		which allows for most versions of {@link Object#hashCode()} to simply
+		hand off calculation of hashcodes to this method.
 
-		@param	objects	The array of {@link Object}s to create the hash code
+		@param	objects	One or more {@link Object}s to create the hash code
 						from.
-		@return			A hash code computed from all of the values in the
-						supplied array.
+		@return			A hash code computed from all of the values supplied.
 		@see	Object#hashCode()
 	*/
-	public static int genericHashCode(Object[] objects) {
-		DBC.REQUIRE(objects != null);
-		if (objects == null) {
-			return 0;
-		}
+	public static int genericHashCode(Object... objects) {
 		int hashCode = 0;
-		for (int i = 0; i < objects.length; i++) {
-			if (objects[i] != null) {
-				hashCode += objects[i].hashCode();
+		for (Object o : objects) {
+			if (o != null) {
+				hashCode += o.hashCode();
 			} else {
 				hashCode += 0;
 			}
 			hashCode *= Constants.HASHCODE_MAGIC_NUMBER;
 		}
 		return hashCode;
+	}
+
+	/** Provide a method akin to Perl's join() function. This takes an {@link
+		Iterable}, interprets every returned element as a {@link String} and
+		joins them with the given separator {@link String}.
+
+	 	@param	separator	Separator to join the elements with.
+		@param	collection	Iterable collection to join.
+		@return				All of the elements String-joined using the
+							separator.
+	*/
+	public static String join(
+		CharSequence separator,
+		Iterable<? extends Object> collection
+	)
+	{
+		StringBuilder joinedString = new StringBuilder();
+		for (Object o : collection) {
+			if (joinedString.length() > 0) {
+				joinedString.append(separator);
+			}
+			joinedString.append(o);
+		}
+		return joinedString.toString();
+	}
+
+	/** An alias for {@link Utils#join(CharSequence, Iterable)} which allows
+		the use of a character as the separator.
+
+		@param	separator	Separator to join the elements with.
+		@param	collection	Iterable collection to join.
+		@return				All of the elements String-joined using the
+							separator.
+	*/
+	public static String join(
+		char separator,
+		Iterable<? extends Object> collection
+	)
+	{
+		return join(String.valueOf(separator), collection);
+	}
+
+	/** Format a selection of {@link Object}s in the style of a C array, i.e.
+		"{a, b, c, d...}".
+
+		@param	objects	The {@link Object}s to format.
+		@return			A {@link String} in the form described above.
+	*/
+	public static String cArrayStyle(Object... objects) {
+		StringBuilder returnValue = new StringBuilder();
+		returnValue.append(Constants.Character.LEFT_CURLY);
+		for (int i = 0; i < objects.length; i++) {
+			if (i != 0) {
+				returnValue.append(Constants.Character.COMMA);
+				returnValue.append(Constants.Character.SPACE);
+			}
+			returnValue.append(objects[i]);
+		}
+		returnValue.append(Constants.Character.RIGHT_CURLY);
+		return returnValue.toString();
 	}
 }

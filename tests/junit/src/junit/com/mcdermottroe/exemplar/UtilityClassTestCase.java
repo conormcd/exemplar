@@ -59,20 +59,13 @@ public abstract class UtilityClassTestCase extends ExemplarTestCase {
 		}
 
 		// Make sure that it's private.
-		int modifiers = constructors[0].getModifiers();
-		if (!(Modifier.isPrivate(modifiers))) {
+		if (!(Modifier.isPrivate(constructors[0].getModifiers()))) {
 			fail(testName);
 			return;
 		}
 
 		// Make sure that it's a no-arg constructor.
-		Class[] params = constructors[0].getParameterTypes();
-		if (params.length != 0) {
-			fail(testName);
-			return;
-		}
-
-		assertTrue(testName, true);
+		assertTrue(testName, constructors[0].getParameterTypes().length == 0);
 	}
 
 	/** All of the fields in a utility class must be declared static. */
@@ -82,10 +75,8 @@ public abstract class UtilityClassTestCase extends ExemplarTestCase {
 		}
 
 		String testName = "All fields in the class must be static.";
-		Field[] fields = testedClass.getDeclaredFields();
-		for (int i = 0; i < fields.length; i++) {
-			int modifiers = fields[i].getModifiers();
-			if	(!(Modifier.isStatic(modifiers))) {
+		for (Field field : testedClass.getDeclaredFields()) {
+			if (!(Modifier.isStatic(field.getModifiers()))) {
 				fail(testName);
 				return;
 			}
@@ -100,10 +91,8 @@ public abstract class UtilityClassTestCase extends ExemplarTestCase {
 		}
 
 		String testName = "All methods in the class must be static.";
-		Method[] methods = testedClass.getDeclaredMethods();
-		for (int i = 0; i < methods.length; i++) {
-			int modifiers = methods[i].getModifiers();
-			if	(!(Modifier.isStatic(modifiers))) {
+		for (Method method : testedClass.getDeclaredMethods()) {
+			if (!(Modifier.isStatic(method.getModifiers()))) {
 				fail(testName);
 				return;
 			}

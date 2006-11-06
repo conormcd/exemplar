@@ -29,6 +29,8 @@
 */
 package junit.com.mcdermottroe.exemplar;
 
+import java.text.MessageFormat;
+
 import com.mcdermottroe.exemplar.Utils;
 
 /** Test class for {@link com.mcdermottroe.exemplar.Utils}.
@@ -37,7 +39,8 @@ import com.mcdermottroe.exemplar.Utils;
 	@since	0.1
 */
 public class UtilsTest extends UtilityClassTestCase {
-	/** Basic sanity check for {@link Utils#formatMessage(String, Object)}. */
+	/** Basic sanity check for {@link Utils#formatMessage(String, Object...)}.
+	*/
 	public void testFormatMessageOneArg() {
 		String testName = "Testing formatMessage(String, Object)";
 
@@ -50,20 +53,18 @@ public class UtilsTest extends UtilityClassTestCase {
 		}
 	}
 
-	/** Basic sanity check for {@link Utils#formatMessage(String, Object[])}.
+	/** Basic sanity check for {@link Utils#formatMessage(String, Object...)}.
 	*/
 	public void testFormatMessageManyArgs() {
-		String testName = "Testing formatMessage(String, Object[])";
+		String testName = "Testing formatMessage(String, Object...)";
 
 		String formatMessage = "{{0}{}{1,date,long}}";
-		Object[] variables = {
-			"foo",
-			new Integer(0),
-		};
-		String result = Utils.formatMessage(formatMessage, variables);
-		String expectedResult = "{foo{}January 1, 1970}";
+		String result = Utils.formatMessage(formatMessage, "foo", 0);
+		String expectedResult =	"{foo{}" +
+								MessageFormat.format("{0,date,long}", 0) +
+								"}";
 
-		assertEquals(testName, result, expectedResult);
+		assertEquals(testName, expectedResult, result);
 	}
 
 	/** Some basic tests for the method {@link

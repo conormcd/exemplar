@@ -45,10 +45,10 @@ import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
 */
 public class XMLAlternativeTest extends NormalClassTestCase {
 	/** {@inheritDoc} */
-	public void setUp() throws Exception {
+	@Override public void setUp() throws Exception {
 		super.setUp();
 
-		sampleObjects = new ArrayList();
+		sampleObjects = new ArrayList<Object>();
 
 		XMLAlternative sampleAlternative = new XMLAlternative();
 		XMLElementReference sampleElementReference = new XMLElementReference();

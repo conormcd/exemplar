@@ -30,7 +30,6 @@
 package com.mcdermottroe.exemplar;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.mcdermottroe.exemplar.ui.Message;
@@ -42,7 +41,9 @@ import com.mcdermottroe.exemplar.ui.Options;
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public abstract class Exception extends java.lang.Exception {
+public abstract class Exception
+extends java.lang.Exception
+{
 	/** Exception without a description. */
 	protected Exception() {
 		super();
@@ -82,83 +83,31 @@ public abstract class Exception extends java.lang.Exception {
 
 		@return A {@link List} where each element is a step in the backtrace.
 	*/
-	private List getBackTraceAsList() {
-		List returnedTrace = new ArrayList();
-		List trace = new ArrayList();
-		int exceptionNameWidth = 0;
-
-		// For some reason, indexOf takes an int. Odd.
-		int colon = (int)Constants.Character.COLON;
+	public List<String> getBackTrace() {
+		List<String> trace = new ArrayList<String>();
 
 		// Walk the backtrace collecting information
 		Throwable cause = this;
 		while (cause != null) {
-			String message = cause.toString();
-			if (message.indexOf(colon) > exceptionNameWidth) {
-				exceptionNameWidth = message.indexOf(colon);
+			String causeName = cause.getClass().getName();
+			String message = cause.getMessage();
+			if (message == null) {
+				message = Message.EXCEPTION_NO_MESSAGE;
 			}
-			trace.add(cause);
+
+			StringBuilder traceMessage = new StringBuilder(causeName);
+			traceMessage.append(Constants.Character.COLON);
+			traceMessage.append(Constants.Character.SPACE);
+			traceMessage.append(message);
+			traceMessage.append(Constants.EOL);
+			if (Options.isDebugSet()) {
+				traceMessage.append(exceptionStackTrace(cause));
+			}
+			trace.add(traceMessage.toString());
 			cause = cause.getCause();
 		}
 
-		// Format the list
-		for (Iterator exceptions = trace.iterator(); exceptions.hasNext(); ) {
-			Throwable t = (Throwable)exceptions.next();
-			String s = t.toString();
-
-			int colonIndex = s.indexOf(colon);
-
-			StringBuffer ret = new StringBuffer();
-			if (colonIndex >= 0) {
-				String exceptionName = s.substring(0, colonIndex);
-				String exceptionMessage = s.substring(colonIndex + 1);
-				exceptionMessage = exceptionMessage.trim();
-
-				ret.append(exceptionName);
-				ret.append(Constants.Character.COLON);
-				ret.append(Constants.Character.SPACE);
-				for (
-						int j = exceptionName.length();
-						j < exceptionNameWidth;
-						j++
-					)
-				{
-					ret.append(Constants.Character.SPACE);
-				}
-				ret.append(exceptionMessage);
-			} else {
-				ret.append(s);
-				ret.append(Constants.Character.COLON);
-				ret.append(Constants.Character.SPACE);
-				for (int j = s.length(); j < exceptionNameWidth; j++) {
-					ret.append(Constants.Character.SPACE);
-				}
-				ret.append(Message.EXCEPTION_NO_MESSAGE);
-			}
-			ret.append(Constants.EOL);
-
-			// Add the stack trace for the exception if debugging is active.
-			if (Options.isDebugSet()) {
-				ret.append(exceptionStackTrace(t));
-			}
-			returnedTrace.add(new String(ret));
-
-		}
-
-		return returnedTrace;
-	}
-
-	/** Get an {@link Iterator} over the {@link List} of formatted backtraces.
-
-		@return An {@link Iterator} which can be used to walk the backtrace.
-	*/
-	public Iterator getBackTraceIterator() {
-		List backtrace = getBackTraceAsList();
-		DBC.ASSERT(backtrace != null);
-		if (backtrace == null) {
-			return null;
-		}
-		return backtrace.iterator();
+		return trace;
 	}
 
 	/** Provide a full backtrace of all the exceptions which caused this
@@ -167,11 +116,11 @@ public abstract class Exception extends java.lang.Exception {
 
 		@return	A descriptive debugging {@link String} for this {@link
 				Exception}.
-	 */
-	public String toString() {
-		StringBuffer ret = new StringBuffer();
-		for (Iterator it = getBackTraceIterator(); it.hasNext(); ) {
-			ret.append((String)it.next());
+	*/
+	@Override public String toString() {
+		StringBuilder ret = new StringBuilder();
+		for (String backTraceElement : getBackTrace()) {
+			ret.append(backTraceElement);
 		}
 		return ret.toString();
 	}
@@ -191,10 +140,10 @@ public abstract class Exception extends java.lang.Exception {
 		}
 
 		StackTraceElement[] trace = t.getStackTrace();
-		StringBuffer ret = new StringBuffer();
-		for (int i = 0; i < trace.length; i++) {
+		StringBuilder ret = new StringBuilder();
+		for (StackTraceElement traceElement : trace) {
 			ret.append(Constants.UI.INDENT);
-			ret.append(trace[i]);
+			ret.append(traceElement);
 			ret.append(Constants.EOL);
 		}
 		return ret.toString();

@@ -34,7 +34,9 @@
 -->
 <import-control pkg="junit.com.mcdermottroe.exemplar">
 	<!-- Language-level imports -->
+	<allow pkg="java.io" />
 	<allow pkg="java.lang" />
+	<allow pkg="java.text" />
 	<allow pkg="java.util" />
 
 	<!-- Allow use of JUnit -->
@@ -50,9 +52,4 @@
 	<allow class="junit.com.mcdermottroe.exemplar.InterfaceTestCase" />
 	<allow class="junit.com.mcdermottroe.exemplar.NormalClassTestCase" />
 	<allow class="junit.com.mcdermottroe.exemplar.UtilityClassTestCase" />
-
-	<!-- Per-subpackage rules -->
-	<subpackage name="input">
-		<allow pkg="java.io" />
-	</subpackage>
 </import-control>

@@ -463,117 +463,21 @@ public interface Constants {
 		}
 	}
 
-	/** Constants for XML concepts. */
-	interface XML {
-		/** Constants for XML attributes. */
-		interface Attribute {
-			/** Attribute content/default type which is invalid. */
-			String INVALID = "<<<INVALID>>>";
-
-			/** Attribute content type of CDATA. */
-			String CDATA = "CDATA";
-
-			/** Attribute content type of ID. */
-			String ID = "ID";
-
-			/** Attribute content type of IDREF. */
-			String IDREF = "IDREF";
-
-			/** Attribute content type of IDREFS. */
-			String IDREFS = "IDREFS";
-
-			/** Attribute content type of ENTITY. */
-			String ENTITY = "ENTITY";
-
-			/** Attribute content type of ENTITIES. */
-			String ENTITIES = "ENTITIES";
-
-			/** Attribute content type of NMTOKEN. */
-			String NMTOKEN = "NMTOKEN";
-
-			/** Attribute content type of NMTOKENS. */
-			String NMTOKENS = "NMTOKENS";
-
-			/** Attribute content type of NOTATION. */
-			String NOTATION = "NOTATION";
-
-			/** Attribute content type of ENUMERATION. */
-			String ENUMERATION = "ENUMERATION";
-
-			/** Attribute default type of REQUIRED. */
-			String REQUIRED = "REQUIRED";
-
-			/** Attribute default type of IMPLIED. */
-			String IMPLIED = "IMPLIED";
-
-			/** Attribute default type of FIXED. */
-			String FIXED = "FIXED";
-
-			/** Attribute default type of ATTVALUE. */
-			String ATTVALUE = "ATTVALUE";
-		}
-
-		/** Constants for XML elements. */
-		interface Element {
-			/** Element content type EMPTY. */
-			int EMPTY = 0;
-
-			/** Element content type ANY. */
-			int ANY = 1;
-
-			/** Element content type MIXED. */
-			int MIXED = 2;
-
-			/** Element content type CHILDREN. */
-			int CHILDREN = 3;
-		}
-
-		/** Constants for XML Entities. */
-		interface Entity {
-			/** The entity is not yet initialised. */
-			int UNINITIALISED = 0;
-
-			/** The entity is an internal entity. */
-			int INTERNAL = 1;
-
-			/** The entity is an external parsed entity. */
-			int EXTERNAL_PARSED = 2;
-
-			/** The entity is an external unparsed entity. */
-			int EXTERNAL_UNPARSED = 3;
-		}
-
-		/** Constants for XML external identifiers. */
-		interface ExternalIdentifier {
-			/** The fixed string "PUBLIC" used in the description of XML
-				external identifiers.
-			*/
-			String PUBLIC = "PUBLIC";
-
-			/** The fixed string "SYSTEM" used in the description of XML
-				external identifiers.
-			*/
-			String SYSTEM = "SYSTEM";
-
-			/** The fixed string "NDATA" used in the description of XML
-				external identifiers.
-			*/
-			String NDATA = "NDATA";
-		}
-
-		/** Constants for parameter entities (as opposed to the general
-			entities of {@link Constants.XML.Entity}).
+	/** Constants for XML external identifiers. */
+	interface XMLExternalIdentifier {
+		/** The fixed string "PUBLIC" used in the description of XML
+			external identifiers.
 		*/
-		interface ParameterEntity {
-			/** The parameter value is an immediate value rather than an
-				indirect one referenced by a URI.
-			*/
-			int VALUE = 0;
+		String PUBLIC = "PUBLIC";
 
-			/** The parameter value is an indirect one referenced by a URI
-				rather than an immediate value.
-			*/
-			int URI = 1;
-		}
+		/** The fixed string "SYSTEM" used in the description of XML
+			external identifiers.
+		*/
+		String SYSTEM = "SYSTEM";
+
+		/** The fixed string "NDATA" used in the description of XML
+			external identifiers.
+		*/
+		String NDATA = "NDATA";
 	}
 }

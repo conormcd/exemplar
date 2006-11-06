@@ -30,6 +30,7 @@
 package com.mcdermottroe.exemplar.output.dtd;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -44,10 +45,11 @@ import com.mcdermottroe.exemplar.model.XMLAttributeList;
 import com.mcdermottroe.exemplar.model.XMLContent;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.model.XMLElement;
-import com.mcdermottroe.exemplar.model.XMLElementReference;
 import com.mcdermottroe.exemplar.model.XMLEntity;
 import com.mcdermottroe.exemplar.model.XMLExternalIdentifier;
+import com.mcdermottroe.exemplar.model.XMLMarkupDeclaration;
 import com.mcdermottroe.exemplar.model.XMLMixedContent;
+import com.mcdermottroe.exemplar.model.XMLNamedObject;
 import com.mcdermottroe.exemplar.model.XMLNotation;
 import com.mcdermottroe.exemplar.model.XMLObject;
 import com.mcdermottroe.exemplar.model.XMLSequence;
@@ -65,7 +67,7 @@ import com.mcdermottroe.exemplar.ui.Options;
 */
 public class Generator
 extends XMLParserSourceGenerator
-implements Constants.XML
+implements Constants.XMLExternalIdentifier
 {
 	/** Creates a source generator that produces DTDs.
 
@@ -89,6 +91,7 @@ implements Constants.XML
 											loaded or if the output file could
 											not be written to.
 	*/
+	@Override
 	public void generateParser(XMLDocumentType doctype, File targetDirectory)
 	throws XMLParserGeneratorException
 	{
@@ -116,38 +119,42 @@ implements Constants.XML
 		String notationDecl = loadCodeFragment("notationDecl");
 
 		// Create all of the DTD element and attribute declarations
-		StringBuffer elementDecls = new StringBuffer();
-		Map elements = new TreeMap(doctype.elements());
-		for (Iterator els = elements.keySet().iterator(); els.hasNext(); ) {
-			String elementName = (String)els.next();
+		StringBuilder elementDecls = new StringBuilder();
+		Map<String, XMLMarkupDeclaration> elements;
+		elements = new TreeMap<String, XMLMarkupDeclaration>(
+			doctype.elements()
+		);
+		for (String elementName : elements.keySet()) {
 			XMLElement element = (XMLElement)elements.get(elementName);
 
 			// The content specification for the element
-			StringBuffer contentSpec = new StringBuffer();
-			if (element.getContentType() == Element.EMPTY) {
-				contentSpec.append("EMPTY");
-			} else if (element.getContentType() == Element.ANY) {
-				contentSpec.append("ANY");
-			} else if (element.getContentType() == Element.MIXED) {
-				String contentSpecText = objectTreeToContentSpec(
-					element.getContentSpec()
-				);
-				contentSpec.append(contentSpecText);
-			} else if (element.getContentType() == Element.CHILDREN) {
-				String contentSpecText = objectTreeToContentSpec(
-					element.getContentSpec()
-				);
-				contentSpec.append(contentSpecText);
-			} else {
-				DBC.UNREACHABLE_CODE();
+			StringBuilder contentSpec = new StringBuilder();
+			switch (element.getContentType()) {
+				case EMPTY:
+					contentSpec.append("EMPTY");
+					break;
+				case ANY:
+					contentSpec.append("ANY");
+					break;
+				case MIXED:
+				case CHILDREN:
+					String contentSpecText = objectTreeToContentSpec(
+						element.getContentSpec()
+					);
+					contentSpec.append(contentSpecText);
+					break;
+				default:
+					DBC.UNREACHABLE_CODE();
 			}
 
 			// Output the element declaration
-			Object[] elArgs =	{
-									elementName,
-									contentSpec.toString(),
-								};
-			elementDecls.append(Utils.formatMessage(elementDecl, elArgs));
+			elementDecls.append(
+				Utils.formatMessage(
+					elementDecl,
+					elementName,
+					contentSpec.toString()
+				)
+			);
 
 			// Output the attribute list for
 			// the element, if any
@@ -155,10 +162,8 @@ implements Constants.XML
 			if (attlist != null) {
 				// Construct the list of attributes declared
 				// in this attlist.
-				StringBuffer declTail = new StringBuffer();
-				for (Iterator it = attlist.attributes(); it.hasNext(); ) {
-					XMLAttribute att = (XMLAttribute)it.next();
-
+				StringBuilder declTail = new StringBuilder();
+				for (XMLAttribute att : attlist) {
 					// The attribute name
 					declTail.append(Constants.EOL);
 					declTail.append(Constants.UI.INDENT);
@@ -167,69 +172,80 @@ implements Constants.XML
 					declTail.append(Constants.Character.SPACE);
 
 					// The attribute type
-					String attType = att.getType();
+					XMLAttribute.ContentType attType = att.getType();
 					if	(
-							attType.equals(Attribute.NOTATION) ||
-							attType.equals(Attribute.ENUMERATION)
+							attType.equals(XMLAttribute.ContentType.NOTATION) ||
+							attType.equals(XMLAttribute.ContentType.ENUMERATION)
 						)
 					{
-						if (attType.equals(Attribute.NOTATION)) {
-							declTail.append(Attribute.NOTATION);
+						if (attType.equals(XMLAttribute.ContentType.NOTATION)) {
+							declTail.append(XMLAttribute.ContentType.NOTATION);
 							declTail.append(Constants.Character.SPACE);
 						}
 
 						declTail.append(Constants.Character.LEFT_PAREN);
-						List nValues = att.getValues();
-						if (!nValues.isEmpty()) {
-							Iterator iter = nValues.iterator();
-							declTail.append((String)iter.next());
-							while (iter.hasNext()) {
-								declTail.append(Constants.Character.PIPE);
-								declTail.append((String)iter.next());
-							}
-						}
-						declTail.append(") ");
+						declTail.append(
+							Utils.join(
+								Constants.Character.PIPE,
+								att.getValues()
+							)
+						);
+						declTail.append(Constants.Character.RIGHT_PAREN);
+						declTail.append(Constants.Character.SPACE);
 					} else {
 						declTail.append(attType);
 						declTail.append(Constants.Character.SPACE);
 					}
 
 					// The DefaultDecl portion of the AttDef
-					String defaultDeclType = att.getDefaultDeclType();
-					if (defaultDeclType.equals(Attribute.FIXED)) {
-						declTail.append(Constants.Character.HASH);
-						declTail.append(Attribute.FIXED);
-						declTail.append(Constants.Character.SPACE);
-						declTail.append(Constants.Character.DOUBLE_QUOTE);
-						declTail.append(att.getDefaultValue());
-						declTail.append(Constants.Character.DOUBLE_QUOTE);
-					} else if (defaultDeclType.equals(Attribute.ATTVALUE)) {
-						declTail.append(Constants.Character.DOUBLE_QUOTE);
-						declTail.append(att.getDefaultValue());
-						declTail.append(Constants.Character.DOUBLE_QUOTE);
-					} else {
-						declTail.append(Constants.Character.HASH);
-						declTail.append(defaultDeclType);
+					XMLAttribute.DefaultType defaultDeclType;
+					defaultDeclType = att.getDefaultDeclType();
+					switch (defaultDeclType) {
+						case FIXED:
+							declTail.append(Constants.Character.HASH);
+							declTail.append(XMLAttribute.DefaultType.FIXED);
+							declTail.append(Constants.Character.SPACE);
+							declTail.append(Constants.Character.DOUBLE_QUOTE);
+							declTail.append(att.getDefaultValue());
+							declTail.append(Constants.Character.DOUBLE_QUOTE);
+							break;
+						case ATTVALUE:
+							declTail.append(Constants.Character.DOUBLE_QUOTE);
+							declTail.append(att.getDefaultValue());
+							declTail.append(Constants.Character.DOUBLE_QUOTE);
+							break;
+						case IMPLIED:
+						case REQUIRED:
+							declTail.append(Constants.Character.HASH);
+							declTail.append(defaultDeclType);
+							break;
+						case INVALID:
+						default:
+							DBC.IGNORED_ERROR();
 					}
 				}
 				declTail.append(Constants.EOL);
 
-				Object[] attArgs =	{
-										elementName,
-										declTail.toString(),
-									};
-				elementDecls.append(Utils.formatMessage(attlistDecl, attArgs));
+				elementDecls.append(
+					Utils.formatMessage(
+						attlistDecl,
+						elementName,
+						declTail.toString()
+					)
+				);
 			}
 		}
 
 		// Create the entity declarations
-		StringBuffer entityDecls = new StringBuffer();
-		Map entities = new TreeMap(doctype.entities());
-		for (Iterator it = entities.keySet().iterator(); it.hasNext(); ) {
-			String entityName = (String)it.next();
+		StringBuilder entityDecls = new StringBuilder();
+		Map<String, XMLMarkupDeclaration> entities;
+		entities = new TreeMap<String, XMLMarkupDeclaration>(
+			doctype.entities()
+		);
+		for (String entityName : entities.keySet()) {
 			XMLEntity entity = (XMLEntity)entities.get(entityName);
 
-			StringBuffer entityDeclTail = new StringBuffer();
+			StringBuilder entityDeclTail = new StringBuilder();
 			if (entity.isInternal()) {
 				entityDeclTail.append(Constants.Character.DOUBLE_QUOTE);
 				entityDeclTail.append(
@@ -241,81 +257,91 @@ implements Constants.XML
 			} else {
 				XMLExternalIdentifier extID = entity.externalID();
 				if (extID.publicID() != null) {
-					entityDeclTail.append(ExternalIdentifier.PUBLIC);
+					entityDeclTail.append(PUBLIC);
 					entityDeclTail.append(extID.publicID());
 					entityDeclTail.append(Constants.Character.SPACE);
 					entityDeclTail.append(extID.systemID());
 				} else {
-					entityDeclTail.append(ExternalIdentifier.SYSTEM);
+					entityDeclTail.append(SYSTEM);
 					entityDeclTail.append(extID.systemID());
 				}
 
-				if (entity.type() == Entity.EXTERNAL_UNPARSED) {
-					entityDeclTail.append(Constants.Character.SPACE);
-					entityDeclTail.append(ExternalIdentifier.NDATA);
-					entityDeclTail.append(Constants.Character.SPACE);
-					entityDeclTail.append(entity.getNotation());
+				switch (entity.type()) {
+					case INTERNAL:
+					case EXTERNAL_PARSED:
+						break;
+					case EXTERNAL_UNPARSED:
+						entityDeclTail.append(Constants.Character.SPACE);
+						entityDeclTail.append(NDATA);
+						entityDeclTail.append(Constants.Character.SPACE);
+						entityDeclTail.append(entity.getNotation());
+						break;
+					case UNINITIALISED:
+					default:
+						DBC.UNREACHABLE_CODE();
+						break;
 				}
 			}
 
-			Object[] enArgs =	{
-									entityName,
-									entityDeclTail.toString(),
-								};
-			entityDecls.append(Utils.formatMessage(entityDecl, enArgs));
+			entityDecls.append(
+				Utils.formatMessage(
+					entityDecl,
+					entityName,
+					entityDeclTail.toString()
+				)
+			);
 		}
 
 		// Create the notation declarations
-		StringBuffer notationDecls = new StringBuffer();
-		Map notations = new TreeMap(doctype.notations());
-		for (Iterator it = notations.keySet().iterator(); it.hasNext(); ) {
-			String notationName = (String)it.next();
+		StringBuilder notationDecls = new StringBuilder();
+		Map<String, XMLMarkupDeclaration> notations;
+		notations = new TreeMap<String, XMLMarkupDeclaration>(
+			doctype.notations()
+		);
+		for (String notationName : notations.keySet()) {
 			XMLNotation notation = (XMLNotation)notations.get(notationName);
 			XMLExternalIdentifier extID = notation.getExtID();
 
 			String pubOrSys = "";
-			StringBuffer notationDeclTail = new StringBuffer();
+			StringBuilder notationDeclTail = new StringBuilder();
 			notationDeclTail.append(Constants.Character.DOUBLE_QUOTE);
 			if (extID.publicID() != null && extID.systemID() != null) {
-				pubOrSys = ExternalIdentifier.PUBLIC;
+				pubOrSys = PUBLIC;
 				notationDeclTail.append(extID.publicID());
 				notationDeclTail.append("\" \"");
 				notationDeclTail.append(extID.systemID());
 			} else if (extID.publicID() != null) {
-				pubOrSys = ExternalIdentifier.PUBLIC;
+				pubOrSys = PUBLIC;
 				notationDeclTail.append(extID.publicID());
 			} else if (extID.systemID() != null) {
-				pubOrSys = ExternalIdentifier.SYSTEM;
+				pubOrSys = SYSTEM;
 				notationDeclTail.append(extID.systemID());
 			} else {
 				DBC.UNREACHABLE_CODE();
 			}
 			notationDeclTail.append(Constants.Character.DOUBLE_QUOTE);
 
-			Object[] notArgs =	{
-									notationName,
-									pubOrSys,
-									notationDeclTail,
-								};
-			notationDecls.append(Utils.formatMessage(notationDecl, notArgs));
+			notationDecls.append(
+				Utils.formatMessage(
+					notationDecl,
+					notationName,
+					pubOrSys,
+					notationDeclTail
+				)
+			);
 		}
-
-		//
-		Object[] args =	{
-							vocabulary,
-							Constants.PROGRAM_NAME,
-							timestamp,
-							elementDecls.toString(),
-							entityDecls.toString(),
-							notationDecls.toString(),
-						};
 
 		// Try to write out the code
 		try {
 			OutputUtils.writeStringToFile(
 				Utils.formatMessage(
 					dtdFile,
-					args
+					vocabulary,
+					Constants.PROGRAM_NAME,
+					timestamp,
+					elementDecls.toString(),
+					entityDecls.toString(),
+					notationDecls.toString()
 				),
 				outputFile
 			);
@@ -330,12 +356,12 @@ implements Constants.XML
 	}
 
 	/** {@inheritDoc} */
-	public String describeLanguage() {
+	@Override public String describeLanguage() {
 		return "The XML DTD language";
 	}
 
 	/** {@inheritDoc} */
-	public String describeAPI() {
+	@Override public String describeAPI() {
 		DBC.UNREACHABLE_CODE();
 		return null;
 	}
@@ -353,7 +379,7 @@ implements Constants.XML
 			return null;
 		}
 
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 		char[] characters = s.toCharArray();
 		for (int i = 0; i < characters.length; i++) {
 			if	(
@@ -422,21 +448,20 @@ implements Constants.XML
 		@return		A {@link String} representation of the contentspec.
 	*/
 	private static String objectTreeToContentSpec(Object o) {
-		StringBuffer ret = new StringBuffer();
+		StringBuilder ret = new StringBuilder();
 
 		if (o instanceof XMLSequence) {
 			XMLSequence seq = (XMLSequence)o;
 
 			// Create the sequence
-			Iterator it = seq.iterator();
-			DBC.ASSERT(it != null);
-			ret.append(Constants.Character.LEFT_PAREN);
-			ret.append(objectTreeToContentSpec(it.next()));
-			while (it.hasNext()) {
-				ret.append(Constants.Character.COMMA);
-				ret.append(Constants.Character.SPACE);
-				ret.append(objectTreeToContentSpec(it.next()));
+			List<String> contentSpecs = new ArrayList<String>();
+			for (XMLObject xmlObject : seq) {
+				contentSpecs.add(objectTreeToContentSpec(xmlObject));
 			}
+			String sep =	String.valueOf(Constants.Character.COMMA) +
+							Constants.Character.SPACE;
+			ret.append(Constants.Character.LEFT_PAREN);
+			ret.append(Utils.join(sep, contentSpecs));
 			ret.append(Constants.Character.RIGHT_PAREN);
 
 			// Now put the ?, + or * on where appropriate
@@ -459,25 +484,23 @@ implements Constants.XML
 			XMLAlternative alt = (XMLAlternative)o;
 
 			// Create the alternative list
-			Iterator it = alt.iterator();
-			DBC.ASSERT(it != null);
-			ret.append(Constants.Character.LEFT_PAREN);
-			ret.append(objectTreeToContentSpec(it.next()));
-			while (it.hasNext()) {
-				ret.append(Constants.Character.SPACE);
-				ret.append(Constants.Character.PIPE);
-				ret.append(Constants.Character.SPACE);
-				ret.append(objectTreeToContentSpec(it.next()));
+			List<String> contentSpecs = new ArrayList<String>();
+			for (XMLObject xmlObject : alt) {
+				contentSpecs.add(objectTreeToContentSpec(xmlObject));
 			}
+			String sep =	String.valueOf(Constants.Character.SPACE) +
+							Constants.Character.PIPE +
+							Constants.Character.SPACE;
+			ret.append(Constants.Character.LEFT_PAREN);
+			ret.append(Utils.join(sep, contentSpecs));
 			ret.append(Constants.Character.RIGHT_PAREN);
 		} else if (o instanceof XMLMixedContent) {
 			XMLMixedContent mixed = (XMLMixedContent)o;
 
 			// Create the alternative list
-			Iterator it = mixed.iterator();
-			DBC.ASSERT(it != null);
+			Iterator<XMLObject> it = mixed.iterator();
 			ret.append(Constants.Character.LEFT_PAREN);
-			XMLObject first = (XMLObject)it.next();
+			XMLObject first = it.next();
 			DBC.ASSERT(first instanceof XMLContent);
 			ret.append(objectTreeToContentSpec(first));
 			if (it.hasNext()) {
@@ -494,10 +517,9 @@ implements Constants.XML
 			}
 		} else if (o instanceof XMLContent) {
 			ret.append("#PCDATA");
-		} else if (o instanceof XMLElementReference) {
-			ret.append(((XMLElementReference)o).getName());
+		} else if (o instanceof XMLNamedObject) {
+			ret.append(((XMLNamedObject)o).getName());
 		} else {
-			System.err.println(o.getClass().toString());
 			DBC.UNREACHABLE_CODE();
 		}
 

@@ -38,7 +38,7 @@ import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
 */
 public class ParserTest extends NormalClassTestCase {
 	/** {@inheritDoc} */
-	public void setUp() throws Exception {
+	@Override public void setUp() throws Exception {
 		super.setUp();
 
 		ignoreHashCodeTests = true;

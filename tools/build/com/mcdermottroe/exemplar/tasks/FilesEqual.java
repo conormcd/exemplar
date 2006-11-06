@@ -67,7 +67,7 @@ public class FilesEqual extends Task {
 
 		@throws	BuildException	if the files are not all equal to each other.
 	*/
-	public void execute() {
+	@Override public void execute() {
 		super.execute();
 
 		// It is an error to attempt to run this task without a fileset
@@ -143,10 +143,10 @@ public class FilesEqual extends Task {
 		}
 
 		// Try to close all of the readers.
-		for (int i = 0; i < readers.length; i++) {
+		for (BufferedReader reader : readers) {
 			try {
-				if (readers[i] != null) {
-					readers[i].close();
+				if (reader != null) {
+					reader.close();
 				}
 			} catch (IOException e) {
 				if (failure != null) {

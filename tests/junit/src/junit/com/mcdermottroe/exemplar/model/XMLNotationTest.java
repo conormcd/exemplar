@@ -43,9 +43,9 @@ import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
 */
 public class XMLNotationTest extends NormalClassTestCase {
 	/** {@inheritDoc} */
-	public void setUp() throws Exception {
+	@Override public void setUp() throws Exception {
 		super.setUp();
-		sampleObjects = new ArrayList();
+		sampleObjects = new ArrayList<Object>();
 		sampleObjects.add(new XMLNotation());
 		sampleObjects.add(
 			new XMLNotation("notationName", new XMLExternalIdentifier())

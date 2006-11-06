@@ -29,6 +29,7 @@
 */
 package com.mcdermottroe.exemplar;
 
+import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.Options;
 
@@ -84,12 +85,7 @@ public final class DBC {
 		//    until later.
 		// 3) Throw a previously deferred assertion.
 		// 4) Throw the current assertion.
-		boolean throwLater;
-		if (Options.isInitialised()) {
-			throwLater = !Options.isDebugSet();
-		} else {
-			throwLater = true;
-		}
+		boolean throwLater = !(Options.isInitialised() && Options.isDebugSet());
 
 		// If there is already an assertion it is dealt with here rather than
 		// wasting time craeting a new one.
@@ -110,7 +106,7 @@ public final class DBC {
 		// Java not Perl.
 		int assertionPoint = -1;
 		int caller = -1;
-		StackTraceElement[] trace = (new AssertionError()).getStackTrace();
+		StackTraceElement[] trace = new AssertionError().getStackTrace();
 		for (int i = 0; i < trace.length; i++) {
 			String traceMessage = trace[i].toString();
 			if (!traceMessage.startsWith(thisClass)) {
@@ -190,6 +186,16 @@ public final class DBC {
 	*/
 	public static void IGNORED_ERROR() {
 		ASSERT(false);
+	}
+
+	/** A marker for an ignored exception. To be used in cases where the
+		programmer is forced to catch an exception but wishes to continue
+		processing anyway.
+
+		@param	t	The exception to be ignored.
+	*/
+	public static void IGNORED_EXCEPTION(Throwable t) {
+		Log.debug(Message.IGNORING_EXCEPTION, t);
 	}
 
 	/** A method to allow tests to clear the stored delayed assertion. This

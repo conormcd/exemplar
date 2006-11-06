@@ -43,25 +43,21 @@ public abstract class XMLObject {
 		@param	o	The object to compare against.
 		@return		True if <code>this</code> is equal to <code>o</code>.
 	*/
-	public boolean equals(Object o) {
+	@Override public boolean equals(Object o) {
 		if (this == o) {
 			return true;
 		}
 		if (o == null) {
 			return false;
 		}
-		if (!(o instanceof XMLObject)) {
-			return false;
-		}
-
-		return true;
+		return o instanceof XMLObject;
 	}
 
 	/** See {@link Object#hashCode()}.
 
 		@return	A hash code.
 	*/
-	public int hashCode() {
+	@Override public int hashCode() {
 		return getClass().getName().hashCode();
 	}
 
@@ -73,8 +69,8 @@ public abstract class XMLObject {
 		@return					A {@link String} which should only be used
 								within a {@link XMLObject#toString()} method.
 	*/
-	static String toString(String className, String classDetails) {
-		StringBuffer description = new StringBuffer(className);
+	static String toStringHelper(String className, String classDetails) {
+		StringBuilder description = new StringBuilder(className);
 		description.append(Constants.Character.SPACE);
 		description.append(Constants.Character.EQUALS);
 		description.append(Constants.Character.SPACE);
@@ -88,5 +84,5 @@ public abstract class XMLObject {
 
 		@return	A descriptive {@link String}.
 	*/
-	public abstract String toString();
+	@Override public abstract String toString();
 }

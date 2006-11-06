@@ -44,14 +44,14 @@ import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
 */
 public class LexerTest extends NormalClassTestCase {
 	/** {@inheritDoc} */
-	public void setUp() throws Exception {
+	@Override public void setUp() throws Exception {
 		super.setUp();
 
 		allowPublicStaticMembers = true;
 
 		Reader nullReader = null;
 
-		sampleObjects = new ArrayList();
+		sampleObjects = new ArrayList<Object>();
 		sampleObjects.add(new Lexer(nullReader));
 		sampleObjects.add(new Lexer(new InputStreamReader(System.in)));
 		sampleObjects.add(new Lexer(System.in));

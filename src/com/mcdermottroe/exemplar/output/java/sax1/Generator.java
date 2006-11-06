@@ -53,7 +53,7 @@ public class Generator extends XMLJavaSourceGenerator {
 	}
 
 	/** {@inheritDoc} */
-	public String describeAPI() {
+	@Override public String describeAPI() {
 		return "The SAX1 API";
 	}
 }

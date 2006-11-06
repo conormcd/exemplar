@@ -43,6 +43,7 @@ import java.util.TreeMap;
 
 import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.Utils;
+import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.MessageException;
 import com.mcdermottroe.exemplar.ui.Options;
@@ -73,7 +74,7 @@ public class CreateManual {
 			Message.localise();
 
 			// Start building the XSLT
-			StringBuffer xslt = new StringBuffer();
+			StringBuilder xslt = new StringBuilder();
 
 			// Make the preamble for the stylesheet
 			xslt.append("<?xml version=\"1.0\" ?>").append(Constants.EOL);
@@ -137,7 +138,7 @@ public class CreateManual {
 				synopsis line in the manual.
 	*/
 	private static String cmdsynopsisXSLT() {
-		StringBuffer ret = new StringBuffer();
+		StringBuilder ret = new StringBuilder();
 		ret.append("\t\t\t<xsl:when test=\"@id='cmdsynopsis'\">").append(Constants.EOL);
 
 		ret.append("\t\t\t\t<cmdsynopsis>").append(Constants.EOL);
@@ -164,7 +165,9 @@ public class CreateManual {
 				ret.append("</replaceable>");
 			} else if (Options.isEnum(optionName)) {
 				ret.append(" <group choice=\"req\">");
-				Map eo = new TreeMap(Options.getEnumDescriptions(optionName));
+				Map<String, String> eo = new TreeMap<String, String>(
+					Options.getEnumDescriptions(optionName)
+				);
 				Iterator it = eo.keySet().iterator();
 				if (it.hasNext()) {
 					ret.append("<option>");
@@ -193,7 +196,7 @@ public class CreateManual {
 				description of every option that the program accepts.
 	*/
 	private static String optionsdescriptionXSLT() {
-		StringBuffer ret = new StringBuffer();
+		StringBuilder ret = new StringBuilder();
 		ret.append("\t\t\t<xsl:when test=\"@id='optionsdescription'\">").append(Constants.EOL);
 		for (Iterator it = Options.optionNameIterator(); it.hasNext(); ) {
 			String optionName = (String)it.next();
@@ -213,22 +216,23 @@ public class CreateManual {
 			ret.append(Options.getDescription(optionName));
 			ret.append("</para>").append(Constants.EOL);
 			if (Options.isEnum(optionName)) {
-				Map enumOptions = new TreeMap(Options.getEnumDescriptions(optionName));
+				Map<String,String> enumOptions = new TreeMap<String,String>(
+					Options.getEnumDescriptions(optionName)
+				);
 
 				ret.append("\t\t\t\t\t<para>").append(Constants.EOL);
 				ret.append("\t\t\t\t\t\t<variablelist>").append(Constants.EOL);
 				ret.append("\t\t\t\t\t\t\t<title>");
 				ret.append(Message.OPTION_ENUM_ARGS_HEADER);
 				ret.append("</title>").append(Constants.EOL);
-				for (Iterator enumIt = enumOptions.keySet().iterator(); enumIt.hasNext(); ) {
-					String enumValue = (String)enumIt.next();
+				for (String enumValue : enumOptions.keySet()) {
 					ret.append("\t\t\t\t\t\t\t<varlistentry>").append(Constants.EOL);
 					ret.append("\t\t\t\t\t\t\t\t<term>");
 					ret.append(enumValue);
 					ret.append("</term>").append(Constants.EOL);
 					ret.append("\t\t\t\t\t\t\t\t<listitem>").append(Constants.EOL);
 					ret.append("\t\t\t\t\t\t\t\t\t<para>");
-					ret.append(Utils.escapeToXMLCharRefs((String)enumOptions.get(enumValue)));
+					ret.append(Utils.escapeToXMLCharRefs(enumOptions.get(enumValue)));
 					ret.append("</para>").append(Constants.EOL);
 					ret.append("</listitem>").append(Constants.EOL);
 					ret.append("\t\t\t\t\t\t\t</varlistentry>").append(Constants.EOL);
@@ -259,7 +263,7 @@ public class CreateManual {
 				exit codes used by the program.
 	*/
 	private static String exitcodesXSLT() {
-		StringBuffer ret = new StringBuffer();
+		StringBuilder ret = new StringBuilder();
 		ret.append("\t\t\t<xsl:when test=\"@id='exitcodes'\">").append(Constants.EOL);
 
 		for (Iterator it = ExitStatus.iterator(); it.hasNext(); ) {
@@ -286,7 +290,7 @@ public class CreateManual {
 				messages that.
 	*/
 	private static String messagesXSLT() {
-		StringBuffer ret = new StringBuffer();
+		StringBuilder ret = new StringBuilder();
 		ret.append("\t\t\t<xsl:when test=\"@id='messages'\">").append(Constants.EOL);
 
 		ret.append("\t\t\t\t<para>");
@@ -298,45 +302,43 @@ public class CreateManual {
 		try {
 			Message.localise();
 
-			Map messages = new TreeMap();
+			Map<String,Object> messages = new TreeMap<String,Object>();
 
 			// Get all of the static field messages
 			// (they're the non-formatted ones)
-			Field[] fields = Message.class.getFields();
-			for (int i = 0; i < fields.length; i++) {
+			for (Field field : Message.class.getFields()) {
 				try {
-					messages.put(fields[i].getName(), fields[i].get(null));
+					messages.put(field.getName(), field.get(null));
 				} catch (IllegalAccessException e) {
-					// Ignore
+					DBC.IGNORED_EXCEPTION(e);
 				}
 			}
 
 			// Find the message methods and call them
 			// with dummy parameters to get the message
 			// that appears when you call it.
-			Method[] methods = Message.class.getDeclaredMethods();
-			for (int i = 0; i < methods.length; i++) {
+			for (Method method : Message.class.getDeclaredMethods()) {
 				// Must return String
-				if (!String.class.equals(methods[i].getReturnType())) {
+				if (!String.class.equals(method.getReturnType())) {
 					continue;
 				}
 
 				// Must be public static
-				int mods = methods[i].getModifiers();
+				int mods = method.getModifiers();
 				if (!Modifier.isPublic(mods) || !Modifier.isStatic(mods)) {
 					continue;
 				}
 
 				// Generate a dummy parameter list
-				Class[] paramTypes = methods[i].getParameterTypes();
+				Class[] paramTypes = method.getParameterTypes();
 				Object[] params = new Object[paramTypes.length];
 				for (int j = 0; j < paramTypes.length; j++) {
 					if (String.class.equals(paramTypes[j])) {
 						params[j] = "%s";
 					} else if (double.class.equals(paramTypes[j])) {
-						params[j] = new Double(12345.6789);
+						params[j] = 12345.6789;
 					} else if (int.class.equals(paramTypes[j])) {
-						params[j] = new Integer(123456789);
+						params[j] = 123456789;
 					} else {
 						throw new CreateManualException("Unknown type " + paramTypes[j] + " for method parameter.");
 					}
@@ -345,7 +347,7 @@ public class CreateManual {
 				// Now call the method and get the message.
 				String message;
 				try {
-					message = (String)methods[i].invoke(null, params);
+					message = (String)method.invoke(null, params);
 				} catch (IllegalAccessException e) {
 					throw new CreateManualException(e);
 				} catch (InvocationTargetException e) {
@@ -361,11 +363,10 @@ public class CreateManual {
 
 				// Now add the message name and value to the
 				// list of known messages.
-				messages.put(methods[i].getName(), message);
+				messages.put(method.getName(), message);
 			}
 
-			for (Iterator it = messages.keySet().iterator(); it.hasNext(); ) {
-				String messageName = (String)it.next();
+			for (String messageName : messages.keySet()) {
 				String messageText = (String)messages.get(messageName);
 
 				ret.append("\t\t\t\t<refsect2>").append(Constants.EOL);

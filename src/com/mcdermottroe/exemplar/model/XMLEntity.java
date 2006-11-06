@@ -41,29 +41,42 @@ import com.mcdermottroe.exemplar.ui.Message;
 */
 public class XMLEntity
 extends XMLNamedObject
-implements Constants.XML.Entity
+implements XMLMarkupDeclaration
 {
-	/** The type of entity this is. This should be one of the types defined in
-		{@link com.mcdermottroe.exemplar.Constants.XML.Entity}.
-	*/
-	private int entityType;
+	/** The valid entity types. */
+	public enum EntityType {
+		/** The entity type has yet to be decided. */
+		UNINITIALISED,
+		/** The entity is an internal entity (has an immediate value). */
+		INTERNAL,
+		/** The entity is an external entity (value must be fetched from an
+			external resource and then parsed).
+		*/
+		EXTERNAL_PARSED,
+		/** The entity is an external entity (value must be fetched from an
+			external resource and then included verbatim).
+		 */
+		EXTERNAL_UNPARSED
+	}
+
+	/** The type of entity this is. */
+	private EntityType entityType;
 
 	/** The immediate value of this entity. This is only set for internal
 		entities (entities with an {@link #entityType} of {@link
-		com.mcdermottroe.exemplar.Constants.XML.Entity#INTERNAL}).
+		EntityType#INTERNAL}).
 	*/
 	private String value;
 
 	/**	The external identifier of this entity. This is only set for external
 		entities (entities with an {@link #entityType} of {@link
-		com.mcdermottroe.exemplar.Constants.XML.Entity#EXTERNAL_PARSED}).
+		EntityType#EXTERNAL_PARSED}).
 	*/
 	private XMLExternalIdentifier extID;
 
 	/** The notation associated with this entity. This will only be set if the
 		entity is an external unparsed entity (entities with an {@link
-		#entityType} of {@link
-		com.mcdermottroe.exemplar.Constants.XML.Entity#EXTERNAL_UNPARSED}).
+		#entityType} of {@link EntityType#EXTERNAL_UNPARSED}).
 	*/
 	private String notation;
 
@@ -73,7 +86,7 @@ implements Constants.XML.Entity
 		super();
 
 		// Mark this entity as uninitialised.
-		entityType = UNINITIALISED;
+		entityType = EntityType.UNINITIALISED;
 
 		// It doesn't have a value
 		value = null;
@@ -82,7 +95,7 @@ implements Constants.XML.Entity
 	}
 
 	/** Constructor for internal entities ({@link #entityType} == {@link
-		com.mcdermottroe.exemplar.Constants.XML.Entity#INTERNAL}).
+		EntityType#INTERNAL}).
 
 		@param	entityValue	The replacement text for this entity.
 	*/
@@ -93,7 +106,7 @@ implements Constants.XML.Entity
 		DBC.REQUIRE(entityValue != null);
 
 		// Mark this entity as internal.
-		entityType = INTERNAL;
+		entityType = EntityType.INTERNAL;
 
 		// Copy in the parameters.
 		value = entityValue;
@@ -104,7 +117,7 @@ implements Constants.XML.Entity
 	}
 
 	/** Constructor for external parsed entities ({@link #entityType} == {@link
-		com.mcdermottroe.exemplar.Constants.XML.Entity#EXTERNAL_PARSED}).
+		EntityType#EXTERNAL_PARSED}).
 
 		@param externalID	The URI + PublicID of where the content is.
 	*/
@@ -115,7 +128,7 @@ implements Constants.XML.Entity
 		DBC.REQUIRE(externalID != null);
 
 		// Mark this entity as an external parsed one
-		entityType = EXTERNAL_PARSED;
+		entityType = EntityType.EXTERNAL_PARSED;
 
 		// Copy in the parameters
 		extID = externalID;
@@ -126,8 +139,7 @@ implements Constants.XML.Entity
 	}
 
 	/** Constructor for external unparsed entities ({@link #entityType} ==
-		{@link
-		com.mcdermottroe.exemplar.Constants.XML.Entity#EXTERNAL_UNPARSED}).
+		{@link EntityType#EXTERNAL_UNPARSED}).
 
 		@param externalID	The URI + PublicID  of where the content is.
 		@param not			The notation associated with this entity
@@ -140,7 +152,7 @@ implements Constants.XML.Entity
 		DBC.REQUIRE(not != null);
 
 		// Mark this entity as an external unparsed one
-		entityType = EXTERNAL_UNPARSED;
+		entityType = EntityType.EXTERNAL_UNPARSED;
 
 		// Copy in the parameters
 		extID = externalID;
@@ -152,17 +164,9 @@ implements Constants.XML.Entity
 
 	/** Accessor for {@link #entityType}.
 
-		@return An integer describing the type of entity this is. The integer
-				will be one of {@link #UNINITIALISED}, {@link #INTERNAL},
-				{@link #EXTERNAL_PARSED} or {@link #EXTERNAL_UNPARSED}.
+		@return The type of this entity.
 	*/
-	public int type() {
-		DBC.ENSURE	(
-						entityType == UNINITIALISED ||
-						entityType == INTERNAL ||
-						entityType == EXTERNAL_PARSED ||
-						entityType == EXTERNAL_UNPARSED
-					);
+	public EntityType type() {
 		return entityType;
 	}
 
@@ -172,10 +176,6 @@ implements Constants.XML.Entity
 				entity, null otherwise.
 	*/
 	public String value() {
-		DBC.REQUIRE	(
-						entityType == INTERNAL && value != null ||
-						entityType != INTERNAL && value == null
-					);
 		return value;
 	}
 
@@ -185,12 +185,6 @@ implements Constants.XML.Entity
 				external entity, null otherwise.
 	*/
 	public XMLExternalIdentifier externalID() {
-		DBC.REQUIRE	(
-						entityType == EXTERNAL_PARSED && extID != null ||
-						entityType == EXTERNAL_UNPARSED && extID != null ||
-						entityType == UNINITIALISED && extID == null ||
-						entityType == INTERNAL && extID == null
-					);
 		return extID;
 	}
 
@@ -200,10 +194,6 @@ implements Constants.XML.Entity
 				entity, null otherwise.
 	*/
 	public String getNotation() {
-		DBC.REQUIRE	(
-						entityType == EXTERNAL_UNPARSED && notation != null ||
-						entityType != EXTERNAL_UNPARSED && notation == null
-					);
 		return notation;
 	}
 
@@ -212,16 +202,12 @@ implements Constants.XML.Entity
 		@return	True if the entity is internal, false otherwise.
 	*/
 	public boolean isInternal() {
-		DBC.ENSURE	(
-						entityType == INTERNAL ||
-						entityType == EXTERNAL_PARSED ||
-						entityType == EXTERNAL_UNPARSED
-					);
-		return entityType == INTERNAL;
+		DBC.ENSURE(!entityType.equals(EntityType.UNINITIALISED));
+		return entityType.equals(EntityType.INTERNAL);
 	}
 
 	/** {@inheritDoc} */
-	public boolean equals(Object o) {
+	@Override public boolean equals(Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -232,13 +218,13 @@ implements Constants.XML.Entity
 		XMLEntity other = (XMLEntity)o;
 		if (super.equals(o)) {
 			Object[] thisFields = {
-				new Integer(entityType),
+				entityType,
 				extID,
 				notation,
 				value,
 			};
 			Object[] otherFields = {
-				new Integer(other.type()),
+				other.type(),
 				other.externalID(),
 				other.getNotation(),
 				other.value(),
@@ -250,47 +236,35 @@ implements Constants.XML.Entity
 	}
 
 	/** {@inheritDoc} */
-	public int hashCode() {
+	@Override public int hashCode() {
 		int hashCode = super.hashCode();
-
 		hashCode *= Constants.HASHCODE_MAGIC_NUMBER;
-		hashCode += entityType;
-		hashCode *= Constants.HASHCODE_MAGIC_NUMBER;
-		if (extID != null) {
-			hashCode += extID.hashCode();
-		}
-		hashCode *= Constants.HASHCODE_MAGIC_NUMBER;
-		if (notation != null) {
-			hashCode += notation.hashCode();
-		}
-		hashCode *= Constants.HASHCODE_MAGIC_NUMBER;
-		if (value != null) {
-			hashCode += value.hashCode();
-		}
-
+		hashCode += Utils.genericHashCode(entityType, extID, notation, value);
 		return hashCode;
 	}
 
 	/** {@inheritDoc} */
-	public String toString() {
-		StringBuffer desc = new StringBuffer();
+	@Override public String toString() {
+		StringBuilder desc = new StringBuilder();
 		desc.append(name);
 		desc.append(Constants.Character.COMMA);
 		desc.append(Constants.Character.SPACE);
-		if (entityType == INTERNAL) {
-			desc.append(value());
-		} else if	(
-						entityType == EXTERNAL_PARSED ||
-						entityType == EXTERNAL_UNPARSED
-					)
-		{
-			desc.append(Constants.Character.LEFT_PAREN);
-			desc.append(externalID().toString());
-			desc.append(Constants.Character.RIGHT_PAREN);
-		} else {
-			desc.append(Message.XMLOBJECT_NOT_CONFIGURED);
+		switch (entityType) {
+			case INTERNAL:
+				desc.append(value());
+				break;
+			case EXTERNAL_PARSED:
+			case EXTERNAL_UNPARSED:
+				desc.append(Constants.Character.LEFT_PAREN);
+				desc.append(externalID().toString());
+				desc.append(Constants.Character.RIGHT_PAREN);
+				break;
+			case UNINITIALISED:
+			default:
+				desc.append(Message.XMLOBJECT_NOT_CONFIGURED);
+				break;
 		}
 
-		return toString(getClass().getName(), desc.toString());
+		return XMLObject.toStringHelper(getClass().getName(), desc.toString());
 	}
 }

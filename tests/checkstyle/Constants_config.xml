@@ -77,13 +77,6 @@
 		<module name="LineLength" />
 
 		<!--
-			Coding
-		-->
-	 	<module name="MultipleStringLiterals">
-			<property name="allowedDuplicates" value="1" />
-		</module>
-
-		<!--
 			Class Design
 		-->
 		<module name="VisibilityModifier">

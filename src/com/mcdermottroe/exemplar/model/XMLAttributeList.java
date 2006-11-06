@@ -45,9 +45,10 @@ import com.mcdermottroe.exemplar.Utils;
 */
 public class XMLAttributeList
 extends XMLNamedObject
+implements XMLMarkupDeclaration, Iterable<XMLAttribute>
 {
 	/** The list of attributes. */
-	private List attributes;
+	private List<XMLAttribute> attributes;
 
 	/** Basic constructor. All XMLAttributeLists start empty and anonymous. */
 	public XMLAttributeList() {
@@ -55,7 +56,7 @@ extends XMLNamedObject
 		super();
 
 		// Create the attribute list.
-		attributes = new ArrayList();
+		attributes = new ArrayList<XMLAttribute>();
 	}
 
 	/** Add a new attribute to {@link #attributes the list}.
@@ -76,7 +77,7 @@ extends XMLNamedObject
 
 		@return	An {@link Iterator} over the {@link #attributes}.
 	*/
-	public Iterator attributes() {
+	public Iterator<XMLAttribute> iterator() {
 		DBC.REQUIRE(attributes != null);
 
 		Collections.sort(attributes);
@@ -87,32 +88,27 @@ extends XMLNamedObject
 
 		@return A copy of the attributes member.
 	*/
-	public List getAttributes() {
-		return new ArrayList(attributes);
+	public List<XMLAttribute> getAttributes() {
+		return new ArrayList<XMLAttribute>(attributes);
 	}
 
 	/** {@inheritDoc} */
-	public String toString() {
-		StringBuffer desc = new StringBuffer();
-		Iterator it = attributes();
-		if (it.hasNext()) {
-			desc.append(Constants.Character.LEFT_PAREN);
-			desc.append(it.next().toString());
-			desc.append(Constants.Character.RIGHT_PAREN);
-			while (it.hasNext()) {
-				desc.append(Constants.Character.COMMA);
-				desc.append(Constants.Character.SPACE);
-				desc.append(Constants.Character.LEFT_PAREN);
-				desc.append(it.next().toString());
-				desc.append(Constants.Character.RIGHT_PAREN);
-			}
-		}
+	@Override public String toString() {
+		String sep =	String.valueOf(Constants.Character.RIGHT_PAREN) +
+						Constants.Character.COMMA +
+						Constants.Character.SPACE +
+						Constants.Character.LEFT_PAREN;
 
-		return toString(getClass().getName(), desc.toString());
+		StringBuilder desc = new StringBuilder();
+		desc.append(Constants.Character.LEFT_PAREN);
+		desc.append(Utils.join(sep, this));
+		desc.append(Constants.Character.RIGHT_PAREN);
+
+		return XMLObject.toStringHelper(getClass().getName(), desc.toString());
 	}
 
 	/** {@inheritDoc} */
-	public boolean equals(Object o) {
+	@Override public boolean equals(Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -130,7 +126,7 @@ extends XMLNamedObject
 	}
 
 	/** {@inheritDoc} */
-	public int hashCode() {
+	@Override public int hashCode() {
 		int hashCode = super.hashCode();
 
 		hashCode *= Constants.HASHCODE_MAGIC_NUMBER;

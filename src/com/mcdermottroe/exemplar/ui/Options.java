@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -60,7 +61,7 @@ public final class Options
 implements Constants.Options
 {
 	/** The map containing all of the options. */
-	private static Map options;
+	private static Map<String, Option> options;
 
 	/** Whether or not the UI has finished setting the options. */
 	private static boolean uiFinished;
@@ -85,7 +86,7 @@ implements Constants.Options
 		try {
 			Message.localise();
 		} catch (MessageException e) {
-			// This error can be dealt with later.
+			DBC.IGNORED_EXCEPTION(e);
 		}
 		init();
 	}
@@ -103,7 +104,7 @@ implements Constants.Options
 		}
 
 		// The store for the options stash
-		Map initOptions = new HashMap();
+		Map<String, Option> initOptions = new HashMap<String, Option>();
 
 		// Load the options definitions from the properties file.
 		ResourceBundle optionsDefinitions = null;
@@ -112,17 +113,16 @@ implements Constants.Options
 				Options.class.getName()
 			);
 		} catch (MissingResourceException e) {
-			// Ignore
-			DBC.IGNORED_ERROR();
+			DBC.IGNORED_EXCEPTION(e);
 		}
 		DBC.ASSERT(optionsDefinitions != null);
 
 		// Get the names of all the options
-		Set optionNames = new HashSet();
+		Set<String> optionNames = new HashSet<String>();
 		if (optionsDefinitions != null) {
-			Enumeration e = optionsDefinitions.getKeys();
+			Enumeration<String> e = optionsDefinitions.getKeys();
 			while (e.hasMoreElements()) {
-				String optionName = (String)e.nextElement();
+				String optionName = e.nextElement();
 				optionName = optionName.substring(
 					0,
 					optionName.indexOf((int)Constants.Character.FULL_STOP)
@@ -133,9 +133,7 @@ implements Constants.Options
 
 		// Go through the options by name and create Option objects for each of
 		// them. Then store the Option objects in the stash.
-		for (Iterator it = optionNames.iterator(); it.hasNext(); ) {
-			String optionName = (String)it.next();
-
+		for (String optionName : optionNames) {
 			// Get the type of the option
 			String optionType = readOptionStringProperty(
 				optionsDefinitions,
@@ -197,10 +195,11 @@ implements Constants.Options
 				String dynamicMethod = null;
 
 				// Get the allowed values
-				Map allowedValues = new HashMap();
-				Enumeration entries = optionsDefinitions.getKeys();
+				Map<String, String> allowedValues;
+				allowedValues = new HashMap<String, String>();
+				Enumeration<String> entries = optionsDefinitions.getKeys();
 				while (entries.hasMoreElements()) {
-					String entry = (String)entries.nextElement();
+					String entry = entries.nextElement();
 					String prefix =	optionName +
 									Constants.Character.FULL_STOP +
 									VALUE_PROPERTY;
@@ -251,10 +250,11 @@ implements Constants.Options
 						try {
 							// Get the class and method to call to get the
 							// values
-							Class dMClass = Class.forName(dynamicMethodClass);
+							Class<?> dMClass;
+							dMClass = Class.forName(dynamicMethodClass);
 							Method dMMethod = dMClass.getMethod(
 								dynamicMethodMethod,
-								null
+								(Class<?>[])null
 							);
 
 							// Ensure the method is public static
@@ -270,7 +270,8 @@ implements Constants.Options
 							}
 
 							// Ensure the method returns a Map
-							Class dMMethodReturnType = dMMethod.getReturnType();
+							Class<?> dMMethodReturnType;
+							dMMethodReturnType = dMMethod.getReturnType();
 							if (!SortedMap.class.equals(dMMethodReturnType)) {
 								DBC.IGNORED_ERROR();
 							}
@@ -282,22 +283,25 @@ implements Constants.Options
 
 							// Now call the method
 							try {
-								Class[] args = {};
-								SortedMap dynamicValues;
-								dynamicValues = (SortedMap)dMMethod.invoke(
-									null,
-									args
-								);
-								allowedValues.putAll(dynamicValues);
+								SortedMap dynValues;
+								dynValues = (SortedMap)dMMethod.invoke(null);
+								for (Object key : dynValues.keySet()) {
+									allowedValues.put(
+										key.toString(),
+										dynValues.get(key).toString()
+									);
+								}
 							} catch (IllegalAccessException e) {
+								DBC.IGNORED_EXCEPTION(e);
 								DBC.UNREACHABLE_CODE();
 							} catch (InvocationTargetException e) {
+								DBC.IGNORED_EXCEPTION(e);
 								DBC.UNREACHABLE_CODE();
 							}
 						} catch (ClassNotFoundException e) {
-							DBC.IGNORED_ERROR();
+							DBC.IGNORED_EXCEPTION(e);
 						} catch (NoSuchMethodException e) {
-							DBC.IGNORED_ERROR();
+							DBC.IGNORED_EXCEPTION(e);
 						}
 					} else {
 						// Should never get here.
@@ -306,15 +310,15 @@ implements Constants.Options
 				}
 
 				// Get the default values
-				Set defaultValues = null;
+				Set<String> defaultValues = null;
 				if (optionDefault != null) {
 					String[] defVal = optionDefault.split(
 						String.valueOf(Constants.Character.COMMA)
 					);
-					defaultValues = new HashSet(defVal.length, 1.0f);
-					for (int j = 0; j < defVal.length; j++) {
-						if (allowedValues.containsKey(defVal[j])) {
-							defaultValues.add(defVal[j]);
+					defaultValues = new HashSet<String>(defVal.length, 1.0f);
+					for (String defValue : defVal) {
+						if (allowedValues.containsKey(defValue)) {
+							defaultValues.add(defValue);
 						}
 					}
 				}
@@ -331,8 +335,7 @@ implements Constants.Options
 									);
 			} else if (optionType.equalsIgnoreCase(SWITCH)) {
 				// Convert the default value to a boolean
-				Boolean optDefault = Boolean.valueOf(optionDefault);
-				boolean defaultValue = optDefault.booleanValue();
+				boolean defaultValue = Boolean.valueOf(optionDefault);
 
 				// Create the new Switch
 				newOption = new Switch	(
@@ -370,17 +373,11 @@ implements Constants.Options
 		uiFinished = true;
 
 		// Set the special debug flag.
-		Boolean debugOpt = getBoolean("debug");
-		if (debugOpt != null) {
-			debug = debugOpt.booleanValue();
-		} else {
-			// If there hasn't been a debug option defined, then debugging
-			// should be forced on.
-			debug = true;
+		debug = getBoolean("debug");
+		if (debug) {
+			Log.setLevel(Log.LogLevel.DEBUG);
 		}
-
-		// Get the logger to ensure that the logger has the right log level.
-		LogUtils.getLogger();
+		Log.flushDelayedMessages();
 	}
 
 	/** Find out if debugging functionality is activated.
@@ -403,12 +400,12 @@ implements Constants.Options
 
 		@return	An Iterator over the collection of names of defined options.
 	*/
-	public static Iterator optionNameIterator() {
+	public static Iterator<String> optionNameIterator() {
 		// Ensure that the options stash is created
 		init();
 
 		// Put the Set of keys in a TreeSet to sort it.
-		SortedSet keySet = new TreeSet(options.keySet());
+		SortedSet<String> keySet = new TreeSet<String>(options.keySet());
 		return keySet.iterator();
 	}
 
@@ -416,12 +413,12 @@ implements Constants.Options
 
 		@return A Set of String representaions of the option names
 	*/
-	public static Set getAllOptionNames() {
+	public static Set<String> getAllOptionNames() {
 		// Ensure that the options stash is created
 		init();
 
 		// Put the Set of keys in a TreeSet to sort it.
-		return new TreeSet(options.keySet());
+		return new TreeSet<String>(options.keySet());
 	}
 
 	/** Get the value associated with a particular option.
@@ -433,7 +430,7 @@ implements Constants.Options
 		if (optionName != null) {
 			init();
 			if (isLegal(optionName)) {
-				Option ret = (Option)options.get(optionName);
+				Option ret = options.get(optionName);
 				if (ret != null) {
 					DBC.ASSERT(optionName.equals(ret.getName()));
 					return ret;
@@ -455,35 +452,36 @@ implements Constants.Options
 		// Make sure that the option being set is an allowed one
 		if (isLegal(optionName)) {
 			Option optionToSet = get(optionName);
-			List vals = null;
+			List<Object> vals = null;
 
 			if (optionToSet instanceof Enum) {
 				// The string is a list of comma separated values
 				String[] rawValues = optionValue.split(
 					String.valueOf(Constants.Character.COMMA)
 				);
-				vals = new ArrayList(rawValues.length);
-				for (int i = 0; i < rawValues.length; i++) {
+				vals = new ArrayList<Object>(rawValues.length);
+				for (String rawV : rawValues) {
 					String rawValue;
 					if (optionToSet.isCaseSensitive()) {
-						rawValue = rawValues[i];
+						rawValue = rawV;
 					} else {
-						rawValue = rawValues[i].toLowerCase();
+						rawValue = rawV.toLowerCase(Locale.getDefault());
 					}
-					Map enumValueMap = ((Enum)optionToSet).getEnumValues();
+					Map<String, String> enumValueMap;
+					enumValueMap = ((Enum)optionToSet).getEnumValues();
 					if (enumValueMap.containsKey(rawValue)) {
 						vals.add(rawValue);
 					}
 				}
 			} else if (optionToSet instanceof Switch) {
-				vals = new ArrayList(1);
+				vals = new ArrayList<Object>(1);
 				vals.add(Boolean.valueOf(optionValue));
 			} else if (optionToSet instanceof Argument) {
-				vals = new ArrayList(1);
+				vals = new ArrayList<Object>(1);
 				if (optionToSet.isCaseSensitive()) {
 					vals.add(optionValue);
 				} else {
-					vals.add(optionValue.toLowerCase());
+					vals.add(optionValue.toLowerCase(Locale.getDefault()));
 				}
 			}
 
@@ -496,7 +494,7 @@ implements Constants.Options
 			// Handle the special case of debug
 			Boolean debugValue = getBoolean("debug");
 			if (debugValue != null) {
-				debug = debugValue.booleanValue();
+				debug = debugValue;
 			}
 		}
 	}
@@ -504,14 +502,13 @@ implements Constants.Options
 	/** Determine whether or not a given option name is legal.
 
 		@param	optionName	The name of the option to check
-		@return				True if the option name is legal, false otherwise
+		@return				True if the option name is legal, false otherwise.
 	*/
 	public static boolean isLegal(String optionName) {
 		// Ensure that the options stash is created
 		init();
 
-		for (Iterator it = options.keySet().iterator(); it.hasNext(); ) {
-			String legalOptionName = (String)it.next();
+		for (String legalOptionName : options.keySet()) {
 			if (optionName.equals(legalOptionName)) {
 				return true;
 			}
@@ -592,7 +589,7 @@ implements Constants.Options
 							an {@link
 							com.mcdermottroe.exemplar.ui.Options.Enum}.
 	*/
-	public static Map getEnumDescriptions(String optionName) {
+	public static Map<String, String> getEnumDescriptions(String optionName) {
 		// Ensure that the options stash is created
 		init();
 
@@ -635,14 +632,13 @@ implements Constants.Options
 				)
 			{
 				int count = 0;
-				StringBuffer ret = new StringBuffer();
-				for (Iterator it = opt.getValue().iterator(); it.hasNext(); ) {
-					String next = (String)it.next();
+				StringBuilder ret = new StringBuilder();
+				for (Object next : opt.getValue()) {
 					if (count == 0) {
-						ret.append(next);
+						ret.append(next.toString());
 					} else {
 						ret.append(Constants.Character.COMMA);
-						ret.append(next);
+						ret.append(next.toString());
 					}
 					count++;
 				}
@@ -732,8 +728,7 @@ implements Constants.Options
 
 		Option opt = get(enumName);
 		if (opt != null && opt instanceof Enum) {
-			for (Iterator it = opt.getValue().iterator(); it.hasNext(); ) {
-				Object val = it.next();
+			for (Object val : opt.getValue()) {
 				if (val instanceof String) {
 					if (val.equals(enumValue)) {
 						return true;
@@ -754,8 +749,7 @@ implements Constants.Options
 		// Ensure that the options stash is created
 		init();
 
-		for (Iterator it = options.keySet().iterator(); it.hasNext(); ) {
-			String optionName = (String)it.next();
+		for (String optionName : options.keySet()) {
 			if (isMandatory(optionName)) {
 				Option opt = get(optionName);
 				if	(
@@ -764,6 +758,7 @@ implements Constants.Options
 						opt.getValue().isEmpty()
 					)
 				{
+					Log.warning(Message.MISSING_MANDATORY_OPTION(optionName));
 					return false;
 				}
 			}
@@ -845,6 +840,7 @@ implements Constants.Options
 				propertyName
 			);
 		} catch (MissingResourceException e) {
+			DBC.IGNORED_EXCEPTION(e);
 			return null;
 		}
 	}
@@ -874,8 +870,9 @@ implements Constants.Options
 				Constants.Character.FULL_STOP +
 				propertyName
 			);
-			return Boolean.valueOf(prop).booleanValue();
+			return Boolean.valueOf(prop);
 		} catch (MissingResourceException e) {
+			DBC.IGNORED_EXCEPTION(e);
 			return defaultValue;
 		}
 	}
@@ -890,7 +887,7 @@ implements Constants.Options
 		protected String name;
 
 		/** The current value(s) of the option. */
-		protected List value;
+		protected List<Object> value;
 
 		/** A textual description of the option. */
 		protected String description;
@@ -951,16 +948,16 @@ implements Constants.Options
 
 			@return A copy of the value of the name member.
 		*/
-		protected List getValue() {
-			return new ArrayList(value);
+		protected List<Object> getValue() {
+			return new ArrayList<Object>(value);
 		}
 
 		/** Setter for the value member.
 
 			@param newValue The list to copy into the value member.
 		*/
-		protected void setValue(List newValue) {
-			value = new ArrayList(newValue);
+		protected void setValue(List<Object> newValue) {
+			value = new ArrayList<Object>(newValue);
 		}
 
 		/** Accessor for the description member.
@@ -999,8 +996,8 @@ implements Constants.Options
 
 			@return	A descriptive {@link String}
 		*/
-		public String toString() {
-			StringBuffer desc = new StringBuffer(getClass().getName());
+		@Override public String toString() {
+			StringBuilder desc = new StringBuilder(getClass().getName());
 			desc.append(Constants.Character.LEFT_PAREN);
 			desc.append(name);
 			desc.append(Constants.Character.RIGHT_PAREN);
@@ -1032,7 +1029,7 @@ implements Constants.Options
 							)
 		{
 			super(argName, argDesc, isMandatory, false, isCaseSensitive);
-			value = new ArrayList(1);
+			value = new ArrayList<Object>(1);
 			if (aDefaultValue != null) {
 				value.add(aDefaultValue);
 			}
@@ -1047,7 +1044,7 @@ implements Constants.Options
 	*/
 	private static class Enum extends Option {
 		/** The allowed values. */
-		protected Map enumValues;
+		protected Map<String, String> enumValues;
 
 		/** Constructor that just initializes the member variables.
 
@@ -1067,11 +1064,11 @@ implements Constants.Options
 		protected Enum	(
 							String enumName,
 							String enumDesc,
-							Map enumVals,
+							Map<String, String> enumVals,
 							boolean isMandatory,
 							boolean isMultiValue,
 							boolean isCaseSensitive,
-							Set defaultValues
+							Set<String> defaultValues
 						)
 		{
 			super	(
@@ -1082,11 +1079,11 @@ implements Constants.Options
 						isCaseSensitive
 					);
 			if (defaultValues != null) {
-				value = new ArrayList(defaultValues);
+				value = new ArrayList<Object>(defaultValues);
 			} else {
-				value = new ArrayList();
+				value = new ArrayList<Object>();
 			}
-			enumValues = new HashMap(enumVals);
+			enumValues = new HashMap<String, String>(enumVals);
 		}
 
 		/** Accessor for the allowed values of this Enum.
@@ -1095,8 +1092,8 @@ implements Constants.Options
 					values for this Enum and the values are the descriptions of
 					what the values do.
 		*/
-		protected Map getEnumValues() {
-			return new TreeMap(enumValues);
+		protected Map<String, String> getEnumValues() {
+			return new TreeMap<String, String>(enumValues);
 		}
 	}
 
@@ -1121,7 +1118,7 @@ implements Constants.Options
 						)
 		{
 			super(switchName, switchDesc, false, false, false);
-			value = new ArrayList(1);
+			value = new ArrayList<Object>(1);
 			if (aDefaultValue) {
 				value.add(Boolean.TRUE);
 			} else {

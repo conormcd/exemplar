@@ -70,13 +70,5 @@
 		<module name="TypeName">
 			<property name="format" value="^([A-Z][a-z]*)+$" />
 		</module>
-
-		<!--
-			Coding
-		-->
-	 	<module name="MultipleStringLiterals">
-			<property name="allowedDuplicates" value="1" />
-			<property name="ignoreStringsRegexp" value='^"(|exclude|CDSect|CharRef|Comment|doctypedecl|PI|include|entities|input-type|input|output-api|output-language|output|vocabulary)"$' />
-		</module>
 	</module>
 </module>

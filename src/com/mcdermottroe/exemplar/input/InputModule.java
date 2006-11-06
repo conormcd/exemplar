@@ -78,5 +78,6 @@ public interface InputModule {
 		@return A {@link String} describing the language that the implementing
 				class parses.
 	*/
+	@Override
 	String toString();
 }

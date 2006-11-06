@@ -41,6 +41,7 @@ import com.mcdermottroe.exemplar.ui.Message;
 */
 public class XMLNotation
 extends XMLNamedObject
+implements XMLMarkupDeclaration
 {
 	/** The ExternalID or PublicID of the {@link XMLNotation}. */
 	private XMLExternalIdentifier extID;
@@ -80,7 +81,7 @@ extends XMLNamedObject
 	}
 
 	/** {@inheritDoc} */
-	public boolean equals(Object o) {
+	@Override public boolean equals(Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -99,7 +100,7 @@ extends XMLNamedObject
 	}
 
 	/** {@inheritDoc} */
-	public int hashCode() {
+	@Override public int hashCode() {
 		int hashCode = super.hashCode();
 
 		hashCode *= Constants.HASHCODE_MAGIC_NUMBER;
@@ -111,8 +112,8 @@ extends XMLNamedObject
 	}
 
 	/** {@inheritDoc} */
-	public String toString() {
-		StringBuffer desc = new StringBuffer();
+	@Override public String toString() {
+		StringBuilder desc = new StringBuilder();
 		desc.append(name);
 		desc.append(Constants.Character.COMMA);
 		desc.append(Constants.Character.SPACE);
@@ -124,6 +125,6 @@ extends XMLNamedObject
 		}
 		desc.append(Constants.Character.RIGHT_PAREN);
 
-		return toString(getClass().getName(), desc.toString());
+		return XMLObject.toStringHelper(getClass().getName(), desc.toString());
 	}
 }
