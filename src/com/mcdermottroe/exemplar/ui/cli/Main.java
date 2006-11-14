@@ -98,7 +98,6 @@ implements Constants.UI.CLI
 		try {
 			Message.localise();
 		} catch (MessageException e) {
-			Options.setUIFinished();
 			abort(ExitStatus.getExitCode(EXIT_FAIL_L10N), e);
 		}
 
@@ -107,16 +106,13 @@ implements Constants.UI.CLI
 			String helpOption = OPTION_PREFIX + HELP_OPTION_NAME;
 			String versionOption = OPTION_PREFIX + VERSION_OPTION_NAME;
 			if (args[i].equals(helpOption)) {
-				Options.setUIFinished();
 				cleanExit(usageMessage());
 			} else if (args[i].equals(versionOption)) {
-				Options.setUIFinished();
 				cleanExit(versionMessage());
 			} else if (args[i].startsWith(OPTION_PREFIX)) {
 				String argName = args[i].substring(OPTION_PREFIX.length());
 
 				if (!Options.isLegal(argName)) {
-					Options.setUIFinished();
 					abort(
 						ExitStatus.getExitCode(EXIT_FAIL_ARGS),
 						Message.OPTIONS_NO_SUCH_OPTION(args[i])
@@ -130,7 +126,6 @@ implements Constants.UI.CLI
 					i++;
 				}
 			} else {
-				Options.setUIFinished();
 				abort(
 						ExitStatus.getExitCode(EXIT_FAIL_ARGS),
 						Message.OPTIONS_NO_SUCH_OPTION(args[i])

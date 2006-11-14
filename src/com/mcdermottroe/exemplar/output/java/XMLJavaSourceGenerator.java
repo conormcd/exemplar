@@ -154,13 +154,21 @@ extends XMLParserSourceGenerator
 		String messageFormatTemplate = loadCodeFragment("JAVA_MAIN_TEMPLATE");
 		DBC.ASSERT(messageFormatTemplate != null);
 
+		// Figure out the package
+		String packageStatement = "";
+		String pkg = Options.getString("output-package");
+		if (pkg != null) {
+			packageStatement = "package " + pkg + ";";
+		}
+
 		// Make the contents of the output file
 		String outputFileContents = Utils.formatMessage(
 			messageFormatTemplate,
 			Constants.PROGRAM_NAME,
 			timestamp,
 			vocabulary,
-			Integer.toString(Constants.Output.Java.BUFFER_SIZE)
+			Integer.toString(Constants.Output.Java.BUFFER_SIZE),
+			packageStatement
 		);
 
 		// Write out the file
@@ -307,6 +315,13 @@ extends XMLParserSourceGenerator
 			emptyElementRule = loadCodeFragment("EMPTY_TAG_NO_ATTLIST");
 		}
 
+		// Figure out the package
+		String packageStatement = "";
+		String pkg = Options.getString("output-package");
+		if (pkg != null) {
+			packageStatement = "package " + pkg + ";";
+		}
+
 		// Make the contents of the output file
 		String outputFileContents = Utils.formatMessage(
 			messageFormatTemplate,
@@ -322,7 +337,8 @@ extends XMLParserSourceGenerator
 			predefinedEntities,
 			externalEntityRules,
 			charRefResolver,
-			intEntResolver
+			intEntResolver,
+			packageStatement
 		);
 		DBC.ASSERT(outputFileContents != null);
 

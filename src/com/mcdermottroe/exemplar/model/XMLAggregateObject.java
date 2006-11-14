@@ -103,8 +103,8 @@ implements Iterable<XMLObject>
 		addObject(elementRef);
 	}
 
-	/** Append another {@link com.mcdermottroe.exemplar.model.XMLAggregateObject} to
-		this one.
+	/** Append another {@link
+		com.mcdermottroe.exemplar.model.XMLAggregateObject} to this one.
 
 		@param	other	The other {@link
 						com.mcdermottroe.exemplar.model.XMLAggregateObject}.
