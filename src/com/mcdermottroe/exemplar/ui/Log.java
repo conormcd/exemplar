@@ -69,19 +69,19 @@ Log.warning("The foo subsystem is almost out of memory!");
 			</tr>
 			<tr>
 				<td>{@link Log#error(Object)}</td>
-				<td>{@link Level#SEVERE}</td>
+				<td>{@link java.util.logging.Level#SEVERE}</td>
 			</tr>
 			<tr>
 				<td>{@link Log#warning(Object)}</td>
-				<td>{@link Level#WARNING}</td>
+				<td>{@link java.util.logging.Level#WARNING}</td>
 			</tr>
 			<tr>
 				<td>{@link Log#info(Object)}</td>
-				<td>{@link Level#INFO}</td>
+				<td>{@link java.util.logging.Level#INFO}</td>
 			</tr>
 			<tr>
 				<td>{@link Log#debug(Object)}</td>
-				<td>{@link Level#FINE}</td>
+				<td>{@link java.util.logging.Level#FINE}</td>
 			</tr>
 		</table>
 	</p>

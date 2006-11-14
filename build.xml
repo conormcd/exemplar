@@ -39,83 +39,32 @@
 			Configuration targets
 	-->
 	<target	name="build-configure"
-			depends="resource-availability,task-definitions"
+			depends="task-definitions,set-up-classpaths,xmlcatalog"
 	/>
-	<target	name="resource-availability"
-			depends="task-availability,jar-availability"
-	/>
-	<target name="task-availability">
-		<available	classname="${cup-ant-task}"
-					property="${cup-ant-task}.present"
-		/>
-		<available	classname="${jflex-ant-task}"
-					property="${jflex-ant-task}.present"
-		/>
-		<condition property="tasks.available">
-			<and>
-				<isset property="${cup-ant-task}.present" />
-				<isset property="${jflex-ant-task}.present" />
-			</and>
-		</condition>
-	</target>
-	<target name="jar-availability" depends="whichjar-task">
-		<whichjar property="ant.jarfile" class="${ant-task-class}" />
-		<whichjar property="cup.jarfile" class="${cup-runtime-scanner-class}" />
-		<whichjar property="junit.jarfile" class="${junit-testcase-class}" />
-		<condition property="jars.available">
-			<and>
-				<isset property="ant.jarfile" />
-				<isset property="cup.jarfile" />
-				<isset property="junit.jarfile" />
-			</and>
-		</condition>
-	</target>
-	<target	name="task-definitions"
-			depends="task-availability"
-	>
+	<target	name="task-definitions" depends="set-up-classpaths">
 		<taskdef name="cup" classname="${cup-ant-task}" />
 		<taskdef name="jflex" classname="${jflex-ant-task}" />
 	</target>
-	<target name="set-up-classpaths" if="jars.available">
+	<target name="set-up-classpaths">
 		<path id="build-classpath">
 			<pathelement location="${classes}" />
-			<pathelement location="${ant.jarfile}" />
-			<pathelement location="${cup.jarfile}" />
-		</path>
-		<path id="test-classpath">
-			<pathelement location="${classes}" />
-			<pathelement location="${ant.jarfile}" />
-			<pathelement location="${cup.jarfile}" />
-			<pathelement location="${junit.jarfile}" />
-		</path>
-		<path id="tools-classpath">
-			<pathelement location="tools" />
+			<pathelement location="${ant-jar}" />
+			<pathelement location="${cup-jar}" />
+			<pathelement location="${junit-jar}" />
 		</path>
 		<path id="jar-classpath">
 			<pathelement location="${dist}/Exemplar.jar" />
 		</path>
 	</target>
-	<target name="whichjar-task" depends="tools-build,set-up-classpaths">
-		<typedef
-			name="whichjar"
-			classname="build.com.mcdermottroe.exemplar.tasks.WhichJar"
-			classpathref="tools-classpath"
-			adapter="org.apache.tools.ant.TaskAdapter"
-			adaptto="org.apache.tools.ant.Task"
-		/>
-	</target>
-	<target name="tools-build">
-		<javac
-				srcdir="tools/build"
-				debug="true"
-				debuglevel="lines,vars,source"
-				source="1.5"
-				target="1.5"
-		>
-			<compilerarg value="-Xlint:deprecation" />
-			<compilerarg value="-Xlint:unchecked" />
-			<compilerarg value="+Z0" compiler="jikes" />
-		</javac>
+	<target name="xmlcatalog">
+		<xmlcatalog id="globalcatalog">
+			<dtd	publicId="-//OASIS//DTD DocBook XML V4.2//EN"
+					location="dtds/docbook-xml-42/docbookx.dtd"
+			/>
+			<dtd	publicId="-//OASIS//DTD DocBook XML V4.4//EN"
+					location="dtds/docbook-xml-44/docbookx.dtd"
+			/>
+		</xmlcatalog>
 	</target>
 
 	<!--
@@ -128,19 +77,11 @@
 			<fileset dir="${res}" includes="com/**" />
 		</copy>
 	</target>
-	<target name="pre-build-parser" depends="pre-build" if="${parser-file}.present">
-		<uptodate
-					property="${parser-file}.isUpToDate"
-					srcfile="${parser-spec}"
-					targetfile="${src}/${namespace}/input/dtd/${parser-file}"
-		/>
-	</target>
 	<target name="build-lexer" depends="build-configure">
 		<jflex file="${lexer-spec}" skeleton="${lexer-skeleton}" />
 	</target>
 	<target	name="build-parser"
-			depends="build-configure,pre-build-parser,build-lexer"
-			unless="${parser-file}.isUpToDate"
+			depends="build-configure,build-lexer"
 	>
 		<cup	package="${package}.input.dtd"
 				srcfile="${src}/${namespace}/input/dtd/Parser.cup"
@@ -184,7 +125,7 @@
 	-->
 	<target name="pre-jar" depends="build-configure,clean-jar">
 		<mkdir dir="${dist}" />
-		<unjar src="${cup.jarfile}" dest="classes">
+		<unjar src="${cup-jar}" dest="classes">
 			<patternset>
 				<include name="java_cup/runtime/*" />
 			</patternset>
@@ -279,24 +220,9 @@
 			depends="test-junit,test-checkstyle"
 			description="Run all available tests on the codebase."
 	/>
-	<target name="test-build-tools" depends="jar,set-up-classpaths">
-		<javac
-				srcdir="tools/test"
-				classpathref="test-classpath"
-				destdir="${classes}"
-				debug="true"
-				debuglevel="lines,vars,source"
-				source="1.5"
-				target="1.5"
-		>
-			<compilerarg value="-Xlint:deprecation" />
-			<compilerarg value="-Xlint:unchecked" />
-			<compilerarg value="+Z0" compiler="jikes" />
-		</javac>
-	</target>
 	<target name="build-tests" depends="jar,set-up-classpaths">
 		<javac
-				classpathref="test-classpath"
+				classpathref="build-classpath"
 				destdir="${classes}"
 				debug="true"
 				debuglevel="lines,vars,source"
@@ -478,7 +404,7 @@
 		<mkdir dir="tests/junit/results" />
 		<junit>
 			<classpath>
-				<path refid="test-classpath" />
+				<path refid="build-classpath" />
 			</classpath>
 			<formatter type="xml" />
 			<batchtest todir="tests/junit/results">
@@ -495,29 +421,6 @@
 			<report format="frames" todir="tests/junit/results/html" />
 		</junitreport>
 	</target>
-	<target	name="test-permutations"
-			depends="test-build-tools"
-			description="Run the program with all permutations of options. Currently incomplete."
-	>
-		<exec executable="ant">
-			<arg line="-lib" />
-			<arg pathref="jar-classpath" />
-			<arg line="test-permutations-subant" />
-		</exec>
-	</target>		
-	<target name="test-permutations-subant">
-		<typedef
-			name="runallpermutations"
-			classname="test.com.mcdermottroe.exemplar.tasks.RunAllPermutations"
-			classpathref="test-classpath"
-			adapter="org.apache.tools.ant.TaskAdapter"
-			adaptto="org.apache.tools.ant.Task"
-		/>
-		<runallpermutations>
-			<argumenthint name="input" value="dtds/docbook-xml-44/docbookx.dtd" />
-			<argumenthint name="vocabulary" value="NonDefaultVocabulary" />
-		</runallpermutations>
-	</target>
 
 	<!--
 			Documentation targets
@@ -533,7 +436,7 @@
 		<javadoc
 			access="private"
 			author="no"
-			classpath="${junit.jarfile}:${cup.jarfile}:${ant.jarfile}"
+			classpathref="build-classpath"
 			destDir="${doc}/api"
 			linksource="yes"
 			source="1.5"
@@ -607,6 +510,8 @@
 				out="${doc}/manual/manpage/exemplar.1"
 		>
 			<xmlcatalog refid="globalcatalog" />
+			<param name="generate.index" expression="0" />
+			<param name="index.method" expression="kosek" />
 		</xslt>
 		<!--
 			Account for lame XSLT processors which don't accept the out
@@ -760,34 +665,19 @@
 		</delete>
 	</target>
 	<target	name="clean-tests"
-			depends="clean-tests-junit-results,clean-tests-permutations"
+			depends="clean-tests-junit-results"
 	/>
 	<target name="clean-tests-junit-results">
 		<delete includeEmptyDirs="true" quiet="true">
 			<fileset dir="tests/junit/results" />
 		</delete>
 	</target>
-	<target name="clean-tests-permutations">
-		<delete includeEmptyDirs="true" quiet="true">
-			<fileset dir="tests/permutations" />
-		</delete>
-	</target>
 
 	<!--
 			Miscellaneous targets
 	-->
-	<target name="xmlcatalog">
-		<xmlcatalog id="globalcatalog">
-			<dtd	publicId="-//OASIS//DTD DocBook XML V4.2//EN"
-					location="dtds/docbook-xml-42/docbookx.dtd"
-			/>
-			<dtd	publicId="-//OASIS//DTD DocBook XML V4.4//EN"
-					location="dtds/docbook-xml-44/docbookx.dtd"
-			/>
-		</xmlcatalog>
-	</target>
-	<target name="version">
-		<antcall target="jar" />
+	<target name="version" depends="version-get-version,clean" />
+	<target name="version-get-version" depends="jar">
 		<java	jar="${dist}/Exemplar.jar"
 				fork="true"
 				failonerror="true"
@@ -795,6 +685,8 @@
 		>
 			<arg value="--version" />
 		</java>
-		<antcall target="clean" />
+	</target>
+	<target name="version-display" depends="version">
+		<echo message="Version: ${version}" />
 	</target>
 </project>
