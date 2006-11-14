@@ -42,14 +42,25 @@
 			depends="task-definitions,set-up-classpaths,xmlcatalog"
 	/>
 	<target	name="task-definitions" depends="set-up-classpaths">
-		<taskdef name="cup" classname="${cup-ant-task}" />
-		<taskdef name="jflex" classname="${jflex-ant-task}" />
+		<typedef	name="cup"
+					classname="${cup-ant-task}"
+					adapter="org.apache.tools.ant.TaskAdapter"
+					adaptto="org.apache.tools.ant.Task"
+					classpathref="build-classpath"
+		/>			
+		<typedef	name="jflex"
+					classname="${jflex-ant-task}"
+					adapter="org.apache.tools.ant.TaskAdapter"
+					adaptto="org.apache.tools.ant.Task"
+					classpathref="build-classpath"
+		/>			
 	</target>
 	<target name="set-up-classpaths">
 		<path id="build-classpath">
-			<pathelement location="${classes}" />
 			<pathelement location="${ant-jar}" />
+			<pathelement location="${classes}" />
 			<pathelement location="${cup-jar}" />
+			<pathelement location="${jflex-jar}" />
 			<pathelement location="${junit-jar}" />
 		</path>
 		<path id="jar-classpath">
