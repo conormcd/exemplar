@@ -689,15 +689,22 @@
 	-->
 	<target name="version" depends="version-get-version,clean" />
 	<target name="version-get-version" depends="jar">
+		<tempfile property="version.temp.file" destDir="${basedir}" />
 		<java	jar="${dist}/Exemplar.jar"
 				fork="true"
 				failonerror="true"
-				outputproperty="version"
+				output="${version.temp.file}"
 		>
 			<arg value="--version" />
 		</java>
+		<loadfile srcfile="${version.temp.file}" property="version">
+			<filterchain>
+				<striplinebreaks />
+			</filterchain>
+		</loadfile>
+		<delete file="${version.temp.file}" />
 	</target>
 	<target name="version-display" depends="version">
-		<echo message="Version: ${version}" />
+		<echo message="Version: ---${version}---" />
 	</target>
 </project>
