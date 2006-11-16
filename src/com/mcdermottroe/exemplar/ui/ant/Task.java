@@ -256,6 +256,14 @@ implements Constants.UI.Ant
 		optionSetHelper(exclude);
 	}
 
+	/** Setter for the help attribute of the task.
+
+		@param	help	This is the string value of the help attribute.
+	*/
+	public static void setHelp(String help) {
+		optionSetHelper(help);
+	}
+
 	/** Setter for the include attribute of the task.
 
 		@param	include	This is the string value of the include attribute.
@@ -305,6 +313,23 @@ implements Constants.UI.Ant
 	*/
 	public static void setOutput_language(String outputLanguage) {
 		optionSetHelper(outputLanguage);
+	}
+
+	/** Setter for the output_package attribute of the task.
+
+		@param	outputPackage	This is the string value of the output_package
+								attribute.
+	*/
+	public static void setOutput_package(String outputPackage) {
+		optionSetHelper(outputPackage);
+	}
+
+	/** Setter for the version attribute of the task.
+
+		@param	version	This is the string value of the version attribute.
+	*/
+	public static void setVersion(String version) {
+		optionSetHelper(version);
 	}
 
 	/** Setter for the vocabulary attribute of the task.
