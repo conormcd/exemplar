@@ -59,7 +59,9 @@
 		<path id="build-classpath">
 			<pathelement location="${ant-jar}" />
 			<pathelement location="${classes}" />
+			<pathelement location="${checkstyle-jar}" />
 			<pathelement location="${cup-jar}" />
+			<pathelement location="${fop-jar}" />
 			<pathelement location="${jflex-jar}" />
 			<pathelement location="${junit-jar}" />
 		</path>
@@ -250,7 +252,9 @@
 			depends="set-up-classpaths,jar"
 			description="Check that the code conforms to the project style."
 	>
-		<taskdef resource="checkstyletask.properties" />
+		<taskdef	classpathref="build-classpath"
+					resource="checkstyletask.properties"
+		/>
 		<checkstyle
 			config="tests/checkstyle/common_config.xml"
 			classpathref="jar-classpath"
@@ -599,7 +603,12 @@
 			depends="xmlcatalog"
 			description="Create the PDF version of the developer's handbook."
 	>
-		<taskdef name="fop" classname="${fop-ant-task}" />
+		<typedef	name="fop"
+					classname="${fop-ant-task}"
+					adapter="org.apache.tools.ant.TaskAdapter"
+					adaptto="org.apache.tools.ant.Task"
+					classpathref="build-classpath"
+		/>			
 		<xslt	style="${docbook-xslfo-xsl}"
 				in="${doc}/src/handbook/handbook.xml"
 				out="${doc}/src/handbook/handbook.fo"
