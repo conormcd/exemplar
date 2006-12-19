@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -492,23 +493,15 @@ public final class Utils {
 		return join(String.valueOf(separator), collection);
 	}
 
-	/** Format a selection of {@link Object}s in the style of a C array, i.e.
-		"{a, b, c, d...}".
+	/** This is a shim to work around the fact that {@link
+		Arrays#deepToString(Object[])} wants an array of {@link Object}s rather
+		than a variadic list.
 
-		@param	objects	The {@link Object}s to format.
-		@return			A {@link String} in the form described above.
+		@param	objects	The {@link Object}s to format as a {@link String}.
+		@return			A {@link String} in the form described in {@link
+						Arrays#deepToString(Object[])}.
 	*/
-	public static String cArrayStyle(Object... objects) {
-		StringBuilder returnValue = new StringBuilder();
-		returnValue.append(Constants.Character.LEFT_CURLY);
-		for (int i = 0; i < objects.length; i++) {
-			if (i != 0) {
-				returnValue.append(Constants.Character.COMMA);
-				returnValue.append(Constants.Character.SPACE);
-			}
-			returnValue.append(objects[i]);
-		}
-		returnValue.append(Constants.Character.RIGHT_CURLY);
-		return returnValue.toString();
+	public static String deepToString(Object... objects) {
+		return Arrays.deepToString(objects);
 	}
 }

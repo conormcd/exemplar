@@ -356,7 +356,7 @@ public final class OutputUtils {
 			@return	A descriptive {@link String}.
 		*/
 		@Override public String toString() {
-			return Utils.cArrayStyle(language, api);
+			return Utils.deepToString(language, api);
 		}
 
 		/** Implement {@link Comparable} so that {@link LanguageAPIPair}

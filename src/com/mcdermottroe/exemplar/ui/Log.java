@@ -379,7 +379,7 @@ public final class Log {
 			@return A descriptive {@link String} representation of this object.
 		*/
 		@Override public String toString() {
-			return Utils.cArrayStyle(message, cause, level);
+			return Utils.deepToString(message, cause, level);
 		}
 	}
 }
