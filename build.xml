@@ -452,6 +452,7 @@
 			description="Generate all of the API documentation using Javadoc"
 	>
 		<javadoc
+			Overview="${src}/com/mcdermottroe/exemplar/overview.html"
 			access="private"
 			author="no"
 			classpathref="build-classpath"
