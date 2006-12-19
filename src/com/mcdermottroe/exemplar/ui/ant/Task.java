@@ -256,15 +256,6 @@ implements Constants.UI.Ant
 		optionSetHelper(exclude);
 	}
 
-	/** Setter for the extra_plugin_packages attribute of the task.
-
-		@param	extraPluginPackages	This is the string value of the
-									extra_plugin_package attribute.
-	*/
-	public static void setExtra_plugin_packages(String extraPluginPackages) {
-		optionSetHelper(extraPluginPackages);
-	}
-
 	/** Setter for the help attribute of the task.
 
 		@param	help	This is the string value of the help attribute.
