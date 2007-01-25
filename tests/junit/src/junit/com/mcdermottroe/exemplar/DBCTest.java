@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -43,16 +43,19 @@ public class DBCTest extends UtilityClassTestCase {
 		@see DBC#ASSERT(boolean)
 	*/
 	public void testAssertTrue() {
+		DBC._setThrowImmediately(true);
 		String testName = "Testing that ASSERT(true) works";
 		try {
 			DBC.ASSERT(true);
 		} catch (AssertionError e) {
 			fail(testName);
 			DBC._clearDelayedAssertation();
+			DBC._setThrowImmediately(false);
 			return;
 		}
 		assertTrue(testName, true);
 		DBC._clearDelayedAssertation();
+		DBC._setThrowImmediately(false);
 	}
 
 	/** Test that ASSERT(false) works correctly.
@@ -60,16 +63,19 @@ public class DBCTest extends UtilityClassTestCase {
 		@see DBC#ASSERT(boolean)
 	*/
 	public void testAssertFalse() {
+		DBC._setThrowImmediately(true);
 		String testName = "Testing that ASSERT(false) works";
 		try {
 			DBC.ASSERT(false);
 		} catch (AssertionError e) {
 			assertTrue(testName, true);
 			DBC._clearDelayedAssertation();
+			DBC._setThrowImmediately(false);
 			return;
 		}
 		fail(testName);
 		DBC._clearDelayedAssertation();
+		DBC._setThrowImmediately(false);
 	}
 
 	/** Test that the delayed assertion mechanism works as expected.
@@ -77,21 +83,18 @@ public class DBCTest extends UtilityClassTestCase {
 		@see DBC#ASSERT(boolean)
 	*/
 	public void testDelayedAssert() {
+		DBC._setThrowImmediately(false);
 		Options.set("debug", "false");
 		String testName = "Testing the delayed assertion mechanism.";
 		try {
 			DBC.ASSERT(false);
 		} catch (AssertionError e) {
-			if (Options.isDebugSet()) {
-				assertTrue(testName, true);
-				DBC._clearDelayedAssertation();
-			} else {
-				fail(testName);
-				DBC._clearDelayedAssertation();
-			}
+			fail(testName);
+			DBC._clearDelayedAssertation();
 			return;
 		}
 		Options.set("debug", "true");
+		DBC._setThrowImmediately(true);
 		try {
 			DBC.ASSERT(true);
 		} catch (AssertionError e) {
@@ -100,6 +103,7 @@ public class DBCTest extends UtilityClassTestCase {
 			return;
 		}
 		fail(testName);
+		DBC._setThrowImmediately(false);
 		DBC._clearDelayedAssertation();
 	}
 }

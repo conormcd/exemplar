@@ -3,7 +3,7 @@
 	vim:filetype=ant:ts=4
 -->
 <!--
-	Copyright (c) 2004, 2005, 2006
+	Copyright (c) 2004, 2005, 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -420,7 +420,11 @@
 			description="Run all of the JUnit tests."
 	>
 		<mkdir dir="tests/junit/results" />
-		<junit>
+		<junit	failureproperty="junit-failed"
+				fork="true"
+		>
+			<jvmarg value="-ea" />
+			<jvmarg value="-esa" />
 			<classpath>
 				<path refid="build-classpath" />
 			</classpath>
@@ -438,6 +442,7 @@
 			</fileset>
 			<report format="frames" todir="tests/junit/results/html" />
 		</junitreport>
+		<fail if="junit-failed" message="One or more JUnit tests failed" />
 	</target>
 
 	<!--

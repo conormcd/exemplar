@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2005, 2006
+	Copyright (c) 2005, 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -51,6 +51,12 @@ public final class DBC {
 	*/
 	private static AssertionError storedAssertion;
 
+	/** A flag to allow tests to force this class to throw assertions
+		immediately rather than cacheing them. This will imply that debugging
+		is turned on.
+	*/
+	private static boolean _throwImmediately = false;
+
 	/** Prevent this class from being externally instantiated. */
 	private DBC() {
 		UNREACHABLE_CODE();
@@ -85,7 +91,12 @@ public final class DBC {
 		//    until later.
 		// 3) Throw a previously deferred assertion.
 		// 4) Throw the current assertion.
-		boolean throwLater = !(Options.isInitialised() && Options.isDebugSet());
+		boolean throwLater;
+		if (_throwImmediately) {
+			throwLater = false;
+		} else {
+			throwLater = !(Options.isInitialised() && Options.isDebugSet());
+		}
 
 		// If there is already an assertion it is dealt with here rather than
 		// wasting time craeting a new one.
@@ -203,5 +214,15 @@ public final class DBC {
 	*/
 	public static void _clearDelayedAssertation() {
 		storedAssertion = null;
+	}
+
+	/** A method to allow tests to force this class to throw assertions
+		immediately rather than cacheing them. This will imply that debugging
+		is turned on.
+
+		@param	value	The value to set the flag to.
+	*/
+	public static void _setThrowImmediately(boolean value) {
+		_throwImmediately = value;
 	}
 }

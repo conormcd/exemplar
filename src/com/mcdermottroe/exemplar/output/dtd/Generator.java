@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -57,6 +57,7 @@ import com.mcdermottroe.exemplar.output.OutputException;
 import com.mcdermottroe.exemplar.output.OutputUtils;
 import com.mcdermottroe.exemplar.output.XMLParserGeneratorException;
 import com.mcdermottroe.exemplar.output.XMLParserSourceGenerator;
+import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.Options;
 
@@ -148,6 +149,7 @@ implements Constants.XMLExternalIdentifier
 			}
 
 			// Output the element declaration
+			Log.debug("Creating element declaration for " + elementName);
 			elementDecls.append(
 				Utils.formatMessage(
 					elementDecl,
@@ -226,6 +228,10 @@ implements Constants.XMLExternalIdentifier
 				}
 				declTail.append(Constants.EOL);
 
+				Log.debug(
+							"Creating attribute list declaration for " + 
+							elementName
+				);
 				elementDecls.append(
 					Utils.formatMessage(
 						attlistDecl,
@@ -283,6 +289,7 @@ implements Constants.XMLExternalIdentifier
 				}
 			}
 
+			Log.debug("Creating entity declaration for " + entityName);
 			entityDecls.append(
 				Utils.formatMessage(
 					entityDecl,
@@ -321,6 +328,7 @@ implements Constants.XMLExternalIdentifier
 			}
 			notationDeclTail.append(Constants.Character.DOUBLE_QUOTE);
 
+			Log.debug("Creating notation declaration for " + notationName);
 			notationDecls.append(
 				Utils.formatMessage(
 					notationDecl,
@@ -333,6 +341,7 @@ implements Constants.XMLExternalIdentifier
 
 		// Try to write out the code
 		try {
+			Log.debug("Writing built DTD to " + outputFile);
 			OutputUtils.writeStringToFile(
 				Utils.formatMessage(
 					dtdFile,

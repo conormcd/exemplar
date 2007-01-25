@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -33,11 +33,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
-import com.mcdermottroe.exemplar.Utils;
 
 /** A single point of entry for all logging within the program.
 
@@ -109,7 +109,7 @@ public final class Log {
 		initialised. Any messages logged before then are stored here for later
 		logging.
 	*/
-	private static List<DelayedLogMessage> delayedLogMessages = null;
+	private static List<LogRecord> delayedLogMessages = null;
 
 	/** To ensure that code called by the initialiser does not cause problems
 		we use this boolean to force all calls to {@link #doLog(Object,
@@ -142,7 +142,7 @@ public final class Log {
 
 		// The delayed log messages go here.
 		if (delayedLogMessages == null) {
-			delayedLogMessages = new ArrayList<DelayedLogMessage>();
+			delayedLogMessages = new ArrayList<LogRecord>();
 		}
 		classInitialised = true;
 	}
@@ -159,6 +159,32 @@ public final class Log {
 	*/
 	public static void registerHandler(Handler handler) {
 		LOGGER.addHandler(handler);
+	}
+
+	/** Get the current {@link LogLevel} of the underlying {@link Logger}.
+
+		@return	THe current {@link LogLevel}.
+	*/
+	public static LogLevel getLevel() {
+		int level = LOGGER.getLevel().intValue();
+
+		int severe = Level.SEVERE.intValue();
+		int warning = Level.WARNING.intValue();
+		int info = Level.INFO.intValue();
+
+		LogLevel returnValue = null;
+		if (level >= severe) {
+			returnValue = LogLevel.ERROR;
+		} else if (level == warning) {
+			returnValue = LogLevel.WARNING;
+		} else if (level == info) {
+			returnValue = LogLevel.INFO;
+		} else if (level < info) {
+			returnValue = LogLevel.DEBUG;
+		}
+
+		DBC.ENSURE(returnValue != null);
+		return returnValue;
 	}
 
 	/** Set the {@link LogLevel} of logging to something other than the default.
@@ -191,16 +217,12 @@ public final class Log {
 	*/
 	public static synchronized void flushDelayedMessages() {
 		if (Options.isInitialised()) {
-			List<DelayedLogMessage> dlm = new ArrayList<DelayedLogMessage>(
+			List<LogRecord> dlm = new ArrayList<LogRecord>(
 				delayedLogMessages
 			);
 			delayedLogMessages.clear();
-			for (DelayedLogMessage message : dlm) {
-				doLog(
-						message.getMessage(),
-						message.getCause(),
-						message.getLevel()
-				);
+			for (LogRecord message : dlm) {
+				doLog(message);
 			}
 		}
 	}
@@ -281,7 +303,7 @@ public final class Log {
 		doLog(message, cause, Level.FINE);
 	}
 
-	/** The actual work of logging is done here.
+	/** Convenient form for {@link #doLog(LogRecord)}.
 
 		@param	m	The message to log.
 		@param	t	If the message is being logged in response to an {@link
@@ -289,97 +311,82 @@ public final class Log {
 		@param 	l	The {@link Level} at which the message is to be logged.
 	*/
 	private static synchronized void doLog(Object m, Throwable t, Level l) {
-		if (classInitialised && Options.isInitialised()) {
+		String message = "";
+		if (m != null) {
+			message = m.toString();
+		}
+		LogRecord logRecord = new LogRecord(l, message);
+		if (t != null) {
+			logRecord.setThrown(t);
+		}
+		StackTraceElement callPoint = caller();
+		logRecord.setSourceClassName(callPoint.getClassName());
+		logRecord.setSourceMethodName(callPoint.getMethodName());
+		doLog(logRecord);
+	}
+
+	/** Actual work of logging is done here.
+
+		@param	logRecord	The {@link LogRecord} to log.
+	*/
+	private static synchronized void doLog(LogRecord logRecord) {
+		DBC.REQUIRE(logRecord != null);
+		if (logRecord == null) {
+			return;
+		}
+
+		// Make sure that none of the handlers are null, because the people
+		// who wrote java.util.logging.Logger don't check.
+		boolean hasHandlers = false;
+		Handler[] handlers = LOGGER.getHandlers();
+		for (int i = 0; i < handlers.length; i++) {
+			DBC.ASSERT(handlers[i] != null);
+			if (handlers[i] != null) {
+				hasHandlers = true;
+			}
+		}
+
+		if (classInitialised && hasHandlers && Options.isInitialised()) {
+			// Flush any delayed logs.
 			flushDelayedMessages();
 
-			// Hack to work around broken Java logging
-			Level level;
+			// Hack to make levels work, because for some reason, levels below
+			// INFO don't ever log out.
+			Level level = logRecord.getLevel();
 			if (Options.isDebugSet()) {
-				level = Level.SEVERE;
-			} else {
-				level = l;
+				if (Level.INFO.intValue() > level.intValue()) {
+					level = Level.SEVERE;
+				}
 			}
+			logRecord.setLevel(level);
 
-			if (LOGGER.isLoggable(level)) {
-				if (m != null) {
-					LOGGER.log(level, m.toString());
-				} else {
-					LOGGER.log(level, "");
-				}
-				if (t != null) {
-					if (Options.isDebugSet()) {
-						LOGGER.log(level, t.toString());
-					}
-				}
-			}
+			LOGGER.log(logRecord);
 		} else {
 			if (delayedLogMessages == null) {
-				delayedLogMessages = new ArrayList<DelayedLogMessage>();
+				delayedLogMessages = new ArrayList<LogRecord>();
 			}
-			delayedLogMessages.add(
-				new DelayedLogMessage(m, t, l)
-			);
+			delayedLogMessages.add(logRecord);
 		}
 	}
 
-	/** A wrapper for delayed log messages.
+	/** Find the method and class from where the "outer" method of this class
+		was called.
 
-		@author Conor McDermottroe
-		@since	0.2
+		@return	The name of the class from which the calling method has called
+				from.
 	*/
-	private static final class DelayedLogMessage {
-		/** The message portion of the delayed message. */
-		private Object message;
-
-		/** The {@link Exception} that caused the message to be logged. */
-		private Throwable cause;
-
-		/** The {@link Level} at which the message was logged. */
-		private Level level;
-
-		/** Simple constructor, initialises all fields.
-
-			@param	m	The message portion of the delayed message.
-			@param	c	The {@link Exception} that caused the message to be
-						logged.
-			@param	l	The {@link Level} at which the message was logged.
-		*/
-		private DelayedLogMessage(Object m, Throwable c, Level l) {
-			message = m;
-			cause = c;
-			level = l;
+	private static StackTraceElement caller() {
+		String thisClassName = Log.class.getName();
+		StackTraceElement[] trace = (new Exception()).getStackTrace();
+		StackTraceElement caller = null;
+		for (int i = 0; i < trace.length; i++) {
+			caller = trace[i];
+			String traceClassName = trace[i].getClassName();
+			if (!thisClassName.equals(traceClassName)) {
+				break;
+			}
 		}
-
-		/** Simple getter for {@link #message}.
-
-			@return The message portion of the delayed message.
-		*/
-		public Object getMessage() {
-			return message;
-		}
-
-		/** Simple getter for {@link #cause}.
-
-			@return The {@link Exception} that caused the message to be logged.
-		*/
-		public Throwable getCause() {
-			return cause;
-		}
-
-		/** Simple getter for {@link #level}.
-
-			@return The {@link Level} at which the message was logged.
-		*/
-		public Level getLevel() {
-			return level;
-		}
-
-		/** Implementation of {@link Object#toString()} for debugging.
-
-			@return A descriptive {@link String} representation of this object.
-		*/
-		@Override public String toString() {
-			return Utils.deepToString(message, cause, level);
-		}
+		DBC.ENSURE(caller != null);
+		return caller;
 	}
 }

@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2003-2006
+	Copyright (c) 2003-2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -40,6 +40,7 @@ import java.util.logging.LogRecord;
 
 import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
+import com.mcdermottroe.exemplar.Exception;
 import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.input.InputException;
 import com.mcdermottroe.exemplar.input.InputUtils;
@@ -60,6 +61,9 @@ import com.mcdermottroe.exemplar.ui.Options;
 public final class Main
 implements Constants.UI.CLI
 {
+	/** The time that {@link #main(String[])} was called. */
+	private static long startTime;
+
 	/** Private constructor to prevent instantiation of this class. */
 	private Main() {
 		DBC.UNREACHABLE_CODE();
@@ -70,43 +74,47 @@ implements Constants.UI.CLI
 		@param	args	The arguments passed to the program
 	*/
 	public static void main(String[] args) {
+		// Record the start time, so we can report on how long the entire
+		// process took.
+		startTime = System.currentTimeMillis();
+
 		// Make a log handler to handle error and status output
 		Handler consoleHandler = new ConsoleHandler();
-		consoleHandler.setFormatter(
-			new Formatter() {
-				@Override public String format(LogRecord record) {
-					String message = record.getMessage();
-					if (message == null) {
-						return "";
-					}
-
-					if (message.matches(Constants.Regex.TRAILING_WHITESPACE)) {
-						return message.replaceAll(
-							Constants.Regex.TRAILING_WHITESPACE,
-							Constants.EOL
-						);
-					}
-					return message + Constants.EOL;
-				}
-			}
-		);
+		consoleHandler.setFormatter(new ConsoleFormatter());
 		Log.registerHandler(consoleHandler);
 		// CLI apps should be quiet unless something goes wrong.
 		Log.setLevel(Log.LogLevel.WARNING);
 
+		// Print a copyright header
+		Log.info(
+			Constants.PROGRAM_NAME +
+			Constants.Character.SPACE +
+			Constants.PROGRAM_VERSION
+		);
+		for (String copyrightLine : Constants.COPYRIGHT_MESSAGE) {
+			Log.info(copyrightLine);
+		}
+		Log.info("");
+
 		// Localise the program if possible
 		try {
+			Log.debug("Loading messages");
 			Message.localise();
+			Log.debug("Messages loaded");
 		} catch (MessageException e) {
 			abort(ExitStatus.getExitCode(EXIT_FAIL_L10N), e);
 		}
 
 		// Process the arguments
+		Log.debug("Processing arguments");
 		for (int i = 0; i < args.length; i++) {
 			String helpOption = OPTION_PREFIX + HELP_OPTION_NAME;
+			String verboseOption = OPTION_PREFIX + VERBOSE_OPTION_NAME;
 			String versionOption = OPTION_PREFIX + VERSION_OPTION_NAME;
 			if (args[i].equals(helpOption)) {
 				cleanExit(usageMessage());
+			} else if (args[i].equals(verboseOption)) {
+				Log.setLevel(Log.LogLevel.INFO);
 			} else if (args[i].equals(versionOption)) {
 				cleanExit(versionMessage());
 			} else if (args[i].startsWith(OPTION_PREFIX)) {
@@ -132,6 +140,7 @@ implements Constants.UI.CLI
 				);
 			}
 		}
+		Log.debug("Arguments processed");
 		Options.setUIFinished();
 
 		// Make sure that all of the mandatory options were set.
@@ -146,7 +155,9 @@ implements Constants.UI.CLI
 		XMLDocumentType doctype = null;
 
 		// Parse the input
+		Log.debug("Begin parse phase");
 		try {
+			Log.info("Parsing " + Options.getString("input") + "...");
 			doctype =	InputUtils.parse(
 							Options.getString("input"),
 							Options.getString("input-type")
@@ -156,9 +167,16 @@ implements Constants.UI.CLI
 		} catch (ParserException e) {
 			abort(ExitStatus.getExitCode(EXIT_FAIL_INPUT), e);
 		}
+		Log.debug("End parse phase");
 
 		// Create the output
+		Log.debug("Begin generate phase");
 		try {
+			Log.info(
+				"Generating output for " +
+				Options.getString("vocabulary") +
+				"..."
+			);
 			OutputUtils.generateParser(
 				doctype,
 				Options.getString("output"),
@@ -168,6 +186,7 @@ implements Constants.UI.CLI
 		} catch (OutputException e) {
 			abort(ExitStatus.getExitCode(EXIT_FAIL_CODE_GEN), e);
 		}
+		Log.debug("End generate phase");
 
 		// Indicate success
 		cleanExit(null);
@@ -178,8 +197,7 @@ implements Constants.UI.CLI
 		@return	The version of the program, unadorned.
 	*/
 	private static String versionMessage() {
-		return	Constants.PROGRAM_VERSION +
-				Constants.EOL;
+		return	Constants.PROGRAM_VERSION;
 	}
 
 	/** Format a usage message.
@@ -476,11 +494,22 @@ implements Constants.UI.CLI
 						is sent.
 	*/
 	private static void cleanExit(Object message) {
-		Options.setUIFinished();
+		if (!Options.isInitialised()) {
+			Options.setUIFinished();
+		}
 		if (message != null) {
+			Log.LogLevel oldLevel = Log.getLevel();
 			Log.setLevel(Log.LogLevel.INFO);
 			Log.info(message);
+			Log.setLevel(oldLevel);
 		}
+		Log.debug("Exiting successfully");
+		Log.info("");
+		Log.info(
+					"Finished in " + 
+					((System.currentTimeMillis() - startTime) / 1000.0) + 
+					" seconds"
+		);
 		System.exit(ExitStatus.getExitCode(EXIT_SUCCESS));
 	}
 
@@ -490,10 +519,67 @@ implements Constants.UI.CLI
 		@param	message	An optional message to log (only logged if non-null).
 	*/
 	private static void abort(int code, Object message) {
-		Options.setUIFinished();
+		if (!Options.isInitialised()) {
+			Options.setUIFinished();
+		}
 		if (message != null) {
 			Log.error(message);
 		}
+		Log.debug("Aborting, code " + code);
+		Log.info("");
+		Log.info(
+					"Finished in " + 
+					((System.currentTimeMillis() - startTime) / 1000.0) + 
+					" seconds"
+		);
 		System.exit(code);
+	}
+
+	/** A {@link Formatter} for messages which are output to the console. 
+
+		@author Conor McDermottroe
+		@since	0.2
+	*/
+	private static class ConsoleFormatter
+	extends Formatter
+	{
+		/** Format a log record so that it can be sent to the console.
+
+			@param	record	The {@link LogRecord} to format for the console.
+			@return			A {@link String} suitable for the console.
+		*/
+		@Override public String format(LogRecord record) {
+			String message = record.getMessage();
+			if (message == null) {
+				return "";
+			}
+
+			if (Options.isDebugSet()) {
+				message =	Message.DEBUG_CLASS_AND_METHOD(
+								record.getSourceClassName(),
+								record.getSourceMethodName()
+							) +
+							Constants.Character.SPACE +
+							message;
+			}
+
+			Throwable cause = record.getThrown();
+			if (cause != null) {
+				message += "\n\tException: ";
+				if (cause instanceof Exception) {
+					message += ((Exception)cause).toString();
+				} else {
+					message += cause;
+				}
+			}
+
+			if (message.matches(Constants.Regex.TRAILING_WHITESPACE)) {
+				return message.replaceAll(
+					Constants.Regex.TRAILING_WHITESPACE,
+					Constants.EOL
+				);
+			}
+			return message + Constants.EOL;
+		}
 	}
 }

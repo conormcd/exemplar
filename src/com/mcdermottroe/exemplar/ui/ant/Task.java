@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2005, 2006
+	Copyright (c) 2005, 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -82,7 +82,14 @@ implements Constants.UI.Ant
 				@Override public void close() {}
 				@Override public void flush() {}
 				@Override public void publish(LogRecord record) {
-					log(record.getMessage());
+					DBC.REQUIRE(record != null);
+					if (record != null) {
+						String message = record.getMessage();
+						DBC.ASSERT(message != null);
+						if (message != null) {
+							log(message);
+						}
+					}
 				}
 			}
 		);
@@ -322,6 +329,15 @@ implements Constants.UI.Ant
 	*/
 	public static void setOutput_package(String outputPackage) {
 		optionSetHelper(outputPackage);
+	}
+
+	/** Setter for the verbose attribute of the task. This is actually a no-op
+		as the task is always verbose.
+
+		@param	verbose	Whether or not this {@link Task} should be verbose.
+	*/
+	public static void setVerbose(String verbose) {
+		optionSetHelper(verbose);
 	}
 
 	/** Setter for the version attribute of the task.

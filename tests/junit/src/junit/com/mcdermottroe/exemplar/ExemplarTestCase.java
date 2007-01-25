@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -78,7 +78,6 @@ public abstract class ExemplarTestCase extends TestCase {
 
 		Message.localise();
 		Options.set("debug", "true");
-		Options.setUIFinished();
 	}
 
 	/** When this method is inherited by every test it will make sure that all 

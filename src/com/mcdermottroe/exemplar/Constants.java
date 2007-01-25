@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2005, 2006
+	Copyright (c) 2005, 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -450,6 +450,11 @@ public interface Constants {
 
 			/** The name of the option which produces the usage message. */
 			String HELP_OPTION_NAME = "help";
+
+			/** The name of the option which causes the program to be more
+				verbose.
+			*/
+			String VERBOSE_OPTION_NAME = "verbose";
 
 			/** The name of the option which produces the version message. */
 			String VERSION_OPTION_NAME = "version";

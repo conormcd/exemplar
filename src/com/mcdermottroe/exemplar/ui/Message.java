@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2004, 2005, 2006
+	Copyright (c) 2004, 2005, 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -194,6 +194,11 @@ public final class Message {
 	private static String ASSERTION_MESSAGE_MESSAGE_FORMAT = Constants.DEFAULT_MESSAGE;
 
 	/** {@link java.text.MessageFormat} string for {@link
+		#DEBUG_CLASS_AND_METHOD(String, String)}.
+	*/
+	private static String DEBUG_CLASS_AND_METHOD_MESSAGE_FORMAT = Constants.DEFAULT_MESSAGE;
+
+	/** {@link java.text.MessageFormat} string for {@link
 		#DTDLEXER_INPUT_NOT_FOUND(String)}.
 	*/
 	private static String DTDLEXER_INPUT_NOT_FOUND_MESSAGE_FORMAT = Constants.DEFAULT_MESSAGE;
@@ -350,6 +355,26 @@ public final class Message {
 			ASSERTION_MESSAGE_MESSAGE_FORMAT,
 			reason,
 			caller
+		);
+	}
+
+	/** A class and method name formatted for debugging.
+
+		@param	className	The name of the class.
+		@param	methodName	The name of the method.
+		@return				A debug message formatted by {@link
+							#DEBUG_CLASS_AND_METHOD_MESSAGE_FORMAT}.
+	*/
+	public static String DEBUG_CLASS_AND_METHOD(String className, String methodName) {
+		DBC.REQUIRE(className != null);
+		DBC.REQUIRE(methodName != null);
+		if (className == null || methodName == null) {
+			return null;
+		}
+		return Utils.formatMessage(
+			DEBUG_CLASS_AND_METHOD_MESSAGE_FORMAT,
+			className,
+			methodName
 		);
 	}
 

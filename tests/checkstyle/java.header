@@ -1,6 +1,6 @@
 ^// (vim):filetype=java:ts=4$
 ^/\*$
-^\tCopyright \(c\)\s+((\d{4}-|(\d{4}, )+)?200[3-6])$
+^\tCopyright \(c\)\s+((\d{4}-|(\d{4}, )+)?200[3-7])$
 ^\tConor McDermottroe\.  All rights reserved\.$
 ^$
 ^\tRedistribution and use in source and binary forms, with or without$

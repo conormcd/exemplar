@@ -102,6 +102,7 @@ implements Constants.Options
 		if (options != null && !options.isEmpty()) {
 			return;
 		}
+		Log.debug("Initialising options");
 
 		// The store for the options stash
 		Map<String, Option> initOptions = new HashMap<String, Option>();
@@ -356,6 +357,7 @@ implements Constants.Options
 
 			DBC.ASSERT(newOption != null);
 			if (newOption != null) {
+				Log.debug("Defined option " + optionName);
 				initOptions.put(optionName, newOption);
 			}
 		}
@@ -370,6 +372,7 @@ implements Constants.Options
 		setting all the options that it's going to set.
 	*/
 	public static void setUIFinished() {
+		Log.debug("UI has finished initialising options");
 		uiFinished = true;
 
 		// Set the special debug flag.
@@ -448,6 +451,10 @@ implements Constants.Options
 	public static void set(String optionName, String optionValue) {
 		// Ensure that the options stash is created
 		init();
+		Log.debug(
+					"Attempting to set " + optionName + " option to " + 
+					optionValue
+		);
 
 		// Make sure that the option being set is an allowed one
 		if (isLegal(optionName)) {

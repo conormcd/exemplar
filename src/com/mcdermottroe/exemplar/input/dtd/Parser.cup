@@ -1,6 +1,6 @@
 // vim:filetype=javacup:ts=4
 /*
-	Copyright (c) 2003-2006
+	Copyright (c) 2003-2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -32,8 +32,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import java_cup.runtime.ComplexSymbolFactory;
 import java_cup.runtime.Symbol;
@@ -56,10 +58,15 @@ import com.mcdermottroe.exemplar.model.XMLMixedContent;
 import com.mcdermottroe.exemplar.model.XMLNotation;
 import com.mcdermottroe.exemplar.model.XMLObject;
 import com.mcdermottroe.exemplar.model.XMLSequence;
+import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.Options;
 
 parser code {:
+	/** A {@link Map} for quick and easy entity resolution.
+	*/
+	private static Map<String, XMLEntity> entityMap;
+
 	/** Implementation of {@link InputModule#parse(String)}.
 
 		@param dtdFile			The path to the file to parse from.
@@ -130,6 +137,9 @@ parser code {:
 		DBC.REQUIRE(input != null);
 		DBC.REQUIRE(baseDir != null);
 
+		// Create the entity map
+		entityMap = new HashMap<String, XMLEntity>();
+
 		// Set the symbol factory
 		symbolFactory = new ComplexSymbolFactory();
 
@@ -143,6 +153,37 @@ parser code {:
 			return (XMLDocumentType)((Symbol)parse()).value;
 		} catch (Exception e) {
 			throw new ParserException(Message.DTDPARSER_THREW_EXCEPTION, e);
+		}
+	}
+
+	/** Register an entity reference for use in later resolution.
+
+		@param	entity	The entity to remember.
+	*/
+	public static void rememberEntity(XMLEntity entity) {
+		entityMap.put(entity.getName(), entity);
+	}
+
+	/** Resolve an entity reference.
+
+		@param	entityRef		The reference to an entity to resolve.
+		@return					The value of the entity if it is an internal
+								entity, throws an exception otherwise.
+		@throws	ParserException	If the entity is external or could not be
+								found.
+	*/
+	public static String resolveEntityRef(String entityRef)
+	throws ParserException
+	{
+		if (entityMap.containsKey(entityRef)) {
+			XMLEntity entity = entityMap.get(entityRef);
+			if (entity.isInternal()) {
+				return entity.value();
+			} else {
+				throw new ParserException("\"" + entityRef + "\" is not an internal entity");
+			}
+		} else {
+			throw new ParserException("Failed to find entity referred to by \"" + entityRef + "\"");
 		}
 	}
 
@@ -295,6 +336,7 @@ AttDef							::= s Name:name s AttType:attribute s DefaultDecl:defaultDecl
 											attribute.setName(name);
 											attribute.setDefaultDecl(defaultDecl);
 											RESULT = attribute;
+											Log.debug("Parsed an attribute: " + RESULT);
 										:};
 // AttDef*
 AttDef_STAR						::= /* ε */
@@ -1543,11 +1585,14 @@ elementdecl						::= ELEMENT_HEAD s Name:name s contentspec:contents GT_PRECEDED
 										{:
 											RESULT = contents;
 											RESULT.setName(name);
+											Log.debug("Parsed an element: " + RESULT);
 										:};
 // Page 35
 EntityDecl						::= GEDecl:gedecl
 										{:
 											RESULT = gedecl;
+											Log.debug("Parsed an entity: " + RESULT);
+											Parser.rememberEntity(RESULT);
 										:};
 // Page 35
 EntityDef						::= EntityValue:value
@@ -1565,8 +1610,7 @@ EntityDef						::= EntityValue:value
 // Page 33
 EntityRef						::= AMP Name:name SEMI
 										{:
-											// XXX TODO: BUG XXX
-											RESULT = "entityLookup(" + name + ")";
+											RESULT = name;
 										:};
 // Page 9
 EntityValue						::= QUOT EntityValue_QUOT_STRING:value QUOT
@@ -2414,10 +2458,12 @@ Nmtoken							::= NameChar_STAR:a NameChar:b
 NotationDecl					::= NOTATION_HEAD s Name:name s ExternalID:extID GT_PRECEDED_BY_OPT_S
 										{:
 											RESULT = new XMLNotation(name, extID);
+											Log.debug("Parsed a notation: " + RESULT);
 										:} |
 									NOTATION_HEAD s Name:name s PublicID:pubID GT_PRECEDED_BY_OPT_S
 										{:
 											RESULT = new XMLNotation(name, new XMLExternalIdentifier(pubID, null));
+											Log.debug("Parsed a notation: " + RESULT);
 										:};
 // Page 27
 NotationType					::= NOTATION s LPAREN_FOLLOWED_BY_OPT_S Name:name RPAREN_PRECEDED_BY_OPT_S
@@ -2502,9 +2548,9 @@ PublicID						::= PUBLIC s PubidLiteral:value
 											RESULT = value;
 										:};
 // Page 33
-Reference						::= EntityRef:entityRefObject
+Reference						::= EntityRef:entityRefName
 										{:
-											RESULT = entityRefObject;
+											RESULT = Parser.resolveEntityRef(entityRefName);
 										:} |
 									CHARREF:value
 										{:
