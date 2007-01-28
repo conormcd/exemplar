@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -29,12 +29,26 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
-import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
+import java.util.ArrayList;
 
-/** Test class for {@link com.mcdermottroe.exemplar.model.XMLElementReference}.
+import com.mcdermottroe.exemplar.model.XMLElementReference;
+
+import junit.com.mcdermottroe.exemplar.model.XMLNamedObjectTestCase;
+
+/** Test class for {@link XMLElementReference}.
 
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class XMLElementReferenceTest extends NormalClassTestCase {
+public class XMLElementReferenceTest extends XMLNamedObjectTestCase {
+	/** {@inheritDoc} */
+	@Override public void setUp() throws Exception {
+		super.setUp();
+
+		sampleObjects = new ArrayList<Object>();
+
+		sampleObjects.add(new XMLElementReference());
+		sampleObjects.add(new XMLElementReference("foo"));
+		sampleObjects.add(new XMLElementReference("bar"));
+	}
 }

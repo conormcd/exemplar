@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2004, 2005, 2006
+	Copyright (c) 2004, 2005, 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -149,6 +149,12 @@ implements XMLMarkupDeclaration
 	@Override public String toString() {
 		StringBuilder desc = new StringBuilder();
 		desc.append(name);
+		desc.append(Constants.Character.COMMA);
+		desc.append(Constants.Character.SPACE);
+		desc.append(contentType);
+		desc.append(Constants.Character.COMMA);
+		desc.append(Constants.Character.SPACE);
+		desc.append(contentSpec);
 		if (attlist != null) {
 			desc.append(Constants.Character.COMMA);
 			desc.append(Constants.Character.SPACE);

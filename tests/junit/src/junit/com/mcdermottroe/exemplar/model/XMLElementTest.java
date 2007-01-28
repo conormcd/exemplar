@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -29,12 +29,32 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
-import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
+import java.util.ArrayList;
 
-/** Test class for {@link com.mcdermottroe.exemplar.model.XMLElement}.
+import com.mcdermottroe.exemplar.model.XMLElement;
+import com.mcdermottroe.exemplar.model.XMLMixedContent;
+import com.mcdermottroe.exemplar.model.XMLSequence;
+
+import junit.com.mcdermottroe.exemplar.model.XMLNamedObjectTestCase;
+
+/** Test class for {@link XMLElement}.
 
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class XMLElementTest extends NormalClassTestCase {
+public class XMLElementTest extends XMLNamedObjectTestCase {
+	/** {@inheritDoc} */
+	@Override public void setUp() throws Exception {
+		super.setUp();
+
+		sampleObjects = new ArrayList<Object>();
+
+		sampleObjects.add(new XMLElement());
+		sampleObjects.add(new XMLElement(XMLElement.ContentType.EMPTY));
+		sampleObjects.add(new XMLElement(XMLElement.ContentType.ANY));
+		sampleObjects.add(new XMLElement(XMLElement.ContentType.MIXED));
+		sampleObjects.add(new XMLElement(XMLElement.ContentType.CHILDREN));
+		sampleObjects.add(new XMLElement(new XMLMixedContent()));
+		sampleObjects.add(new XMLElement(new XMLSequence()));
+	}
 }

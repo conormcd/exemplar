@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -29,13 +29,31 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
+import java.util.ArrayList;
+
+import com.mcdermottroe.exemplar.model.XMLExternalIdentifier;
+
 import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
 
-/** Test class for {@link
-	com.mcdermottroe.exemplar.model.XMLExternalIdentifier}.
+/** Test class for {@link XMLExternalIdentifier}.
 
 	@author	Conor McDermottroe
 	@since	0.1
 */
 public class XMLExternalIdentifierTest extends NormalClassTestCase {
+	/** {@inheritDoc} */
+	@Override public void setUp() throws Exception {
+		super.setUp();
+
+		sampleObjects = new ArrayList<Object>();
+
+		sampleObjects.add(new XMLExternalIdentifier());
+		sampleObjects.add(new XMLExternalIdentifier());
+		sampleObjects.add(new XMLExternalIdentifier("foo", null));
+		sampleObjects.add(new XMLExternalIdentifier("foo", null));
+		sampleObjects.add(new XMLExternalIdentifier(null, "bar"));
+		sampleObjects.add(new XMLExternalIdentifier(null, "bar"));
+		sampleObjects.add(new XMLExternalIdentifier("baz", "quux"));
+		sampleObjects.add(new XMLExternalIdentifier("baz", "quux"));
+	}
 }

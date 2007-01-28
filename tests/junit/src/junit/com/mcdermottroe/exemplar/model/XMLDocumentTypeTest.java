@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -29,12 +29,61 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.mcdermottroe.exemplar.model.XMLAttributeList;
+import com.mcdermottroe.exemplar.model.XMLDocumentType;
+import com.mcdermottroe.exemplar.model.XMLElement;
+import com.mcdermottroe.exemplar.model.XMLEntity;
+import com.mcdermottroe.exemplar.model.XMLMarkupDeclaration;
+import com.mcdermottroe.exemplar.model.XMLNotation;
+import com.mcdermottroe.exemplar.utils.PowerSet;
+
 import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
 
-/** Test class for {@link com.mcdermottroe.exemplar.model.XMLDocumentType}.
+/** Test class for {@link XMLDocumentType}.
 
 	@author	Conor McDermottroe
 	@since	0.1
 */
 public class XMLDocumentTypeTest extends NormalClassTestCase {
+	/** {@inheritDoc} */
+	@Override public void setUp() throws Exception {
+		super.setUp();
+
+		sampleObjects = new ArrayList<Object>();
+
+		// Create some sample XMLMarkupDeclaration objects
+		XMLAttributeList attlist = new XMLAttributeList();
+		attlist.setName("testElement");
+		XMLElement element = new XMLElement();
+		element.setName("testElement");
+		XMLEntity entity = new XMLEntity();
+		entity.setName("testEntity");
+		XMLNotation notation = new XMLNotation();
+		notation.setName("testNotation");
+
+		Set<XMLMarkupDeclaration> sampleMarkup;
+		sampleMarkup = new HashSet<XMLMarkupDeclaration>();
+		sampleMarkup.add(attlist);
+		sampleMarkup.add(element);
+		sampleMarkup.add(entity);
+		sampleMarkup.add(notation);
+
+		// No arg constructor.
+		sampleObjects.add(new XMLDocumentType());
+
+		// XMLDocumentType(Collection) constructor
+		PowerSet<XMLMarkupDeclaration> perm;
+		perm = new PowerSet<XMLMarkupDeclaration>(sampleMarkup);
+		for (Set<XMLMarkupDeclaration> m : perm) {
+			XMLDocumentType doctype;
+			if (!(m.contains(attlist) && !m.contains(element))) {
+				doctype = new XMLDocumentType(m);
+				sampleObjects.add(doctype);
+			}
+		}
+	}
 }

@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2004, 2005, 2006
+	Copyright (c) 2004, 2005, 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -30,10 +30,12 @@
 package com.mcdermottroe.exemplar.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.ui.Message;
@@ -100,16 +102,16 @@ public class XMLDocumentType {
 		calculateFeatures();
 	}
 
-	/** Make an {@link XMLDocumentType} out of a {@link List} of markup
+	/** Make an {@link XMLDocumentType} out of a {@link Collection} of markup
 		declarations.
 
-		@param	markup						A {@link List} of markup
+		@param	markup						A {@link Collection} of markup
 											declarations.
 		@throws	XMLDocumentTypeException	if any of the initialising methods
 											called from here throw an {@link
 											XMLDocumentTypeException}.
 	*/
-	public XMLDocumentType(List<XMLMarkupDeclaration> markup)
+	public XMLDocumentType(Collection<XMLMarkupDeclaration> markup)
 	throws XMLDocumentTypeException
 	{
 		DBC.REQUIRE(markup != null);
@@ -376,6 +378,11 @@ public class XMLDocumentType {
 		@return	A descriptive {@link String}.
 	*/
 	@Override public String toString() {
-		return getClass().getName();
+		StringBuilder description = new StringBuilder();
+		description.append(getClass().getName());
+		description.append(Constants.Character.LEFT_PAREN);
+		description.append(hashCode());
+		description.append(Constants.Character.RIGHT_PAREN);
+		return description.toString();
 	}
 }

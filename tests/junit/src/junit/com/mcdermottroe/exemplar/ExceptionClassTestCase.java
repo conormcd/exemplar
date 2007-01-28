@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -31,6 +31,7 @@ package junit.com.mcdermottroe.exemplar;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import com.mcdermottroe.exemplar.Exception;
 
@@ -207,5 +208,17 @@ public abstract class ExceptionClassTestCase extends ExemplarTestCase {
 		}
 
 		assertNotNull("The (String, Throwable) constructor works.", o);
+	}
+
+	/** Test that there are no extra methods declared. All methods in exception
+		classes should be declared in {@link Exception}.
+	*/
+	public void testNoMethods() {
+		if (testedClass == null) {
+			return;
+		}
+
+		Method[] methods = testedClass.getDeclaredMethods();
+		assertEquals("No methods for this exception", methods.length, 0);
 	}
 }

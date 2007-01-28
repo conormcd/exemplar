@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -34,14 +34,14 @@ import java.util.ArrayList;
 import com.mcdermottroe.exemplar.model.XMLExternalIdentifier;
 import com.mcdermottroe.exemplar.model.XMLNotation;
 
-import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
+import junit.com.mcdermottroe.exemplar.model.XMLNamedObjectTestCase;
 
 /** Test class for {@link XMLNotation}.
 
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class XMLNotationTest extends NormalClassTestCase {
+public class XMLNotationTest extends XMLNamedObjectTestCase {
 	/** {@inheritDoc} */
 	@Override public void setUp() throws Exception {
 		super.setUp();

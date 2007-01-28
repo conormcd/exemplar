@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006, 2007
+	Copyright (c) 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -27,33 +27,60 @@
 	NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package com.mcdermottroe.exemplar.model;
+package junit.com.mcdermottroe.exemplar.model;
 
-/** In many places XML elements are referred to by name, but only a placeholder
-	is needed as the actual {@link XMLElement} object is created later.
+import java.util.ArrayList;
+import java.util.List;
+
+import com.mcdermottroe.exemplar.model.XMLNamedObject;
+
+import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
+
+/** Parent class to all subclasses of {@link XMLNamedObject}.
 
 	@author	Conor McDermottroe
-	@since	0.1
+	@since	0.2
 */
-public class XMLElementReference
-extends XMLNamedObject
-{
-	/** A no-arg constructor to aid in testing. */
-	public XMLElementReference() {
-		super();
-	}
-
-	/** Create a reference to an element or seqence of elements.
-
-		@param	elementName			The name of the element to refer to.
-	*/
-	public XMLElementReference(String elementName) {
-		super();
-		setName(elementName);
-	}
-
+public abstract class XMLNamedObjectTestCase extends NormalClassTestCase {
 	/** {@inheritDoc} */
-	@Override public String toString() {
-		return XMLObject.toStringHelper(getClass().getName(), name);
+	@Override public void setUp() throws Exception {
+		super.setUp();
+	}
+
+	/** Test that it is possible to both name and re-name a named object. */
+	public void testNamingWorks() {
+		String testName = "XMLNamedObjects must be nameable and renameable.";
+
+		// Fill up the samples
+		List<XMLNamedObject> samples = new ArrayList<XMLNamedObject>();
+		if (sampleObjects != null) {
+			for (Object o : sampleObjects) {
+				if (o instanceof XMLNamedObject) {
+					samples.add((XMLNamedObject)o);
+				} else {
+					fail(testName);
+					return;
+				}
+			}
+		} else {
+			try {
+				samples.add((XMLNamedObject)testedClass.newInstance());
+			} catch (IllegalAccessException e) {
+				fail(testName);
+				return;
+			} catch (InstantiationException e) {
+				fail(testName);
+				return;
+			}
+		}
+
+		// Now test the samples
+		for (XMLNamedObject obj : samples) {
+			String originalName = obj.getName();
+			obj.setName("test");
+			assertEquals(testName, "test", obj.getName());
+			obj.setName(originalName);
+			assertEquals(testName, originalName, obj.getName());
+		}
 	}
 }

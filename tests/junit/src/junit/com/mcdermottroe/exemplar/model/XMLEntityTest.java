@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -29,12 +29,33 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
-import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
+import java.util.ArrayList;
 
-/** Test class for {@link com.mcdermottroe.exemplar.model.XMLEntity}.
+import com.mcdermottroe.exemplar.model.XMLEntity;
+import com.mcdermottroe.exemplar.model.XMLExternalIdentifier;
+
+import junit.com.mcdermottroe.exemplar.model.XMLNamedObjectTestCase;
+
+/** Test class for {@link XMLEntity}.
 
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class XMLEntityTest extends NormalClassTestCase {
+public class XMLEntityTest extends XMLNamedObjectTestCase {
+	/** {@inheritDoc} */
+	@Override public void setUp() throws Exception {
+		super.setUp();
+
+		sampleObjects = new ArrayList<Object>();
+
+		sampleObjects.add(new XMLEntity());
+		sampleObjects.add(new XMLEntity("value"));
+		sampleObjects.add(new XMLEntity("value"));
+		sampleObjects.add(new XMLEntity(new XMLExternalIdentifier()));
+		sampleObjects.add(
+			new XMLEntity(
+				new XMLExternalIdentifier("foo", "bar")
+			)
+		);
+	}
 }
