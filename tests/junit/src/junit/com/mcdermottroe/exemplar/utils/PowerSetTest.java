@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006, 2007
+	Copyright (c) 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -27,12 +27,14 @@
 	NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package junit.com.mcdermottroe.exemplar.model;
+package junit.com.mcdermottroe.exemplar.utils;
 
-/** Test class for {@link com.mcdermottroe.exemplar.model.XMLAttributeList}.
+import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
+
+/** Test class for {@link com.mcdermottroe.exemplar.utils.PowerSet}.
 
 	@author	Conor McDermottroe
-	@since	0.1
+	@since	0.2
 */
-public class XMLAttributeListTest extends XMLNamedObjectTestCase {
+public class PowerSetTest extends NormalClassTestCase {
 }

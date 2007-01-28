@@ -36,16 +36,27 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.mcdermottroe.exemplar.Constants;
+
 /** Given a {@link Set} this produces the power set for that set.
 
-	@author	Conor McDermottroe
-	@since	0.2
+	@param	<T>	The type of elements within the {@link Set} from which the
+				power set is to be created.
+	@author		Conor McDermottroe
+	@since		0.2
 */
 public class PowerSet<T> implements Iterable<Set<T>> {
 	/** A copy of the original {@link Set} which we were given, as a {@link
 		List} to give us a guaranteed stable ordering.
+
+		@param	T	The type of elements within the original {@link Set}.
 	*/
 	private List<T> baseSet;
+
+	/** Create an empty power set. */
+	public PowerSet() {
+		baseSet = new ArrayList<T>();
+	}
 
 	/** Create a new power set of a {@link Set}.
 
@@ -56,9 +67,49 @@ public class PowerSet<T> implements Iterable<Set<T>> {
 	}
 
 	/** Get an {@link Iterator} over the {@link Set}s in the power set.
+
+		@return	An {@link Iterator} over the {@link Set}s in the power set.
 	*/
 	public Iterator<Set<T>> iterator() {
 		return new PowerSetIterator();
+	}
+
+	/** Describe this class.
+
+		@return	A {@link String} description of this object.
+	*/
+	@Override public String toString() {
+		StringBuilder desc = new StringBuilder();
+		desc.append(getClass().getName());
+		desc.append(Constants.Character.LEFT_PAREN);
+		desc.append(baseSet);
+		desc.append(Constants.Character.RIGHT_PAREN);
+		return desc.toString();
+	}
+
+	/** Provide a hashcode for this object.
+
+		@return	A hash code for this object.
+	*/
+	@Override public int hashCode() {
+		return baseSet.hashCode() * Constants.HASHCODE_MAGIC_NUMBER;
+	}
+
+	/** Test this class against another for equality.
+
+		@param	o	The other {@link Object} to test.
+		@return		True if this is equal to o, false otherwise.
+	*/
+	@Override public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || !o.getClass().equals(getClass())) {
+			return false;
+		}
+
+		PowerSet other = (PowerSet)o;
+		return other.baseSet.equals(baseSet);
 	}
 
 	/** A class to represent an {@link Iterator} over a {@link PowerSet}. We
@@ -93,7 +144,7 @@ public class PowerSet<T> implements Iterable<Set<T>> {
 			@return	True if there are more sets to return from the power set.
 		*/
 		public boolean hasNext() {
-			return (currentIteration.compareTo(lastIteration) < 0);
+			return currentIteration.compareTo(lastIteration) < 0;
 		}
 
 		/** Return the next {@link Set} in the power set.
@@ -115,10 +166,7 @@ public class PowerSet<T> implements Iterable<Set<T>> {
 			return toReturn;
 		}
 
-		/** It is not possible to remove a set from the power set.
-	
-			@throws	UnsupportedOperationException	always.
-		*/
+		/** It is not possible to remove a set from the power set. */
 		public void remove() {
 			throw new UnsupportedOperationException();
 		}

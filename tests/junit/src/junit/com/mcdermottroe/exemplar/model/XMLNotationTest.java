@@ -34,8 +34,6 @@ import java.util.ArrayList;
 import com.mcdermottroe.exemplar.model.XMLExternalIdentifier;
 import com.mcdermottroe.exemplar.model.XMLNotation;
 
-import junit.com.mcdermottroe.exemplar.model.XMLNamedObjectTestCase;
-
 /** Test class for {@link XMLNotation}.
 
 	@author	Conor McDermottroe

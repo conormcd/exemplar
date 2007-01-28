@@ -33,8 +33,6 @@ import java.util.ArrayList;
 
 import com.mcdermottroe.exemplar.model.XMLElementReference;
 
-import junit.com.mcdermottroe.exemplar.model.XMLNamedObjectTestCase;
-
 /** Test class for {@link XMLElementReference}.
 
 	@author	Conor McDermottroe

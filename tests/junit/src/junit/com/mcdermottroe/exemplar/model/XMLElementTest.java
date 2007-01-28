@@ -35,8 +35,6 @@ import com.mcdermottroe.exemplar.model.XMLElement;
 import com.mcdermottroe.exemplar.model.XMLMixedContent;
 import com.mcdermottroe.exemplar.model.XMLSequence;
 
-import junit.com.mcdermottroe.exemplar.model.XMLNamedObjectTestCase;
-
 /** Test class for {@link XMLElement}.
 
 	@author	Conor McDermottroe

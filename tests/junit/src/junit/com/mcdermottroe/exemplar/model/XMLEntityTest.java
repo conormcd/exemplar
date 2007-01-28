@@ -34,8 +34,6 @@ import java.util.ArrayList;
 import com.mcdermottroe.exemplar.model.XMLEntity;
 import com.mcdermottroe.exemplar.model.XMLExternalIdentifier;
 
-import junit.com.mcdermottroe.exemplar.model.XMLNamedObjectTestCase;
-
 /** Test class for {@link XMLEntity}.
 
 	@author	Conor McDermottroe

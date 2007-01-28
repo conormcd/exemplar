@@ -5,7 +5,7 @@
 	vim:filetype=xml:ts=4
 -->
 <!--
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -86,5 +86,8 @@
 		<subpackage name="ant">
 			<allow pkg="org.apache.tools.ant" />
 		</subpackage>
+	</subpackage>
+	<subpackage name="utils">
+		<allow class="java.math.BigInteger" />
 	</subpackage>
 </import-control>
