@@ -30,26 +30,27 @@
 package com.mcdermottroe.exemplar.utils;
 
 import java.math.BigInteger;
+import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.mcdermottroe.exemplar.Constants;
-
-/** Given a {@link Set} this produces the power set for that set.
+/** Given a {@link Set} this produces the power set for that set as an
+	immutable set of sets.
 
 	@param	<T>	The type of elements within the {@link Set} from which the
 				power set is to be created.
 	@author		Conor McDermottroe
 	@since		0.2
 */
-public class PowerSet<T> implements Iterable<Set<T>> {
+public class PowerSet<T>
+extends AbstractSet<Set<T>>
+implements Set<Set<T>>, Iterable<Set<T>>
+{
 	/** A copy of the original {@link Set} which we were given, as a {@link
 		List} to give us a guaranteed stable ordering.
-
-		@param	T	The type of elements within the original {@link Set}.
 	*/
 	private List<T> baseSet;
 
@@ -66,6 +67,15 @@ public class PowerSet<T> implements Iterable<Set<T>> {
 		baseSet = new ArrayList<T>(objects);
 	}
 
+	/** Get the cardinality of the {@link Set}.
+
+		@return	The number of {@link Set}s in the power set.
+	*/
+	public BigInteger cardinality() {
+		BigInteger two = new BigInteger(String.valueOf(2));
+		return two.pow(baseSet.size());
+	}
+
 	/** Get an {@link Iterator} over the {@link Set}s in the power set.
 
 		@return	An {@link Iterator} over the {@link Set}s in the power set.
@@ -74,42 +84,23 @@ public class PowerSet<T> implements Iterable<Set<T>> {
 		return new PowerSetIterator();
 	}
 
-	/** Describe this class.
-
-		@return	A {@link String} description of this object.
+	/** If the cardinality of the power set is less than {@link
+		Integer#MAX_VALUE} then the cardinality is returned, otherwise an
+		{@link UnsupportedOperationException} is thrown.
+	
+		@return									The cardinality of the power
+												set if possible.
 	*/
-	@Override public String toString() {
-		StringBuilder desc = new StringBuilder();
-		desc.append(getClass().getName());
-		desc.append(Constants.Character.LEFT_PAREN);
-		desc.append(baseSet);
-		desc.append(Constants.Character.RIGHT_PAREN);
-		return desc.toString();
-	}
-
-	/** Provide a hashcode for this object.
-
-		@return	A hash code for this object.
-	*/
-	@Override public int hashCode() {
-		return baseSet.hashCode() * Constants.HASHCODE_MAGIC_NUMBER;
-	}
-
-	/** Test this class against another for equality.
-
-		@param	o	The other {@link Object} to test.
-		@return		True if this is equal to o, false otherwise.
-	*/
-	@Override public boolean equals(Object o) {
-		if (this == o) {
-			return true;
+	public int size() {
+		BigInteger maxInt = new BigInteger(String.valueOf(Integer.MAX_VALUE));
+		BigInteger cardinality = cardinality();
+		if (cardinality.compareTo(maxInt) <= 0) {
+			return cardinality.intValue();
+		} else {
+			throw new UnsupportedOperationException(
+				"size() is unsupported on large power sets."
+			);
 		}
-		if (o == null || !o.getClass().equals(getClass())) {
-			return false;
-		}
-
-		PowerSet other = (PowerSet)o;
-		return other.baseSet.equals(baseSet);
 	}
 
 	/** A class to represent an {@link Iterator} over a {@link PowerSet}. We
