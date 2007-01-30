@@ -5,7 +5,7 @@
 	vim:filetype=xml:ts=4
 -->
 <!--
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -45,11 +45,6 @@
 	<!-- Allow all imports of the stuff the JUnit tests are testing. -->
 	<allow pkg="com.mcdermottroe.exemplar" />
 
-	<!-- Allow the base test case classes to be included -->
-	<allow class="junit.com.mcdermottroe.exemplar.AbstractClassTestCase" />
-	<allow class="junit.com.mcdermottroe.exemplar.ExceptionClassTestCase" />
-	<allow class="junit.com.mcdermottroe.exemplar.ExemplarTestCase" />
-	<allow class="junit.com.mcdermottroe.exemplar.InterfaceTestCase" />
-	<allow class="junit.com.mcdermottroe.exemplar.NormalClassTestCase" />
-	<allow class="junit.com.mcdermottroe.exemplar.UtilityClassTestCase" />
+	<!-- Allow anything from the junit classes. -->
+	<allow pkg="junit.com.mcdermottroe.exemplar" />
 </import-control>

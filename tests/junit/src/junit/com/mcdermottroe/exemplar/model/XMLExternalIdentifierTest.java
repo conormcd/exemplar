@@ -40,12 +40,14 @@ import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class XMLExternalIdentifierTest extends NormalClassTestCase {
+public class XMLExternalIdentifierTest
+extends NormalClassTestCase<XMLExternalIdentifier>
+{
 	/** {@inheritDoc} */
 	@Override public void setUp() throws Exception {
 		super.setUp();
 
-		sampleObjects = new ArrayList<Object>();
+		sampleObjects = new ArrayList<XMLExternalIdentifier>();
 
 		sampleObjects.add(new XMLExternalIdentifier());
 		sampleObjects.add(new XMLExternalIdentifier());

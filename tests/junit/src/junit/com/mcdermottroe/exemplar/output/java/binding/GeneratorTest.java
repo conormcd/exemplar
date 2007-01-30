@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2007
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -29,13 +29,16 @@
 */
 package junit.com.mcdermottroe.exemplar.output.java.binding;
 
-import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
+import com.mcdermottroe.exemplar.output.java.binding.Generator;
 
-/** Test class for {@link
-	com.mcdermottroe.exemplar.output.java.binding.Generator}.
+import junit.com.mcdermottroe.exemplar.output.XMLParserSourceGeneratorTestCase;
+
+/** Test class for {@link Generator}.
 
 	@author	Conor McDermottroe
-	@since	0.2
+	@since	0.1
 */
-public class GeneratorTest extends NormalClassTestCase {
+public class GeneratorTest
+extends XMLParserSourceGeneratorTestCase<Generator>
+{
 }

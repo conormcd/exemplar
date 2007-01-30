@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -42,7 +42,9 @@ import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class LexerTest extends NormalClassTestCase {
+public class LexerTest
+extends NormalClassTestCase<Lexer>
+{
 	/** {@inheritDoc} */
 	@Override public void setUp() throws Exception {
 		super.setUp();
@@ -51,7 +53,7 @@ public class LexerTest extends NormalClassTestCase {
 
 		Reader nullReader = null;
 
-		sampleObjects = new ArrayList<Object>();
+		sampleObjects = new ArrayList<Lexer>();
 		sampleObjects.add(new Lexer(nullReader));
 		sampleObjects.add(new Lexer(new InputStreamReader(System.in)));
 		sampleObjects.add(new Lexer(System.in));

@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -39,10 +39,13 @@ import java.util.List;
 	classes. That includes all classes that are not abstract, exceptions or
 	utility classes.
 
+	@param	<T>	The type of the class being tested.
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public abstract class NormalClassTestCase extends ExemplarTestCase {
+public abstract class NormalClassTestCase<T>
+extends ExemplarTestCase
+{
 	/** Flag to set if we allow 'public static final' members in the tested
 		class. This should only be permitted in generated classes.
 	*/
@@ -68,7 +71,7 @@ public abstract class NormalClassTestCase extends ExemplarTestCase {
 		performed and avoids only testing the no-arg constructor. This {@link
 		List} should be initialised in the {@link #setUp()} method.
 	*/
-	protected List<Object> sampleObjects;
+	protected List<T> sampleObjects;
 
 	/** {@inheritDoc} */
 	@Override public void setUp() throws Exception {

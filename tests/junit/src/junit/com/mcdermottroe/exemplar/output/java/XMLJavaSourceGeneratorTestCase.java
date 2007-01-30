@@ -27,61 +27,20 @@
 	NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package junit.com.mcdermottroe.exemplar.model;
+package junit.com.mcdermottroe.exemplar.output.java;
 
-import java.util.ArrayList;
-import java.util.List;
+import junit.com.mcdermottroe.exemplar.output.XMLParserSourceGeneratorTestCase;
 
-import com.mcdermottroe.exemplar.model.XMLNamedObject;
+/** Test class for children of {@link
+	com.mcdermottroe.exemplar.output.java.XMLJavaSourceGenerator}.
 
-/** Parent class to all subclasses of {@link XMLNamedObject}.
-
-	@param	<T>	The type of {@link XMLNamedObject} being tested.
+	@param	<T>	The type of {@link
+			com.mcdermottroe.exemplar.output.java.XMLJavaSourceGenerator} to
+			test.
 	@author	Conor McDermottroe
-	@since	0.2
+	@since	0.1
 */
-public abstract class XMLNamedObjectTestCase<T>
-extends XMLObjectTestCase<T>
+public abstract class XMLJavaSourceGeneratorTestCase<T>
+extends XMLParserSourceGeneratorTestCase<T>
 {
-	/** {@inheritDoc} */
-	@Override public void setUp() throws Exception {
-		super.setUp();
-	}
-
-	/** Test that it is possible to both name and re-name a named object. */
-	public void testNamingWorks() {
-		String testName = "XMLNamedObjects must be nameable and renameable.";
-
-		// Fill up the samples
-		List<XMLNamedObject> samples = new ArrayList<XMLNamedObject>();
-		if (sampleObjects != null) {
-			for (Object o : sampleObjects) {
-				if (o instanceof XMLNamedObject) {
-					samples.add((XMLNamedObject)o);
-				} else {
-					fail(testName);
-					return;
-				}
-			}
-		} else {
-			try {
-				samples.add((XMLNamedObject)testedClass.newInstance());
-			} catch (IllegalAccessException e) {
-				fail(testName);
-				return;
-			} catch (InstantiationException e) {
-				fail(testName);
-				return;
-			}
-		}
-
-		// Now test the samples
-		for (XMLNamedObject obj : samples) {
-			String originalName = obj.getName();
-			obj.setName("test");
-			assertEquals(testName, "test", obj.getName());
-			obj.setName(originalName);
-			assertEquals(testName, originalName, obj.getName());
-		}
-	}
 }

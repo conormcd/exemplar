@@ -29,12 +29,36 @@
 */
 package junit.com.mcdermottroe.exemplar.utils;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.mcdermottroe.exemplar.utils.PowerSet;
+
 import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
 
-/** Test class for {@link com.mcdermottroe.exemplar.utils.PowerSet}.
+/** Test class for {@link PowerSet}.
 
 	@author	Conor McDermottroe
 	@since	0.2
 */
-public class PowerSetTest extends NormalClassTestCase {
+public class PowerSetTest
+extends NormalClassTestCase<PowerSet>
+{
+	/** {@inheritDoc} */
+	public void setUp() throws Exception {
+		super.setUp();
+
+		Set<String> testSet = new HashSet<String>();
+		testSet.add("foo");
+		testSet.add("bar");
+		testSet.add("baz");
+		testSet.add("quux");
+
+		sampleObjects = new ArrayList<PowerSet>();
+		sampleObjects.add(new PowerSet());
+		sampleObjects.add(new PowerSet());
+		sampleObjects.add(new PowerSet<String>(testSet));
+		sampleObjects.add(new PowerSet<String>(testSet));
+	}
 }

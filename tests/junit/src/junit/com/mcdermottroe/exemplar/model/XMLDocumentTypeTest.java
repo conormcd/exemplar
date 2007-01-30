@@ -48,12 +48,14 @@ import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class XMLDocumentTypeTest extends NormalClassTestCase {
+public class XMLDocumentTypeTest
+extends NormalClassTestCase<XMLDocumentType>
+{
 	/** {@inheritDoc} */
 	@Override public void setUp() throws Exception {
 		super.setUp();
 
-		sampleObjects = new ArrayList<Object>();
+		sampleObjects = new ArrayList<XMLDocumentType>();
 
 		// Create some sample XMLMarkupDeclaration objects
 		XMLAttributeList attlist = new XMLAttributeList();

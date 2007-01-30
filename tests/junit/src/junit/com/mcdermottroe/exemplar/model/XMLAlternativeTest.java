@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -36,19 +36,19 @@ import com.mcdermottroe.exemplar.model.XMLElementReference;
 import com.mcdermottroe.exemplar.model.XMLMixedContent;
 import com.mcdermottroe.exemplar.model.XMLSequence;
 
-import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
-
 /** Test class for {@link com.mcdermottroe.exemplar.model.XMLAlternative}.
 
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class XMLAlternativeTest extends NormalClassTestCase {
+public class XMLAlternativeTest
+extends XMLAggregateObjectTestCase<XMLAlternative>
+{
 	/** {@inheritDoc} */
 	@Override public void setUp() throws Exception {
 		super.setUp();
 
-		sampleObjects = new ArrayList<Object>();
+		sampleObjects = new ArrayList<XMLAlternative>();
 
 		XMLAlternative sampleAlternative = new XMLAlternative();
 		XMLElementReference sampleElementReference = new XMLElementReference();

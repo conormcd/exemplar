@@ -39,11 +39,13 @@ import com.mcdermottroe.exemplar.model.XMLNotation;
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class XMLNotationTest extends XMLNamedObjectTestCase {
+public class XMLNotationTest
+extends XMLNamedObjectTestCase<XMLNotation>
+{
 	/** {@inheritDoc} */
 	@Override public void setUp() throws Exception {
 		super.setUp();
-		sampleObjects = new ArrayList<Object>();
+		sampleObjects = new ArrayList<XMLNotation>();
 		sampleObjects.add(new XMLNotation());
 		sampleObjects.add(
 			new XMLNotation("notationName", new XMLExternalIdentifier())

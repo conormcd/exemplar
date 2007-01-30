@@ -40,12 +40,14 @@ import com.mcdermottroe.exemplar.model.XMLSequence;
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class XMLElementTest extends XMLNamedObjectTestCase {
+public class XMLElementTest
+extends XMLNamedObjectTestCase<XMLElement>
+{
 	/** {@inheritDoc} */
 	@Override public void setUp() throws Exception {
 		super.setUp();
 
-		sampleObjects = new ArrayList<Object>();
+		sampleObjects = new ArrayList<XMLElement>();
 
 		sampleObjects.add(new XMLElement());
 		sampleObjects.add(new XMLElement(XMLElement.ContentType.EMPTY));

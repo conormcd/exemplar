@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -29,12 +29,26 @@
 */
 package junit.com.mcdermottroe.exemplar.output.dtd;
 
-import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
+import java.util.ArrayList;
 
-/** Test class for {@link com.mcdermottroe.exemplar.output.dtd.Generator}.
+import com.mcdermottroe.exemplar.output.dtd.Generator;
+
+import junit.com.mcdermottroe.exemplar.output.XMLParserSourceGeneratorTestCase;
+
+/** Test class for {@link Generator}.
 
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class GeneratorTest extends NormalClassTestCase {
+public class GeneratorTest
+extends XMLParserSourceGeneratorTestCase<Generator>
+{
+	/** {@inheritDoc} */
+	public void setUp() throws Exception {
+		super.setUp();
+
+		sampleObjects = new ArrayList<Generator>();
+
+		sampleObjects.add(new Generator());
+	}
 }

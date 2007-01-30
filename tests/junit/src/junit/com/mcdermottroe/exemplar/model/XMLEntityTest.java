@@ -39,12 +39,14 @@ import com.mcdermottroe.exemplar.model.XMLExternalIdentifier;
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class XMLEntityTest extends XMLNamedObjectTestCase {
+public class XMLEntityTest
+extends XMLNamedObjectTestCase<XMLEntity>
+{
 	/** {@inheritDoc} */
 	@Override public void setUp() throws Exception {
 		super.setUp();
 
-		sampleObjects = new ArrayList<Object>();
+		sampleObjects = new ArrayList<XMLEntity>();
 
 		sampleObjects.add(new XMLEntity());
 		sampleObjects.add(new XMLEntity("value"));

@@ -38,12 +38,14 @@ import com.mcdermottroe.exemplar.model.XMLElementReference;
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class XMLElementReferenceTest extends XMLNamedObjectTestCase {
+public class XMLElementReferenceTest
+extends XMLNamedObjectTestCase<XMLElementReference>
+{
 	/** {@inheritDoc} */
 	@Override public void setUp() throws Exception {
 		super.setUp();
 
-		sampleObjects = new ArrayList<Object>();
+		sampleObjects = new ArrayList<XMLElementReference>();
 
 		sampleObjects.add(new XMLElementReference());
 		sampleObjects.add(new XMLElementReference("foo"));

@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,8 @@
 */
 package junit.com.mcdermottroe.exemplar.input.dtd;
 
+import java.util.ArrayList;
+
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.input.dtd.PEDeclTable;
 import com.mcdermottroe.exemplar.input.dtd.ParameterEntityException;
@@ -36,14 +38,22 @@ import com.mcdermottroe.exemplar.ui.Message;
 
 import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
 
-/** Test class for {@link com.mcdermottroe.exemplar.input.dtd.PEDeclTable}.
+/** Test class for {@link PEDeclTable}.
 
 	@author	Conor McDermottroe
 	@since	0.1
 */
 public class PEDeclTableTest
-extends NormalClassTestCase
+extends NormalClassTestCase<PEDeclTable>
 {
+	/** {@inheritDoc} */
+	public void setUp() throws Exception {
+		super.setUp();
+
+		sampleObjects = new ArrayList<PEDeclTable>();
+		sampleObjects.add(new PEDeclTable());
+	}
+
 	/** Basic adding and replacement test. The tests that
 		are completed are as follows:
 
