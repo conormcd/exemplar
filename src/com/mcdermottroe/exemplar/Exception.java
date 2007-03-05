@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2005, 2006
+	Copyright (c) 2005, 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,11 @@
 */
 package com.mcdermottroe.exemplar;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +48,7 @@ import com.mcdermottroe.exemplar.ui.Options;
 */
 public abstract class Exception
 extends java.lang.Exception
+implements Cloneable
 {
 	/** Exception without a description. */
 	protected Exception() {
@@ -108,6 +114,94 @@ extends java.lang.Exception
 		}
 
 		return trace;
+	}
+
+	/** Implement {@link Object#clone()}.
+
+		@return								A clone of this {@link Exception}.
+		@throws CloneNotSupportedException	if this {@link Exception} cannot be
+											cloned.
+	*/
+	@Override public Object clone()
+	throws CloneNotSupportedException
+	{
+		super.clone();
+		try {
+			// Serialize the exception
+			ByteArrayOutputStream storage = new ByteArrayOutputStream();
+			ObjectOutputStream out = new ObjectOutputStream(storage);
+			out.writeObject(this);
+			out.close();
+
+			// Deserialize the exception
+			ByteArrayInputStream input = new ByteArrayInputStream(
+				storage.toByteArray()
+			);
+			ObjectInputStream in = new ObjectInputStream(input);
+			Object o = in.readObject();
+			in.close();
+
+			return o;
+		} catch (ClassNotFoundException e) {
+			throw new CloneNotSupportedException(e.toString());
+		} catch (IOException e) {
+			throw new CloneNotSupportedException(e.toString());
+		}
+	}
+
+	/** Implement {@link Object#equals(Object)} in a way which will be
+		consistent with {@link #hashCode()}.
+
+		@param	o	The other {@link Object} to compare with.
+		@return		True if this is equal to <code>o</code>, false otherwise.
+	*/
+	@Override public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null) {
+			return false;
+		}
+		if (!(o instanceof Exception)) {
+			return false;
+		}
+
+		Exception other = (Exception)o;
+		return throwablesEqual(this, other);
+	}
+
+	/** Recursively test that two {@link Throwable}s are equal. This is
+		necessary because {@link Throwable} uses the default {@link
+		Object#equals()} which only compares referential equality.
+
+		@param	a	The first of the two {@link Throwable}s.
+		@param	b	The second of the two {@link Throwable}s.
+		@return		True if the two {@link Throwable}s are equal.
+	*/
+	private static boolean throwablesEqual(Throwable a, Throwable b) {
+		if (a == b) {
+			return true;
+		}
+		if ((a == null) != (b == null)) {
+			return false;
+		}
+
+		return	throwablesEqual(a.getCause(), b.getCause()) &&
+				Utils.areDeeplyEqual(a.getMessage(), b.getMessage()) &&
+				Utils.areAllDeeplyEqual(a.getStackTrace(), b.getStackTrace());
+	}
+
+	/** Implement {@link Object#hashCode()} in a way which will be consistent
+		with {@link #equals(Object)}.
+
+		@return	A hash code for this object.
+	*/
+	@Override public int hashCode() {
+		return Utils.genericHashCode(
+			getMessage(),
+//			getCause(),
+			getBackTrace()
+		);
 	}
 
 	/** Provide a full backtrace of all the exceptions which caused this

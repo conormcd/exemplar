@@ -37,6 +37,7 @@ package com.mcdermottroe.exemplar.model;
 */
 public class XMLElementReference
 extends XMLNamedObject
+implements Cloneable
 {
 	/** A no-arg constructor to aid in testing. */
 	public XMLElementReference() {

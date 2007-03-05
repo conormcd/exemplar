@@ -32,15 +32,29 @@ package junit.com.mcdermottroe.exemplar;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.mcdermottroe.exemplar.Exception;
 
 /** Test class for all exception classes.
 
+	@param	<T>	The type of {@link Exception} being tested.
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public abstract class ExceptionClassTestCase extends ExemplarTestCase {
+public abstract class ExceptionClassTestCase<T extends Exception>
+extends NormalClassTestCase<Exception>
+{
+	/** {@inheritDoc} */
+	@Override public void setUp() throws java.lang.Exception {
+		super.setUp();
+		addSample(sampleFromNoArgConstructor());
+		addSample(sampleFromStringConstructor());
+		addSample(sampleFromThrowableConstructor());
+		addSample(sampleFromStringThrowableConstructor());
+	}
+
 	/** Test to ensure that Exception classes inherit from {@link Throwable}
 		via the exemplar version of {@link Exception} rather than from the
 		standard {@link java.lang.Exception}.
@@ -63,10 +77,6 @@ public abstract class ExceptionClassTestCase extends ExemplarTestCase {
 		@see Exception
 	*/
 	public void testExactlyFourConstructors() {
-		if (testedClass == null) {
-			return;
-		}
-
 		Constructor[] constructors = testedClass.getDeclaredConstructors();
 		assertEquals(
 			"Exceptions must only have 4 constructors",
@@ -81,22 +91,20 @@ public abstract class ExceptionClassTestCase extends ExemplarTestCase {
 		@see Exception#Exception()
 	*/
 	public void testNoArgConstructor() {
-		if (testedClass == null) {
-			return;
-		}
-
-		Object o;
 		try {
-			o = testedClass.newInstance();
-		} catch (InstantiationException e) {
-			fail("Failed to instantiate the class.");
-			return;
+			assertNotNull(
+				"The no-arg constructor works.",
+				sampleFromNoArgConstructor()
+			);
 		} catch (IllegalAccessException e) {
 			fail("Forbidden from instantiating the class.");
-			return;
+		} catch (InstantiationException e) {
+			fail("Failed to instantiate the class.");
+		} catch (InvocationTargetException e) {
+			fail("An exception was thrown when instantiating the class.");
+		} catch (NoSuchMethodException e) {
+			fail("Class does not have a no-arg constructor.");
 		}
-
-		assertNotNull("The no-arg constructor works.", o);
 	}
 
 	/** Test that a constructor which takes a single argument of type {@link 
@@ -106,33 +114,20 @@ public abstract class ExceptionClassTestCase extends ExemplarTestCase {
 		@see Exception#Exception(String)
 	*/
 	public void testOneStringConstructor() {
-		if (testedClass == null) {
-			return;
-		}
-
-		Constructor oneString;
 		try {
-			oneString = testedClass.getDeclaredConstructor(String.class);
-		} catch (NoSuchMethodException e) {
-			fail("Class does not have a (String) constructor.");
-			return;
-		}
-
-		Object o;
-		try {
-			o = oneString.newInstance("test");
-		} catch (InstantiationException e) {
-			fail("Failed to instantiate the class.");
-			return;
+			assertNotNull(
+				"The (String) constructor works.",
+				sampleFromStringThrowableConstructor()
+			);
 		} catch (IllegalAccessException e) {
 			fail("Forbidden from instantiating the class.");
-			return;
+		} catch (InstantiationException e) {
+			fail("Failed to instantiate the class.");
 		} catch (InvocationTargetException e) {
 			fail("An exception was thrown when instantiating the class.");
-			return;
+		} catch (NoSuchMethodException e) {
+			fail("Class does not have a (String) constructor.");
 		}
-
-		assertNotNull("The (String) constructor works.", o);
 	}
 
 	/** Test that a constructor which takes a single argument of type {@link 
@@ -142,33 +137,20 @@ public abstract class ExceptionClassTestCase extends ExemplarTestCase {
 		@see Exception#Exception(Throwable)
 	*/
 	public void testOneThrowableConstructor() {
-		if (testedClass == null) {
-			return;
-		}
-
-		Constructor oneThrowable;
 		try {
-			oneThrowable = testedClass.getDeclaredConstructor(Throwable.class);
-		} catch (NoSuchMethodException e) {
-			fail("Class does not have a (Throwable) constructor.");
-			return;
-		}
-
-		Object o;
-		try {
-			o = oneThrowable.newInstance(new Throwable("test"));
-		} catch (InstantiationException e) {
-			fail("Failed to instantiate the class.");
-			return;
+			assertNotNull(
+				"The (Throwable) constructor works.",
+				sampleFromThrowableConstructor()
+			);
 		} catch (IllegalAccessException e) {
 			fail("Forbidden from instantiating the class.");
-			return;
+		} catch (InstantiationException e) {
+			fail("Failed to instantiate the class.");
 		} catch (InvocationTargetException e) {
 			fail("An exception was thrown when instantiating the class.");
-			return;
+		} catch (NoSuchMethodException e) {
+			fail("Class does not have a (Throwable) constructor.");
 		}
-
-		assertNotNull("The (Throwable) constructor works.", o);
 	}
 
 	/** Test that a constructor which takes two arguments, a {@link String} and
@@ -178,47 +160,165 @@ public abstract class ExceptionClassTestCase extends ExemplarTestCase {
 		@see Exception#Exception(String, Throwable)
 	*/
 	public void testStringThrowableConstructor() {
-		if (testedClass == null) {
-			return;
-		}
-
-		Constructor stringThrowable;
 		try {
-			stringThrowable = testedClass.getDeclaredConstructor(
-				String.class,
-				Throwable.class
+			assertNotNull(
+				"The (String, Throwable) constructor works.",
+				sampleFromStringThrowableConstructor()
 			);
-		} catch (NoSuchMethodException e) {
-			fail("Class does not have a (String, Throwable) constructor.");
-			return;
-		}
-
-		Object o;
-		try {
-			o = stringThrowable.newInstance("test", new Throwable("test"));
-		} catch (InstantiationException e) {
-			fail("Failed to instantiate the class.");
-			return;
 		} catch (IllegalAccessException e) {
 			fail("Forbidden from instantiating the class.");
-			return;
+		} catch (InstantiationException e) {
+			fail("Failed to instantiate the class.");
 		} catch (InvocationTargetException e) {
 			fail("An exception was thrown when instantiating the class.");
-			return;
+		} catch (NoSuchMethodException e) {
+			fail("Class does not have a (String, Throwable) constructor.");
 		}
-
-		assertNotNull("The (String, Throwable) constructor works.", o);
 	}
 
 	/** Test that there are no extra methods declared. All methods in exception
 		classes should be declared in {@link Exception}.
 	*/
 	public void testNoMethods() {
-		if (testedClass == null) {
-			return;
-		}
-
 		Method[] methods = testedClass.getDeclaredMethods();
 		assertEquals("No methods for this exception", methods.length, 0);
+	}
+
+	/** Test the method {@link Exception#getBackTrace()} on a set of sample
+		objects.
+	*/
+	public void testGetBackTrace() {
+		// For all the samples, check that the backtrace is well formed.
+		Pattern traceElement = Pattern.compile(
+			"[A-Za-z0-9$]+(?:\\.[A-Za-z0-9$]+)+:\\s+.+?[\\r\\n]+" +
+			"(?:\\s+[A-Za-z0-9$]+(?:\\.[A-Za-z0-9$]+)+\\(.*?\\)[\\r\\n]+)*"
+		);
+		for (Exception sample : samples()) {
+			if (sample != null) {
+				for (String trace : sample.getBackTrace()) {
+					Matcher m = traceElement.matcher(trace);
+					if (!m.matches()) {
+						fail("Malformed trace element");
+						return;
+					}
+				}
+			}
+		}
+
+		assertTrue("getBackTrace works as expected", true);
+	}
+
+	/** Test the method {@link Exception#toString()} on a set of sample
+		objects.
+	*/
+	public void testToString() {
+		// For all the samples, check that the backtrace is well formed.
+		Pattern stringPattern = Pattern.compile(
+			"([A-Za-z0-9$]+(?:\\.[A-Za-z0-9$]+)+:\\s+.+?[\\r\\n]+" +
+			"(?:\\s+[A-Za-z0-9$]+(?:\\.[A-Za-z0-9$]+)+\\(.*?\\)[\\r\\n]+)*)+"
+		);
+		for (Exception sample : samples()) {
+			if (sample != null) {
+				Matcher m = stringPattern.matcher(sample.toString());
+				if (!m.matches()) {
+					fail("Malformed string.");
+					return;
+				}
+			}
+		}
+
+		assertTrue("toString works as expected", true);
+	}
+
+	/** Create a sample object using the no-arg constructor.
+
+		@return								An {@link Exception} created using
+											the no-arg constructor.
+		@throws IllegalAccessException		if the constructor is not
+											accessible.
+		@throws InstantiationException		if the constructor fails to be
+											called.
+		@throws InvocationTargetException	if the constructor throws an
+											exception.
+		@throws NoSuchMethodException		if the no-arg constructor does not
+											exist.
+	*/
+	protected Exception sampleFromNoArgConstructor()
+	throws	IllegalAccessException, InstantiationException,
+			InvocationTargetException, NoSuchMethodException
+	{
+		return (Exception)testedClass.newInstance();
+	}
+
+	/** Create a sample object using the {@link String} constructor.
+
+		@return								An {@link Exception} created using
+											the {@link String} constructor.
+		@throws IllegalAccessException		if the constructor is not
+											accessible.
+		@throws InstantiationException		if the constructor fails to be
+											called.
+		@throws InvocationTargetException	if the constructor throws an
+											exception.
+		@throws NoSuchMethodException		if the no-arg constructor does not
+											exist.
+	*/
+	protected Exception sampleFromStringConstructor()
+	throws	IllegalAccessException, InstantiationException,
+			InvocationTargetException, NoSuchMethodException
+	{
+		Constructor oneString = testedClass.getDeclaredConstructor(
+			String.class
+		);
+		return (Exception)oneString.newInstance("test");
+	}
+
+	/** Create a sample object using the {@link Throwable} constructor.
+
+		@return								An {@link Exception} created using
+											the {@link Throwable} constructor.
+		@throws IllegalAccessException		if the constructor is not
+											accessible.
+		@throws InstantiationException		if the constructor fails to be
+											called.
+		@throws InvocationTargetException	if the constructor throws an
+											exception.
+		@throws NoSuchMethodException		if the no-arg constructor does not
+											exist.
+	*/
+	protected Exception sampleFromThrowableConstructor()
+	throws	IllegalAccessException, InstantiationException,
+			InvocationTargetException, NoSuchMethodException
+	{
+		Constructor oneString = testedClass.getDeclaredConstructor(
+			Throwable.class
+		);
+		return (Exception)oneString.newInstance(new Throwable("test"));
+	}
+
+	/** Create a sample object using the {@link String}, {@link Throwable}
+		constructor.
+
+		@return								An {@link Exception} created using
+											the {@link String}, {@link
+											Throwable} constructor.
+		@throws IllegalAccessException		if the constructor is not
+											accessible.
+		@throws InstantiationException		if the constructor fails to be
+											called.
+		@throws InvocationTargetException	if the constructor throws an
+											exception.
+		@throws NoSuchMethodException		if the no-arg constructor does not
+											exist.
+	*/
+	protected Exception sampleFromStringThrowableConstructor()
+	throws	IllegalAccessException, InstantiationException,
+			InvocationTargetException, NoSuchMethodException
+	{
+		Constructor oneString = testedClass.getDeclaredConstructor(
+			String.class,
+			Throwable.class
+		);
+		return (Exception)oneString.newInstance("test", new Throwable("test"));
 	}
 }

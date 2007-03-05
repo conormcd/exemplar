@@ -29,8 +29,6 @@
 */
 package junit.com.mcdermottroe.exemplar.output.dtd;
 
-import java.util.ArrayList;
-
 import com.mcdermottroe.exemplar.output.dtd.Generator;
 
 import junit.com.mcdermottroe.exemplar.output.XMLParserSourceGeneratorTestCase;
@@ -47,8 +45,6 @@ extends XMLParserSourceGeneratorTestCase<Generator>
 	public void setUp() throws Exception {
 		super.setUp();
 
-		sampleObjects = new ArrayList<Generator>();
-
-		sampleObjects.add(new Generator());
+		addSample(new Generator());
 	}
 }

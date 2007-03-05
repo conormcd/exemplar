@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2005, 2006
+	Copyright (c) 2005, 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -35,6 +35,7 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -444,7 +445,14 @@ public final class Utils {
 		int hashCode = 0;
 		for (Object o : objects) {
 			if (o != null) {
-				hashCode += o.hashCode();
+				if (o instanceof Collection) {
+					Collection c = (Collection)o;
+					for (Object co : c) {
+						hashCode += co.hashCode();
+					}
+				} else {
+					hashCode += o.hashCode();
+				}
 			} else {
 				hashCode += 0;
 			}

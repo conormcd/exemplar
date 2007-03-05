@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -40,8 +40,7 @@ import java.lang.reflect.Modifier;
 public abstract class InterfaceTestCase extends ExemplarTestCase {
 	/** Ensure that it's actually an interface. */
 	public void testIsActuallyAnInterface() {
-		String testName = "This is really an interface";
 		int modifiers = testedClass.getModifiers();
-		assertTrue(testName, Modifier.isInterface(modifiers));
+		assertTrue("Class actually interface", Modifier.isInterface(modifiers));
 	}
 }

@@ -29,15 +29,16 @@
 */
 package junit.com.mcdermottroe.exemplar.output;
 
-/** Test class for children of {@link
-	com.mcdermottroe.exemplar.output.XMLParserSourceGenerator}.
+import com.mcdermottroe.exemplar.output.XMLParserSourceGenerator;
 
-	@param	<T>	The type of {@link
-			com.mcdermottroe.exemplar.output.XMLParserSourceGenerator} to test.
+/** Test class for children of {@link XMLParserSourceGenerator}.
+
+	@param	<T>	The type of {@link XMLParserSourceGenerator} to test.
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public abstract class XMLParserSourceGeneratorTestCase<T>
+public abstract class
+XMLParserSourceGeneratorTestCase<T extends XMLParserSourceGenerator>
 extends XMLParserGeneratorTestCase<T>
 {
 }

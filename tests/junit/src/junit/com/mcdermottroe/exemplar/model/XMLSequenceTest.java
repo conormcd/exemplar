@@ -29,6 +29,9 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
+import com.mcdermottroe.exemplar.model.XMLAlternative;
+import com.mcdermottroe.exemplar.model.XMLElementReference;
+import com.mcdermottroe.exemplar.model.XMLMixedContent;
 import com.mcdermottroe.exemplar.model.XMLSequence;
 
 /** Test class for {@link XMLSequence}.
@@ -39,4 +42,46 @@ import com.mcdermottroe.exemplar.model.XMLSequence;
 public class XMLSequenceTest
 extends XMLAggregateObjectTestCase<XMLSequence>
 {
+	/** {@inheritDoc} */
+	@Override public void setUp()
+	throws Exception
+	{
+		super.setUp();
+
+		XMLAlternative sampleAlternative = new XMLAlternative();
+		XMLElementReference sampleElementReference = new XMLElementReference();
+		XMLMixedContent sampleMixedContent = new XMLMixedContent();
+		XMLSequence sampleSequence = new XMLSequence();
+
+		// Sample A
+		addSample(sampleSequence);
+
+		// Sample B
+		XMLSequence sampleB = new XMLSequence();
+		sampleB.addObject(sampleAlternative);
+		addSample(sampleB);
+
+		// Sample C
+		XMLSequence sampleC = new XMLSequence();
+		sampleC.addObject(sampleElementReference);
+		addSample(sampleC);
+
+		// Sample D
+		XMLSequence sampleD = new XMLSequence();
+		sampleD.addObject(sampleMixedContent);
+		addSample(sampleD);
+
+		// Sample E
+		XMLSequence sampleE = new XMLSequence();
+		sampleE.addObject(sampleSequence);
+		addSample(sampleE);
+
+		// Sample F
+		XMLSequence sampleF = new XMLSequence();
+		sampleF.addObject(sampleAlternative);
+		sampleF.addObject(sampleElementReference);
+		sampleF.addObject(sampleMixedContent);
+		sampleF.addObject(sampleSequence);
+		addSample(sampleF);
+	}
 }

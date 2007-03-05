@@ -29,6 +29,7 @@
 */
 package com.mcdermottroe.exemplar.utils;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.AbstractSet;
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ import java.util.Set;
 */
 public class PowerSet<T>
 extends AbstractSet<Set<T>>
-implements Set<Set<T>>, Iterable<Set<T>>
+implements Cloneable, Serializable, Set<Set<T>>, Iterable<Set<T>>
 {
 	/** A copy of the original {@link Set} which we were given, as a {@link
 		List} to give us a guaranteed stable ordering.
@@ -74,6 +75,17 @@ implements Set<Set<T>>, Iterable<Set<T>>
 	public BigInteger cardinality() {
 		BigInteger two = new BigInteger(String.valueOf(2));
 		return two.pow(baseSet.size());
+	}
+
+	/** Clone the {@link PowerSet}.
+
+		@return								A clone of this object.
+		@throws CloneNotSupportedException	if the clone cannot be created.
+	*/
+	public Object clone()
+	throws CloneNotSupportedException
+	{
+		return super.clone();
 	}
 
 	/** Get an {@link Iterator} over the {@link Set}s in the power set.

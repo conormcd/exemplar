@@ -29,8 +29,6 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
-import java.util.ArrayList;
-
 import com.mcdermottroe.exemplar.model.XMLAlternative;
 import com.mcdermottroe.exemplar.model.XMLElementReference;
 import com.mcdermottroe.exemplar.model.XMLMixedContent;
@@ -48,35 +46,33 @@ extends XMLAggregateObjectTestCase<XMLAlternative>
 	@Override public void setUp() throws Exception {
 		super.setUp();
 
-		sampleObjects = new ArrayList<XMLAlternative>();
-
 		XMLAlternative sampleAlternative = new XMLAlternative();
 		XMLElementReference sampleElementReference = new XMLElementReference();
 		XMLMixedContent sampleMixedContent = new XMLMixedContent();
 		XMLSequence sampleSequence = new XMLSequence();
 
 		// Sample A
-		sampleObjects.add(sampleAlternative);
+		addSample(sampleAlternative);
 
 		// Sample B
 		XMLAlternative sampleB = new XMLAlternative();
 		sampleB.addObject(sampleAlternative);
-		sampleObjects.add(sampleB);
+		addSample(sampleB);
 
 		// Sample C
 		XMLAlternative sampleC = new XMLAlternative();
 		sampleC.addObject(sampleElementReference);
-		sampleObjects.add(sampleC);
+		addSample(sampleC);
 
 		// Sample D
 		XMLAlternative sampleD = new XMLAlternative();
 		sampleD.addObject(sampleMixedContent);
-		sampleObjects.add(sampleD);
+		addSample(sampleD);
 
 		// Sample E
 		XMLAlternative sampleE = new XMLAlternative();
 		sampleE.addObject(sampleSequence);
-		sampleObjects.add(sampleE);
+		addSample(sampleE);
 
 		// Sample F
 		XMLAlternative sampleF = new XMLAlternative();
@@ -84,6 +80,6 @@ extends XMLAggregateObjectTestCase<XMLAlternative>
 		sampleF.addObject(sampleElementReference);
 		sampleF.addObject(sampleMixedContent);
 		sampleF.addObject(sampleSequence);
-		sampleObjects.add(sampleF);
+		addSample(sampleF);
 	}
 }

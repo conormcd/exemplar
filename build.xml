@@ -3,7 +3,7 @@
 	vim:filetype=ant:ts=4
 -->
 <!--
-	Copyright (c) 2004, 2005, 2006, 2007
+	Copyright (c) 2004-2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -106,7 +106,7 @@
 		/>
 		<replace	file="${parser-file}"
 					token="extends java_cup.runtime.lr_parser"
-					value="extends java_cup.runtime.lr_parser implements InputModule"
+					value="extends java_cup.runtime.lr_parser implements Cloneable, InputModule"
 					/> 
 		<move	file="${parser-file}"
 				tofile="${src}/${namespace}/input/dtd/${parser-file}"
@@ -416,15 +416,11 @@
 		<ant dir="tests/antui" inheritAll="false" />
 	</target>
 	<target	name="test-junit"
-			depends="build-tests,set-up-classpaths"
+			depends="clean-tests-junit-results,build-tests,set-up-classpaths"
 			description="Run all of the JUnit tests."
 	>
 		<mkdir dir="tests/junit/results" />
-		<junit	failureproperty="junit-failed"
-				fork="true"
-		>
-			<jvmarg value="-ea" />
-			<jvmarg value="-esa" />
+		<junit failureproperty="junit-failed">
 			<classpath>
 				<path refid="build-classpath" />
 			</classpath>

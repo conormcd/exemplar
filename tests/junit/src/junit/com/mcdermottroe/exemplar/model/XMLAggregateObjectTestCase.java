@@ -29,14 +29,85 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
-/** Parent class to all subclasses of {@link
-	com.mcdermottroe.exemplar.model.XMLAggregateObject}.
+import java.util.Iterator;
+import java.util.List;
 
-	@param	<T>	The type of XMLAggregateObject
+import com.mcdermottroe.exemplar.Utils;
+import com.mcdermottroe.exemplar.model.XMLAggregateObject;
+import com.mcdermottroe.exemplar.model.XMLObject;
+
+/** Parent class to all subclasses of {@link XMLAggregateObject}.
+
+	@param	<T>	The type of {@link XMLAggregateObject}.
 	@author	Conor McDermottroe
 	@since	0.2
 */
-public abstract class XMLAggregateObjectTestCase<T>
+public abstract class XMLAggregateObjectTestCase<T extends XMLAggregateObject>
 extends XMLObjectTestCase<T>
 {
+	/** Test {@link XMLAggregateObject#numElements()}. */
+	public void testNumElements() {
+		boolean success = true;
+		for (T sample : samples()) {
+			if (sample != null) {
+				if (sample.numElements() < 0) {
+					success = false;
+				}
+			}
+		}
+		assertTrue("Test numElements >= 0", success);
+	}
+
+	/** Test {@link XMLAggregateObject#iterator()}. */
+	public void testIterator() {
+		boolean success = true;
+		for (T sample : samples()) {
+			if (sample != null) {
+				int count = 0;
+				for (Iterator i = sample.iterator(); i.hasNext(); ) {
+					count++;
+					i.next();
+				}
+				if (count != sample.numElements()) {
+					success = false;
+				}
+			}
+		}
+		assertTrue("iterator() returns numElements() objects", success);
+	}
+
+	/** Test {@link XMLAggregateObject#getContents()}. */
+	public void testGetContents() {
+		for (T sample : samples()) {
+			if (sample != null) {
+				List<XMLObject> contents = sample.getContents();
+				Iterator i = contents.iterator();
+				Iterator j = sample.iterator();
+				if (i.hasNext() != j.hasNext()) {
+					fail(
+						"Mismatch in number of objects returned from" +
+						" iterator() vs getContents()"
+					);
+					return;
+				}
+				while (i.hasNext() && j.hasNext()) {
+					if (!Utils.areDeeplyEqual(i.next(), j.next())) {
+						fail(
+							"Mismatch in objects returned from" +
+							" iterator() vs getContents()"
+						);
+						return;
+					}
+				}
+				if (i.hasNext() || j.hasNext()) {
+					fail(
+						"Mismatch in number of objects returned from" +
+						" iterator() vs getContents()"
+					);
+					return;
+				}
+			}
+		}
+		assertTrue("getContents() returns the same list as iterator()", true);
+	}
 }

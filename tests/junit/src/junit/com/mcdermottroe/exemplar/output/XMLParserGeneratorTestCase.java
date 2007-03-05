@@ -29,17 +29,17 @@
 */
 package junit.com.mcdermottroe.exemplar.output;
 
+import com.mcdermottroe.exemplar.output.XMLParserGenerator;
+
 import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
 
-/** Test class for children of {@link
-	com.mcdermottroe.exemplar.output.XMLParserGenerator}.
+/** Test class for children of {@link XMLParserGenerator}.
 
-	@param	<T>	The type of {@link
-			com.mcdermottroe.exemplar.output.XMLParserGenerator} to test.
+	@param	<T>	The type of {@link XMLParserGenerator} to test.
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public abstract class XMLParserGeneratorTestCase<T>
+public abstract class XMLParserGeneratorTestCase<T extends XMLParserGenerator>
 extends NormalClassTestCase<T>
 {
 }

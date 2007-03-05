@@ -38,8 +38,13 @@
 	<allow pkg="java.util" />
 
 	<!-- Specific allowed Java classes -->
+	<allow class="java.io.ByteArrayInputStream" />
+	<allow class="java.io.ByteArrayOutputStream" />
 	<allow class="java.io.File" />
 	<allow class="java.io.IOException" />
+	<allow class="java.io.ObjectInputStream" />
+	<allow class="java.io.ObjectOutputStream" />
+	<allow class="java.io.Serializable" />
 	<allow class="java.net.URL" />
 	<allow class="java.text.MessageFormat" />
 	

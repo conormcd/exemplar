@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2004, 2005, 2006
+	Copyright (c) 2004-2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,7 @@ import com.mcdermottroe.exemplar.ui.Message;
 */
 public class XMLEntity
 extends XMLNamedObject
-implements XMLMarkupDeclaration
+implements Cloneable, XMLMarkupDeclaration
 {
 	/** The valid entity types. */
 	public enum EntityType {
@@ -204,6 +204,22 @@ implements XMLMarkupDeclaration
 	public boolean isInternal() {
 		DBC.ENSURE(!entityType.equals(EntityType.UNINITIALISED));
 		return entityType.equals(EntityType.INTERNAL);
+	}
+
+	/** {@inheritDoc} */
+	@Override public Object clone()
+	throws CloneNotSupportedException
+	{
+		XMLEntity clone = (XMLEntity)super.clone();
+		clone.entityType = entityType;
+		clone.value = value;
+		if (extID != null) {
+			clone.extID = (XMLExternalIdentifier)extID.clone();
+		} else {
+			clone.extID = null;
+		}
+		clone.notation = notation;
+		return clone;
 	}
 
 	/** {@inheritDoc} */

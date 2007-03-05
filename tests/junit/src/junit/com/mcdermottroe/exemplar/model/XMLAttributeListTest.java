@@ -29,10 +29,22 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
-/** Test class for {@link com.mcdermottroe.exemplar.model.XMLAttributeList}.
+import com.mcdermottroe.exemplar.model.XMLAttributeList;
+
+/** Test class for {@link XMLAttributeList}.
 
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class XMLAttributeListTest extends XMLNamedObjectTestCase {
+public class XMLAttributeListTest
+extends XMLNamedObjectTestCase<XMLAttributeList>
+{
+	/** {@inheritDoc} */
+	@Override public void setUp()
+	throws Exception
+	{
+		super.setUp();
+
+		addSample(new XMLAttributeList());
+	}
 }

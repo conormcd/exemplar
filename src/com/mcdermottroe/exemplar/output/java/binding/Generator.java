@@ -84,17 +84,24 @@ public class Generator extends XMLParserSourceGenerator {
 
 		// Only create code if there are some elements
 		if (elements != null && !elements.isEmpty()) {
-			// Create the common classes
-			Log.debug("Creating common classes");
+			// Create the root parser class
+			Log.debug("Creating root parser class");
+			createRootParserClass(directory);
+
+			// Create the support classes
+			Log.debug("Creating support classes");
 			File supportDir = new File(directory, "support");
-			createXMLComponentInterface(supportDir);
+			createXMLComponentClass(supportDir);
+			createXMLContentClass(supportDir);
 			createAbstractElementClass(supportDir);
 
 			// Create one class per element
+			Log.debug("Creating element classes");
+			File elementsDir = new File(directory, "element");
 			for (String elementName : elements.keySet()) {
 				XMLMarkupDeclaration markupDecl = elements.get(elementName);
 				if (markupDecl instanceof XMLElement) {
-					createElementClass((XMLElement)markupDecl, directory);
+					createElementClass((XMLElement)markupDecl, elementsDir);
 				} else {
 					DBC.UNREACHABLE_CODE();
 				}
@@ -110,6 +117,62 @@ public class Generator extends XMLParserSourceGenerator {
 	/** {@inheritDoc} */
 	public String describeAPI() {
 		return "A data binding API.";
+	}
+
+	/** Create the base parser class which can be used to parse the input.
+
+		@param	dir							The directory in which the base
+											parser class will be put.
+		@throws XMLParserGeneratorException	if the base parser class cannot be
+											created.
+	*/
+	protected void createRootParserClass(File dir)
+	throws XMLParserGeneratorException
+	{
+		Log.debug("Creating root parser class");
+		DBC.REQUIRE(dir != null);
+		if (dir == null) {
+			return;
+		}
+
+		// Ensure that the directory exists
+		if (!dir.exists()) {
+			dir.mkdirs();
+		}
+
+		// Get the template
+		String messageFormatTemplate = loadCodeFragment(
+			"ROOT_PARSER_CLASS"
+		);
+		DBC.ASSERT(messageFormatTemplate != null);
+
+		// Make the root parser class name
+		String rootParserClassName = Options.getString("vocabulary");
+		rootParserClassName =	rootParserClassName.substring(0, 1)
+									.toUpperCase() +
+								rootParserClassName.substring(1);
+
+		// Make the contents of the output file
+		String outputFileContents = Utils.formatMessage(
+			messageFormatTemplate,
+			Constants.PROGRAM_NAME,
+			timestamp,
+			basePackage,
+			rootParserClassName
+		);
+
+		// Write out the file
+		File file = new File(dir, rootParserClassName + ".java");
+		try {
+			OutputUtils.writeStringToFile(outputFileContents, file);
+		} catch (OutputException e) {
+			throw new XMLParserGeneratorException(
+				Message.FILE_WRITE_FAILED(
+					file.getAbsolutePath()
+				),
+				e
+			);
+		}
 	}
 
 	/** Create the abstract element class which is the root of all element
@@ -315,9 +378,20 @@ public class Generator extends XMLParserSourceGenerator {
 				accessMethods.append(Constants.EOL);
 				accessMethods.append(Constants.Character.TAB);
 				accessMethods.append(Constants.Character.TAB);
-				accessMethods.append("((Attribute)attributes.get(\"");
+				accessMethods.append("Attribute att = (Attribute)");
+				accessMethods.append("attributes.remove(\"");
 				accessMethods.append(attributeName);
-				accessMethods.append("\")).setValue(value);");
+				accessMethods.append("\");");
+				accessMethods.append(Constants.EOL);
+				accessMethods.append(Constants.Character.TAB);
+				accessMethods.append(Constants.Character.TAB);
+				accessMethods.append("att.setValue(value);");
+				accessMethods.append(Constants.EOL);
+				accessMethods.append(Constants.Character.TAB);
+				accessMethods.append(Constants.Character.TAB);
+				accessMethods.append("attributes.put(\"");
+				accessMethods.append(attributeName);
+				accessMethods.append("\", att);");
 				accessMethods.append(Constants.EOL);
 				accessMethods.append(Constants.Character.TAB);
 				accessMethods.append("}");
@@ -355,17 +429,17 @@ public class Generator extends XMLParserSourceGenerator {
 		}
 	}
 
-	/** Create the XMLComponent interface.
+	/** Create the XMLContent class.
 
 		@param	dir							The directory in which to create
-											the interface.
-		@throws	XMLParserGeneratorException	if the abstract element class
-											cannot be generated.
+											the class.
+		@throws	XMLParserGeneratorException	if the XMLContent class cannot be
+											generated.
 	*/
-	protected void createXMLComponentInterface(File dir)
+	protected void createXMLContentClass(File dir)
 	throws XMLParserGeneratorException
 	{
-		Log.debug("Creating the XMLComponent interface");
+		Log.debug("Creating the XMLContent class");
 		DBC.REQUIRE(dir != null);
 		if (dir == null) {
 			return;
@@ -378,7 +452,56 @@ public class Generator extends XMLParserSourceGenerator {
 
 		// Get the template
 		String messageFormatTemplate = loadCodeFragment(
-			"XML_COMPONENT_INTERFACE"
+			"XML_CONTENT_CLASS"
+		);
+		DBC.ASSERT(messageFormatTemplate != null);
+
+		// Make the contents of the output file
+		String outputFileContents = Utils.formatMessage(
+			messageFormatTemplate,
+			Constants.PROGRAM_NAME,
+			timestamp,
+			basePackage
+		);
+
+		// Write out the file
+		File file = new File(dir, "XMLContent.java");
+		try {
+			OutputUtils.writeStringToFile(outputFileContents, file);
+		} catch (OutputException e) {
+			throw new XMLParserGeneratorException(
+				Message.FILE_WRITE_FAILED(
+					file.getAbsolutePath()
+				),
+				e
+			);
+		}
+	}
+
+	/** Create the XMLComponent class.
+
+		@param	dir							The directory in which to create
+											the class.
+		@throws	XMLParserGeneratorException	if the XMLComponent class
+											cannot be generated.
+	*/
+	protected void createXMLComponentClass(File dir)
+	throws XMLParserGeneratorException
+	{
+		Log.debug("Creating the XMLComponent class");
+		DBC.REQUIRE(dir != null);
+		if (dir == null) {
+			return;
+		}
+
+		// Ensure that the directory exists
+		if (!dir.exists()) {
+			dir.mkdirs();
+		}
+
+		// Get the template
+		String messageFormatTemplate = loadCodeFragment(
+			"XML_COMPONENT_CLASS"
 		);
 		DBC.ASSERT(messageFormatTemplate != null);
 

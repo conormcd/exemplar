@@ -39,4 +39,12 @@ import com.mcdermottroe.exemplar.model.XMLContent;
 public class XMLContentTest
 extends XMLObjectTestCase<XMLContent>
 {
+	/** {@inheritDoc} */
+	@Override public void setUp()
+	throws Exception
+	{
+		super.setUp();
+
+		addSample(new XMLContent());
+	}
 }

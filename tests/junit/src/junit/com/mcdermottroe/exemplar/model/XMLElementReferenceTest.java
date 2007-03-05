@@ -29,8 +29,6 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
-import java.util.ArrayList;
-
 import com.mcdermottroe.exemplar.model.XMLElementReference;
 
 /** Test class for {@link XMLElementReference}.
@@ -45,10 +43,8 @@ extends XMLNamedObjectTestCase<XMLElementReference>
 	@Override public void setUp() throws Exception {
 		super.setUp();
 
-		sampleObjects = new ArrayList<XMLElementReference>();
-
-		sampleObjects.add(new XMLElementReference());
-		sampleObjects.add(new XMLElementReference("foo"));
-		sampleObjects.add(new XMLElementReference("bar"));
+		addSample(new XMLElementReference());
+		addSample(new XMLElementReference("foo"));
+		addSample(new XMLElementReference("bar"));
 	}
 }

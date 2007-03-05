@@ -29,7 +29,6 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -55,8 +54,6 @@ extends NormalClassTestCase<XMLDocumentType>
 	@Override public void setUp() throws Exception {
 		super.setUp();
 
-		sampleObjects = new ArrayList<XMLDocumentType>();
-
 		// Create some sample XMLMarkupDeclaration objects
 		XMLAttributeList attlist = new XMLAttributeList();
 		attlist.setName("testElement");
@@ -75,7 +72,7 @@ extends NormalClassTestCase<XMLDocumentType>
 		sampleMarkup.add(notation);
 
 		// No arg constructor.
-		sampleObjects.add(new XMLDocumentType());
+		addSample(new XMLDocumentType());
 
 		// XMLDocumentType(Collection) constructor
 		PowerSet<XMLMarkupDeclaration> perm;
@@ -84,7 +81,7 @@ extends NormalClassTestCase<XMLDocumentType>
 			XMLDocumentType doctype;
 			if (!(m.contains(attlist) && !m.contains(element))) {
 				doctype = new XMLDocumentType(m);
-				sampleObjects.add(doctype);
+				addSample(doctype);
 			}
 		}
 	}

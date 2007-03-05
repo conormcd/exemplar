@@ -29,7 +29,6 @@
 */
 package junit.com.mcdermottroe.exemplar.utils;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -55,10 +54,7 @@ extends NormalClassTestCase<PowerSet>
 		testSet.add("baz");
 		testSet.add("quux");
 
-		sampleObjects = new ArrayList<PowerSet>();
-		sampleObjects.add(new PowerSet());
-		sampleObjects.add(new PowerSet());
-		sampleObjects.add(new PowerSet<String>(testSet));
-		sampleObjects.add(new PowerSet<String>(testSet));
+		addSample(new PowerSet());
+		addSample(new PowerSet<String>(testSet));
 	}
 }

@@ -29,17 +29,17 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
+import com.mcdermottroe.exemplar.model.XMLObject;
+
 import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
 
-/** Parent class to all subclasses of {@link
-	com.mcdermottroe.exemplar.model.XMLObject}.
+/** Parent class to all subclasses of {@link XMLObject}.
 
-	@param	<T>	The type of {@link com.mcdermottroe.exemplar.model.XMLObject}
-			to test.
+	@param	<T>	The type of {@link XMLObject} to test.
 	@author	Conor McDermottroe
 	@since	0.2
 */
-public abstract class XMLObjectTestCase<T>
+public abstract class XMLObjectTestCase<T extends XMLObject>
 extends NormalClassTestCase<T>
 {
 }

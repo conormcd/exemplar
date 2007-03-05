@@ -29,8 +29,6 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
-import java.util.ArrayList;
-
 import com.mcdermottroe.exemplar.model.XMLExternalIdentifier;
 
 import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
@@ -47,15 +45,9 @@ extends NormalClassTestCase<XMLExternalIdentifier>
 	@Override public void setUp() throws Exception {
 		super.setUp();
 
-		sampleObjects = new ArrayList<XMLExternalIdentifier>();
-
-		sampleObjects.add(new XMLExternalIdentifier());
-		sampleObjects.add(new XMLExternalIdentifier());
-		sampleObjects.add(new XMLExternalIdentifier("foo", null));
-		sampleObjects.add(new XMLExternalIdentifier("foo", null));
-		sampleObjects.add(new XMLExternalIdentifier(null, "bar"));
-		sampleObjects.add(new XMLExternalIdentifier(null, "bar"));
-		sampleObjects.add(new XMLExternalIdentifier("baz", "quux"));
-		sampleObjects.add(new XMLExternalIdentifier("baz", "quux"));
+		addSample(new XMLExternalIdentifier());
+		addSample(new XMLExternalIdentifier("foo", null));
+		addSample(new XMLExternalIdentifier(null, "bar"));
+		addSample(new XMLExternalIdentifier("baz", "quux"));
 	}
 }

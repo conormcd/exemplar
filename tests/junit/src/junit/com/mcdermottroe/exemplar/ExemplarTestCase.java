@@ -37,10 +37,13 @@ import com.mcdermottroe.exemplar.ui.Options;
 
 /** A root class for all tests in Exemplar.
 
+	@param	<T>	The type of class being tested.
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public abstract class ExemplarTestCase extends TestCase {
+public abstract class ExemplarTestCase<T>
+extends TestCase
+{
 	/** The {@link Class} of the class which is being tested by the runtime 
 		type of this {@link ExemplarTestCase} object.
 	*/

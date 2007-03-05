@@ -31,7 +31,6 @@ package junit.com.mcdermottroe.exemplar.input.dtd;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.ArrayList;
 
 import com.mcdermottroe.exemplar.input.dtd.Lexer;
 
@@ -53,9 +52,8 @@ extends NormalClassTestCase<Lexer>
 
 		Reader nullReader = null;
 
-		sampleObjects = new ArrayList<Lexer>();
-		sampleObjects.add(new Lexer(nullReader));
-		sampleObjects.add(new Lexer(new InputStreamReader(System.in)));
-		sampleObjects.add(new Lexer(System.in));
+		addSample(new Lexer(nullReader));
+		addSample(new Lexer(new InputStreamReader(System.in)));
+		addSample(new Lexer(System.in));
 	}
 }

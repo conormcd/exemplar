@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2004, 2005, 2006
+	Copyright (c) 2004-2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,10 @@ import com.mcdermottroe.exemplar.ui.Options;
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public abstract class XMLParserSourceGenerator extends XMLParserGenerator {
+public abstract class XMLParserSourceGenerator
+extends XMLParserGenerator
+implements Cloneable
+{
 	/** The code fragments that the source generator will use. */
 	protected ResourceBundle codeFragments;
 
@@ -385,5 +388,16 @@ public abstract class XMLParserSourceGenerator extends XMLParserGenerator {
 		} else {
 			return loadCodeFragment(fragmentName);
 		}
+	}
+
+	/** Implement {@link Object#clone()}.
+
+		@return								A clone of this object.
+		@throws CloneNotSupportedException	if the clone cannot be created.
+	*/
+	@Override public Object clone()
+	throws CloneNotSupportedException
+	{
+		return super.clone();
 	}
 }

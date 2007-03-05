@@ -29,8 +29,6 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
-import java.util.ArrayList;
-
 import com.mcdermottroe.exemplar.model.XMLExternalIdentifier;
 import com.mcdermottroe.exemplar.model.XMLNotation;
 
@@ -45,39 +43,33 @@ extends XMLNamedObjectTestCase<XMLNotation>
 	/** {@inheritDoc} */
 	@Override public void setUp() throws Exception {
 		super.setUp();
-		sampleObjects = new ArrayList<XMLNotation>();
-		sampleObjects.add(new XMLNotation());
-		sampleObjects.add(
-			new XMLNotation("notationName", new XMLExternalIdentifier())
-		);
-		sampleObjects.add(
-			new XMLNotation("notationName", new XMLExternalIdentifier())
-		);
-		sampleObjects.add(
+		addSample(new XMLNotation());
+		addSample(new XMLNotation("notationName", new XMLExternalIdentifier()));
+		addSample(
 			new XMLNotation("otherNotation", new XMLExternalIdentifier())
 		);
-		sampleObjects.add(
+		addSample(
 			new XMLNotation(
 				"notationName",
 				new XMLExternalIdentifier("foo", "bar")
 			)
 		);
-		sampleObjects.add(
-			new XMLNotation(
-				"notationName",
-				new XMLExternalIdentifier("foo", "bar")
-			)
-		);
-		sampleObjects.add(
+		addSample(
 			new XMLNotation(
 				"notationName",
 				new XMLExternalIdentifier("foo", "baz")
 			)
 		);
-		sampleObjects.add(
+		addSample(
 			new XMLNotation(
 				"otherNotation",
 				new XMLExternalIdentifier("foo", "bar")
+			)
+		);
+		addSample(
+			new XMLNotation(
+				"otherNotation",
+				new XMLExternalIdentifier("foo", "baz")
 			)
 		);
 	}

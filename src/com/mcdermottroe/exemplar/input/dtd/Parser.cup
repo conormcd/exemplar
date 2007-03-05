@@ -42,6 +42,7 @@ import java_cup.runtime.Symbol;
 
 import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
+import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.input.InputModule;
 import com.mcdermottroe.exemplar.input.ParserException;
 import com.mcdermottroe.exemplar.model.XMLAlternative;
@@ -185,6 +186,48 @@ parser code {:
 		} else {
 			throw new ParserException("Failed to find entity referred to by \"" + entityRef + "\"");
 		}
+	}
+
+	/** Clone this {@link Parser}.
+
+		@return	A clone of this parser.
+	*/
+	public Object clone()
+	throws CloneNotSupportedException
+	{
+		Parser clone = (Parser)super.clone();
+		if (entityMap != null) {
+			clone.entityMap = new HashMap<String, XMLEntity>(entityMap);
+		} else {
+			clone.entityMap = null;
+		}
+		return clone;
+	}
+
+	/** Implement {@link Object#equals(Object)}.
+
+		@param	o	The other {@link Object} to compare against.
+		@return		True if this is equal to o.
+	*/
+	@Override public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null) {
+			return false;
+		}
+		if (!(o instanceof Parser)) {
+			return false;
+		}
+
+		Parser other = (Parser)o;
+		return	Utils.areAllDeeplyEqual(
+					production_table(),
+					other.production_table()
+				) &&
+				Utils.areAllDeeplyEqual(action_table(), other.action_table()) &&
+				Utils.areAllDeeplyEqual(reduce_table(), other.reduce_table()) &&
+				Utils.areDeeplyEqual(entityMap, other.entityMap);
 	}
 
 	/** {@inheritDoc} */

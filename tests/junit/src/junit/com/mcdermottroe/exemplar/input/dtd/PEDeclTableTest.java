@@ -29,9 +29,6 @@
 */
 package junit.com.mcdermottroe.exemplar.input.dtd;
 
-import java.util.ArrayList;
-
-import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.input.dtd.PEDeclTable;
 import com.mcdermottroe.exemplar.input.dtd.ParameterEntityException;
 import com.mcdermottroe.exemplar.ui.Message;
@@ -50,8 +47,7 @@ extends NormalClassTestCase<PEDeclTable>
 	public void setUp() throws Exception {
 		super.setUp();
 
-		sampleObjects = new ArrayList<PEDeclTable>();
-		sampleObjects.add(new PEDeclTable());
+		addSample(new PEDeclTable());
 	}
 
 	/** Basic adding and replacement test. The tests that
@@ -67,57 +63,60 @@ extends NormalClassTestCase<PEDeclTable>
 	public void testBasic() {
 		PEDeclTable pedt = new PEDeclTable();
 
-		String testOne = "Add an entity to the PEDeclTable.";
 		try {
 			pedt.addNewPE("foo", "bar", PEDeclTable.ParameterEntityType.VALUE);
 		} catch (ParameterEntityException e) {
-			DBC.IGNORED_EXCEPTION(e);
-			fail(testOne);
+			e.printStackTrace();
+			fail("Exception thrown when adding an entry to the PEDeclTable");
+			return;
 		}
 		assertEquals(
-			testOne,
+			"PEDeclTable contains 1,0 entries",
 			Message.DTDPEDECLTABLE(1, 0),
 			pedt.toString()
 		);
 
-		String testTwo = "Add another entity to the PEDeclTable.";
 		try {
 			pedt.addNewPE("bar", "baz", PEDeclTable.ParameterEntityType.VALUE);
 		} catch (ParameterEntityException e) {
-			DBC.IGNORED_EXCEPTION(e);
-			fail(testTwo);
+			e.printStackTrace();
+			fail("Exception thrown when adding an entry to the PEDeclTable");
+			return;
 		}
 		assertEquals(
-			testTwo,
+			"PEDeclTable contains 2,0 entries",
 			Message.DTDPEDECLTABLE(2, 0),
 			pedt.toString()
 		);
 
-		String testThree = "Replace the entities in a string.";
 		try {
 			String input = "foo%foo;bar%bar;";
 			String expected = "foobarbarbaz";
-			assertEquals(testThree, expected, pedt.replacePERefs(input));
+			assertEquals(
+				"PEs substituted correctly",
+				expected,
+				pedt.replacePERefs(input)
+			);
 		} catch (ParameterEntityException e) {
-			fail(testThree + e);
+			e.printStackTrace();
+			fail("Exception throws when resolving parameter entities");
+			return;
 		}
 
-		String testFour = "Attempt to replace a missing entity.";
 		try {
 			pedt.replacePERefs("foo%baz;bar");
-			fail(testFour);
+			fail("Substituting a non-existant PE did not throw an exception.");
 		} catch (ParameterEntityException e) {
-			DBC.IGNORED_EXCEPTION(e);
-			assertTrue(testFour, true);
+			assertTrue(
+				"Substituting a non-existant PE correctly threw an exception",
+				true
+			);
 		}
 	}
 
 	/** Test adding a parameter entity that points to a file. */
 	public void testFileEntity() {
 		PEDeclTable pedt = new PEDeclTable();
-		String test = "";
-		test += "Add an entity which is a URI reference ";
-		test += "and not an immedaite value.";
 		try {
 			pedt.addNewPE(
 				"foo",
@@ -125,11 +124,12 @@ extends NormalClassTestCase<PEDeclTable>
 				PEDeclTable.ParameterEntityType.URI
 			);
 		} catch (ParameterEntityException e) {
-			DBC.IGNORED_EXCEPTION(e);
-			fail(test);
+			e.printStackTrace();
+			fail("Failed to add a URI-type PE");
+			return;
 		}
 		assertEquals(
-			test,
+			"Successfully added a URI-type PE",
 			Message.DTDPEDECLTABLE(0, 1),
 			pedt.toString()
 		);

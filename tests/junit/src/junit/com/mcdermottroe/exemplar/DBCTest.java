@@ -44,16 +44,16 @@ public class DBCTest extends UtilityClassTestCase {
 	*/
 	public void testAssertTrue() {
 		DBC._setThrowImmediately(true);
-		String testName = "Testing that ASSERT(true) works";
 		try {
 			DBC.ASSERT(true);
 		} catch (AssertionError e) {
-			fail(testName);
+			e.printStackTrace();
+			fail("ASSERT(true) threw an AssertionError");
 			DBC._clearDelayedAssertation();
 			DBC._setThrowImmediately(false);
 			return;
 		}
-		assertTrue(testName, true);
+		assertTrue("ASSERT(true) works as expected", true);
 		DBC._clearDelayedAssertation();
 		DBC._setThrowImmediately(false);
 	}
@@ -64,16 +64,15 @@ public class DBCTest extends UtilityClassTestCase {
 	*/
 	public void testAssertFalse() {
 		DBC._setThrowImmediately(true);
-		String testName = "Testing that ASSERT(false) works";
 		try {
 			DBC.ASSERT(false);
 		} catch (AssertionError e) {
-			assertTrue(testName, true);
+			assertTrue("ASSERT(false) works as expected", true);
 			DBC._clearDelayedAssertation();
 			DBC._setThrowImmediately(false);
 			return;
 		}
-		fail(testName);
+		fail("ASSERT(false) did not throw an AssertionError");
 		DBC._clearDelayedAssertation();
 		DBC._setThrowImmediately(false);
 	}
@@ -85,11 +84,13 @@ public class DBCTest extends UtilityClassTestCase {
 	public void testDelayedAssert() {
 		DBC._setThrowImmediately(false);
 		Options.set("debug", "false");
-		String testName = "Testing the delayed assertion mechanism.";
 		try {
 			DBC.ASSERT(false);
 		} catch (AssertionError e) {
-			fail(testName);
+			fail(
+				"ASSERT(false) with debugging turned off threw" +
+				" an AssertionError"
+			);
 			DBC._clearDelayedAssertation();
 			return;
 		}
@@ -98,11 +99,14 @@ public class DBCTest extends UtilityClassTestCase {
 		try {
 			DBC.ASSERT(true);
 		} catch (AssertionError e) {
-			assertTrue(testName, true);
+			assertTrue(
+				"ASSERT(true) triggered the delayed AssertionError", 
+				true
+			);
 			DBC._clearDelayedAssertation();
 			return;
 		}
-		fail(testName);
+		fail("ASSERT(true) failed to set off the delayed AssertionError");
 		DBC._setThrowImmediately(false);
 		DBC._clearDelayedAssertation();
 	}

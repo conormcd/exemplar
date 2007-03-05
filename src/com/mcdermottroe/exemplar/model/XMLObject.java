@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2004, 2005, 2006
+	Copyright (c) 2004-2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,20 @@ import com.mcdermottroe.exemplar.Constants;
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public abstract class XMLObject {
+public abstract class XMLObject
+implements Cloneable
+{
+	/** Clone this {@link XMLObject}.
+
+		@return								A clone of this object.
+		@throws	CloneNotSupportedException	if the clone fails.
+	*/
+	public Object clone()
+	throws CloneNotSupportedException
+	{
+		return super.clone();
+	}
+
 	/** See {@link Object#equals(Object)}.
 
 		@param	o	The object to compare against.

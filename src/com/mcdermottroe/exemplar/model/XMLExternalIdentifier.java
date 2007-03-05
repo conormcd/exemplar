@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2004, 2005, 2006
+	Copyright (c) 2004-2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,9 @@ import com.mcdermottroe.exemplar.Utils;
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class XMLExternalIdentifier {
+public class XMLExternalIdentifier
+implements Cloneable
+{
 	/** The public ID portion of the external identifier. */
 	private String publicID;
 
@@ -76,6 +78,20 @@ public class XMLExternalIdentifier {
 	*/
 	public String systemID() {
 		return systemID;
+	}
+
+	/** Clone this {@link XMLExternalIdentifier}.
+
+		@return								A clone of this object
+		@throws	CloneNotSupportedException	if the clone operation fails.
+	*/
+	@Override public Object clone()
+	throws CloneNotSupportedException
+	{
+		XMLExternalIdentifier clone = (XMLExternalIdentifier)super.clone();
+		clone.systemID = systemID;
+		clone.publicID = publicID;
+		return clone;
 	}
 
 	/** See {@link Object#toString()}.

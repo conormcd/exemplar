@@ -29,8 +29,6 @@
 */
 package junit.com.mcdermottroe.exemplar.input.dtd;
 
-import java.util.ArrayList;
-
 import com.mcdermottroe.exemplar.input.dtd.Parser;
 
 import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
@@ -47,8 +45,7 @@ extends NormalClassTestCase<Parser>
 	@Override public void setUp() throws Exception {
 		super.setUp();
 
-		sampleObjects = new ArrayList<Parser>();
-		sampleObjects.add(new Parser());
+		addSample(new Parser());
 
 		ignoreHashCodeTests = true;
 	}

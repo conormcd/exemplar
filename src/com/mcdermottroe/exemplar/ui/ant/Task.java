@@ -61,7 +61,7 @@ import com.mcdermottroe.exemplar.ui.Options;
 */
 public class Task
 extends org.apache.tools.ant.Task
-implements Constants.UI.Ant
+implements Cloneable, Constants.UI.Ant
 {
 	/** Any errors encountered will be added to this list and this list will be
 		flushed periodically.
@@ -453,6 +453,19 @@ implements Constants.UI.Ant
 
 		Log.error(message, e);
 		throw new BuildException("");
+	}
+
+	/** Clone this {@link Task}.
+
+		@return								A clone of this object.
+		@throws CloneNotSupportedException	if the clone cannot be created.
+	*/
+	public Object clone()
+	throws CloneNotSupportedException
+	{
+		Task clone = (Task)super.clone();
+		clone.errors = new ArrayList<String>(errors);
+		return clone;
 	}
 
 	/** See {@link Object#equals(Object)}.

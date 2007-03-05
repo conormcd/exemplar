@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2004, 2005, 2006, 2007
+	Copyright (c) 2004-2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -45,7 +45,9 @@ import com.mcdermottroe.exemplar.ui.Message;
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class XMLDocumentType {
+public class XMLDocumentType
+implements Cloneable
+{
 	/** Enum value for {@link XMLDocumentType}s which define elements with
 		attribute lists.
 	*/
@@ -334,6 +336,58 @@ public class XMLDocumentType {
 	public Map<String, XMLMarkupDeclaration> notations() {
 		DBC.REQUIRE(notations != null);
 		return new HashMap<String, XMLMarkupDeclaration>(notations);
+	}
+
+	/** Implement {@link Object#clone()}.
+
+		@return								A clone of this object.
+		@throws CloneNotSupportedException	if the clone cannot be created.
+	*/
+	@Override public Object clone()
+	throws CloneNotSupportedException
+	{
+		XMLDocumentType clone = (XMLDocumentType)super.clone();
+		if (markupDecls != null) {
+			clone.markupDecls = new ArrayList<XMLMarkupDeclaration>(
+				markupDecls
+			);
+		} else {
+			clone.markupDecls = null;
+		}
+		if (feature != null) {
+			clone.feature = new HashMap<Integer, Boolean>(feature);
+		} else {
+			clone.feature = null;
+		}
+		if (elements != null) {
+			clone.elements = new HashMap<String, XMLMarkupDeclaration>(
+				elements
+			);
+		} else {
+			clone.elements = null;
+		}
+		if (attlists != null) {
+			clone.attlists = new HashMap<String, XMLMarkupDeclaration>(
+				attlists
+			);
+		} else {
+			clone.attlists = null;
+		}
+		if (entities != null) {
+			clone.entities = new HashMap<String, XMLMarkupDeclaration>(
+				entities
+			);
+		} else {
+			clone.entities = null;
+		}
+		if (notations != null) {
+			clone.notations = new HashMap<String, XMLMarkupDeclaration>(
+				notations
+			);
+		} else {
+			clone.notations = null;
+		}
+		return clone;
 	}
 
 	/** See {@link Object#equals(Object)}.

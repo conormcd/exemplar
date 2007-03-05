@@ -29,8 +29,6 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
-import java.util.ArrayList;
-
 import com.mcdermottroe.exemplar.model.XMLElement;
 import com.mcdermottroe.exemplar.model.XMLMixedContent;
 import com.mcdermottroe.exemplar.model.XMLSequence;
@@ -47,14 +45,12 @@ extends XMLNamedObjectTestCase<XMLElement>
 	@Override public void setUp() throws Exception {
 		super.setUp();
 
-		sampleObjects = new ArrayList<XMLElement>();
-
-		sampleObjects.add(new XMLElement());
-		sampleObjects.add(new XMLElement(XMLElement.ContentType.EMPTY));
-		sampleObjects.add(new XMLElement(XMLElement.ContentType.ANY));
-		sampleObjects.add(new XMLElement(XMLElement.ContentType.MIXED));
-		sampleObjects.add(new XMLElement(XMLElement.ContentType.CHILDREN));
-		sampleObjects.add(new XMLElement(new XMLMixedContent()));
-		sampleObjects.add(new XMLElement(new XMLSequence()));
+		addSample(new XMLElement());
+		addSample(new XMLElement(XMLElement.ContentType.EMPTY));
+		addSample(new XMLElement(XMLElement.ContentType.ANY));
+		addSample(new XMLElement(XMLElement.ContentType.MIXED));
+		addSample(new XMLElement(XMLElement.ContentType.CHILDREN));
+		addSample(new XMLElement(new XMLMixedContent()));
+		addSample(new XMLElement(new XMLSequence()));
 	}
 }

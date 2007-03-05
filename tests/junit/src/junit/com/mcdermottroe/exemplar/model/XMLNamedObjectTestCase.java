@@ -29,9 +29,6 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.mcdermottroe.exemplar.model.XMLNamedObject;
 
 /** Parent class to all subclasses of {@link XMLNamedObject}.
@@ -40,7 +37,7 @@ import com.mcdermottroe.exemplar.model.XMLNamedObject;
 	@author	Conor McDermottroe
 	@since	0.2
 */
-public abstract class XMLNamedObjectTestCase<T>
+public abstract class XMLNamedObjectTestCase<T extends XMLNamedObject>
 extends XMLObjectTestCase<T>
 {
 	/** {@inheritDoc} */
@@ -50,38 +47,15 @@ extends XMLObjectTestCase<T>
 
 	/** Test that it is possible to both name and re-name a named object. */
 	public void testNamingWorks() {
-		String testName = "XMLNamedObjects must be nameable and renameable.";
-
-		// Fill up the samples
-		List<XMLNamedObject> samples = new ArrayList<XMLNamedObject>();
-		if (sampleObjects != null) {
-			for (Object o : sampleObjects) {
-				if (o instanceof XMLNamedObject) {
-					samples.add((XMLNamedObject)o);
-				} else {
-					fail(testName);
-					return;
-				}
-			}
-		} else {
-			try {
-				samples.add((XMLNamedObject)testedClass.newInstance());
-			} catch (IllegalAccessException e) {
-				fail(testName);
-				return;
-			} catch (InstantiationException e) {
-				fail(testName);
-				return;
-			}
-		}
-
 		// Now test the samples
-		for (XMLNamedObject obj : samples) {
-			String originalName = obj.getName();
-			obj.setName("test");
-			assertEquals(testName, "test", obj.getName());
-			obj.setName(originalName);
-			assertEquals(testName, originalName, obj.getName());
+		for (XMLNamedObject obj : samples()) {
+			if (obj != null) {
+				String originalName = obj.getName();
+				obj.setName("test");
+				assertEquals("Setting name to test", "test", obj.getName());
+				obj.setName(originalName);
+				assertEquals("Resetting old name", originalName, obj.getName());
+			}
 		}
 	}
 }

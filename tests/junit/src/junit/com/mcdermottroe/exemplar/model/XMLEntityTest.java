@@ -29,8 +29,6 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
-import java.util.ArrayList;
-
 import com.mcdermottroe.exemplar.model.XMLEntity;
 import com.mcdermottroe.exemplar.model.XMLExternalIdentifier;
 
@@ -46,13 +44,10 @@ extends XMLNamedObjectTestCase<XMLEntity>
 	@Override public void setUp() throws Exception {
 		super.setUp();
 
-		sampleObjects = new ArrayList<XMLEntity>();
-
-		sampleObjects.add(new XMLEntity());
-		sampleObjects.add(new XMLEntity("value"));
-		sampleObjects.add(new XMLEntity("value"));
-		sampleObjects.add(new XMLEntity(new XMLExternalIdentifier()));
-		sampleObjects.add(
+		addSample(new XMLEntity());
+		addSample(new XMLEntity("value"));
+		addSample(new XMLEntity(new XMLExternalIdentifier()));
+		addSample(
 			new XMLEntity(
 				new XMLExternalIdentifier("foo", "bar")
 			)

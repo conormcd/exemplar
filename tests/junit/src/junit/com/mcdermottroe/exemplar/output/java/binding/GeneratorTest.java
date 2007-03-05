@@ -41,4 +41,12 @@ import junit.com.mcdermottroe.exemplar.output.XMLParserSourceGeneratorTestCase;
 public class GeneratorTest
 extends XMLParserSourceGeneratorTestCase<Generator>
 {
+	/** {@inheritDoc} */
+	@Override public void setUp()
+	throws Exception
+	{
+		super.setUp();
+
+		addSample(new Generator());
+	}
 }

@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -42,29 +42,32 @@ public class UtilsTest extends UtilityClassTestCase {
 	/** Basic sanity check for {@link Utils#formatMessage(String, Object...)}.
 	*/
 	public void testFormatMessageOneArg() {
-		String testName = "Testing formatMessage(String, Object)";
-
 		String formatString = "{0}";
 		String variable = "variable";
 		if (variable.equals(Utils.formatMessage(formatString, variable))) {
-			assertTrue(testName, true);
+			assertTrue(
+				"Utils.formatMessage(String, Object) works as expected",
+				true
+			);
 		} else {
-			fail(testName);
+			fail("Bad result from Utils.formatMessage(String, Object)");
 		}
 	}
 
 	/** Basic sanity check for {@link Utils#formatMessage(String, Object...)}.
 	*/
 	public void testFormatMessageManyArgs() {
-		String testName = "Testing formatMessage(String, Object...)";
-
 		String formatMessage = "{{0}{}{1,date,long}}";
 		String result = Utils.formatMessage(formatMessage, "foo", 0);
 		String expectedResult =	"{foo{}" +
 								MessageFormat.format("{0,date,long}", 0) +
 								"}";
 
-		assertEquals(testName, expectedResult, result);
+		assertEquals(
+			"Utils.formatMessage(String, Object...)",
+			expectedResult,
+			result
+		);
 	}
 
 	/** Some basic tests for the method {@link

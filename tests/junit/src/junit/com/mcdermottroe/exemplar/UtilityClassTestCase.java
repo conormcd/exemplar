@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -49,23 +49,25 @@ public abstract class UtilityClassTestCase extends ExemplarTestCase {
 			return;
 		}
 
-		String testName = "There must be one, private, no-arg constructor.";
 		Constructor[] constructors = testedClass.getDeclaredConstructors();
 
 		// Make sure there's only one.
 		if (constructors.length != 1) {
-			fail(testName);
+			fail("There is more or less than one constructor");
 			return;
 		}
 
 		// Make sure that it's private.
 		if (!(Modifier.isPrivate(constructors[0].getModifiers()))) {
-			fail(testName);
+			fail("The constructor is not private");
 			return;
 		}
 
 		// Make sure that it's a no-arg constructor.
-		assertTrue(testName, constructors[0].getParameterTypes().length == 0);
+		assertTrue(
+			"The constructor takes no arguments",
+			constructors[0].getParameterTypes().length == 0
+		);
 	}
 
 	/** All of the fields in a utility class must be declared static. */
@@ -74,14 +76,13 @@ public abstract class UtilityClassTestCase extends ExemplarTestCase {
 			return;
 		}
 
-		String testName = "All fields in the class must be static.";
 		for (Field field : testedClass.getDeclaredFields()) {
 			if (!(Modifier.isStatic(field.getModifiers()))) {
-				fail(testName);
+				fail(field.getName() + " is not static");
 				return;
 			}
 		}
-		assertTrue(testName, true);
+		assertTrue("All fields are static", true);
 	}
 
 	/** All of the methods in a utility class must be declared static. */
@@ -90,13 +91,12 @@ public abstract class UtilityClassTestCase extends ExemplarTestCase {
 			return;
 		}
 
-		String testName = "All methods in the class must be static.";
 		for (Method method : testedClass.getDeclaredMethods()) {
 			if (!(Modifier.isStatic(method.getModifiers()))) {
-				fail(testName);
+				fail(method.getName() + " is not static");
 				return;
 			}
 		}
-		assertTrue(testName, true);
+		assertTrue("All methods are static", true);
 	}
 }

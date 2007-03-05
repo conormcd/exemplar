@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2004, 2005, 2006
+	Copyright (c) 2004-2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -45,7 +45,7 @@ import com.mcdermottroe.exemplar.ui.Message;
 	@since	0.1
 */
 public class XMLAttribute
-implements Comparable<XMLAttribute>
+implements Cloneable, Comparable<XMLAttribute>
 {
 	/** Enumerated type for the content types of XML attributes. */
 	public enum ContentType {
@@ -310,6 +310,26 @@ implements Comparable<XMLAttribute>
 	*/
 	public int compareTo(XMLAttribute other) {
 		return name.compareTo(other.getName());
+	}
+
+	/** Implement {@link Object#clone()}.
+
+		@return								A clone of this object.
+		@throws CloneNotSupportedException	if the clone cannot be created.
+	*/
+	@Override public Object clone()
+	throws CloneNotSupportedException
+	{
+		XMLAttribute clone = (XMLAttribute)super.clone();
+		clone.name = name;
+		clone.attributeType = attributeType;
+		clone.values = null;
+		if (values != null) {
+			clone.values = new ArrayList<String>(values);
+		}
+		clone.defaultDeclType = defaultDeclType;
+		clone.defaultValue = defaultValue;
+		return clone;
 	}
 
 	/** See {@link Object#equals(Object)}.

@@ -58,7 +58,7 @@ public interface Constants {
 		an error to modify the contents of this array from code.
 	*/
 	String[] COPYRIGHT_MESSAGE = {
-		"Copyright (c) 2003-2006",
+		"Copyright (c) 2003-2007",
 		"Conor McDermottroe. All rights reserved.",
 		"See LICENSE and README files for licensing information.",
 	};
@@ -83,7 +83,7 @@ public interface Constants {
 	/** The default message that is displayed if something really screws up in
 		the localisation process. This <i>should</i> never be seen by users.
 	*/
-	String DEFAULT_MESSAGE =	"An error occurred before any diagnostic" +
+	String DEFAULT_MESSAGE =	"An error occurred before any diagnostic " +
 								"messages could be loaded.";
 
 	/** A close approximation to infinity. :-) */

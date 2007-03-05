@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2003-2006
+	Copyright (c) 2003-2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -53,7 +53,9 @@ import com.mcdermottroe.exemplar.ui.Message;
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class PEDeclTable {
+public class PEDeclTable
+implements Cloneable
+{
 	/** Enumerated type for the type of parameter entity this is. */
 	public enum ParameterEntityType {
 		/** A parameter entity having an immediate value. */
@@ -331,6 +333,20 @@ public class PEDeclTable {
 		}
 
 		return text;
+	}
+
+	/** Clone this {@link PEDeclTable}.
+
+		@return								A clone of this object.
+		@throws CloneNotSupportedException	if the clone cannot be made.
+	*/
+	public Object clone()
+	throws CloneNotSupportedException
+	{
+		PEDeclTable clone = (PEDeclTable)super.clone();
+		clone.table = new HashMap<String, String>(table);
+		clone.fileTable = new HashMap<String, String>(fileTable);
+		return clone;
 	}
 
 	/** See {@link Object#toString()}.

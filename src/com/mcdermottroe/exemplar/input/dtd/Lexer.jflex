@@ -1,6 +1,6 @@
 // vim:filetype=jflex:ts=4
 /*
-	Copyright (c) 2003-2006
+	Copyright (c) 2003-2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -29,8 +29,6 @@
 */
 package com.mcdermottroe.exemplar.input.dtd;
 
-/* A description of the lexical analyser for DTDs.
-*/
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -40,6 +38,7 @@ import java_cup.runtime.Symbol;
 
 import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
+import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.input.LexerException;
 import com.mcdermottroe.exemplar.ui.Message;
 
@@ -263,6 +262,54 @@ import com.mcdermottroe.exemplar.ui.Message;
 			throw new ParameterEntityException(Message.DTDPE_INVALID_PEDECL);
 		}
 	}
+
+	/** Implement {@link Object#clone}.
+
+		@return A clone of this {@link Lexer}.
+	*/
+	public Object clone()
+	throws CloneNotSupportedException
+	{
+		Lexer clone = (Lexer)super.clone();
+		return clone;
+	}
+
+	/** Implement {@link Object#equals(Object)}.
+
+		@param	o	The other {@link Object} to test against.
+		@return		True if <code>this</code> is equal to <code>o</code>.
+	*/
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null) {
+			return false;
+		}
+		if (!(o instanceof Lexer)) {
+			return false;
+		}
+
+		Lexer other = (Lexer)o;
+		return	Utils.areDeeplyEqual(dtdPath, other.dtdPath) &&
+				Utils.areDeeplyEqual(pedeclTable, other.pedeclTable) &&
+				Utils.areDeeplyEqual(
+					conditionalSectionState,
+					other.conditionalSectionState
+				);
+	}
+
+	/** Implement {@link Object#hashCode()}.
+
+		@return	A hash code for this object.
+	*/
+	public int hashCode() {
+		return Utils.genericHashCode(
+			dtdPath,
+			pedeclTable,
+			conditionalSectionState
+		);
+	}
 %}
 %public
 %init{
@@ -273,7 +320,7 @@ conditionalSectionState.push("INCLUDE");
 %yylexthrow{
 LexerException, ParameterEntityException
 %yylexthrow}
-%implements Constants.XMLExternalIdentifier
+%implements Cloneable, Constants.XMLExternalIdentifier
 %unicode
 %cup
 %state YYIGNORE
