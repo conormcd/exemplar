@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2004, 2005, 2006
+	Copyright (c) 2004-2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,7 @@ import java.util.List;
 import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
+import com.mcdermottroe.exemplar.utils.Strings;
 
 /** An {@link XMLObject} which represents attribute lists.
 
@@ -101,7 +102,7 @@ implements XMLMarkupDeclaration, Iterable<XMLAttribute>
 
 		StringBuilder desc = new StringBuilder();
 		desc.append(Constants.Character.LEFT_PAREN);
-		desc.append(Utils.join(sep, this));
+		desc.append(Strings.join(sep, this));
 		desc.append(Constants.Character.RIGHT_PAREN);
 
 		return XMLObject.toStringHelper(getClass().getName(), desc.toString());

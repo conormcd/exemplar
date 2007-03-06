@@ -38,7 +38,6 @@ import java.util.TreeMap;
 
 import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
-import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.model.XMLAlternative;
 import com.mcdermottroe.exemplar.model.XMLAttribute;
 import com.mcdermottroe.exemplar.model.XMLAttributeList;
@@ -60,6 +59,7 @@ import com.mcdermottroe.exemplar.output.XMLParserSourceGenerator;
 import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.Options;
+import com.mcdermottroe.exemplar.utils.Strings;
 
 /** A class which generates a DTD for this XML vocabulary.
 
@@ -106,7 +106,7 @@ implements Constants.XMLExternalIdentifier
 		DBC.ASSERT(vocabulary != null);
 		File outputFile = new File(
 			sourceDirectory,
-			Utils.formatMessage(
+			Strings.formatMessage(
 				Constants.Output.DTD.FILE_FMT,
 				vocabulary
 			)
@@ -151,7 +151,7 @@ implements Constants.XMLExternalIdentifier
 			// Output the element declaration
 			Log.debug("Creating element declaration for " + elementName);
 			elementDecls.append(
-				Utils.formatMessage(
+				Strings.formatMessage(
 					elementDecl,
 					elementName,
 					contentSpec.toString()
@@ -187,7 +187,7 @@ implements Constants.XMLExternalIdentifier
 
 						declTail.append(Constants.Character.LEFT_PAREN);
 						declTail.append(
-							Utils.join(
+							Strings.join(
 								Constants.Character.PIPE,
 								att.getValues()
 							)
@@ -233,7 +233,7 @@ implements Constants.XMLExternalIdentifier
 							elementName
 				);
 				elementDecls.append(
-					Utils.formatMessage(
+					Strings.formatMessage(
 						attlistDecl,
 						elementName,
 						declTail.toString()
@@ -291,7 +291,7 @@ implements Constants.XMLExternalIdentifier
 
 			Log.debug("Creating entity declaration for " + entityName);
 			entityDecls.append(
-				Utils.formatMessage(
+				Strings.formatMessage(
 					entityDecl,
 					entityName,
 					entityDeclTail.toString()
@@ -330,7 +330,7 @@ implements Constants.XMLExternalIdentifier
 
 			Log.debug("Creating notation declaration for " + notationName);
 			notationDecls.append(
-				Utils.formatMessage(
+				Strings.formatMessage(
 					notationDecl,
 					notationName,
 					pubOrSys,
@@ -343,7 +343,7 @@ implements Constants.XMLExternalIdentifier
 		try {
 			Log.debug("Writing built DTD to " + outputFile);
 			OutputUtils.writeStringToFile(
-				Utils.formatMessage(
+				Strings.formatMessage(
 					dtdFile,
 					vocabulary,
 					Constants.PROGRAM_NAME,
@@ -470,7 +470,7 @@ implements Constants.XMLExternalIdentifier
 			String sep =	String.valueOf(Constants.Character.COMMA) +
 							Constants.Character.SPACE;
 			ret.append(Constants.Character.LEFT_PAREN);
-			ret.append(Utils.join(sep, contentSpecs));
+			ret.append(Strings.join(sep, contentSpecs));
 			ret.append(Constants.Character.RIGHT_PAREN);
 
 			// Now put the ?, + or * on where appropriate
@@ -501,7 +501,7 @@ implements Constants.XMLExternalIdentifier
 							Constants.Character.PIPE +
 							Constants.Character.SPACE;
 			ret.append(Constants.Character.LEFT_PAREN);
-			ret.append(Utils.join(sep, contentSpecs));
+			ret.append(Strings.join(sep, contentSpecs));
 			ret.append(Constants.Character.RIGHT_PAREN);
 		} else if (o instanceof XMLMixedContent) {
 			XMLMixedContent mixed = (XMLMixedContent)o;

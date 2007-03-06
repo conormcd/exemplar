@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2004, 2005, 2006
+	Copyright (c) 2004-2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,6 @@ import java.util.Map;
 
 import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
-import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.model.XMLAttribute;
 import com.mcdermottroe.exemplar.model.XMLAttributeList;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
@@ -45,6 +44,7 @@ import com.mcdermottroe.exemplar.output.XMLParserGeneratorException;
 import com.mcdermottroe.exemplar.output.XMLParserSourceGenerator;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.Options;
+import com.mcdermottroe.exemplar.utils.Strings;
 
 /** A class which generates skeleton XSLT for this XML vocabulary.
 
@@ -89,7 +89,7 @@ public class Generator extends XMLParserSourceGenerator {
 		DBC.ASSERT(vocabulary != null);
 		File outputFile = new File(
 			sourceDirectory,
-			Utils.formatMessage(
+			Strings.formatMessage(
 				Constants.Output.XSLT.FILE_FMT,
 				vocabulary
 			)
@@ -121,7 +121,7 @@ public class Generator extends XMLParserSourceGenerator {
 						String attName = att.getName();
 						DBC.ASSERT(attName != null);
 						attributeMatchers.append(
-							Utils.formatMessage(
+							Strings.formatMessage(
 								attributeTemplate,
 								attName
 							)
@@ -132,7 +132,7 @@ public class Generator extends XMLParserSourceGenerator {
 
 			// Make the element matcher
 			body.append(
-				Utils.formatMessage(
+				Strings.formatMessage(
 					elementTemplate,
 					elementName,
 					attributeMatchers.toString()
@@ -142,7 +142,7 @@ public class Generator extends XMLParserSourceGenerator {
 
 		body.delete(0, body.length());
 		body.append(
-			Utils.formatMessage(
+			Strings.formatMessage(
 				stylesheet,
 				Constants.PROGRAM_NAME,
 				timestamp,

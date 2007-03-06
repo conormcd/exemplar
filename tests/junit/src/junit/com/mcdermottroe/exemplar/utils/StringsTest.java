@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006, 2007
+	Copyright (c) 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -27,37 +27,48 @@
 	NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package junit.com.mcdermottroe.exemplar;
+package junit.com.mcdermottroe.exemplar.utils;
 
-import com.mcdermottroe.exemplar.Utils;
+import java.text.MessageFormat;
 
-/** Test class for {@link com.mcdermottroe.exemplar.Utils}.
+import com.mcdermottroe.exemplar.utils.Strings;
+
+import junit.com.mcdermottroe.exemplar.UtilityClassTestCase;
+
+/** Test class for {@link Strings}.
 
 	@author	Conor McDermottroe
-	@since	0.1
+	@since	0.2
 */
-public class UtilsTest extends UtilityClassTestCase {
-	/** Some basic tests for the method {@link
-		Utils#xmlStringToJavaCanonicalForm(String)}.
+public class StringsTest extends UtilityClassTestCase {
+	/** Basic sanity check for {@link Strings.formatMessage(String, Object...)}.
 	*/
-	public void testXmlStringToJavaCanonicalForm() {
-		String[] input = {
-			"foo & bar",
-			"&&#x0026;&",
-			"&&#0038;&",
-		};
-		String[] expectedOutput = {
-			"\\u0066\\u006f\\u006f\\u0020\\u0026\\u0020\\u0062\\u0061\\u0072",
-			"\\u0026\\u0026\\u0026",
-			"\\u0026\\u0026\\u0026",
-		};
-		assertEquals("Malformed test", input.length, expectedOutput.length);
-		for (int i = 0; i < input.length; i++) {
-			assertEquals(
-				input[i],
-				expectedOutput[i],
-				Utils.xmlStringToJavaCanonicalForm(input[i])
+	public void testFormatMessageOneArg() {
+		String formatString = "{0}";
+		String variable = "variable";
+		if (variable.equals(Strings.formatMessage(formatString, variable))) {
+			assertTrue(
+				"Strings.formatMessage(String, Object) works as expected",
+				true
 			);
+		} else {
+			fail("Bad result from Strings.formatMessage(String, Object)");
 		}
+	}
+
+	/** Basic sanity check for {@link Strings.formatMessage(String, Object...)}.
+	*/
+	public void testFormatMessageManyArgs() {
+		String formatMessage = "{{0}{}{1,date,long}}";
+		String result = Strings.formatMessage(formatMessage, "foo", 0);
+		String expectedResult =	"{foo{}" +
+								MessageFormat.format("{0,date,long}", 0) +
+								"}";
+
+		assertEquals(
+			"Strings.formatMessage(String, Object...)",
+			expectedResult,
+			result
+		);
 	}
 }

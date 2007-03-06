@@ -37,7 +37,7 @@ import java.util.ResourceBundle;
 
 import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
-import com.mcdermottroe.exemplar.Utils;
+import com.mcdermottroe.exemplar.utils.Strings;
 
 /** A class to contain all the localised versions of messages produced by the 
 	program. The text of the messages is loaded from a .properties file.
@@ -316,7 +316,10 @@ public final class Message {
 		if (methodName == null) {
 			return null;
 		}
-		return Utils.formatMessage(ANT_EXTRA_METHOD_MESSAGE_FORMAT, methodName);
+		return Strings.formatMessage(
+			ANT_EXTRA_METHOD_MESSAGE_FORMAT,
+			methodName
+		);
 	}
 
 	/** Complain that a method implementing a UI option is not implemented in
@@ -331,7 +334,7 @@ public final class Message {
 		if (methodName == null) {
 			return null;
 		}
-		return Utils.formatMessage(
+		return Strings.formatMessage(
 			ANT_MISSING_METHOD_MESSAGE_FORMAT,
 			methodName
 		);
@@ -351,7 +354,7 @@ public final class Message {
 		if (reason == null || caller == null) {
 			return null;
 		}
-		return Utils.formatMessage(
+		return Strings.formatMessage(
 			ASSERTION_MESSAGE_MESSAGE_FORMAT,
 			reason,
 			caller
@@ -371,7 +374,7 @@ public final class Message {
 		if (className == null || methodName == null) {
 			return null;
 		}
-		return Utils.formatMessage(
+		return Strings.formatMessage(
 			DEBUG_CLASS_AND_METHOD_MESSAGE_FORMAT,
 			className,
 			methodName
@@ -390,7 +393,7 @@ public final class Message {
 		if (fileName == null) {
 			return null;
 		}
-		return Utils.formatMessage(
+		return Strings.formatMessage(
 			DTDLEXER_INPUT_NOT_FOUND_MESSAGE_FORMAT,
 			fileName
 		);
@@ -407,7 +410,7 @@ public final class Message {
 							#DTDPEDECLTABLE_MESSAGE_FORMAT}
 	*/
 	public static String DTDPEDECLTABLE(int peDecl, int uriPeDecl) {
-		return Utils.formatMessage(
+		return Strings.formatMessage(
 			DTDPEDECLTABLE_MESSAGE_FORMAT,
 			peDecl,
 			uriPeDecl
@@ -427,7 +430,7 @@ public final class Message {
 		if (s == null || context == null) {
 			return null;
 		}
-		return Utils.formatMessage(DTDPEEXCEPTION_MESSAGE_FORMAT, s, context);
+		return Strings.formatMessage(DTDPEEXCEPTION_MESSAGE_FORMAT, s, context);
 	}
 
 	/** A reference to an undeclared parameter entity literal was encountered.
@@ -441,7 +444,7 @@ public final class Message {
 		if (peName == null) {
 			return null;
 		}
-		return Utils.formatMessage(DTDPE_UNDECLARED_PE_MESSAGE_FORMAT, peName);
+		return Strings.formatMessage(DTDPE_UNDECLARED_PE_MESSAGE_FORMAT, peName);
 	}
 
 	/** A write to a file failed for some reason.
@@ -455,7 +458,7 @@ public final class Message {
 		if (filename == null) {
 			return null;
 		}
-		return Utils.formatMessage(FILE_WRITE_FAILED_MESSAGE_FORMAT, filename);
+		return Strings.formatMessage(FILE_WRITE_FAILED_MESSAGE_FORMAT, filename);
 	}
 
 	/** An {@link java.io.IOException} occurred when writing to a file.
@@ -470,7 +473,7 @@ public final class Message {
 		if (filename == null) {
 			return null;
 		}
-		return Utils.formatMessage(
+		return Strings.formatMessage(
 			FILE_WRITE_IO_EXCEPTION_MESSAGE_FORMAT,
 			filename
 		);
@@ -487,7 +490,7 @@ public final class Message {
 		if (directory == null) {
 			return null;
 		}
-		return Utils.formatMessage(
+		return Strings.formatMessage(
 			GEN_NO_SUCH_DIRECTORY_MESSAGE_FORMAT,
 			directory
 		);
@@ -507,7 +510,7 @@ public final class Message {
 		if (fieldOrMethod == null || className == null) {
 			return null;
 		}
-		return Utils.formatMessage(
+		return Strings.formatMessage(
 			GENERIC_SECURITY_EXCEPTION_MESSAGE_FORMAT,
 			fieldOrMethod,
 			className
@@ -529,7 +532,7 @@ public final class Message {
 		if (s == null || context == null) {
 			return null;
 		}
-		return Utils.formatMessage(LEXEREXCEPTION_MESSAGE_FORMAT, s, context);
+		return Strings.formatMessage(LEXEREXCEPTION_MESSAGE_FORMAT, s, context);
 	}
 
 	/** A localisation error occurred.
@@ -542,7 +545,7 @@ public final class Message {
 		if (s == null) {
 			return null;
 		}
-		return Utils.formatMessage(LOCALISATION_ERROR_MESSAGE_FORMAT, s);
+		return Strings.formatMessage(LOCALISATION_ERROR_MESSAGE_FORMAT, s);
 	}
 
 	/** There's an entry in the messages properties file which has no
@@ -561,7 +564,7 @@ public final class Message {
 			return null;
 		}
 
-		return Utils.formatMessage(
+		return Strings.formatMessage(
 			MESSAGE_EXTRA_BUNDLE_ENTRY_MESSAGE_FORMAT,
 			entryName,
 			thisClass
@@ -579,7 +582,7 @@ public final class Message {
 		if (s == null) {
 			return null;
 		}
-		return Utils.formatMessage(MESSAGE_MISSING_MESSAGE_FORMAT, s);
+		return Strings.formatMessage(MESSAGE_MISSING_MESSAGE_FORMAT, s);
 	}
 
 	/** Tell the user which mandatory option is missing.
@@ -593,7 +596,7 @@ public final class Message {
 		if (optionName == null) {
 			return null;
 		}
-		return Utils.formatMessage(
+		return Strings.formatMessage(
 			MISSING_MANDATORY_OPTION_MESSAGE_FORMAT,
 			optionName
 		);
@@ -610,7 +613,7 @@ public final class Message {
 		if (defaultValue == null) {
 			return null;
 		}
-		return Utils.formatMessage(OPTION_DEFAULT_MESSAGE_FORMAT, defaultValue);
+		return Strings.formatMessage(OPTION_DEFAULT_MESSAGE_FORMAT, defaultValue);
 	}
 
 	/** Tell the user what languages an API may be used with.
@@ -624,7 +627,7 @@ public final class Message {
 		if (language == null) {
 			return null;
 		}
-		return Utils.formatMessage(
+		return Strings.formatMessage(
 			OPTION_LANGUAGE_OF_API_MESSAGE_FORMAT,
 			language
 		);
@@ -642,7 +645,7 @@ public final class Message {
 		if (optionName != null) {
 			return null;
 		}
-		return Utils.formatMessage(
+		return Strings.formatMessage(
 			OPTIONS_NO_SUCH_OPTION_MESSAGE_FORMAT,
 			optionName
 		);
@@ -657,7 +660,7 @@ public final class Message {
 	*/
 	public static String UI_PROGRESS_FINISHED_TIME(double time) {
 		DBC.REQUIRE(time >= 0.0);
-		return Utils.formatMessage(
+		return Strings.formatMessage(
 			UI_PROGRESS_FINISHED_TIME_MESSAGE_FORMAT,
 			time
 		);
@@ -675,7 +678,7 @@ public final class Message {
 		if (inputFileName == null) {
 			return null;
 		}
-		return Utils.formatMessage(
+		return Strings.formatMessage(
 			UI_PROGRESS_PARSING_INPUT_MESSAGE_FORMAT,
 			inputFileName
 		);
@@ -692,7 +695,7 @@ public final class Message {
 		if (attlist == null) {
 			return null;
 		}
-		return Utils.formatMessage(XMLDOCTYPE_ORPHAN_ATTLIST_MESSAGE_FORMAT, attlist);
+		return Strings.formatMessage(XMLDOCTYPE_ORPHAN_ATTLIST_MESSAGE_FORMAT, attlist);
 	}
 
 	/** Forbidden {@link com.mcdermottroe.exemplar.model.XMLObject} in the list
@@ -708,7 +711,7 @@ public final class Message {
 		if (xmlObject == null) {
 			return null;
 		}
-		return Utils.formatMessage(XMLDOCTYPE_XMLOBJECT_IN_MARKUPDECLS_MESSAGE_FORMAT, xmlObject);
+		return Strings.formatMessage(XMLDOCTYPE_XMLOBJECT_IN_MARKUPDECLS_MESSAGE_FORMAT, xmlObject);
 	}
 
 	/** Set the appropriate options to ensure that the program is set up for

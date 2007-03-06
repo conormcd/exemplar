@@ -34,7 +34,6 @@ import java.util.Map;
 
 import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
-import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.model.XMLAttribute;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.model.XMLElement;
@@ -46,6 +45,7 @@ import com.mcdermottroe.exemplar.output.XMLParserSourceGenerator;
 import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.Options;
+import com.mcdermottroe.exemplar.utils.Strings;
 
 /** A class which generates data binding Java parsers.
 
@@ -153,7 +153,7 @@ public class Generator extends XMLParserSourceGenerator {
 								rootParserClassName.substring(1);
 
 		// Make the contents of the output file
-		String outputFileContents = Utils.formatMessage(
+		String outputFileContents = Strings.formatMessage(
 			messageFormatTemplate,
 			Constants.PROGRAM_NAME,
 			timestamp,
@@ -204,7 +204,7 @@ public class Generator extends XMLParserSourceGenerator {
 		DBC.ASSERT(messageFormatTemplate != null);
 
 		// Make the contents of the output file
-		String outputFileContents = Utils.formatMessage(
+		String outputFileContents = Strings.formatMessage(
 			messageFormatTemplate,
 			Constants.PROGRAM_NAME,
 			timestamp,
@@ -404,7 +404,7 @@ public class Generator extends XMLParserSourceGenerator {
 		DBC.ASSERT(messageFormatTemplate != null);
 
 		// Make the contents of the output file
-		String outputFileContents = Utils.formatMessage(
+		String outputFileContents = Strings.formatMessage(
 			messageFormatTemplate,
 			Constants.PROGRAM_NAME,
 			timestamp,
@@ -457,7 +457,7 @@ public class Generator extends XMLParserSourceGenerator {
 		DBC.ASSERT(messageFormatTemplate != null);
 
 		// Make the contents of the output file
-		String outputFileContents = Utils.formatMessage(
+		String outputFileContents = Strings.formatMessage(
 			messageFormatTemplate,
 			Constants.PROGRAM_NAME,
 			timestamp,
@@ -506,7 +506,7 @@ public class Generator extends XMLParserSourceGenerator {
 		DBC.ASSERT(messageFormatTemplate != null);
 
 		// Make the contents of the output file
-		String outputFileContents = Utils.formatMessage(
+		String outputFileContents = Strings.formatMessage(
 			messageFormatTemplate,
 			Constants.PROGRAM_NAME,
 			timestamp,

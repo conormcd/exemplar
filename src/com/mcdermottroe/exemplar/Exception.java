@@ -172,7 +172,7 @@ implements Cloneable
 
 	/** Recursively test that two {@link Throwable}s are equal. This is
 		necessary because {@link Throwable} uses the default {@link
-		Object#equals()} which only compares referential equality.
+		Object#equals(Object)} which only compares referential equality.
 
 		@param	a	The first of the two {@link Throwable}s.
 		@param	b	The second of the two {@link Throwable}s.

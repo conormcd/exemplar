@@ -32,7 +32,6 @@ package com.mcdermottroe.exemplar;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -59,78 +58,6 @@ public final class Utils {
 	/** Private constructor to prevent instantiation of this class. */
 	private Utils() {
 		DBC.UNREACHABLE_CODE();
-	}
-
-	/** Due to {@link MessageFormat} formats being completely lame with respect
-		to parsing strings with '{' characters in it, the {@link
-		MessageFormat#format(String, Object...)} method must be wrapped to
-		prevent format strings containing code from being incorrectly
-		formatted.  This method takes care of all of the oddities except for
-		when the format contains null characters or if SubFormatPatterns are
-		used.
-
-		@param	format	The {@link MessageFormat} format string to process.
-		@param	args	The array of {@link Object}s to interpolate.
-		@return			The message correctly formatted.
-		@see	java.text.MessageFormat
-	*/
-	public static String formatMessage(String format, Object... args) {
-		DBC.REQUIRE(format != null);
-		DBC.REQUIRE(args != null && args.length > 0);
-		if (format == null || args == null || args.length <= 0) {
-			return null;
-		}
-
-		// The following are the replacements for left and right curlies in
-		// several contexts.
-		String beginVariableStandin =	Character.toString(
-											Constants.Character.NULL
-										);
-		String endVariableStandin =		Character.toString(
-											Constants.Character.NULL
-										);
-		String leftCurlyStandin = beginVariableStandin + endVariableStandin;
-
-		// Escape all of the left curlies in the template
-		String template = format;
-		template = template.replaceAll(
-			Constants.Regex.MESSAGE_FORMAT_VAR_START +
-				Constants.Regex.MESSAGE_FORMAT_VAR_NAME +
-				Constants.Regex.MESSAGE_FORMAT_VAR_END,
-			beginVariableStandin +
-				Constants.Regex.FIRST_BACKREFERENCE +
-				endVariableStandin
-		);
-		template = template.replaceAll(
-			Constants.Regex.MESSAGE_FORMAT_VAR_START,
-			leftCurlyStandin
-		);
-		template = template.replaceAll(
-			beginVariableStandin +
-				Constants.Regex.MESSAGE_FORMAT_VAR_NAME +
-				endVariableStandin,
-			Constants.Character.LEFT_CURLY +
-				Constants.Regex.FIRST_BACKREFERENCE +
-				Constants.Character.RIGHT_CURLY
-		);
-
-		// Format the string
-		String formattedMessage = MessageFormat.format(template, args);
-
-		// Put all of the curlies back.
-		formattedMessage = formattedMessage.replaceAll(
-			leftCurlyStandin,
-			Character.toString(Constants.Character.LEFT_CURLY)
-		);
-
-		// Remove all the trailing whitespace
-		formattedMessage = formattedMessage.replaceAll(
-			Constants.Regex.TRAILING_WHITESPACE,
-			Constants.Regex.FIRST_BACKREFERENCE
-		);
-
-		// Now the message is formatted
-		return formattedMessage;
 	}
 
 	/** For the given {@link String}, replace all XML character references with
@@ -459,46 +386,6 @@ public final class Utils {
 			hashCode *= Constants.HASHCODE_MAGIC_NUMBER;
 		}
 		return hashCode;
-	}
-
-	/** Provide a method akin to Perl's join() function. This takes an {@link
-		Iterable}, interprets every returned element as a {@link String} and
-		joins them with the given separator {@link String}.
-
-	 	@param	separator	Separator to join the elements with.
-		@param	collection	Iterable collection to join.
-		@return				All of the elements String-joined using the
-							separator.
-	*/
-	public static String join(
-		CharSequence separator,
-		Iterable<? extends Object> collection
-	)
-	{
-		StringBuilder joinedString = new StringBuilder();
-		for (Object o : collection) {
-			if (joinedString.length() > 0) {
-				joinedString.append(separator);
-			}
-			joinedString.append(o);
-		}
-		return joinedString.toString();
-	}
-
-	/** An alias for {@link Utils#join(CharSequence, Iterable)} which allows
-		the use of a character as the separator.
-
-		@param	separator	Separator to join the elements with.
-		@param	collection	Iterable collection to join.
-		@return				All of the elements String-joined using the
-							separator.
-	*/
-	public static String join(
-		char separator,
-		Iterable<? extends Object> collection
-	)
-	{
-		return join(String.valueOf(separator), collection);
 	}
 
 	/** This is a shim to work around the fact that {@link

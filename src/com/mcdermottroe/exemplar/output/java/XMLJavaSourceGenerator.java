@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -45,6 +45,7 @@ import com.mcdermottroe.exemplar.output.XMLParserGeneratorException;
 import com.mcdermottroe.exemplar.output.XMLParserSourceGenerator;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.Options;
+import com.mcdermottroe.exemplar.utils.Strings;
 
 /** A class which generates Java parsers that implement the SAX1 and SAX2
 	Parser interfaces, depending on the properties files that are loaded.
@@ -103,14 +104,14 @@ extends XMLParserSourceGenerator
 		);
 		File classFile = new File(
 			sourceDirectory,
-			Utils.formatMessage(
+			Strings.formatMessage(
 				Constants.Output.Java.PARSER_FILE_FMT,
 				vocabulary
 			)
 		);
 		File parseFile = new File(
 			sourceDirectory,
-			Utils.formatMessage(
+			Strings.formatMessage(
 				Constants.Output.Java.JFLEX_FILE_FMT,
 				vocabulary
 			)
@@ -162,7 +163,7 @@ extends XMLParserSourceGenerator
 		}
 
 		// Make the contents of the output file
-		String outputFileContents = Utils.formatMessage(
+		String outputFileContents = Strings.formatMessage(
 			messageFormatTemplate,
 			Constants.PROGRAM_NAME,
 			timestamp,
@@ -275,7 +276,7 @@ extends XMLParserSourceGenerator
 									args[1] = extID.publicID();
 								}
 								extEntities.append(
-									Utils.formatMessage(
+									Strings.formatMessage(
 										loadCodeFragment(
 											extEntPropMessageFormat
 										),
@@ -323,7 +324,7 @@ extends XMLParserSourceGenerator
 		}
 
 		// Make the contents of the output file
-		String outputFileContents = Utils.formatMessage(
+		String outputFileContents = Strings.formatMessage(
 			messageFormatTemplate,
 			Constants.PROGRAM_NAME,
 			timestamp,
@@ -378,7 +379,7 @@ extends XMLParserSourceGenerator
 		DBC.ASSERT(messageFormatTemplate != null);
 
 		// Make the contents of the output file
-		String outputFileContents = Utils.formatMessage(
+		String outputFileContents = Strings.formatMessage(
 			messageFormatTemplate,
 			Constants.PROGRAM_NAME,
 			timestamp,
@@ -446,7 +447,7 @@ extends XMLParserSourceGenerator
 			}
 
 			// Make the contents of the output file
-			String outputFileContents = Utils.formatMessage(
+			String outputFileContents = Strings.formatMessage(
 				messageFormatTemplate,
 				Constants.PROGRAM_NAME,
 				timestamp,

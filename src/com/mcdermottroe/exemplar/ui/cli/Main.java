@@ -41,7 +41,6 @@ import java.util.logging.LogRecord;
 import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Exception;
-import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.input.InputException;
 import com.mcdermottroe.exemplar.input.InputUtils;
 import com.mcdermottroe.exemplar.input.ParserException;
@@ -52,6 +51,7 @@ import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.MessageException;
 import com.mcdermottroe.exemplar.ui.Options;
+import com.mcdermottroe.exemplar.utils.Strings;
 
 /** A class to provide a main entry point for the program.
 
@@ -266,7 +266,7 @@ implements Constants.UI.CLI
 
 		// Now describe the usage of the program
 		usage.append(
-			Utils.formatMessage(
+			Strings.formatMessage(
 				usageLineMessageFormat,
 				Constants.PROGRAM_NAME
 			)

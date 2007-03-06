@@ -37,11 +37,11 @@ import java.util.ResourceBundle;
 
 import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
-import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.Options;
+import com.mcdermottroe.exemplar.utils.Strings;
 
 /** An interface for XML parser generators that produce source code.
 
@@ -82,7 +82,10 @@ implements Cloneable
 		}
 
 		// Format the timestamp
-		timestamp = Utils.formatMessage(Constants.TIMESTAMP_FORMAT, new Date());
+		timestamp = Strings.formatMessage(
+			Constants.TIMESTAMP_FORMAT,
+			new Date()
+		);
 
 		DBC.ENSURE(codeFragments != null);
 		DBC.ENSURE(timestamp != null);

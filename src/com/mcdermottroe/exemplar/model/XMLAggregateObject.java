@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2005, 2006
+	Copyright (c) 2005, 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -36,6 +36,7 @@ import java.util.List;
 import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
+import com.mcdermottroe.exemplar.utils.Strings;
 
 /** An {@link com.mcdermottroe.exemplar.model.XMLObject} which represents
 	alternative lists or sequences of {@link
@@ -167,7 +168,7 @@ implements Iterable<XMLObject>
 	protected String toString(String className, char separator) {
 		return XMLObject.toStringHelper(
 			className,
-			Utils.join(separator, contents)
+			Strings.join(separator, contents)
 		);
 	}
 }
