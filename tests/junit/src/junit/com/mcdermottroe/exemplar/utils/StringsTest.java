@@ -41,7 +41,7 @@ import junit.com.mcdermottroe.exemplar.UtilityClassTestCase;
 	@since	0.2
 */
 public class StringsTest extends UtilityClassTestCase {
-	/** Basic sanity check for {@link Strings.formatMessage(String, Object...)}.
+	/** Basic sanity check for {@link Strings#formatMessage(String, Object...)}.
 	*/
 	public void testFormatMessageOneArg() {
 		String formatString = "{0}";
@@ -56,7 +56,7 @@ public class StringsTest extends UtilityClassTestCase {
 		}
 	}
 
-	/** Basic sanity check for {@link Strings.formatMessage(String, Object...)}.
+	/** Basic sanity check for {@link Strings#formatMessage(String, Object...)}.
 	*/
 	public void testFormatMessageManyArgs() {
 		String formatMessage = "{{0}{}{1,date,long}}";
