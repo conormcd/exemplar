@@ -45,6 +45,8 @@ import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.ui.Message;
+import com.mcdermottroe.exemplar.utils.Packages;
+import com.mcdermottroe.exemplar.utils.Strings;
 
 /** Output handling utility methods.
 
@@ -239,7 +241,9 @@ public final class OutputUtils {
 	private static SortedSet<LanguageAPIPair> availableLanguageAPIPairs() {
 		SortedSet<LanguageAPIPair> ret = new TreeSet<LanguageAPIPair>();
 
-		List<String> pNames = Utils.findSubPackages(Constants.Output.PACKAGE);
+		List<String> pNames = Packages.findSubPackages(
+			Constants.Output.PACKAGE
+		);
 		for (String packageName : pNames) {
 			String outputLanguageAPI = packageName.substring(
 				Constants.Output.PACKAGE.length() + 1
@@ -356,7 +360,7 @@ public final class OutputUtils {
 			@return	A descriptive {@link String}.
 		*/
 		@Override public String toString() {
-			return Utils.deepToString(language, api);
+			return Strings.deepToString(language, api);
 		}
 
 		/** Implement {@link Comparable} so that {@link LanguageAPIPair}

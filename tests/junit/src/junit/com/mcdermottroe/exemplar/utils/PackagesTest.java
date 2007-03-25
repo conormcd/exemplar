@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006, 2007
+	Copyright (c) 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -27,63 +27,14 @@
 	NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package junit.com.mcdermottroe.exemplar;
+package junit.com.mcdermottroe.exemplar.utils;
 
-import com.mcdermottroe.exemplar.Utils;
+import junit.com.mcdermottroe.exemplar.UtilityClassTestCase;
 
-/** Test class for {@link com.mcdermottroe.exemplar.Utils}.
+/** Test class for {@link com.mcdermottroe.exemplar.utils.Packages}.
 
 	@author	Conor McDermottroe
-	@since	0.1
+	@since	0.2
 */
-public class UtilsTest extends UtilityClassTestCase {
-	/** Test {@link Utils#areDeeplyEqual(Object, Object)} with two null
-		references.
-	*/
-	public void testAreDeeplyEqualNullNull() {
-		assertTrue(
-			"null is equal to null",
-			Utils.areDeeplyEqual(null, null)
-		);
-	}
-
-	/** Test {@link Utils#areDeeplyEqual(Object, Object)} with one null and one
-		non-null reference.
-	*/
-	public void testAreDeeplyEqualNullObject() {
-		assertFalse(
-			"null is not equal to a non-null Object",
-			Utils.areDeeplyEqual(null, "NOT NULL")
-		);
-	}
-
-	/** Test {@link Utils#areDeeplyEqual(Object, Object)} with one null and one
-		non-null reference.
-	*/
-	public void testAreDeeplyEqualObjectNull() {
-		assertFalse(
-			"A non-null Object is not equal to null",
-			Utils.areDeeplyEqual("NOT NULL", null)
-		);
-	}
-
-	/** Test {@link Utils#areDeeplyEqual(Object, Object)} with two non-null,
-		equal {@link Object}s.
-	*/
-	public void testAreDeeplyEqualObjectObjectEqual() {
-		assertTrue(
-			"Two equal objects are equal",
-			Utils.areDeeplyEqual("EQUAL", "EQUAL")
-		);
-	}
-
-	/** Test {@link Utils#areDeeplyEqual(Object, Object)} with two non-null,
-		non-equal {@link Object}s.
-	*/
-	public void testAreDeeplyEqualObjectObjectNotEqual() {
-		assertFalse(
-			"Two non-equal objects are non-equal",
-			Utils.areDeeplyEqual("EQUAL", "NOT EQUAL")
-		);
-	}
+public class PackagesTest extends UtilityClassTestCase {
 }

@@ -35,6 +35,7 @@
 <import-control pkg="com.mcdermottroe.exemplar">
 	<!-- Blanket allows for everything -->
 	<allow pkg="java.lang" />
+	<allow pkg="java.text" />
 	<allow pkg="java.util" />
 
 	<!-- Specific allowed Java classes -->
@@ -94,6 +95,5 @@
 	</subpackage>
 	<subpackage name="utils">
 		<allow class="java.math.BigInteger" />
-		<allow class="java.text.MessageFormat" />
 	</subpackage>
 </import-control>

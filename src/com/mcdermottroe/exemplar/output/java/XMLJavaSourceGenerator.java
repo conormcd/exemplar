@@ -30,11 +30,11 @@
 package com.mcdermottroe.exemplar.output.java;
 
 import java.io.File;
+import java.text.ParseException;
 import java.util.Map;
 
 import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
-import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.model.XMLEntity;
 import com.mcdermottroe.exemplar.model.XMLExternalIdentifier;
@@ -46,6 +46,7 @@ import com.mcdermottroe.exemplar.output.XMLParserSourceGenerator;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.Options;
 import com.mcdermottroe.exemplar.utils.Strings;
+import com.mcdermottroe.exemplar.utils.XML;
 
 /** A class which generates Java parsers that implement the SAX1 and SAX2
 	Parser interfaces, depending on the properties files that are loaded.
@@ -437,11 +438,17 @@ extends XMLParserSourceGenerator
 					entityProperties.append(Constants.Character.SPACE);
 					entityProperties.append(Constants.Character.EQUALS);
 					entityProperties.append(Constants.Character.SPACE);
-					entityProperties.append(
-						Utils.xmlStringToJavaCanonicalForm(
-							entity.value()
-						)
-					);
+					try {
+						entityProperties.append(
+							Strings.toCanonicalForm(
+								XML.resolveCharacterReferences(
+									entity.value()
+								)
+							)
+						);
+					} catch (ParseException e) {
+						throw new XMLParserGeneratorException(e);
+					}
 					entityProperties.append(Constants.EOL);
 				}
 			}

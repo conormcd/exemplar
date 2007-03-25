@@ -30,6 +30,7 @@
 package com.mcdermottroe.exemplar.utils;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
 
 import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
@@ -117,6 +118,28 @@ public final class Strings {
 		return formattedMessage;
 	}
 
+	/** Convert a {@link CharSequence} to a sequence of Java Unicode escapes so
+		that the resulting {@link CharSequence} is safe to put in a file and
+		then read back into Java without loss of information.
+
+		@param	s	The {@link CharSequence} to convert.
+		@return		A {@link String} containing nothing but Java Unicode 
+					escapes.
+	*/
+	public static String toCanonicalForm(CharSequence s) {
+		// Pass through null CharSequences
+		if (s == null) {
+			return null;
+		}
+
+		StringBuilder returnValue = new StringBuilder(s.length() * 6);
+		for (int i = 0; i < s.length(); i++) {
+			returnValue.append(String.format("\\u%04X", (int)s.charAt(i)));
+		}
+
+		return returnValue.toString();
+	}
+
 	/** Provide a method akin to Perl's join() function. This takes an {@link
 		Iterable}, interprets every returned element as a {@link String} and
 		joins them with the given separator {@link String}.
@@ -155,5 +178,17 @@ public final class Strings {
 	)
 	{
 		return join(String.valueOf(separator), collection);
+	}
+
+	/** A shim to work around the fact that {@link
+		Arrays#deepToString(Object[])} wants an array of {@link Object}s rather
+		than a variadic list.
+
+		@param	objects	The {@link Object}s to format as a {@link String}.
+		@return			A {@link String} as formatted by {@link
+						Arrays#deepToString(Object[])}.
+	*/
+	public static String deepToString(Object... objects) {
+		return Arrays.deepToString(objects);
 	}
 }

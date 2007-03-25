@@ -98,22 +98,21 @@
 	>
 		<cup	package="${package}.input.dtd"
 				srcfile="${src}/${namespace}/input/dtd/Parser.cup"
+				destdir="${src}/${namespace}/input/dtd"
 				parser="${parser-name}"
 				symbols="${parser-symbols}"
 				nopositions="true"
 				compact_red="true"
 				interface="true"
 		/>
-		<replace	file="${parser-file}"
+		<replace	file="${src}/${namespace}/input/dtd/${parser-file}"
+					token="extends java_cup.runtime.lr_parser implements Cloneable, InputModule"
+					value="extends java_cup.runtime.lr_parser"
+					/> 
+		<replace	file="${src}/${namespace}/input/dtd/${parser-file}"
 					token="extends java_cup.runtime.lr_parser"
 					value="extends java_cup.runtime.lr_parser implements Cloneable, InputModule"
 					/> 
-		<move	file="${parser-file}"
-				tofile="${src}/${namespace}/input/dtd/${parser-file}"
-		/>
-		<move	file="${parser-symbols}.java"
-				tofile="${src}/${namespace}/input/dtd/${parser-symbols}.java"
-		/>
 	</target>
 	<target	name="build"
 			depends="pre-build,build-lexer,build-parser,set-up-classpaths"

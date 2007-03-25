@@ -159,6 +159,9 @@ public final class Message {
 	/** Unsupported input type. */
 	public static String UNSUPPORTED_INPUT_TYPE = Constants.DEFAULT_MESSAGE;
 
+	/** Unterminated character reference. */
+	public static String UNTERMINATED_CHAR_REF = Constants.DEFAULT_MESSAGE;
+
 	/** Unsupported feature. */
 	public static String XMLDOCTYPE_UNSUPPORTED_FEATURE = Constants.DEFAULT_MESSAGE;
 
@@ -247,6 +250,11 @@ public final class Message {
 		#LOCALISATION_ERROR(String)}.
 	*/
 	private static String LOCALISATION_ERROR_MESSAGE_FORMAT = Constants.DEFAULT_MESSAGE;
+
+	/** {@link java.text.MessageFormat} string for {@link
+		#MALFORMED_CHAR_REF(CharSequence)}.
+	*/
+	private static String MALFORMED_CHAR_REF_MESSAGE_FORMAT = Constants.DEFAULT_MESSAGE;
 
 	/** {@link java.text.MessageFormat} string for {@link
 		#MESSAGE_EXTRA_BUNDLE_ENTRY(String, String)}.
@@ -546,6 +554,23 @@ public final class Message {
 			return null;
 		}
 		return Strings.formatMessage(LOCALISATION_ERROR_MESSAGE_FORMAT, s);
+	}
+
+	/** A malformed character reference was encountered.
+
+		@param	malformedReference	The malformed reference.
+		@return						A formatted message displaying the
+									malformed reference.
+	*/
+	public static String MALFORMED_CHAR_REF(CharSequence malformedReference) {
+		DBC.REQUIRE(malformedReference != null);
+		if (malformedReference == null) {
+			return null;
+		}
+		return Strings.formatMessage(
+			MALFORMED_CHAR_REF_MESSAGE_FORMAT,
+			malformedReference
+		);
 	}
 
 	/** There's an entry in the messages properties file which has no

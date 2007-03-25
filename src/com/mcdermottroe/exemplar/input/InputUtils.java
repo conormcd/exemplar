@@ -36,10 +36,10 @@ import java.util.TreeMap;
 
 import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
-import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
+import com.mcdermottroe.exemplar.utils.Packages;
 
 /** Input handling utilities.
 
@@ -142,7 +142,7 @@ public final class InputUtils {
 	}
 
 	/** Find out the available input languages. This is done by querying the
-		{@link Utils#findSubPackages} method to find all of the packages
+		{@link Packages#findSubPackages} method to find all of the packages
 		below {@link com.mcdermottroe.exemplar.Constants.Input#PACKAGE} which 
 		are in the prescribed form.
 
@@ -154,7 +154,9 @@ public final class InputUtils {
 		SortedMap<String, String> availableInputLanguages;
 		availableInputLanguages = new TreeMap<String, String>();
 
-		List<String> packages = Utils.findSubPackages(Constants.Input.PACKAGE);
+		List<String> packages = Packages.findSubPackages(
+			Constants.Input.PACKAGE
+		);
 		for (String packageName : packages) {
 			String inputMethod = packageName.substring(
 				Constants.Input.PACKAGE.length() + 1

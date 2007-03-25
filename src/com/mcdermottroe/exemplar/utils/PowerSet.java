@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 /** Given a {@link Set} this produces the power set for that set as an
@@ -86,6 +87,46 @@ implements Cloneable, Serializable, Set<Set<T>>, Iterable<Set<T>>
 	throws CloneNotSupportedException
 	{
 		return super.clone();
+	}
+
+	/** Test equality against another {@link Object}.
+
+		@param	o	The other {@link Object} to test against.
+		@return		True if <code>this</code> is equal to <code>o</code>, false
+					otherwise.
+	*/
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null) {
+			return false;
+		}
+
+		if (o instanceof PowerSet) {
+			PowerSet other = (PowerSet)o;
+			return other.getBaseSet().equals(getBaseSet());
+		} else if (o instanceof Set) {
+			return containsAll((Set)o);
+		} else {
+			return false;
+		}
+	}
+
+	/** Get the base {@link Set} for which <code>this</code> is a power set.
+
+		@return	A copy of the base {@link Set}.
+	*/
+	public Set<T> getBaseSet() {
+		return new HashSet<T>(baseSet);
+	}
+
+	/** Generate a hash code for this {@link PowerSet}.
+
+		@return	A hash code for this object.
+	*/
+	public int hashCode() {
+		return baseSet.hashCode();
 	}
 
 	/** Get an {@link Iterator} over the {@link Set}s in the power set.
@@ -155,8 +196,13 @@ implements Cloneable, Serializable, Set<Set<T>>, Iterable<Set<T>>
 			@return	The next {@link Set} in the power set.
 		*/
 		public Set<T> next() {
-			Set<T> toReturn = new HashSet<T>();
+			// Blow up if we try to walk past the end of the power set.
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
 
+			// Create the Set to return.
+			Set<T> toReturn = new HashSet<T>();
 			int i = 0;
 			for (T element : baseSet) {
 				if (currentIteration.testBit(i)) {
@@ -165,7 +211,10 @@ implements Cloneable, Serializable, Set<Set<T>>, Iterable<Set<T>>
 				i++;
 			}
 
+			// Advance the iteration
 			currentIteration = currentIteration.add(BigInteger.ONE);
+
+			// Return the generated Set
 			return toReturn;
 		}
 
