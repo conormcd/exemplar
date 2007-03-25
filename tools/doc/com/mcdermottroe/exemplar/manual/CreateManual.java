@@ -37,17 +37,18 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
 import com.mcdermottroe.exemplar.Constants;
-import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.MessageException;
 import com.mcdermottroe.exemplar.ui.Options;
 import com.mcdermottroe.exemplar.ui.cli.ExitStatus;
+import com.mcdermottroe.exemplar.utils.XML;
 
 /** Creates the manual for Exemplar from the skeleton, human-readable(ish)
 	DocBook sources. The majority of the content in the manual is generated
@@ -128,6 +129,8 @@ public class CreateManual {
 			throw new CreateManualException(e);
 		} catch (MessageException e) {
 			throw new CreateManualException(e);
+		} catch (ParseException e) {
+			throw new CreateManualException(e);
 		}
 	}
 
@@ -191,11 +194,16 @@ public class CreateManual {
 	/** Create the detailed description of every option that the program
 		accepts.
 
-		@return	A {@link String} containing the XSLT to transform the element
-				with the id &quot;optionsdescription&quot; into the detailed
-				description of every option that the program accepts.
+		@return					A {@link String} containing the XSLT to
+								transform the element with the id
+								&quot;optionsdescription&quot; into the
+								detailed description of every option that the
+								program accepts.
+		@throws	ParseException	if any malformed XML references have been found.
 	*/
-	private static String optionsdescriptionXSLT() {
+	private static String optionsdescriptionXSLT()
+	throws ParseException
+	{
 		StringBuilder ret = new StringBuilder();
 		ret.append("\t\t\t<xsl:when test=\"@id='optionsdescription'\">").append(Constants.EOL);
 		for (Iterator it = Options.optionNameIterator(); it.hasNext(); ) {
@@ -232,7 +240,9 @@ public class CreateManual {
 					ret.append("</term>").append(Constants.EOL);
 					ret.append("\t\t\t\t\t\t\t\t<listitem>").append(Constants.EOL);
 					ret.append("\t\t\t\t\t\t\t\t\t<para>");
-					ret.append(Utils.escapeToXMLCharRefs(enumOptions.get(enumValue)));
+					ret.append(
+						XML.toCharacterReferences(enumOptions.get(enumValue))
+					);
 					ret.append("</para>").append(Constants.EOL);
 					ret.append("</listitem>").append(Constants.EOL);
 					ret.append("\t\t\t\t\t\t\t</varlistentry>").append(Constants.EOL);
@@ -334,6 +344,8 @@ public class CreateManual {
 				Object[] params = new Object[paramTypes.length];
 				for (int j = 0; j < paramTypes.length; j++) {
 					if (String.class.equals(paramTypes[j])) {
+						params[j] = "%s";
+					} else if (CharSequence.class.equals(paramTypes[j])) {
 						params[j] = "%s";
 					} else if (double.class.equals(paramTypes[j])) {
 						params[j] = 12345.6789;

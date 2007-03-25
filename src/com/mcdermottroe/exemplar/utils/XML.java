@@ -46,6 +46,63 @@ public final class XML {
 		DBC.UNREACHABLE_CODE();
 	}
 
+	/** Convert all characters to their XML character references. Any existing
+		entity or character references are left untouched.
+
+		@param	s				A {@link CharSequence} possibly containing XML
+								references.
+		@return					The {@link CharSequence} <code>s</code> with
+								all XML character references replaced by the
+								characters they represent.
+		@throws	ParseException	in the event of an unterminated or malformed
+								sequence.
+	*/
+	public static String toCharacterReferences(CharSequence s)
+	throws ParseException
+	{
+		// Pass through null CharSequences
+		if (s == null) {
+			return null;
+		}
+
+		StringBuilder returnValue = new StringBuilder(s.length());
+		StringBuilder refBuffer;
+		for (int i = 0; i < s.length(); i++) {
+			if (s.charAt(i) == '&') {
+				// Read until a semi-colon is found
+				refBuffer = new StringBuilder();
+				int j = i;
+				while (true) {
+					if (j == s.length()) {
+						// Unterminated reference
+						throw new ParseException(
+							Message.UNTERMINATED_REF,
+							i
+						);
+					}
+					refBuffer.append(s.charAt(j));
+					if (s.charAt(j) == ';') {
+						break;
+					}
+					j++;
+				}
+
+				// refBuffer =~ /^&.*;$/
+				// Append the reference to the output.
+				returnValue.append(refBuffer);
+
+				// Advance over the reference.
+				i = j;
+			} else {
+				// This is a non-reference character, convert it to a character
+				// reference and append it.
+				returnValue.append(String.format("&#x%04X;", (int)s.charAt(i)));
+			}
+		}
+
+		return returnValue.toString();
+	}
+
 	/** Resolve all of the character references found in a {@link CharSequence}
 		with their corresponding characters.
 
@@ -76,7 +133,7 @@ public final class XML {
 					if (j == s.length()) {
 						// Unterminated reference
 						throw new ParseException(
-							Message.UNTERMINATED_CHAR_REF,
+							Message.UNTERMINATED_REF,
 							i
 						);
 					}
@@ -142,6 +199,8 @@ public final class XML {
 				// Advance over the reference.
 				i = j;
 			} else {
+				// This is a character not involved in any reference, just
+				// append it to the output.
 				returnValue.append(s.charAt(i));
 			}
 		}

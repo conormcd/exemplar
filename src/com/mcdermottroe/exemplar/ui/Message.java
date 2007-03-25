@@ -160,7 +160,7 @@ public final class Message {
 	public static String UNSUPPORTED_INPUT_TYPE = Constants.DEFAULT_MESSAGE;
 
 	/** Unterminated character reference. */
-	public static String UNTERMINATED_CHAR_REF = Constants.DEFAULT_MESSAGE;
+	public static String UNTERMINATED_REF = Constants.DEFAULT_MESSAGE;
 
 	/** Unsupported feature. */
 	public static String XMLDOCTYPE_UNSUPPORTED_FEATURE = Constants.DEFAULT_MESSAGE;

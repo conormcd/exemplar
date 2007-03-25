@@ -135,7 +135,7 @@
 	<!--
 			JAR creation targets
 	-->
-	<target name="pre-jar" depends="build-configure,clean-jar">
+	<target name="pre-jar" depends="build-configure">
 		<mkdir dir="${dist}" />
 		<unjar src="${cup-jar}" dest="classes">
 			<patternset>
@@ -244,7 +244,7 @@
 			<compilerarg value="-Xlint:deprecation" />
 			<compilerarg value="-Xlint:unchecked" />
 			<compilerarg value="+Z0" compiler="jikes" />
-			<src path="tests" />
+			<src path="tests/junit/src" />
 		</javac>
 	</target>
 	<target	name="test-checkstyle"
