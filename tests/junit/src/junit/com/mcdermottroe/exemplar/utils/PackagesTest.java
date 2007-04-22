@@ -29,6 +29,8 @@
 */
 package junit.com.mcdermottroe.exemplar.utils;
 
+import com.mcdermottroe.exemplar.utils.Packages;
+
 import junit.com.mcdermottroe.exemplar.UtilityClassTestCase;
 
 /** Test class for {@link com.mcdermottroe.exemplar.utils.Packages}.
@@ -36,5 +38,7 @@ import junit.com.mcdermottroe.exemplar.UtilityClassTestCase;
 	@author	Conor McDermottroe
 	@since	0.2
 */
-public class PackagesTest extends UtilityClassTestCase {
+public class PackagesTest
+extends UtilityClassTestCase<Packages>
+{
 }

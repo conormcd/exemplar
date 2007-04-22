@@ -31,7 +31,6 @@ package junit.com.mcdermottroe.exemplar;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,25 +62,6 @@ extends NormalClassTestCase<Exception>
 		assertTrue(
 			"Exceptions must inherit from exemplar's exception class",
 			Exception.class.isAssignableFrom(testedClass)
-		);
-	}
-
-	/** Test to ensure that {@link Exception} classes have only four 
-		constructors. Tests to check that each constructor is in the right
-		format follow.
-
-		@see #testNoArgConstructor()
-		@see #testOneStringConstructor()
-		@see #testOneThrowableConstructor()
-		@see #testStringThrowableConstructor()
-		@see Exception
-	*/
-	public void testExactlyFourConstructors() {
-		Constructor[] constructors = testedClass.getDeclaredConstructors();
-		assertEquals(
-			"Exceptions must only have 4 constructors",
-			4,
-			constructors.length
 		);
 	}
 
@@ -176,14 +156,6 @@ extends NormalClassTestCase<Exception>
 		}
 	}
 
-	/** Test that there are no extra methods declared. All methods in exception
-		classes should be declared in {@link Exception}.
-	*/
-	public void testNoMethods() {
-		Method[] methods = testedClass.getDeclaredMethods();
-		assertEquals("No methods for this exception", methods.length, 0);
-	}
-
 	/** Test the method {@link Exception#getBackTrace()} on a set of sample
 		objects.
 	*/
@@ -267,7 +239,7 @@ extends NormalClassTestCase<Exception>
 	throws	IllegalAccessException, InstantiationException,
 			InvocationTargetException, NoSuchMethodException
 	{
-		Constructor oneString = testedClass.getDeclaredConstructor(
+		Constructor<?> oneString = testedClass.getDeclaredConstructor(
 			String.class
 		);
 		return (Exception)oneString.newInstance("test");
@@ -290,7 +262,7 @@ extends NormalClassTestCase<Exception>
 	throws	IllegalAccessException, InstantiationException,
 			InvocationTargetException, NoSuchMethodException
 	{
-		Constructor oneString = testedClass.getDeclaredConstructor(
+		Constructor<?> oneString = testedClass.getDeclaredConstructor(
 			Throwable.class
 		);
 		return (Exception)oneString.newInstance(new Throwable("test"));
@@ -315,7 +287,7 @@ extends NormalClassTestCase<Exception>
 	throws	IllegalAccessException, InstantiationException,
 			InvocationTargetException, NoSuchMethodException
 	{
-		Constructor oneString = testedClass.getDeclaredConstructor(
+		Constructor<?> oneString = testedClass.getDeclaredConstructor(
 			String.class,
 			Throwable.class
 		);

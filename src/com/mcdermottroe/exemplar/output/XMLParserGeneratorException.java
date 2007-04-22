@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2004, 2005, 2006
+	Copyright (c) 2004-2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,9 @@ import com.mcdermottroe.exemplar.Exception;
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class XMLParserGeneratorException extends Exception {
+public class XMLParserGeneratorException
+extends Exception
+{
 	/** XMLParserGeneratorException without a description. */
 	public XMLParserGeneratorException() {
 		super();
@@ -68,5 +70,24 @@ public class XMLParserGeneratorException extends Exception {
 	*/
 	public XMLParserGeneratorException(Throwable cause) {
 		super(cause);
+	}
+
+	/** {@inheritDoc} */
+	public XMLParserGeneratorException getCopy() {
+		XMLParserGeneratorException copy;
+
+		String message = getMessage();
+		Throwable cause = getCause();
+		if (message != null && cause != null) {
+			copy = new XMLParserGeneratorException(message, cause);
+		} else if (message != null) {
+			copy = new XMLParserGeneratorException(message);
+		} else if (cause != null) {
+			copy = new XMLParserGeneratorException(cause);
+		} else {
+			copy = new XMLParserGeneratorException();
+		}
+		copy.setStackTrace(copyStackTrace(getStackTrace()));
+		return copy;
 	}
 }

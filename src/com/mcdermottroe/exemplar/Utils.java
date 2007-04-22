@@ -30,6 +30,7 @@
 package com.mcdermottroe.exemplar;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 /** General purpose utility methods that can be used anywhere in the program.
 
@@ -69,6 +70,12 @@ public final class Utils {
 		@see	#areDeeplyEqual(Object, Object)
 	*/
 	public static boolean areAllDeeplyEqual(Object[] oA, Object[] oB) {
+		if (oA == null && oB == null) {
+			return true;
+		}
+		if (oA == null || oB == null) {
+			return false;
+		}
 		if (oA.length == oB.length) {
 			for (int i = 0; i < oA.length; i++) {
 				if (!areDeeplyEqual(oA[i], oB[i])) {
@@ -79,6 +86,77 @@ public final class Utils {
 			return false;
 		}
 		return true;
+	}
+
+	/** Do a null-safe comparison of two comparable {@link Object}s.
+
+		@param	<T>	The type of the second parameter, which may be compared with
+					the first.
+		@param	a	An {@link Object} which may be compared with other {@link
+					Object}s of type <code>T</code>.
+		@param	b	An {@link Object} which <code>a</code> may be compared with.
+		@return		A negative, 0 or positive number if <code>a</code> is
+					respectively less than, equal to or greater than
+					<code>b</code>.
+	*/
+	public static <T> int compare(Comparable<T> a, T b) {
+		if (a != null) {
+			return a.compareTo(b);
+		} else {
+			if (b != null) {
+				return -1;
+			} else {
+				return 0;
+			}
+		}
+	}
+
+	/** Do a null-safe comparison of two {@link Collection}s of comparable
+		{@link Object}s.
+
+		@param	<X>	A type which implements <code>Comparable&lt;Y&gt;</code>.
+		@param	<Y>	A type which can be compared with <code>&lt;X&gt;</code>.
+		@param	a	A {@link Collection} of {@link Object}s to compare.
+		@param	b	The {@link Collection} to compare with <code>a</code>.
+		@return		The kind of result you expect from an implementation of
+					{@link Comparable#compareTo(Object)}.
+	*/
+	public static <X extends Comparable<Y>, Y> int
+	compare(Collection<X> a, Collection<Y> b)
+	{
+		if (a != null && b != null) {
+			Iterator<X> aIter = a.iterator();
+			Iterator<Y> bIter = b.iterator();
+			if (aIter.hasNext() && bIter.hasNext()) {
+				while (aIter.hasNext() && bIter.hasNext()) {
+					X aElem = aIter.next();
+					Y bElem = bIter.next();
+					int elemCompare = compare(aElem, bElem);
+					if (elemCompare != 0) {
+						return elemCompare;
+					}
+				}
+				if (aIter.hasNext()) {
+					return 1;
+				} else if (bIter.hasNext()) {
+					return -1;
+				} else {
+					return 0;
+				}
+			} else if (aIter.hasNext()) {
+				return 1;
+			} else if (bIter.hasNext()) {
+				return -1;
+			} else {
+				return 0;
+			}
+		} else if (a != null) {
+			return 1;
+		} else if (b != null) {
+			return -1;
+		} else {
+			return 0;
+		}
 	}
 
 	/** Generate a hash code value based on a selection of {@link Object}s,
@@ -95,7 +173,7 @@ public final class Utils {
 		for (Object o : objects) {
 			if (o != null) {
 				if (o instanceof Collection) {
-					Collection c = (Collection)o;
+					Collection<?> c = (Collection)o;
 					for (Object co : c) {
 						hashCode += co.hashCode();
 					}

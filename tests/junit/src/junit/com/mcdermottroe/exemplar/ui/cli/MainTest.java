@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,8 @@
 */
 package junit.com.mcdermottroe.exemplar.ui.cli;
 
+import com.mcdermottroe.exemplar.ui.cli.Main;
+
 import junit.com.mcdermottroe.exemplar.UtilityClassTestCase;
 
 /** Test class for {@link com.mcdermottroe.exemplar.ui.cli.Main}.
@@ -36,5 +38,7 @@ import junit.com.mcdermottroe.exemplar.UtilityClassTestCase;
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class MainTest extends UtilityClassTestCase {
+public class MainTest
+extends UtilityClassTestCase<Main>
+{
 }

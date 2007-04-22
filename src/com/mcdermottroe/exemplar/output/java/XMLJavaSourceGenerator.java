@@ -33,7 +33,6 @@ import java.io.File;
 import java.text.ParseException;
 import java.util.Map;
 
-import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.model.XMLEntity;
@@ -48,14 +47,28 @@ import com.mcdermottroe.exemplar.ui.Options;
 import com.mcdermottroe.exemplar.utils.Strings;
 import com.mcdermottroe.exemplar.utils.XML;
 
+import static com.mcdermottroe.exemplar.Constants.Character.EQUALS;
+import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
+import static com.mcdermottroe.exemplar.Constants.EOL;
+import static com.mcdermottroe.exemplar.Constants.Format.Code.Java.PACKAGE;
+import static com.mcdermottroe.exemplar.Constants.Format.Filenames.JAVA_PARSER;
+import static com.mcdermottroe.exemplar.Constants.Format.Filenames.JFLEX;
+import static com.mcdermottroe.exemplar.Constants.NULL_STRING;
+import static com.mcdermottroe.exemplar.Constants.Output.Java.BUFFER_SIZE;
+import static com.mcdermottroe.exemplar.Constants.Output.Java.BUILD_FILE;
+import static com.mcdermottroe.exemplar.Constants.Output.Java.ENTITIES_FILE;
+import static com.mcdermottroe.exemplar.Constants.PROGRAM_NAME;
+
 /** A class which generates Java parsers that implement the SAX1 and SAX2
 	Parser interfaces, depending on the properties files that are loaded.
 
-	@author	Conor McDermottroe
-	@since	0.1
+	@author		Conor McDermottroe
+	@since		0.1
+	@param	<T>	The type of {@link XMLJavaSourceGenerator}.
 */
-public abstract class XMLJavaSourceGenerator
-extends XMLParserSourceGenerator
+public abstract
+class XMLJavaSourceGenerator<T extends XMLParserSourceGenerator<T>>
+extends XMLParserSourceGenerator<T>
 {
 	/** Creates a source generator which produces Java parsers. Protected as
 		this is an abstract class.
@@ -95,32 +108,20 @@ extends XMLParserSourceGenerator
 		DBC.ASSERT(sourceDirectory != null);
 
 		// Get the vocabulary name
-		String vocabulary = Options.getString("vocabulary");
+		String vocabulary = Options.getString("vocabulary"); // NON-NLS
 		DBC.ASSERT(vocabulary != null);
 
 		// The Files to write to.
-		File buildFile = new File(
-			sourceDirectory,
-			Constants.Output.Java.BUILD_FILE
-		);
+		File buildFile = new File(sourceDirectory, BUILD_FILE);
 		File classFile = new File(
 			sourceDirectory,
-			Strings.formatMessage(
-				Constants.Output.Java.PARSER_FILE_FMT,
-				vocabulary
-			)
+			String.format(JAVA_PARSER, vocabulary)
 		);
 		File parseFile = new File(
 			sourceDirectory,
-			Strings.formatMessage(
-				Constants.Output.Java.JFLEX_FILE_FMT,
-				vocabulary
-			)
+			String.format(JFLEX, vocabulary)
 		);
-		File entitiesFile = new File(
-			sourceDirectory,
-			Constants.Output.Java.ENTITIES_FILE
-		);
+		File entitiesFile = new File(sourceDirectory, ENTITIES_FILE);
 
 		// Generate the four files.
 		generateParserJavaFile(vocabulary, classFile);
@@ -158,18 +159,18 @@ extends XMLParserSourceGenerator
 
 		// Figure out the package
 		String packageStatement = "";
-		String pkg = Options.getString("output-package");
+		String pkg = Options.getString("output-package"); // NON-NLS
 		if (pkg != null) {
-			packageStatement = "package " + pkg + ";";
+			packageStatement = String.format(PACKAGE, pkg);
 		}
 
 		// Make the contents of the output file
 		String outputFileContents = Strings.formatMessage(
 			messageFormatTemplate,
-			Constants.PROGRAM_NAME,
+			PROGRAM_NAME,
 			timestamp,
 			vocabulary,
-			Integer.toString(Constants.Output.Java.BUFFER_SIZE),
+			Integer.toString(BUFFER_SIZE),
 			packageStatement
 		);
 
@@ -227,7 +228,7 @@ extends XMLParserSourceGenerator
 			"PROCESSING_INSTRUCTION_PROCESSOR",
 			"exclude",
 			"PI",
-			Constants.EOL
+			EOL
 		);
 		String commentProcessor = loadCodeFragmentUnlessSet(
 			"COMMENT_PROCESSOR",
@@ -270,7 +271,7 @@ extends XMLParserSourceGenerator
 									"EXT_ENT_PROP_TEXT_FMT";
 								Object[] args = {
 									entityName,
-									Constants.NULL_STRING,
+									NULL_STRING,
 									extID.systemID(),
 								};
 								if (extID.publicID() != null) {
@@ -319,15 +320,15 @@ extends XMLParserSourceGenerator
 
 		// Figure out the package
 		String packageStatement = "";
-		String pkg = Options.getString("output-package");
+		String pkg = Options.getString("output-package"); // NON-NLS
 		if (pkg != null) {
-			packageStatement = "package " + pkg + ";";
+			packageStatement = String.format(PACKAGE, pkg);
 		}
 
 		// Make the contents of the output file
 		String outputFileContents = Strings.formatMessage(
 			messageFormatTemplate,
-			Constants.PROGRAM_NAME,
+			PROGRAM_NAME,
 			timestamp,
 			vocabulary,
 			processingInstructionProcessor,
@@ -382,7 +383,7 @@ extends XMLParserSourceGenerator
 		// Make the contents of the output file
 		String outputFileContents = Strings.formatMessage(
 			messageFormatTemplate,
-			Constants.PROGRAM_NAME,
+			PROGRAM_NAME,
 			timestamp,
 			vocabulary
 		);
@@ -435,9 +436,9 @@ extends XMLParserSourceGenerator
 				XMLEntity entity = (XMLEntity)entities.get(entityName);
 				if (entity.type().equals(XMLEntity.EntityType.INTERNAL)) {
 					entityProperties.append(entityName);
-					entityProperties.append(Constants.Character.SPACE);
-					entityProperties.append(Constants.Character.EQUALS);
-					entityProperties.append(Constants.Character.SPACE);
+					entityProperties.append(SPACE);
+					entityProperties.append(EQUALS);
+					entityProperties.append(SPACE);
 					try {
 						entityProperties.append(
 							Strings.toCanonicalForm(
@@ -449,14 +450,14 @@ extends XMLParserSourceGenerator
 					} catch (ParseException e) {
 						throw new XMLParserGeneratorException(e);
 					}
-					entityProperties.append(Constants.EOL);
+					entityProperties.append(EOL);
 				}
 			}
 
 			// Make the contents of the output file
 			String outputFileContents = Strings.formatMessage(
 				messageFormatTemplate,
-				Constants.PROGRAM_NAME,
+				PROGRAM_NAME,
 				timestamp,
 				entityProperties
 			);
@@ -477,6 +478,6 @@ extends XMLParserSourceGenerator
 
 	/** {@inheritDoc} */
 	@Override public String describeLanguage() {
-		return "The Java language";
+		return Message.LANGUAGE_JAVA();
 	}
 }

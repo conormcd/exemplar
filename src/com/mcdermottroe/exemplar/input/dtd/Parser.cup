@@ -33,7 +33,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +40,7 @@ import java_cup.runtime.ComplexSymbolFactory;
 import java_cup.runtime.Symbol;
 
 import com.mcdermottroe.exemplar.Constants;
+import com.mcdermottroe.exemplar.Copyable;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.input.InputModule;
@@ -57,11 +57,9 @@ import com.mcdermottroe.exemplar.model.XMLExternalIdentifier;
 import com.mcdermottroe.exemplar.model.XMLMarkupDeclaration;
 import com.mcdermottroe.exemplar.model.XMLMixedContent;
 import com.mcdermottroe.exemplar.model.XMLNotation;
-import com.mcdermottroe.exemplar.model.XMLObject;
 import com.mcdermottroe.exemplar.model.XMLSequence;
 import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
-import com.mcdermottroe.exemplar.ui.Options;
 
 parser code {:
 	/** A {@link Map} for quick and easy entity resolution.
@@ -79,6 +77,11 @@ parser code {:
 	public XMLDocumentType parse(String dtdFile)
 	throws ParserException
 	{
+		DBC.REQUIRE(dtdFile != null);
+		if (dtdFile == null) {
+			return null;
+		}
+
 		if ("-".equals(dtdFile)) {
 			return parse(System.in, new File(Constants.CWD));
 		}
@@ -96,6 +99,11 @@ parser code {:
 	public XMLDocumentType parse(File dtdFile)
 	throws ParserException
 	{
+		DBC.REQUIRE(dtdFile != null);
+		if (dtdFile == null) {
+			return null;
+		}
+
 		try {
 			return parse(new FileInputStream(dtdFile), dtdFile.getParentFile());
 		} catch (FileNotFoundException e) {
@@ -117,6 +125,10 @@ parser code {:
 	public XMLDocumentType parse(InputStream dtdSource)
 	throws ParserException
 	{
+		DBC.REQUIRE(dtdSource != null);
+		if (dtdSource == null) {
+			return null;
+		}
 		return parse(dtdSource, new File(Constants.CWD));
 	}
 
@@ -136,7 +148,13 @@ parser code {:
 	throws ParserException
 	{
 		DBC.REQUIRE(input != null);
+		if (input == null) {
+			return null;
+		}
 		DBC.REQUIRE(baseDir != null);
+		if (baseDir == null) {
+			return null;
+		}
 
 		// Create the entity map
 		entityMap = new HashMap<String, XMLEntity>();
@@ -146,14 +164,14 @@ parser code {:
 
 		// Create the lexer and set it as the scanner.
 		Lexer lex = new Lexer(input);
-		lex.setDtdPath(baseDir.getAbsolutePath());
+		lex.setDtdPath(baseDir);
 		setScanner(lex);
 
 		// Actually go and do the parse.
 		try {
 			return (XMLDocumentType)((Symbol)parse()).value;
 		} catch (Exception e) {
-			throw new ParserException(Message.DTDPARSER_THREW_EXCEPTION, e);
+			throw new ParserException(Message.DTDPARSER_THREW_EXCEPTION(), e);
 		}
 	}
 
@@ -188,20 +206,88 @@ parser code {:
 		}
 	}
 
-	/** Clone this {@link Parser}.
+	/** {@inheritDoc}
 
-		@return	A clone of this parser.
+		Note: The SymbolFactory, parse stack and values associated with the symbols in the lookahead are reference-copied.
 	*/
-	public Object clone()
-	throws CloneNotSupportedException
-	{
-		Parser clone = (Parser)super.clone();
-		if (entityMap != null) {
-			clone.entityMap = new HashMap<String, XMLEntity>(entityMap);
+	public Parser getCopy() {
+		Parser copy = new Parser();
+
+		// Copy _done_parsing
+		copy._done_parsing = _done_parsing;
+
+		// Copy action_obj
+		if (action_obj != null) {
+			copy.action_obj = new CUP$Parser$actions(copy);
 		} else {
-			clone.entityMap = null;
+			copy.action_obj = null;
 		}
-		return clone;
+
+		// Copy action_tab
+		if (action_tab != null) {
+			copy.action_tab = new short[action_tab.length][];
+			for (int i = 0; i < action_tab.length; i++) {
+				copy.action_tab[i] = new short[action_tab[i].length];
+				System.arraycopy(action_tab[i], 0, copy.action_tab[i], 0, action_tab[i].length);
+			}
+		} else {
+			copy.action_tab = null;
+		}
+
+		// Copy cur_token
+		if (cur_token != null) {
+			copy.cur_token = new Symbol(cur_token.sym, cur_token.left, cur_token.right, cur_token.value);
+			copy.cur_token.parse_state = cur_token.parse_state;
+		} else {
+			copy.cur_token = null;
+		}
+
+		// Copy lookahead
+		if (lookahead != null) {
+			copy.lookahead = new Symbol[lookahead.length];
+			for (int i = 0; i < lookahead.length; i++) {
+				copy.lookahead[i] = new Symbol(lookahead[i].sym, lookahead[i].left, lookahead[i].right, lookahead[i].value);
+				copy.lookahead[i].parse_state = lookahead[i].parse_state;
+			}
+		} else {
+			copy.lookahead = null;
+		}
+
+		// Copy lookahead_pos
+		copy.lookahead_pos = lookahead_pos;
+
+		// Copy production_tab
+		if (production_tab != null) {
+			copy.production_tab = new short[production_tab.length][];
+			for (int i = 0; i < production_tab.length; i++) {
+				copy.production_tab[i] = new short[production_tab[i].length];
+				System.arraycopy(production_tab[i], 0, copy.production_tab[i], 0, production_tab[i].length);
+			}
+		} else {
+			copy.production_tab = null;
+		}
+
+		// Copy reduce_tab
+		if (reduce_tab != null) {
+			copy.reduce_tab = new short[reduce_tab.length][];
+			for (int i = 0; i < reduce_tab.length; i++) {
+				copy.reduce_tab[i] = new short[reduce_tab[i].length];
+				System.arraycopy(reduce_tab[i], 0, copy.reduce_tab[i], 0, reduce_tab[i].length);
+			}
+		} else {
+			copy.reduce_tab = null;
+		}
+
+		// Copy stack
+		copy.stack = stack;
+
+		// Copy symbolFactory
+		copy.symbolFactory = symbolFactory;
+
+		// Copy tos
+		copy.tos = tos;
+
+		return copy;
 	}
 
 	/** Implement {@link Object#equals(Object)}.

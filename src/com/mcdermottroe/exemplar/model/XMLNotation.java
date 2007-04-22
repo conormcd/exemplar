@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2004, 2005, 2006
+	Copyright (c) 2004-2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -29,10 +29,15 @@
 */
 package com.mcdermottroe.exemplar.model;
 
-import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.ui.Message;
+
+import static com.mcdermottroe.exemplar.Constants.Character.COMMA;
+import static com.mcdermottroe.exemplar.Constants.Character.LEFT_PAREN;
+import static com.mcdermottroe.exemplar.Constants.Character.RIGHT_PAREN;
+import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
+import static com.mcdermottroe.exemplar.Constants.HASHCODE_MAGIC_NUMBER;
 
 /** An {@link XMLObject} which represents notations.
 
@@ -40,7 +45,7 @@ import com.mcdermottroe.exemplar.ui.Message;
 	@since	0.1
 */
 public class XMLNotation
-extends XMLNamedObject
+extends XMLNamedObject<XMLNotation>
 implements XMLMarkupDeclaration
 {
 	/** The ExternalID or PublicID of the {@link XMLNotation}. */
@@ -81,6 +86,14 @@ implements XMLMarkupDeclaration
 	}
 
 	/** {@inheritDoc} */
+	@Override public XMLNotation getCopy() {
+		XMLNotation copy = new XMLNotation();
+		copy.extID = extID.getCopy();
+		copy.name = name;
+		return copy;
+	}
+
+	/** {@inheritDoc} */
 	@Override public boolean equals(Object o) {
 		if (this == o) {
 			return true;
@@ -103,7 +116,7 @@ implements XMLMarkupDeclaration
 	@Override public int hashCode() {
 		int hashCode = super.hashCode();
 
-		hashCode *= Constants.HASHCODE_MAGIC_NUMBER;
+		hashCode *= HASHCODE_MAGIC_NUMBER;
 		if (extID != null) {
 			hashCode += extID.hashCode();
 		}
@@ -115,15 +128,15 @@ implements XMLMarkupDeclaration
 	@Override public String toString() {
 		StringBuilder desc = new StringBuilder();
 		desc.append(name);
-		desc.append(Constants.Character.COMMA);
-		desc.append(Constants.Character.SPACE);
-		desc.append(Constants.Character.LEFT_PAREN);
+		desc.append(COMMA);
+		desc.append(SPACE);
+		desc.append(LEFT_PAREN);
 		if (extID != null) {
 			desc.append(extID.toString());
 		} else {
-			desc.append(Message.XMLOBJECT_NOT_CONFIGURED);
+			desc.append(Message.XMLOBJECT_NOT_CONFIGURED());
 		}
-		desc.append(Constants.Character.RIGHT_PAREN);
+		desc.append(RIGHT_PAREN);
 
 		return XMLObject.toStringHelper(getClass().getName(), desc.toString());
 	}

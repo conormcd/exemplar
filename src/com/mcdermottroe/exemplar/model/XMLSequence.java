@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2004, 2005, 2006
+	Copyright (c) 2004-2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -29,8 +29,13 @@
 */
 package com.mcdermottroe.exemplar.model;
 
-import com.mcdermottroe.exemplar.Constants;
+import java.util.ArrayList;
+
+import com.mcdermottroe.exemplar.CopyException;
 import com.mcdermottroe.exemplar.DBC;
+import com.mcdermottroe.exemplar.Utils;
+
+import static com.mcdermottroe.exemplar.Constants.Character.COMMA;
 
 /** An {@link XMLObject} which represents sequences of {@link XMLObject}s.
 
@@ -38,7 +43,7 @@ import com.mcdermottroe.exemplar.DBC;
 	@since	0.1
 */
 public class XMLSequence
-extends XMLAggregateObject
+extends XMLAggregateObject<XMLSequence>
 {
 	/** The maximum number of times this {@link XMLSequence} may occur. */
 	private int maxOccurs;
@@ -90,7 +95,53 @@ extends XMLAggregateObject
 	}
 
 	/** {@inheritDoc} */
+	@Override public XMLSequence getCopy()
+	throws CopyException
+	{
+		XMLSequence copy = new XMLSequence();
+		if (contents != null) {
+			copy.contents = new ArrayList<XMLObject<?>>(contents.size());
+			for (XMLObject<?> o : contents) {
+				copy.contents.add(o.getCopy());
+			}
+		} else {
+			copy.contents = null;
+		}
+		copy.minOccurs = minOccurs;
+		copy.maxOccurs = maxOccurs;
+		return copy;
+	}
+
+	/** {@inheritDoc} */
+	@Override public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null) {
+			return false;
+		}
+		if (!(o instanceof XMLSequence)) {
+			return false;
+		}
+		if (!super.equals(o)) {
+			return false;
+		}
+
+		XMLSequence other = (XMLSequence)o;
+		return minOccurs == other.minOccurs && maxOccurs == other.maxOccurs;
+	}
+
+	/** {@inheritDoc} */
+	@Override public int hashCode() {
+		return Utils.genericHashCode(
+			super.hashCode(),
+			minOccurs,
+			maxOccurs
+		);
+	}
+
+	/** {@inheritDoc} */
 	@Override public String toString() {
-		return toString(getClass().getName(), Constants.Character.COMMA);
+		return toString(getClass().getName(), COMMA);
 	}
 }

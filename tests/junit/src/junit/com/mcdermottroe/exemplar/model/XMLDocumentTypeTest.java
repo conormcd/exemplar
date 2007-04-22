@@ -78,10 +78,8 @@ extends NormalClassTestCase<XMLDocumentType>
 		PowerSet<XMLMarkupDeclaration> perm;
 		perm = new PowerSet<XMLMarkupDeclaration>(sampleMarkup);
 		for (Set<XMLMarkupDeclaration> m : perm) {
-			XMLDocumentType doctype;
 			if (!(m.contains(attlist) && !m.contains(element))) {
-				doctype = new XMLDocumentType(m);
-				addSample(doctype);
+				addSample(new XMLDocumentType(m));
 			}
 		}
 	}

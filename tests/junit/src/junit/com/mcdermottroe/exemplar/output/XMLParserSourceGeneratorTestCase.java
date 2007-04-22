@@ -38,7 +38,7 @@ import com.mcdermottroe.exemplar.output.XMLParserSourceGenerator;
 	@since	0.1
 */
 public abstract class
-XMLParserSourceGeneratorTestCase<T extends XMLParserSourceGenerator>
+XMLParserSourceGeneratorTestCase<T extends XMLParserSourceGenerator<T>>
 extends XMLParserGeneratorTestCase<T>
 {
 }

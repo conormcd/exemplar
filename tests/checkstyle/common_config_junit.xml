@@ -5,7 +5,7 @@
 	vim:filetype=xml:ts=4
 -->
 <!--
-	Copyright (c) 2006, 2007
+	Copyright (c) 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -137,17 +137,7 @@
 		<module name="EqualsHashCode" />
 		<module name="FallThrough" />
 		<module name="HiddenField" />
-		<module name="IllegalCatch" />
-		<module name="IllegalThrows" />
 		<module name="InnerAssignment" />
-		<module name="MagicNumber">
-			<property name="tokens" value="NUM_INT, NUM_LONG" />
-			<property name="ignoreNumbers" value="-1,0,1,2,2,3,4,5,6,7,8,9" />
-		</module>
-		<module name="MagicNumber">
-			<property name="tokens" value="NUM_DOUBLE, NUM_FLOAT" />
-			<property name="ignoreNumbers" value="0.0,1.0,1000.0" />
-		</module>
 		<module name="MissingSwitchDefault" />
 		<module name="MultipleVariableDeclarations" />
 		<module name="PackageDeclaration" />

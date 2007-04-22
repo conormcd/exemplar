@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2005, 2006
+	Copyright (c) 2005, 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -40,13 +40,17 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.utils.Packages;
 import com.mcdermottroe.exemplar.utils.Strings;
+
+import static com.mcdermottroe.exemplar.Constants.Character.FULL_STOP;
+import static com.mcdermottroe.exemplar.Constants.Output.CLASS;
+import static com.mcdermottroe.exemplar.Constants.Output.CODE_FRAGMENTS_FILE_NAME;
+import static com.mcdermottroe.exemplar.Constants.Output.PACKAGE;
 
 /** Output handling utility methods.
 
@@ -74,11 +78,9 @@ public final class OutputUtils {
 
 		String genName = generatorName.substring(
 			0,
-			generatorName.length() - Constants.Output.CLASS.length() - 1
+			generatorName.length() - CLASS.length() - 1
 		);
-		return ResourceBundle.getBundle(
-			genName + Constants.Output.CODE_FRAGMENTS_FILE_NAME
-		);
+		return ResourceBundle.getBundle(genName + CODE_FRAGMENTS_FILE_NAME);
 	}
 
 	/** Generate a parser given an {@link XMLDocumentType} and the type of
@@ -106,14 +108,14 @@ public final class OutputUtils {
 	{
 		// Preconditions
 		if (doctype == null) {
-			throw new OutputException(Message.SOURCE_GENERATOR_DOCTYPE_NULL);
+			throw new OutputException(Message.SOURCE_GENERATOR_DOCTYPE_NULL());
 		}
 		if (language == null) {
-			throw new OutputException(Message.SOURCE_GENERATOR_LANGUAGE_NULL);
+			throw new OutputException(Message.SOURCE_GENERATOR_LANGUAGE_NULL());
 		}
 
 		// Make the generator
-		XMLParserSourceGenerator gen;
+		XMLParserSourceGenerator<?> gen;
 		gen = XMLParserSourceGenerator.create(language, api);
 
 		// The output file
@@ -127,10 +129,39 @@ public final class OutputUtils {
 			gen.generateParser(doctype, outputFile);
 		} catch (XMLParserGeneratorException e) {
 			throw new OutputException(
-				Message.SOURCE_GENERATOR_THREW_EXCEPTION,
+				Message.SOURCE_GENERATOR_THREW_EXCEPTION(),
 				e
 			);
 		}
+	}
+
+	/** Write a {@link String} to a file.
+
+		@param	s				The {@link String} to write to the file.
+		@param	file			A {@link String} containing the full path to the
+								file to write to.
+		@throws	OutputException	if anything goes wrong
+	*/
+	public static void writeStringToFile(String s, String file)
+	throws OutputException
+	{
+		writeStringToFile(s, new File(file));
+	}
+
+	/** Write a {@link String} to a file.
+
+		@param	s				The {@link String} to write to the file.
+		@param	dir				A {@link File} for the directory in which the
+								new file will reside.
+		@param	filename		A {@link String} containing the name of the file
+								in <code>dir</code> to write the {@link String}
+								to.
+		@throws	OutputException	if anything goes wrong
+	*/
+	public static void writeStringToFile(String s, File dir, String filename)
+	throws OutputException
+	{
+		writeStringToFile(s, new File(dir, filename));
 	}
 
 	/** Write a {@link String} to a {@link File}.
@@ -151,23 +182,24 @@ public final class OutputUtils {
 		}
 
 		BufferedWriter output = null;
+		boolean outputOpen = false;
 		try {
 			// Write the string to the output file.
 			output = new BufferedWriter(new FileWriter(file));
+			outputOpen = true;
 			output.write(s);
 			output.close();
-
-			// Prevent output from being closed a second time.
-			output = null;
+			outputOpen = false;
 		} catch (IOException e) {
 			throw new OutputException(
 				Message.FILE_WRITE_IO_EXCEPTION(
 					file.getAbsolutePath()
 				),
-				e
+				e,
+				file
 			);
 		} finally {
-			if (output != null) {
+			if (outputOpen) {
 				try {
 					output.close();
 				} catch (IOException e) {
@@ -192,14 +224,14 @@ public final class OutputUtils {
 		for (LanguageAPIPair pair : languageAPIPairs) {
 			String language = pair.getLanguage();
 			String api = pair.getAPI();
-			XMLParserSourceGenerator gen;
+			XMLParserSourceGenerator<?> gen;
 			gen = XMLParserSourceGenerator.create(language, api);
 			StringBuilder description = new StringBuilder(
 				gen.describeLanguage()
 			);
 			LanguageAPIPair containedPair = new LanguageAPIPair(language, null);
 			if (!languageAPIPairs.contains(containedPair)) {
-				description.append(Message.OPTION_LANGUAGE_REQUIRES_API);
+				description.append(Message.OPTION_LANGUAGE_REQUIRES_API());
 			}
 			availableOutputLanguages.put(language, description.toString());
 		}
@@ -220,7 +252,7 @@ public final class OutputUtils {
 			String language = pair.getLanguage();
 			String api = pair.getAPI();
 			if (api != null) {
-				XMLParserSourceGenerator gen;
+				XMLParserSourceGenerator<?> gen;
 				gen = XMLParserSourceGenerator.create(language, api);
 				StringBuilder description = new StringBuilder(
 					gen.describeAPI()
@@ -241,22 +273,18 @@ public final class OutputUtils {
 	private static SortedSet<LanguageAPIPair> availableLanguageAPIPairs() {
 		SortedSet<LanguageAPIPair> ret = new TreeSet<LanguageAPIPair>();
 
-		List<String> pNames = Packages.findSubPackages(
-			Constants.Output.PACKAGE
-		);
+		List<String> pNames = Packages.findSubPackages(PACKAGE);
 		for (String packageName : pNames) {
 			String outputLanguageAPI = packageName.substring(
-				Constants.Output.PACKAGE.length() + 1
+				PACKAGE.length() + 1
 			);
 
 			LanguageAPIPair pair = null;
-			int fSI = outputLanguageAPI.indexOf(
-				(int)Constants.Character.FULL_STOP
-			);
+			int fSI = outputLanguageAPI.indexOf((int)FULL_STOP);
 			if (fSI >= 0) {
 				String lang = outputLanguageAPI.substring(0, fSI);
 				String api = outputLanguageAPI.substring(fSI + 1);
-				if (api.indexOf((int)Constants.Character.FULL_STOP) == -1) {
+				if (api.indexOf((int)FULL_STOP) == -1) {
 					pair = new LanguageAPIPair(lang, api);
 				}
 			} else {
@@ -267,7 +295,7 @@ public final class OutputUtils {
 			if (pair == null) {
 				return null;
 			}
-			XMLParserSourceGenerator gen;
+			XMLParserSourceGenerator<?> gen;
 			gen = XMLParserSourceGenerator.create(
 				pair.getLanguage(),
 				pair.getAPI()

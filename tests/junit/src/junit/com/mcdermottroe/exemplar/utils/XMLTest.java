@@ -40,7 +40,63 @@ import junit.com.mcdermottroe.exemplar.UtilityClassTestCase;
 	@author	Conor McDermottroe
 	@since	0.2
 */
-public class XMLTest extends UtilityClassTestCase {
+public class XMLTest
+extends UtilityClassTestCase<XML>
+{
+	/** Test {@link XML#toCharacterReferences(CharSequence)}. */
+	public void testToCharacterReferences() {
+		String[] input = {
+			null,
+			"foo",
+			"f&#x006F;o",
+		};
+		String[] expected = {
+			null,
+			"&#x0066;&#x006F;&#x006F;",
+			"&#x0066;&#x006F;&#x006F;",
+		};
+
+		for (int i = 0; i < input.length; i++) {
+			try {
+				assertEquals(
+					"XML.toCharacterReferences(\"" + input[i] + "\")",
+					expected[i],
+					XML.toCharacterReferences(input[i])
+				);
+			} catch (ParseException e) {
+				fail("XML.toCharacterReferences threw a ParseException");
+				return;
+			}
+		}
+	}
+
+	/** Test {@link XML#toCharacterReferences(CharSequence)} negatively. */
+	public void testToCharacterReferencesNegative() {
+		try {
+			XML.toCharacterReferences("foo&amp");
+			fail("Unterminated reference not detected");
+		} catch (ParseException e) {
+			e.printStackTrace();
+			assertTrue("Unterminated reference accurately detected.", true);
+		}
+	}
+
+	/** Test {@link XML#resolveCharacterReferences(CharSequence)} with a {@link
+		String} containing no character references.
+	*/
+	public void testResolveCharacterReferencesNull() {
+		try {
+			assertEquals(
+				"XML.resolveCharacterReferences(null) == null",
+				null,
+				XML.resolveCharacterReferences(null)
+			);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			fail("ParseException thrown when resolving character references");
+		}
+	}
+
 	/** Test {@link XML#resolveCharacterReferences(CharSequence)} with a {@link
 		String} containing no character references.
 	*/
@@ -305,38 +361,6 @@ public class XMLTest extends UtilityClassTestCase {
 		} catch (ParseException e) {
 			assertTrue(
 				"Negative character reference correctly detected.",
-				true
-			);
-		}
-	}
-
-	/** Test {@link XML#resolveCharacterReferences(CharSequence)} with a {@link
-		String} containing a decimal character reference which refers to a
-		character number which is outside the range of characters.
-	*/
-	public void testResolveCharacterReferencesOutOfRangeDecimalReference() {
-		try {
-			XML.resolveCharacterReferences("&#123456;");
-			fail("Out of range character reference not correctly detected.");
-		} catch (ParseException e) {
-			assertTrue(
-				"Out of range character reference correctly detected.",
-				true
-			);
-		}
-	}
-
-	/** Test {@link XML#resolveCharacterReferences(CharSequence)} with a {@link
-		String} containing a hexadecimal character reference which refers to a
-		character number which is outside the range of characters.
-	*/
-	public void testResolveCharacterReferencesOutOfRangeHexadecimalReference() {
-		try {
-			XML.resolveCharacterReferences("&#x10000;");
-			fail("Out of range character reference not correctly detected.");
-		} catch (ParseException e) {
-			assertTrue(
-				"Out of range character reference correctly detected.",
 				true
 			);
 		}

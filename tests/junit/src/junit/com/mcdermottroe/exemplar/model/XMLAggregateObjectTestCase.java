@@ -42,7 +42,8 @@ import com.mcdermottroe.exemplar.model.XMLObject;
 	@author	Conor McDermottroe
 	@since	0.2
 */
-public abstract class XMLAggregateObjectTestCase<T extends XMLAggregateObject>
+public abstract
+class XMLAggregateObjectTestCase<T extends XMLAggregateObject<T>>
 extends XMLObjectTestCase<T>
 {
 	/** Test {@link XMLAggregateObject#numElements()}. */
@@ -64,9 +65,9 @@ extends XMLObjectTestCase<T>
 		for (T sample : samples()) {
 			if (sample != null) {
 				int count = 0;
-				for (Iterator i = sample.iterator(); i.hasNext(); ) {
+				for (Object o : sample) {
+					System.out.println(o);
 					count++;
-					i.next();
 				}
 				if (count != sample.numElements()) {
 					success = false;
@@ -80,9 +81,9 @@ extends XMLObjectTestCase<T>
 	public void testGetContents() {
 		for (T sample : samples()) {
 			if (sample != null) {
-				List<XMLObject> contents = sample.getContents();
-				Iterator i = contents.iterator();
-				Iterator j = sample.iterator();
+				List<XMLObject<?>> contents = sample.getContents();
+				Iterator<XMLObject<?>> i = contents.iterator();
+				Iterator<XMLObject<?>> j = sample.iterator();
 				if (i.hasNext() != j.hasNext()) {
 					fail(
 						"Mismatch in number of objects returned from" +

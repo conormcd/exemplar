@@ -33,6 +33,7 @@ import com.mcdermottroe.exemplar.output.dtd.Generator;
 
 import junit.com.mcdermottroe.exemplar.output.XMLParserSourceGeneratorTestCase;
 
+
 /** Test class for {@link Generator}.
 
 	@author	Conor McDermottroe
@@ -42,7 +43,7 @@ public class GeneratorTest
 extends XMLParserSourceGeneratorTestCase<Generator>
 {
 	/** {@inheritDoc} */
-	public void setUp() throws Exception {
+	@Override public void setUp() throws Exception {
 		super.setUp();
 
 		addSample(new Generator());

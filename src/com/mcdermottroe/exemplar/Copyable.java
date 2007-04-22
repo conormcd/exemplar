@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006, 2007
+	Copyright (c) 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -27,19 +27,40 @@
 	NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package junit.com.mcdermottroe.exemplar.model;
+package com.mcdermottroe.exemplar;
 
-import com.mcdermottroe.exemplar.model.XMLAggregateObject;
+/** This interface is designed to be a replacement for {@link Cloneable} and
+	should rectify the problems that exist with it.
 
-import junit.com.mcdermottroe.exemplar.AbstractClassTestCase;
+	<p>The following problems exist with {@link Cloneable}:</p>
 
-/** Test class for {@link XMLAggregateObject}.
+	<ul>
+ 		<li>It does not enforce that a {@link Object#clone()} method is public,
+ 			so you can't clone instances of {@link Cloneable} without knowing
+			the concrete class type.
+		 </li>
+ 		<li>(Great-)grandchildren of {@link Object} are hard to clone properly
+ 			if the intervening (grand)children do not implement {@link
+			Cloneable} (and actually publicise {@link Object#clone()}).
+ 		</li>
+ 		<li>{@link Object#clone()} predates generics, so it returns an {@link
+			Object} rather than the correct type. Coupled with the fact that
+			casting a generified collection from Object is nigh-on impossible to
+ 			do correctly, this makes cloning collection classes hard.
+		 </li>
+	</ul>
 
 	@author		Conor McDermottroe
-	@since		0.1
-	@param	<T>	The type of {@link XMLAggregateObject} to test.
+	@since		0.2
+	@param	<T>	The type of the implementing object. For example, if {@link
+				String} implemented this interface it would do so as {@link
+				Copyable}&lt;{@link String}&gt;.
 */
-public class XMLAggregateObjectTest<T extends XMLAggregateObject<T>>
-extends AbstractClassTestCase<XMLAggregateObject<T>>
-{
+public interface Copyable<T> {
+	/** Creates a deep copy of the current object and returns it.
+	
+		@return					A deep copy of the current object.
+		@throws	CopyException	if the copying encountered an exception.
+	*/
+	T getCopy() throws CopyException;
 }

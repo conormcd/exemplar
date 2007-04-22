@@ -35,6 +35,6 @@ package junit.com.mcdermottroe.exemplar;
 	@since	0.1
 */
 public class ExceptionTest
-extends AbstractClassTestCase
+extends AbstractClassTestCase<Exception>
 {
 }

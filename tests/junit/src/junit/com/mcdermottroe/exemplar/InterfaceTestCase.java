@@ -34,10 +34,13 @@ import java.lang.reflect.Modifier;
 /** Base test class for all JUnit test cases testing interfaces to inherit
 	from.
 
-	@author	Conor McDermottroe
-	@since	0.1
+	@author		Conor McDermottroe
+	@since		0.1
+	@param	<T>	The type of the interface being tested.
 */
-public abstract class InterfaceTestCase extends ExemplarTestCase {
+public abstract class InterfaceTestCase<T>
+extends ExemplarTestCase<T>
+{
 	/** Ensure that it's actually an interface. */
 	public void testIsActuallyAnInterface() {
 		int modifiers = testedClass.getModifiers();

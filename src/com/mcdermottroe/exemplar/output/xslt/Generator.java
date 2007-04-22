@@ -32,7 +32,7 @@ package com.mcdermottroe.exemplar.output.xslt;
 import java.io.File;
 import java.util.Map;
 
-import com.mcdermottroe.exemplar.Constants;
+import com.mcdermottroe.exemplar.CopyException;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.model.XMLAttribute;
 import com.mcdermottroe.exemplar.model.XMLAttributeList;
@@ -46,12 +46,17 @@ import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.Options;
 import com.mcdermottroe.exemplar.utils.Strings;
 
+import static com.mcdermottroe.exemplar.Constants.Output.XSLT.FILE_FMT;
+import static com.mcdermottroe.exemplar.Constants.PROGRAM_NAME;
+
 /** A class which generates skeleton XSLT for this XML vocabulary.
 
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class Generator extends XMLParserSourceGenerator {
+public class Generator
+extends XMLParserSourceGenerator<Generator>
+{
 	/** Override the default constructor to add throws clause.
 
 		@throws XMLParserGeneratorException	if the superclass constructor throws
@@ -85,14 +90,11 @@ public class Generator extends XMLParserSourceGenerator {
 		DBC.ASSERT(sourceDirectory != null);
 
 		// Now create an output file in the given directory
-		String vocabulary = Options.getString("vocabulary");
+		String vocabulary = Options.getString("vocabulary"); // NON-NLS
 		DBC.ASSERT(vocabulary != null);
 		File outputFile = new File(
 			sourceDirectory,
-			Strings.formatMessage(
-				Constants.Output.XSLT.FILE_FMT,
-				vocabulary
-			)
+			Strings.formatMessage(FILE_FMT, vocabulary)
 		);
 
 		// Get the attribute lists
@@ -144,7 +146,7 @@ public class Generator extends XMLParserSourceGenerator {
 		body.append(
 			Strings.formatMessage(
 				stylesheet,
-				Constants.PROGRAM_NAME,
+				PROGRAM_NAME,
 				timestamp,
 				"",
 				body.toString()
@@ -166,12 +168,28 @@ public class Generator extends XMLParserSourceGenerator {
 
 	/** {@inheritDoc} */
 	@Override public String describeLanguage() {
-		return "The XSL-T language";
+		return Message.LANGUAGE_XSLT();
 	}
 
 	/** {@inheritDoc} */
 	@Override public String describeAPI() {
 		DBC.UNREACHABLE_CODE();
 		return null;
+	}
+
+
+	/** {@inheritDoc} */
+	public Generator getCopy()
+	throws CopyException
+	{
+		Generator copy;
+		try {
+			copy = new Generator();
+		} catch (XMLParserGeneratorException e) {
+			throw new CopyException(e);
+		}
+		copy.codeFragments = codeFragments;
+		copy.timestamp = timestamp;
+		return copy;
 	}
 }

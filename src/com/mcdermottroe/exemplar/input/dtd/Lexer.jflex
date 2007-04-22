@@ -29,6 +29,8 @@
 */
 package com.mcdermottroe.exemplar.input.dtd;
 
+import java.io.File;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -36,11 +38,17 @@ import java.util.Stack;
 
 import java_cup.runtime.Symbol;
 
-import com.mcdermottroe.exemplar.Constants;
+import com.mcdermottroe.exemplar.Copyable;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.input.LexerException;
 import com.mcdermottroe.exemplar.ui.Message;
+import com.mcdermottroe.exemplar.utils.XML;
+
+import static com.mcdermottroe.exemplar.Constants.BASE_DECIMAL;
+import static com.mcdermottroe.exemplar.Constants.BASE_HEXADECIMAL;
+import static com.mcdermottroe.exemplar.Constants.XMLExternalIdentifier.PUBLIC;
+import static com.mcdermottroe.exemplar.Constants.XMLExternalIdentifier.SYSTEM;
 
 %%
 %class Lexer
@@ -48,7 +56,7 @@ import com.mcdermottroe.exemplar.ui.Message;
 	/** The path to where the DTD is stored. This is used for resolving 
 		relative URIs within parameter entity declarations.
 	*/
-	private String dtdPath;
+	private File dtdPath;
 
 	/** A table for tracking parameter entity declarations. */
 	private PEDeclTable pedeclTable;
@@ -60,103 +68,9 @@ import com.mcdermottroe.exemplar.ui.Message;
 
 		@param	value	The path to the DTD.
 	*/
-	public void setDtdPath(String value) {
+	public void setDtdPath(File value) {
+		DBC.REQUIRE(value.isDirectory());
 		dtdPath = value;
-	}
-
-	/** Replace character references in a string.
-
-		@param text	The text to replace character references in.
-		@return		<code>text</code> with all the character references
-					replaced with the appropriate characters
-	*/
-	private static String replaceCharRefs(String text) {
-		DBC.REQUIRE(text != null);
-		if (text == null) {
-			return null;
-		}
-		if (text.contains("&") && text.contains(";")) {
-			// The text potentially has a character reference in it.
-
-			// Create lists to store the indices of & and ; occurrences
-			List<Integer> ampersandIndices = new ArrayList<Integer>();
-			List<Integer> semicolonIndices = new ArrayList<Integer>();
-
-			// Get the indices of all the occurences of the & character
-			int offset = 0;
-			int index;
-			while ((index = text.indexOf("&", offset)) != -1) {
-				ampersandIndices.add(index);
-				offset = index + 1;
-			}
-
-			// Get the indices of all the occurences of the ; character
-			offset = 0;
-			while ((index = text.indexOf(";", offset)) != -1) {
-				semicolonIndices.add(index);
-				offset = index + 1;
-			}
-
-			// Now use the indices of the & and ; characters to attempt
-			// replacement of references.
-			int strlenDiff = 0;
-			for (int aIndex : ampersandIndices) {
-				int sIndex = 0;
-				Iterator<Integer> sIndices = semicolonIndices.iterator();
-				while (sIndices.hasNext()) {
-					sIndex = sIndices.next();
-					if (sIndex > aIndex) {
-						break;
-					}
-					sIndex = 0;
-				}
-
-				// Now that the upper and a lower bound for the start and end
-				// index of the potential CharRef are known, extract it and see
-				// if it's really a CharRef.
-				String charRef;
-				if (aIndex < sIndex) {
-					// Extract the text of the CharRef
-					charRef = text.substring(	aIndex + strlenDiff,
-												sIndex + strlenDiff + 1
-											);
-
-					// From the text of the CharRef get the name of the
-					// character (CharRef minus leading &# and trailing ; in
-					// other words.
-					String charNum = charRef.substring(2, charRef.length() - 1);
-
-					// Figure out the base of the number in the CharRef
-					int base = Constants.BASE_DECIMAL;;
-					if (charNum.startsWith("x")) {
-						// Number is hexadecimal, strip off the x
-						charNum = charNum.substring(1, charNum.length());
-						base = Constants.BASE_HEXADECIMAL;
-					}
-
-					// Construct the replacement text
-					char c = (char)Integer.parseInt(charNum, base);
-					String replacementText = "" + c;
-
-					// Extract the text before and after the CharRef
-					String textBefore = text.substring(0, aIndex + strlenDiff);
-					String textAfter =	text.substring	(	
-															sIndex + 1 + strlenDiff,
-															text.length()
-														);
-
-					// Calculate the difference in string length that the
-					// substitution would cause
-					strlenDiff += (replacementText.length()	- charRef.length());
-
-					// Actually perform the replacement.
-					text = textBefore + replacementText + textAfter;
-				}
-			}
-		}
-
-		DBC.ENSURE(text != null);
-		return text;
 	}
 
 	/** Given a string containing a parameter entity declaration, parse it and
@@ -211,7 +125,12 @@ import com.mcdermottroe.exemplar.ui.Message;
 			)
 		{
 			// This is straightforward PEDecl with no URI reference
-			String value = replaceCharRefs(rest.substring(1,rest.length() - 1));
+			String value;
+			try {
+				value = XML.resolveCharacterReferences(rest.substring(1,rest.length() - 1));
+			} catch (ParseException e) {
+				throw new ParameterEntityException(e);
+			}
 			pedeclTable.addNewPE(name, value, PEDeclTable.ParameterEntityType.VALUE);
 		} else if (rest.startsWith(PUBLIC) || rest.startsWith(SYSTEM)) {
 			// PUBLIC PEs have a PubidLiteral
@@ -236,7 +155,7 @@ import com.mcdermottroe.exemplar.ui.Message;
 												rest.length()
 											).trim();
 				} else {
-					throw new ParameterEntityException(Message.DTDPEEXCEPTION(Message.DTDPE_INVALID_PUBIDLITERAL, rest));
+					throw new ParameterEntityException(Message.DTDPEEXCEPTION(Message.DTDPE_INVALID_PUBIDLITERAL(), rest));
 				}
 			}
 
@@ -248,30 +167,50 @@ import com.mcdermottroe.exemplar.ui.Message;
 			} else if (rest.startsWith("'")) {
 				systemLiteral = rest.substring(1, rest.indexOf("'", 1));
 			} else {
-				throw new ParameterEntityException(Message.DTDPEEXCEPTION(Message.DTDPE_INVALID_SYSTEMLITERAL, rest));
+				throw new ParameterEntityException(Message.DTDPEEXCEPTION(Message.DTDPE_INVALID_SYSTEMLITERAL(), rest));
 			}
 
 			// Check for trailing garbage after the SystemLiteral
 			if (systemLiteral.length() + 2 != rest.length()) {
-				throw new ParameterEntityException(Message.DTDPEEXCEPTION(Message.DTDPE_GARBAGE_AFTER_SYSTEMLITERAL, rest));
+				throw new ParameterEntityException(Message.DTDPEEXCEPTION(Message.DTDPE_GARBAGE_AFTER_SYSTEMLITERAL(), rest));
 			}
 
 			// The content can be gotten from the URI
 			pedeclTable.addNewPE(name, systemLiteral, PEDeclTable.ParameterEntityType.URI);
 		} else {
-			throw new ParameterEntityException(Message.DTDPE_INVALID_PEDECL);
+			throw new ParameterEntityException(Message.DTDPE_INVALID_PEDECL());
 		}
 	}
 
-	/** Implement {@link Object#clone}.
-
-		@return A clone of this {@link Lexer}.
-	*/
-	public Object clone()
-	throws CloneNotSupportedException
-	{
-		Lexer clone = (Lexer)super.clone();
-		return clone;
+	/** {@inheritDoc} */
+	public Lexer getCopy() {
+		Lexer copy = new Lexer(zzReader);
+		copy.conditionalSectionState = new Stack<String>();
+		for (String element : conditionalSectionState) {
+			copy.conditionalSectionState.push(element);
+		}
+		copy.dtdPath = dtdPath;
+		copy.pedeclTable = pedeclTable.getCopy();
+		copy.yychar = yychar;
+		copy.yycolumn = yycolumn;
+		copy.yyline = yyline;
+		copy.zzAtBOL = zzAtBOL;
+		copy.zzAtEOF = zzAtEOF;
+		copy.zzBuffer = new char[zzBuffer.length];
+		System.arraycopy(zzBuffer, 0, copy.zzBuffer, 0, zzBuffer.length);
+		copy.zzCurrentPos = zzCurrentPos;
+		copy.zzEndRead = zzEndRead;
+		copy.zzEOFDone = zzEOFDone;
+		copy.zzLexicalState = zzLexicalState;
+		copy.zzMarkedPos = zzMarkedPos;
+		copy.zzPushbackPos = zzPushbackPos;
+		copy.zzStartRead = zzStartRead;
+		copy.zzState = zzState;
+		copy.zzStreams = new Stack<ZzFlexStreamInfo>();
+		for (ZzFlexStreamInfo stream : zzStreams) {
+			zzStreams.push(stream);
+		}
+		return copy;
 	}
 
 	/** Implement {@link Object#equals(Object)}.
@@ -320,7 +259,7 @@ conditionalSectionState.push("INCLUDE");
 %yylexthrow{
 LexerException, ParameterEntityException
 %yylexthrow}
-%implements Cloneable, Constants.XMLExternalIdentifier
+%implements Copyable<Lexer>
 %unicode
 %cup
 %state YYIGNORE
@@ -377,7 +316,7 @@ LexerException, ParameterEntityException
 						yybegin(YYIGNORE);
 					}
 				} else {
-					throw new LexerException(Message.LEXEREXCEPTION(Message.DTDLEXER_INVALID_CONDITIONAL_SECTION, yytext()));
+					throw new LexerException(Message.LEXEREXCEPTION(Message.DTDLEXER_INVALID_CONDITIONAL_SECTION(), yytext()));
 				}
 			}
 <YYIGNORE>"<!["[^\[]+"["
@@ -456,10 +395,10 @@ LexerException, ParameterEntityException
 								// Now remove the version number
 								textDeclText = textDeclText.substring(versionNum.length() + 2, textDeclText.length()).trim();
 							} else {
-								throw new LexerException(Message.DTDLEXER_INVALID_TEXTDECL);
+								throw new LexerException(Message.DTDLEXER_INVALID_TEXTDECL());
 							}
 						} else {
-							throw new LexerException(Message.DTDLEXER_INVALID_TEXTDECL);
+							throw new LexerException(Message.DTDLEXER_INVALID_TEXTDECL());
 						}
 					}
 
@@ -483,16 +422,16 @@ LexerException, ParameterEntityException
 								// Now remove the version number
 								textDeclText = textDeclText.substring(encName.length() + 2, textDeclText.length()).trim();
 							} else {
-								throw new LexerException(Message.DTDLEXER_INVALID_TEXTDECL);
+								throw new LexerException(Message.DTDLEXER_INVALID_TEXTDECL());
 							}
 						} else {
-							throw new LexerException(Message.DTDLEXER_INVALID_TEXTDECL);
+							throw new LexerException(Message.DTDLEXER_INVALID_TEXTDECL());
 						}
 					}
 
 					// If there's anything left, it's an error
 					if (! textDeclText.trim().equals("")) {
-						throw new LexerException(Message.DTDLEXER_INVALID_TEXTDECL);
+						throw new LexerException(Message.DTDLEXER_INVALID_TEXTDECL());
 					}
 				} else {
 					// Ignore
@@ -593,11 +532,19 @@ LexerException, ParameterEntityException
 			}
 <YYINITIAL>"&#"[0-9]+";"
 			{
-				return new Symbol(ParserSymbols.CHARREF, Lexer.replaceCharRefs(yytext()));
+				try {
+					return new Symbol(ParserSymbols.CHARREF, XML.resolveCharacterReferences(yytext()));
+				} catch (ParseException e) {
+					throw new LexerException(e);
+				}
 			}
 <YYINITIAL>"&#x"[0-9A-Fa-f]+";"
 			{
-				return new Symbol(ParserSymbols.CHARREF, Lexer.replaceCharRefs(yytext()));
+				try {
+					return new Symbol(ParserSymbols.CHARREF, XML.resolveCharacterReferences(yytext()));
+				} catch (ParseException e) {
+					throw new LexerException(e);
+				}
 			}
 <YYINITIAL>[\u0009\u000D\u000A\u0020]+,[\u0009\u000D\u000A\u0020]+
 			{
@@ -709,7 +656,7 @@ LexerException, ParameterEntityException
 			}
 <YYINITIAL>[\u0000-\u0008\u000B\u000C\u000E-\u001F]
 			{
-				throw new LexerException(Message.LEXEREXCEPTION(Message.DTDLEXER_ILLEGAL_CHARACTER, yytext()));
+				throw new LexerException(Message.LEXEREXCEPTION(Message.DTDLEXER_ILLEGAL_CHARACTER(), yytext()));
 			}
 <YYINITIAL>"{"
 			{
@@ -793,7 +740,7 @@ LexerException, ParameterEntityException
 			}
 <YYINITIAL>[\u0000-\uFFFF]
 			{
-				throw new LexerException(Message.LEXEREXCEPTION(Message.DTDLEXER_UNKNOWN_CHARACTER, yytext()));
+				throw new LexerException(Message.LEXEREXCEPTION(Message.DTDLEXER_UNKNOWN_CHARACTER(), yytext()));
 			}
 <YYIGNORE>[\u0000-\uFFFF]
 			{/* Do nothing */}

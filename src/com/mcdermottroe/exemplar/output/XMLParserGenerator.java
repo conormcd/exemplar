@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2004, 2005, 2006
+	Copyright (c) 2004-2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -29,12 +29,22 @@
 */
 package com.mcdermottroe.exemplar.output;
 
+import com.mcdermottroe.exemplar.Copyable;
+
 /** A class from which all XML parser generators are derived.
 
-	@author	Conor McDermottroe
-	@since	0.1
+	@author		Conor McDermottroe
+	@since		0.1
+	@param	<T>	The type of {@link XMLParserGenerator}
 */
-public abstract class XMLParserGenerator {
+public abstract class XMLParserGenerator<T extends XMLParserGenerator<T>>
+implements Copyable<T>
+{
+	/** Protect the constructor. */
+	protected XMLParserGenerator() {
+		super();
+	}
+
 	/** Describe the language that this generator outputs in.
 
 		@return	A {@link String} that can be used in help messages and in

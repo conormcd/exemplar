@@ -36,6 +36,7 @@
 	<!-- Language-level imports -->
 	<allow pkg="java.io" />
 	<allow pkg="java.lang" />
+	<allow pkg="java.math" />
 	<allow pkg="java.text" />
 	<allow pkg="java.util" />
 

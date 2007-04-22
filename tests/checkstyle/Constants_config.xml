@@ -5,7 +5,7 @@
 	vim:filetype=xml:ts=4
 -->
 <!--
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -70,11 +70,6 @@
 		<module name="TypeName">
 			<property name="format" value="^([A-Z][a-z]*)+$" />
 		</module>
-
-		<!--
-			Size Violations
-		-->
-		<module name="LineLength" />
 
 		<!--
 			Class Design

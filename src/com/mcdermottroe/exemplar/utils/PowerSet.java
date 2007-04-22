@@ -29,15 +29,21 @@
 */
 package com.mcdermottroe.exemplar.utils;
 
-import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.AbstractSet;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
+
+import com.mcdermottroe.exemplar.CopyException;
+import com.mcdermottroe.exemplar.Copyable;
+
+import static com.mcdermottroe.exemplar.Constants.Character.COMMA;
+import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
 
 /** Given a {@link Set} this produces the power set for that set as an
 	immutable set of sets.
@@ -49,7 +55,7 @@ import java.util.Set;
 */
 public class PowerSet<T>
 extends AbstractSet<Set<T>>
-implements Cloneable, Serializable, Set<Set<T>>, Iterable<Set<T>>
+implements Copyable<PowerSet<T>>
 {
 	/** A copy of the original {@link Set} which we were given, as a {@link
 		List} to give us a guaranteed stable ordering.
@@ -58,7 +64,8 @@ implements Cloneable, Serializable, Set<Set<T>>, Iterable<Set<T>>
 
 	/** Create an empty power set. */
 	public PowerSet() {
-		baseSet = new ArrayList<T>();
+		super();
+		baseSet = new ArrayList<T>(0);
 	}
 
 	/** Create a new power set of a {@link Set}.
@@ -66,7 +73,20 @@ implements Cloneable, Serializable, Set<Set<T>>, Iterable<Set<T>>
 		@param	objects	The original {@link Set} to create the power set from.
 	*/
 	public PowerSet(Set<T> objects) {
+		super();
 		baseSet = new ArrayList<T>(objects);
+	}
+
+	/** Override {@link java.util.AbstractCollection#addAll(Collection)} for the
+		purposes of making it always throw an {@link
+		UnsupportedOperationException} regardless of whether or not the {@link
+		Collection} being added actually contains any elements.
+
+		@param	c	The {@link Collection} of objects to add.
+		@return		This method will never return.
+	*/
+	@Override public boolean addAll(Collection<? extends Set<T>> c) {
+		throw new UnsupportedOperationException();
 	}
 
 	/** Get the cardinality of the {@link Set}.
@@ -78,15 +98,73 @@ implements Cloneable, Serializable, Set<Set<T>>, Iterable<Set<T>>
 		return two.pow(baseSet.size());
 	}
 
-	/** Clone the {@link PowerSet}.
-
-		@return								A clone of this object.
-		@throws CloneNotSupportedException	if the clone cannot be created.
+	/** Clear the {@link Set} of all elements. This always throws an {@link
+		UnsupportedOperationException} because this {@link Set} is immutable.
 	*/
-	public Object clone()
-	throws CloneNotSupportedException
+	@Override public void clear() {
+		throw new UnsupportedOperationException();
+	}
+
+	/** Check if this {@link PowerSet} contains a given {@link Object}. Since
+		this is a {@link Set} of {@link Set}s, the {@link Object} provided must
+		be a {@link Set}. This is a faster implementation than the default as if
+		<code>o</code> is a {@link Set} and all the elements in <code>o</code>
+		are contained in the {@link #baseSet} then it is guaranteed that the
+		{@link Set} represented by <code>o</code> is contained in
+		<code>this</code>.
+
+		@param	o	An {@link Object} which may be contained in this {@link
+					PowerSet}.
+		@return		True if <code>o</code> is a {@link Set&lt;T&gt;} which is
+					contained within this {@link PowerSet}.
+	*/
+	@Override public boolean contains(Object o) {
+		if (o == null) {
+			throw new NullPointerException();
+		}
+		if (!(o instanceof Set)) {
+			return false;
+		}
+
+		return baseSet.containsAll((Collection)o);
+	}
+
+	/** Check if this {@link PowerSet} contains all of the elements in the given
+		{@link Collection}. This method simply calls {@link #contains(Object)}
+		on all of the elements.
+
+		@param	c	A {@link Collection} of {@link Object}s which could be in
+					this {@link PowerSet}.
+		@return		True if all of the elements in the given {@link Collection}
+					are {@link Set}s in this {@link PowerSet}.
+	*/
+	@Override public boolean containsAll(Collection<?> c) {
+		for (Object o : c) {
+			if (!contains(o)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/** Test if this {@link PowerSet} is empty.
+
+		@return	True if this power set is empty, false otherwise.
+	*/
+	@Override public boolean isEmpty() {
+		return baseSet.isEmpty();
+	}
+
+	/** {@inheritDoc} */
+	public PowerSet<T> getCopy()
+	throws CopyException
 	{
-		return super.clone();
+		PowerSet<T> copy = new PowerSet<T>();
+		copy.baseSet = new ArrayList<T>(baseSet.size());
+		for (T element : baseSet) {
+			copy.baseSet.add(element);
+		}
+		return copy;
 	}
 
 	/** Test equality against another {@link Object}.
@@ -95,7 +173,7 @@ implements Cloneable, Serializable, Set<Set<T>>, Iterable<Set<T>>
 		@return		True if <code>this</code> is equal to <code>o</code>, false
 					otherwise.
 	*/
-	public boolean equals(Object o) {
+	@Override public boolean equals(Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -104,12 +182,10 @@ implements Cloneable, Serializable, Set<Set<T>>, Iterable<Set<T>>
 		}
 
 		if (o instanceof PowerSet) {
-			PowerSet other = (PowerSet)o;
+			PowerSet<?> other = (PowerSet)o;
 			return other.getBaseSet().equals(getBaseSet());
-		} else if (o instanceof Set) {
-			return containsAll((Set)o);
 		} else {
-			return false;
+			return super.equals(o);
 		}
 	}
 
@@ -125,7 +201,7 @@ implements Cloneable, Serializable, Set<Set<T>>, Iterable<Set<T>>
 
 		@return	A hash code for this object.
 	*/
-	public int hashCode() {
+	@Override public int hashCode() {
 		return baseSet.hashCode();
 	}
 
@@ -133,18 +209,47 @@ implements Cloneable, Serializable, Set<Set<T>>, Iterable<Set<T>>
 
 		@return	An {@link Iterator} over the {@link Set}s in the power set.
 	*/
-	public Iterator<Set<T>> iterator() {
+	@Override public Iterator<Set<T>> iterator() {
 		return new PowerSetIterator();
+	}
+
+	/** This {@link Set} is immutable, hence a call to this method will always
+		result in an {@link UnsupportedOperationException}.
+
+		@param	o	The {@link Object} to remove.
+		@return		True if the {@link Object} was removed.
+	*/
+	@Override public boolean remove(Object o) {
+		throw new UnsupportedOperationException();
+	}
+
+	/** This {@link Set} is immutable, hence a call to this method will always
+		result in an {@link UnsupportedOperationException}.
+
+		@param	c	A {@link Collection} full of {@link Object}s to remove.
+		@return		True if the {@link Object} was removed.
+	*/
+	@Override public boolean removeAll(Collection<?> c) {
+		throw new UnsupportedOperationException();
+	}
+
+	/** This {@link Set} is immutable, hence a call to this method will always
+		result in an {@link UnsupportedOperationException}.
+
+		@param	c	A {@link Collection} full of {@link Object}s to retain.
+		@return		True if the {@link Object} was removed.
+	*/
+	@Override public boolean retainAll(Collection<?> c) {
+		throw new UnsupportedOperationException();
 	}
 
 	/** If the cardinality of the power set is less than {@link
 		Integer#MAX_VALUE} then the cardinality is returned, otherwise an
 		{@link UnsupportedOperationException} is thrown.
 	
-		@return									The cardinality of the power
-												set if possible.
+		@return	The cardinality of the power set, if possible.
 	*/
-	public int size() {
+	@Override public int size() {
 		BigInteger maxInt = new BigInteger(String.valueOf(Integer.MAX_VALUE));
 		BigInteger cardinality = cardinality();
 		if (cardinality.compareTo(maxInt) <= 0) {
@@ -154,6 +259,21 @@ implements Cloneable, Serializable, Set<Set<T>>, Iterable<Set<T>>
 				"size() is unsupported on large power sets."
 			);
 		}
+	}
+
+	/** Implementation of {@link Object#toString()} for debugging purposes.
+
+		@return A {@link String} representation of this power set.
+	*/
+	@Override public String toString() {
+		StringBuilder ret = new StringBuilder("Power set of the set { ");
+		for (T object : baseSet) {
+			ret.append(object.toString());
+			ret.append(COMMA);
+			ret.append(SPACE);
+		}
+		ret.append(" }");
+		return ret.toString();
 	}
 
 	/** A class to represent an {@link Iterator} over a {@link PowerSet}. We
@@ -174,7 +294,7 @@ implements Cloneable, Serializable, Set<Set<T>>, Iterable<Set<T>>
 		/** Create a new {@link PowerSetIterator} initialised at the start of
 			the iteration.
 		*/
-		public PowerSetIterator() {
+		PowerSetIterator() {
 			currentIteration = BigInteger.ZERO;
 			lastIteration = BigInteger.ZERO;
 			for (int i = 0; i < baseSet.size(); i++) {
@@ -202,7 +322,7 @@ implements Cloneable, Serializable, Set<Set<T>>, Iterable<Set<T>>
 			}
 
 			// Create the Set to return.
-			Set<T> toReturn = new HashSet<T>();
+			Set<T> toReturn = new HashSet<T>(baseSet.size());
 			int i = 0;
 			for (T element : baseSet) {
 				if (currentIteration.testBit(i)) {
@@ -221,6 +341,21 @@ implements Cloneable, Serializable, Set<Set<T>>, Iterable<Set<T>>
 		/** It is not possible to remove a set from the power set. */
 		public void remove() {
 			throw new UnsupportedOperationException();
+		}
+
+		/** Implement {@link Object#toString()} for debugging purposes.
+
+			@return A {@link String} representation of this iterator.
+		*/
+		@Override public String toString() {
+			StringBuilder ret = new StringBuilder(baseSet.toString().length());
+			ret.append("Iteration ");
+			ret.append(currentIteration);
+			ret.append(" of ");
+			ret.append(lastIteration);
+			ret.append(" over ");
+			ret.append(baseSet);
+			return ret.toString();
 		}
 	}
 }

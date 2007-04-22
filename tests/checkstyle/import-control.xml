@@ -50,6 +50,8 @@
 	
 	<!-- Specific allowed Exemplar classes -->
 	<allow class="com.mcdermottroe.exemplar.Constants" />
+	<allow class="com.mcdermottroe.exemplar.CopyException" />
+	<allow class="com.mcdermottroe.exemplar.Copyable" />
 	<allow class="com.mcdermottroe.exemplar.DBC" />
 	<allow class="com.mcdermottroe.exemplar.Exception" />
 	<allow class="com.mcdermottroe.exemplar.Utils" />
@@ -58,6 +60,7 @@
 	<allow class="com.mcdermottroe.exemplar.ui.Message" />
 	<allow class="com.mcdermottroe.exemplar.ui.Options" />
 	<allow pkg="com.mcdermottroe.exemplar.utils" />
+	<allow pkg="com.mcdermottroe.exemplar.Constants" />
 	
 	<!-- Per-subpackage rules -->
 	<subpackage name="input">
@@ -78,6 +81,7 @@
 		<allow class="com.mcdermottroe.exemplar.output.XMLParserSourceGenerator" />
 		<allow pkg="com.mcdermottroe.exemplar.model" />
 		<subpackage name="java">
+			<allow class="com.mcdermottroe.exemplar.output.XMLParserGenerator" />
 			<allow class="com.mcdermottroe.exemplar.output.java.XMLJavaSourceGenerator" />
 		</subpackage>
 	</subpackage>

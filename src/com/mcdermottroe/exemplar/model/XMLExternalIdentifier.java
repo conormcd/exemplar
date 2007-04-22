@@ -29,8 +29,11 @@
 */
 package com.mcdermottroe.exemplar.model;
 
-import com.mcdermottroe.exemplar.Constants;
+import com.mcdermottroe.exemplar.Copyable;
 import com.mcdermottroe.exemplar.Utils;
+
+import static com.mcdermottroe.exemplar.Constants.Character.COMMA;
+import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
 
 /** A class to handle the various forms of external identifiers in DTDs.
 
@@ -38,7 +41,7 @@ import com.mcdermottroe.exemplar.Utils;
 	@since	0.1
 */
 public class XMLExternalIdentifier
-implements Cloneable
+implements Copyable<XMLExternalIdentifier>
 {
 	/** The public ID portion of the external identifier. */
 	private String publicID;
@@ -79,19 +82,10 @@ implements Cloneable
 	public String systemID() {
 		return systemID;
 	}
-
-	/** Clone this {@link XMLExternalIdentifier}.
-
-		@return								A clone of this object
-		@throws	CloneNotSupportedException	if the clone operation fails.
-	*/
-	@Override public Object clone()
-	throws CloneNotSupportedException
-	{
-		XMLExternalIdentifier clone = (XMLExternalIdentifier)super.clone();
-		clone.systemID = systemID;
-		clone.publicID = publicID;
-		return clone;
+	
+	/** {@inheritDoc} */
+	public XMLExternalIdentifier getCopy() {
+		return new XMLExternalIdentifier(publicID, systemID);
 	}
 
 	/** See {@link Object#toString()}.
@@ -101,8 +95,8 @@ implements Cloneable
 	@Override public String toString() {
 		StringBuilder desc = new StringBuilder();
 		desc.append(systemID);
-		desc.append(Constants.Character.COMMA);
-		desc.append(Constants.Character.SPACE);
+		desc.append(COMMA);
+		desc.append(SPACE);
 		desc.append(publicID);
 
 		return XMLObject.toStringHelper(getClass().getName(), desc.toString());

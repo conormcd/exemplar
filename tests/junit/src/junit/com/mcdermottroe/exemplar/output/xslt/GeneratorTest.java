@@ -42,7 +42,7 @@ public class GeneratorTest
 extends XMLParserSourceGeneratorTestCase<Generator>
 {
 	/** {@inheritDoc} */
-	public void setUp() throws Exception {
+	@Override public void setUp() throws Exception {
 		super.setUp();
 
 		addSample(new Generator());

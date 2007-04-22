@@ -29,10 +29,15 @@
 */
 package com.mcdermottroe.exemplar.model;
 
-import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.ui.Message;
+
+import static com.mcdermottroe.exemplar.Constants.Character.COMMA;
+import static com.mcdermottroe.exemplar.Constants.Character.LEFT_PAREN;
+import static com.mcdermottroe.exemplar.Constants.Character.RIGHT_PAREN;
+import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
+import static com.mcdermottroe.exemplar.Constants.HASHCODE_MAGIC_NUMBER;
 
 /** An {@link XMLObject} which represents general entities.
 
@@ -40,8 +45,8 @@ import com.mcdermottroe.exemplar.ui.Message;
 	@since	0.1
 */
 public class XMLEntity
-extends XMLNamedObject
-implements Cloneable, XMLMarkupDeclaration
+extends XMLNamedObject<XMLEntity>
+implements XMLMarkupDeclaration
 {
 	/** The valid entity types. */
 	public enum EntityType {
@@ -207,19 +212,18 @@ implements Cloneable, XMLMarkupDeclaration
 	}
 
 	/** {@inheritDoc} */
-	@Override public Object clone()
-	throws CloneNotSupportedException
-	{
-		XMLEntity clone = (XMLEntity)super.clone();
-		clone.entityType = entityType;
-		clone.value = value;
+	@Override public XMLEntity getCopy() {
+		XMLEntity copy = new XMLEntity();
+		copy.entityType = entityType;
 		if (extID != null) {
-			clone.extID = (XMLExternalIdentifier)extID.clone();
+			copy.extID = extID.getCopy();
 		} else {
-			clone.extID = null;
+			copy.extID = null;
 		}
-		clone.notation = notation;
-		return clone;
+		copy.name = name;
+		copy.notation = notation;
+		copy.value = value;
+		return copy;
 	}
 
 	/** {@inheritDoc} */
@@ -254,7 +258,7 @@ implements Cloneable, XMLMarkupDeclaration
 	/** {@inheritDoc} */
 	@Override public int hashCode() {
 		int hashCode = super.hashCode();
-		hashCode *= Constants.HASHCODE_MAGIC_NUMBER;
+		hashCode *= HASHCODE_MAGIC_NUMBER;
 		hashCode += Utils.genericHashCode(entityType, extID, notation, value);
 		return hashCode;
 	}
@@ -263,21 +267,21 @@ implements Cloneable, XMLMarkupDeclaration
 	@Override public String toString() {
 		StringBuilder desc = new StringBuilder();
 		desc.append(name);
-		desc.append(Constants.Character.COMMA);
-		desc.append(Constants.Character.SPACE);
+		desc.append(COMMA);
+		desc.append(SPACE);
 		switch (entityType) {
 			case INTERNAL:
 				desc.append(value());
 				break;
 			case EXTERNAL_PARSED:
 			case EXTERNAL_UNPARSED:
-				desc.append(Constants.Character.LEFT_PAREN);
+				desc.append(LEFT_PAREN);
 				desc.append(externalID().toString());
-				desc.append(Constants.Character.RIGHT_PAREN);
+				desc.append(RIGHT_PAREN);
 				break;
 			case UNINITIALISED:
 			default:
-				desc.append(Message.XMLOBJECT_NOT_CONFIGURED);
+				desc.append(Message.XMLOBJECT_NOT_CONFIGURED());
 				break;
 		}
 

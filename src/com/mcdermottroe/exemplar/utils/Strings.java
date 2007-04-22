@@ -30,10 +30,21 @@
 package com.mcdermottroe.exemplar.utils;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
+
+import static com.mcdermottroe.exemplar.Constants.Character.CARRIAGE_RETURN;
+import static com.mcdermottroe.exemplar.Constants.Character.LEFT_CURLY;
+import static com.mcdermottroe.exemplar.Constants.Character.NEW_LINE;
+import static com.mcdermottroe.exemplar.Constants.Character.NULL;
+import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
+import static com.mcdermottroe.exemplar.Constants.Character.TAB;
+import static com.mcdermottroe.exemplar.Constants.EOL;
+import static com.mcdermottroe.exemplar.Constants.Format.UNICODE;
+import static com.mcdermottroe.exemplar.Constants.UI.INDENT;
 
 /** A collection of {@link String} handling methods.
 
@@ -60,62 +71,48 @@ public final class Strings {
 		@see	java.text.MessageFormat
 	*/
 	public static String formatMessage(String format, Object... args) {
-		DBC.REQUIRE(format != null);
-		DBC.REQUIRE(args != null && args.length > 0);
-		if (format == null || args == null || args.length <= 0) {
+		if (format == null) {
 			return null;
 		}
+		if (args == null || args.length <= 0) {
+			return format;
+		}
 
-		// The following are the replacements for left and right curlies in
-		// several contexts.
-		String beginVariableStandin =	Character.toString(
-											Constants.Character.NULL
-										);
-		String endVariableStandin =		Character.toString(
-											Constants.Character.NULL
-										);
-		String leftCurlyStandin = beginVariableStandin + endVariableStandin;
-
-		// Escape all of the left curlies in the template
-		String template = format;
-		template = template.replaceAll(
-			Constants.Regex.MESSAGE_FORMAT_VAR_START +
-				Constants.Regex.MESSAGE_FORMAT_VAR_NAME +
-				Constants.Regex.MESSAGE_FORMAT_VAR_END,
-			beginVariableStandin +
-				Constants.Regex.FIRST_BACKREFERENCE +
-				endVariableStandin
-		);
-		template = template.replaceAll(
-			Constants.Regex.MESSAGE_FORMAT_VAR_START,
-			leftCurlyStandin
-		);
-		template = template.replaceAll(
-			beginVariableStandin +
-				Constants.Regex.MESSAGE_FORMAT_VAR_NAME +
-				endVariableStandin,
-			Constants.Character.LEFT_CURLY +
-				Constants.Regex.FIRST_BACKREFERENCE +
-				Constants.Character.RIGHT_CURLY
-		);
+		// Replace all instances of the character '{' with a null when they are
+		// not immediately followed by a digit.
+		StringBuilder messageFormat = new StringBuilder(format.length());
+		for (int i = 0; i < format.length(); i++) {
+			if (format.charAt(i) == LEFT_CURLY) {
+				if	(
+						i < format.length() - 1 &&
+						Character.isDigit(format.charAt(i + 1))
+					)
+				{
+					messageFormat.append(format.charAt(i));
+				} else {
+					messageFormat.append(NULL);
+				}
+			} else {
+				messageFormat.append(format.charAt(i));
+			}
+		}
 
 		// Format the string
-		String formattedMessage = MessageFormat.format(template, args);
-
-		// Put all of the curlies back.
-		formattedMessage = formattedMessage.replaceAll(
-			leftCurlyStandin,
-			Character.toString(Constants.Character.LEFT_CURLY)
+		String formattedMessage = MessageFormat.format(
+			messageFormat.toString(),
+			args
 		);
 
-		// Remove all the trailing whitespace
-		formattedMessage = formattedMessage.replaceAll(
-			Constants.Regex.TRAILING_WHITESPACE,
-			Constants.Regex.FIRST_BACKREFERENCE
-		);
+		// Translate the nulls back to left curlies.
+		StringBuilder returnValue = new StringBuilder(formattedMessage);
+		for (int i = 0; i < returnValue.length(); i++) {
+			if (returnValue.charAt(i) == NULL) {
+				returnValue.replace(i, i + 1, String.valueOf(LEFT_CURLY));
+			}
+		}
 
-		// Now the message is formatted
-		return formattedMessage;
+		// Return the string
+		return trimTrailingSpace(returnValue);
 	}
 
 	/** Convert a {@link CharSequence} to a sequence of Java Unicode escapes so
@@ -134,7 +131,7 @@ public final class Strings {
 
 		StringBuilder returnValue = new StringBuilder(s.length() * 6);
 		for (int i = 0; i < s.length(); i++) {
-			returnValue.append(String.format("\\u%04X", (int)s.charAt(i)));
+			returnValue.append(String.format(UNICODE, (int)s.charAt(i)));
 		}
 
 		return returnValue.toString();
@@ -190,5 +187,188 @@ public final class Strings {
 	*/
 	public static String deepToString(Object... objects) {
 		return Arrays.deepToString(objects);
+	}
+
+	/** Remove space or tab characters from between the last non-space character
+		and either the the trailing line endings or the end of the string,
+		whichever is leftmost. This will also convert any line endings into the
+		native local line ending.
+
+		@param	string	The {@link CharSequence} to transform.
+		@return			The original CharSequence with any trailing,
+						non-line-ending whitespace removed.
+	*/
+	public static String trimTrailingSpace(CharSequence string) {
+		if (string == null) {
+			return null;
+		}
+		StringBuilder retValue = new StringBuilder(nativeLineEndings(string));
+		stringBackToFront: for (int i = retValue.length() - 1; i >= 0; i--) {
+			switch (retValue.charAt(i)) {
+				case SPACE:
+				case TAB:
+					retValue.deleteCharAt(i);
+					break;
+				case CARRIAGE_RETURN:
+				case NEW_LINE:
+					// Ignore
+					break;
+				default:
+					break stringBackToFront;
+			}
+		}
+		return retValue.toString();
+	}
+
+	/** Convert all the line-endings in a {@link CharSequence} to the local
+		idea of a line ending sequence.
+
+		@param	input	The {@link CharSequence} to transform.
+		@return			The {@link CharSequence} <code>input</code> with all
+						line-endings converted to the local native line ending.
+	*/
+	public static String nativeLineEndings(CharSequence input) {
+		if (input == null) {
+			return null;
+		}
+		String returnValue = input.toString();
+		returnValue = returnValue.replace("\r\n", EOL);
+		returnValue = returnValue.replace("\n\r", EOL);
+		returnValue = returnValue.replace("\r", EOL);
+		returnValue = returnValue.replace("\n", EOL);
+		return returnValue;
+	}
+
+	/** Indent a {@link String} by one indentation unit.
+
+		@param	s		A {@link String} to indent.
+		@return			The original {@link String} indented by one indentation
+						unit.
+	*/
+	public static String indent(String s) {
+		return indent(new StringBuilder(s)).toString();
+	}
+
+	/** Indent a {@link String} using the program-standard indentation.
+
+		@param	s		A {@link String} to indent.
+		@param	indent	The number of times to indent the {@link String}.
+		@return			The original {@link String} indented <code>indent</code>
+						number of times.
+	*/
+	public static String indent(String s, int indent) {
+		return indent(new StringBuilder(s), indent).toString();
+	}
+
+	/** Indent a {@link StringBuilder} by one indentation unit.
+
+		@param	buffer	A {@link StringBuilder} to indent.
+		@return			The original {@link StringBuilder} indented by one
+						indentation unit.
+	*/
+	public static StringBuilder indent(StringBuilder buffer) {
+		return indent(buffer, 1);
+	}
+
+	/** Indent a {@link StringBuilder} using the program-standard indentation.
+
+		@param	buffer	A {@link StringBuilder} to indent.
+		@param	indent	The number of indentations to apply.
+		@return			The original {@link StringBuilder} indented.
+	*/
+	public static StringBuilder indent(StringBuilder buffer, int indent) {
+		for (int i = 0; i < indent; i++) {
+			buffer.insert(0, INDENT);
+		}
+		return buffer;
+	}
+
+	/** Wrap text to fit into a given paragraph or column width. If it is not
+		possible to wrap the text as desired (e.g. there is a word which is too
+		long to wrap) then the text will overflow the right-hand boundary.
+
+		@param	string	The string to wrap into a paragraph.
+		@param	width	The width of the paragraph, including any leading
+						indentation.
+		@param	indent	The number of columns the entire paragraph should be
+						indented by.
+		@return			The <code>string</code>, wrapped to the given width and
+						indented as requested.
+	*/
+	public static String wrap(CharSequence string, int width, int indent) {
+		DBC.REQUIRE(width > 0);
+		DBC.REQUIRE(indent >= 0);
+		DBC.REQUIRE(width > indent);
+		if (string == null || width <= 0 || indent < 0 || indent >= width) {
+			return null;
+		}
+
+		// Split the string into a list of words.
+		List<String> words = new ArrayList<String>();
+		StringBuilder word = new StringBuilder();
+		for (int i = 0; i < string.length(); i++) {
+			if (Character.isWhitespace(string.charAt(i))) {
+				if (word.length() > 0) {
+					words.add(word.toString());
+					word.delete(0, word.length());
+				}
+			} else {
+				word.append(string.charAt(i));
+			}
+		}
+		if (word.length() > 0) {
+			words.add(word.toString());
+		}
+
+		// Now flow the words into the paragraph.
+		StringBuilder returnValue = new StringBuilder();
+		int currentColumn = indent;
+		for (String s : words) {
+			if (s.length() + currentColumn > width) {
+				if (currentColumn != indent) {
+					returnValue.append(EOL);
+					for (int i = 0; i < indent; i++) {
+						returnValue.append(SPACE);
+					}
+				}
+				returnValue.append(s);
+				if (indent + s.length() + 1 <= width) {
+					returnValue.append(SPACE);
+				}
+				currentColumn = indent + s.length() + 1;
+			} else if (s.length() + currentColumn == width) {
+				returnValue.append(s);
+				returnValue.append(EOL);
+				for (int i = 0; i < indent; i++) {
+					returnValue.append(SPACE);
+				}
+				currentColumn = indent;
+			} else {
+				returnValue.append(s);
+				returnValue.append(SPACE);
+				currentColumn += s.length() + 1;
+			}
+		}
+		for (int i = returnValue.length() - 1; i >= 0; i--) {
+			if (returnValue.charAt(i) == SPACE) {
+				returnValue.deleteCharAt(i);
+			} else {
+				break;
+			}
+		}
+
+		return returnValue.toString();
+	}
+
+	/** A form of {@link Strings#wrap(CharSequence, int, int)} where the indent
+		is 0.
+
+		@param	string	The string to wrap into a paragraph.
+		@param	width	The width of the paragraph.
+		@return			The <code>string</code> wrapped into the given width.
+		@see			#wrap(CharSequence, int, int)
+	*/
+	public static String wrap(CharSequence string, int width) {
+		return wrap(string, width, 0);
 	}
 }

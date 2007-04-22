@@ -37,11 +37,13 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.mcdermottroe.exemplar.CopyException;
+import com.mcdermottroe.exemplar.Copyable;
 
 /**	Base class for JUnit tests that test classes which produce "normal"
 	classes. That includes all classes that are not abstract, exceptions or
@@ -51,7 +53,7 @@ import java.util.List;
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public abstract class NormalClassTestCase<T>
+public abstract class NormalClassTestCase<T extends Copyable<T>>
 extends ExemplarTestCase<T>
 {
 	/** Flag to set if we allow 'public static final' members in the tested
@@ -60,19 +62,9 @@ extends ExemplarTestCase<T>
 	protected boolean allowPublicStaticMembers;
 
 	/** Flag to set if we don't want to run any tests on the {@link
-		Object#equals(Object)} method of the {@link Object}.
-	*/
-	protected boolean ignoreEqualsTests;
-
-	/** Flag to set if we don't want to run any tests on the {@link
 		Object#hashCode()} method of the {@link Object}.
 	*/
 	protected boolean ignoreHashCodeTests;
-
-	/** Flag to set if we don't want to run any tests on the {@link
-		Object#toString()} method of the {@link Object}.
-	*/
-	protected boolean ignoreToStringTests;
 
 	/** A selection of sample {@link Object}s which can be used within the
 		tests. This allows more realistic, but still generalised, testing to be
@@ -86,9 +78,7 @@ extends ExemplarTestCase<T>
 		super.setUp();
 
 		allowPublicStaticMembers = false;
-		ignoreEqualsTests = false;
 		ignoreHashCodeTests = false;
-		ignoreToStringTests = false;
 		sampleObjects = null;
 	}
 
@@ -97,14 +87,11 @@ extends ExemplarTestCase<T>
 		provate constructors as they should never be subclassed.
 	*/
 	public void testAllConstructorsNonPrivate() {
-		if (testedClass == null) {
-			fail("Tested class is null");
-			return;
-		}
+		assertNotNull("Tested class is null", testedClass);
 
 		// Make sure that they're all non-private.
-		for (Constructor constructor : testedClass.getDeclaredConstructors()) {
-			int modifiers = constructor.getModifiers();
+		for (Constructor<?> cons : testedClass.getDeclaredConstructors()) {
+			int modifiers = cons.getModifiers();
 			if (Modifier.isPrivate(modifiers)) {
 				assertFalse(
 					"Private constructor found",
@@ -122,11 +109,9 @@ extends ExemplarTestCase<T>
 		static final'.
 	*/
 	public void testAllFieldsPrivateOrProtectedOrPublicStaticFinal() {
-		if (testedClass == null) {
-			fail("Tested class is null");
-			return;
-		}
+		assertNotNull("Tested class is null", testedClass);
 
+		boolean overlyPublicFieldFound = false;
 		for (Field field : testedClass.getDeclaredFields()) {
 			int modifiers = field.getModifiers();
 			if	(
@@ -145,12 +130,12 @@ extends ExemplarTestCase<T>
 						)
 					)
 				{
-					fail("Overly public field found");
-					return;
+					overlyPublicFieldFound = true;
+					break;
 				}
 			}
 		}
-		assertTrue("All fields are private enough", true);
+		assertFalse("Overly public field found", overlyPublicFieldFound);
 	}
 
 	/** This ensures that the result of {@link Object#hashCode()} does not
@@ -160,26 +145,21 @@ extends ExemplarTestCase<T>
 		if (ignoreHashCodeTests) {
 			return;
 		}
-		if (!hasHashCode()) {
-			fail("Class does not defined hashCode()");
-			return;
-		}
+		assertTrue("Class does not defined hashCode()", hasHashCode());
 
 		int repeat = 5;
-
 		for (T o : samples()) {
 			if (o != null) {
 				int initialHashCode = o.hashCode();
-				for (int i = 0; i < (repeat - 1); i++) {
-					if (initialHashCode != o.hashCode()) {
-						fail("hashCode() value changed!");
-						return;
-					}
+				for (int i = 0; i < repeat - 1; i++) {
+					assertEquals(
+						"hashCode() value changed",
+						initialHashCode,
+						o.hashCode()
+					);
 				}
 			}
 		}
-
-		assertTrue("hashCode() value remained consistent over time", true);
 	}
 
 	/** This ensures that where x.equals(y), x.hashCode() == y.hashCode().
@@ -188,25 +168,19 @@ extends ExemplarTestCase<T>
 		if (ignoreHashCodeTests) {
 			return;
 		}
-		if (!hasHashCode()) {
-			fail("Class does not defined hashCode()");
-			return;
-		}
+		assertTrue("Class does not defined hashCode()", hasHashCode());
 
 		for (T a : samples()) {
 			for (T b : samples()) {
-				if (a != null) {
-					if (a.equals(b) && (a.hashCode() != b.hashCode())) {
-						fail(
-							"Two instances are equal but have different" +
-							" hash codes."
-						);
-						return;
-					}
+				if (a != null && b != null) {
+					assertEquals(
+						"Two instances are equal but have differed hash codes",
+						a.equals(b),
+						a.hashCode() == b.hashCode()
+					);
 				}
 			}
 		}
-		assertTrue("All equal objects have equal hashCodes", true);
 	}
 
 	/** Methods implementing {@link Object#equals(Object)} are required to be
@@ -214,21 +188,11 @@ extends ExemplarTestCase<T>
 		must return true.
 	*/
 	public void testEqualsReflexive() {
-		if (ignoreEqualsTests) {
-			return;
-		}
-		if (!hasEquals()) {
-			fail("Class does not define equals(Object)");
-			return;
-		}
+		assertTrue("Class does not define equals(Object)", hasEquals());
 
 		for (T o : samples()) {
-			if (o != null && !o.equals(o)) {
-				fail("equals(Object) is not reflexive");
-				return;
-			}
+			assertEquals("equals(Object) is not reflexive", o, o);
 		}
-		assertTrue("equals(Object) is reflexive", true);
 	}
 
 	/** Methods implementing {@link Object#equals(Object)} are required to be
@@ -237,25 +201,19 @@ extends ExemplarTestCase<T>
 		true.
 	*/
 	public void testEqualsSymmetric() {
-		if (ignoreEqualsTests) {
-			return;
-		}
-		if (!hasEquals()) {
-			fail("Class does not define equals()");
-			return;
-		}
+		assertTrue("Class does not define equals(Object)", hasEquals());
 
 		for (T a : samples()) {
 			for (T b : samples()) {
 				if (a != null && b != null) {
-					if (a.equals(b) && !(b.equals(a))) {
-						fail("equals() is not symmetric");
-						return;
-					}
+					assertEquals(
+						"equals() is not symmetric",
+						a.equals(b),
+						b.equals(a)
+					);
 				}
 			}
 		}
-		assertTrue("equals() is symmetric", true);
 	}
 
 	/** Methods implementing {@link Object#equals(Object)} are required to be
@@ -264,27 +222,24 @@ extends ExemplarTestCase<T>
 		must return true.
 	*/
 	public void testEqualsTransitive() {
-		if (ignoreEqualsTests) {
-			return;
-		}
-		if (!hasEquals()) {
-			fail("Class does not define equals(Object)");
-			return;
-		}
+		assertTrue("Class does not define equals(Object)", hasEquals());
 
 		for (T a : samples()) {
 			for (T b : samples()) {
 				for (T c : samples()) {
 					if (a != null && b != null) {
-						if (a.equals(b) && b.equals(c) && !(a.equals(c))) {
-							fail("equals(Object) is not transitive");
-							return;
+						boolean isTransititive = true;
+						if (a.equals(b) && b.equals(c)) {
+							isTransititive = a.equals(c);
 						}
+						assertTrue(
+							"equals(Object) is not transitive",
+							isTransititive
+						);
 					}
 				}
 			}
 		}
-		assertTrue("equals(Object) is transitive", true);
 	}
 
 	/** Methods implementing {@link Object#equals(Object)} are required to be
@@ -294,51 +249,49 @@ extends ExemplarTestCase<T>
 		is modified.
 	*/
 	public void testEqualsConsistent() {
-		if (ignoreEqualsTests) {
-			return;
-		}
-		if (!hasEquals()) {
-			fail("Class does not define equals(Object)");
-			return;
-		}
+		assertTrue("Class does not define equals(Object)", hasEquals());
 
 		int repeats = 5;
-
 		for (T a : samples()) {
 			for (T b : samples()) {
 				if (a != null) {
 					boolean initialResult = a.equals(b);
-					for (int i = 0; i < (repeats - 1); i++) {
-						if (initialResult != a.equals(b)) {
-							fail("equals(Object) is not consistent over time.");
-							return;
-						}
+					for (int i = 0; i < repeats - 1; i++) {
+						assertEquals(
+							"equals(Object) is not consistent over time",
+							initialResult,
+							a.equals(b)
+						);
 					}
 				}
 			}
 		}
-		assertTrue("equals(Object) is consistent over time.", true);
 	}
 
 	/**	Every call to equals where the parameter is null must return false. */
 	public void testEqualsNullFalse() {
-		if (ignoreEqualsTests) {
-			return;
-		}
-		if (!hasEquals()) {
-			fail("Class does not implement equals(Object)");
-			return;
-		}
+		assertTrue("Class does not define equals(Object)", hasEquals());
 
 		for (T o : samples()) {
 			if (o != null) {
-				if (o.equals(null)) {
-					fail("equals(null) returned true");
-					return;
-				}
+				assertFalse("equals(null) returned true", o.equals(null));
 			}
 		}
-		assertTrue("equals(null) returned false for all samples.", true);
+	}
+
+	/** Test equals with an object which is not of the same type. */
+	public void testEqualsNullPointerException() {
+		assertTrue("Class does not define equals(Object)", hasEquals());
+
+		NullPointerException bogus = new NullPointerException();
+		for (T o : samples()) {
+			if (o != null) {
+				assertFalse(
+					"equals(NullPointerException) returned true",
+					o.equals(bogus)
+				);
+			}
+		}
 	}
 
 	/** This ensures that for all non-null {@link Object}s x and y,
@@ -347,103 +300,175 @@ extends ExemplarTestCase<T>
 		idea.
 	*/
 	public void testToStringConsistent() {
-		if (ignoreToStringTests) {
-			return;
-		}
-		if (!hasToString()) {
-			fail("Class does not define toString()");
-			return;
-		}
+		assertTrue("Class does not define toString()", hasToString());
 
 		for (T a : samples()) {
 			for (T b : samples()) {
 				if (a != null && b != null) {
-					if (a.equals(b) != (a.toString().equals(b.toString()))) {
-						fail("toString() isn't consistent with equals(Object)");
-						return;
+					assertEquals(
+						"toString() isn't consistent with equals(Object)",
+						a.equals(b),
+						a.toString().equals(b.toString())
+					);
+				}
+			}
+		}
+	}
+
+	/** Ensure that all classes are {@link Copyable}. */
+	public void testImplementsCopyable() {
+		assertTrue(
+			"Class implements Copyable",
+			Copyable.class.isAssignableFrom(testedClass)
+		);
+	}
+
+	/** This ensures that it is possible to call {@link Copyable#getCopy()} and
+		not have an exception thrown.
+	*/
+	public void testCopyable() {
+		for (T sample : samples()) {
+			if (sample != null) {
+				// Invoke the getCopy method.
+				try {
+					sample.getCopy();
+				} catch (CopyException e) {
+					e.printStackTrace();
+					fail("getCopy() threw a CopyException"); // NON-NLS
+					return;
+				}
+			}
+		}
+	}
+
+	/** This ensures that it is possible to call {@link Copyable#getCopy()} and
+		get an object which is equal to, but not the same (referentially) to the
+		original object.
+	*/
+	public void testGetCopyProducesIdenticalObject() {
+		for (T sample : samples()) {
+			if (sample != null) {
+				// Invoke the getCopy method.
+				Object copy;
+				try {
+					copy = sample.getCopy();
+				} catch (CopyException e) {
+					e.printStackTrace();
+					fail("getCopy() threw a CopyException"); // NON-NLS
+					return;
+				}
+
+				// Fail if the copy is the same object
+				if (sample == copy) {
+					fail("The copy is the same object"); // NON-NLS
+					return;
+				}
+
+				// Fail if the original and copy are not equal
+				assertEquals(
+					"The copy is not equal to the original",
+					sample,
+					copy
+				);
+			}
+		}
+	}
+
+	/** Test that:
+		Integer.signum(a.compareTo(b)) == -Integer.signum(b.compareTo(a))
+		as required by the contract of {@link Comparable#compareTo(Object)}.
+	*/
+	public void testComparableSignsConsistent() {
+		if (!Comparable.class.isAssignableFrom(testedClass)) {
+			return;
+		}
+		for (T a : samples()) {
+			for (T b : samples()) {
+				if (a != null && b != null) {
+					int ab = 0;
+					boolean abThrew = false;
+					int ba = 0;
+					boolean baThrew = false;
+					try {
+						ab = Integer.signum(((Comparable<T>)a).compareTo(b));
+					} catch (Throwable t) {
+						t.printStackTrace();
+						abThrew = true;
+					}
+					try {
+						ba = Integer.signum(((Comparable<T>)b).compareTo(a));
+					} catch (Throwable t) {
+						t.printStackTrace();
+						baThrew = true;
+					}
+					assertEquals(
+						"Threw exception in one direction only",
+						abThrew,
+						baThrew
+					);
+					assertEquals(
+						"sgn(a.compareTo(b)) != -sgn(b.compareTo(a))",
+						ab,
+						-ba
+					);
+				}
+			}
+		}
+	}
+
+	/** Test to ensure that:
+		(a.compareTo(b) op 0 && b.compareTo(c) op 0)
+	 	implies
+		a.compareTo(c) op 0.
+	*/
+	public void testComparableTransitive() {
+		if (!Comparable.class.isAssignableFrom(testedClass)) {
+			return;
+		}
+		for (T a : samples()) {
+			for (T b : samples()) {
+				for (T c : samples()) {
+					if (a != null && b != null) {
+						int ab = Integer.signum(
+							((Comparable<T>)a).compareTo(b)
+						);
+						int bc = Integer.signum(
+							((Comparable<T>)b).compareTo(c)
+						);
+						int ac = Integer.signum(
+							((Comparable<T>)a).compareTo(c)
+						);
+						if (ab == bc) {
+							assertEquals(
+								"comparable(T) not transitive",
+								ab,
+								ac
+							);
+						}
 					}
 				}
 			}
 		}
-		assertTrue("toString() is consistent with equals(Object)", true);
 	}
 
-	/** Ensure that all classes are {@link Cloneable}. */
-	public void testImplementsCloneable() {
-		if (Cloneable.class.isAssignableFrom(testedClass)) {
-			assertTrue("Class implements Cloneable", true);
-		} else {
-			fail("Class does not implement Cloneable");
+	/** Test to ensure that a.compareTo(b) == 0 implies a.equals(b). */
+	public void testComparableConsistentWithEquals() {
+		if (!Comparable.class.isAssignableFrom(testedClass)) {
+			return;
 		}
-	}
-
-	/** This ensures that it is possible to call {@link Object#clone()} and not
-		have an exception thrown.
-	*/
-	public void testClone() {
-		for (T sample : samples()) {
-			if (sample != null) {
-				// Invoke the clone method.
-				Object clone;
-				try {
-					clone = doClone(sample);
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-					fail("clone() is not accessible");
-					return;
-				} catch (InvocationTargetException  e) {
-					e.printStackTrace();
-					fail("Calling clone() caused an Exception to be thrown");
-					return;
-				} catch (NoSuchMethodException e) {
-					e.printStackTrace();
-					fail("Class does not implement clone()");
-					return;
+		for (T a : samples()) {
+			for (T b : samples()) {
+				if (a != null) {
+					if (((Comparable<T>)a).compareTo(b) == 0) {
+						assertEquals(
+							"compareTo not consistent with equals",
+							a,
+							b
+						);
+					}
 				}
 			}
 		}
-		assertTrue("clone() is safe to call", true);
-	}
-
-	/** This ensures that it is possible to call {@link Object#clone()} and get
-		an object which is equal to, but not the same (referentially) to the
-		original object.
-	*/
-	public void testCloneProducesIdenticalObject() {
-		for (T sample : samples()) {
-			if (sample != null) {
-				// Invoke the clone method.
-				Object clone;
-				try {
-					clone = doClone(sample);
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-					fail("clone() is not accessible");
-					return;
-				} catch (InvocationTargetException  e) {
-					e.printStackTrace();
-					fail("Calling clone() caused an Exception to be thrown");
-					return;
-				} catch (NoSuchMethodException e) {
-					e.printStackTrace();
-					fail("Class does not implement clone()");
-					return;
-				}
-
-				// Fail if the clone is the same object
-				if (sample == clone) {
-					fail("The clone is the same object");
-					return;
-				}
-
-				// Fail if the original and clone are not equal
-				if (!(sample.equals(clone))) {
-					fail("The clone is not equal to the original");
-					return;
-				}
-			}
-		}
-		assertTrue("clone() produces a good result", true);
 	}
 
 	/** Test that all serializable classes serialize and unserialize without
@@ -459,6 +484,10 @@ extends ExemplarTestCase<T>
 			if (sample == null) {
 				continue;
 			}
+			assertTrue(
+				"Class marked as Serializable, but sample was not",
+				sample instanceof Serializable
+			);
 			try {
 				// Serialize the object
 				ByteArrayOutputStream storage = new ByteArrayOutputStream();
@@ -476,9 +505,12 @@ extends ExemplarTestCase<T>
 
 				// Check that the serialized and deserialized object is exactly
 				// the same as the original.
-				if (!(sample.equals(o))) {
-					fail("Round-tripped object is not equal to the original");
-					return;
+				if (!sample.equals(o)) {
+					assertEquals(
+						"Round-tripped object is not equal to the original",
+						sample,
+						o
+					);
 				}
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
@@ -486,47 +518,21 @@ extends ExemplarTestCase<T>
 				return;
 			} catch (IOException e) {
 				e.printStackTrace();
-				fail("IOException thrown when serializing/deserializing.");
+				fail("IOException thrown when (de)serializing.");
 				return;
 			}
 		}
-		assertTrue("Class is serializable", true);
-	}
-
-	/** Do a typed clone operation.
-
-		@param	object						The object to clone.
-		@return								A clone of <code>object</code>.
-		@throws IllegalAccessException		if the clone method does not have
-											public access.
-		@throws InvocationTargetException	if the clone method throws an
-											exception.
-		@throws NoSuchMethodException		if there is no clone method defined
-											for <code>object</code>.
-	*/
-	@SuppressWarnings("unchecked")
-	protected T doClone(T object)
-	throws	IllegalAccessException, InvocationTargetException,
-			NoSuchMethodException
-	{
-		// Get the clone method of the object
-		Class c = object.getClass();
-		Class[] noArgs = {};
-		Method cloneMethod = c.getMethod("clone", noArgs);
-
-		// Invoke the clone method.
-		Object[] noArg = {};
-		Object clone = cloneMethod.invoke(object, noArg);
-
-		// Cast to T
-		return (T)clone;
 	}
 
 	/** Add a sample to the collection of sample objects.
 
-		@param	sample	The sample object to add.
+		@param	sample			The sample object to add.
+		@throws	CopyException	if copying the sample using {@link
+								Copyable#getCopy()} fails.
 	*/
-	protected void addSample(T sample) {
+	protected void addSample(T sample)
+	throws CopyException
+	{
 		if (sampleObjects == null) {
 			sampleObjects = new ArrayList<T>();
 
@@ -535,22 +541,14 @@ extends ExemplarTestCase<T>
 			sampleObjects.add(null);
 		}
 
-		// Add two copies to make sure that the equality tests get exercised
+		// Add two references to make sure that the equality tests get exercised
 		// fully.
 		sampleObjects.add(sample);
 		sampleObjects.add(sample);
 
-		// Try to add two clones
-		try {
-			sampleObjects.add(doClone(sample));
-			sampleObjects.add(doClone(sample));
-		} catch (IllegalAccessException e) {
-			// Ignore
-		} catch (InvocationTargetException e) {
-			// Ignore
-		} catch (NoSuchMethodException e) {
-			// Ignore
-		}
+		// Add two copies for more equality testing.
+		sampleObjects.add(sample.getCopy());
+		sampleObjects.add(sample.getCopy());
 	}
 
 	/** Provide a {@link List} of sample objects to operate on.
@@ -569,29 +567,6 @@ extends ExemplarTestCase<T>
 		return samples;
 	}
 
-	/** This checks to see if the tested class has a no-arg constructor. If
-		not, we can't do some of the tests.
-
-		@return	True if the tested class has a no-arg constructor, false
-				otherwise.
-	*/
-	private boolean hasNoArgConstructor() {
-		if (testedClass == null) {
-			return false;
-		}
-
-		// Try and get the no-arg constructor.
-		Constructor noArgConstructor;
-		try {
-			noArgConstructor = testedClass.getDeclaredConstructor();
-		} catch (NoSuchMethodException e) {
-			return false;
-		}
-
-		// Make sure it's public, if not we can't use it.
-		return Modifier.isPublic(noArgConstructor.getModifiers());
-	}
-
 	/** Test whether or not the tested class implements an {@link
 		Object#equals(Object)} method.
 
@@ -608,8 +583,12 @@ extends ExemplarTestCase<T>
 		// Try and get the equals method.
 		Method equalsMethod;
 		try {
-			equalsMethod = testedClass.getMethod("equals", Object.class);
+			equalsMethod = testedClass.getMethod(
+				"equals",		// NON-NLS
+				Object.class
+			);
 		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
 			return false;
 		}
 
@@ -633,8 +612,9 @@ extends ExemplarTestCase<T>
 		// Try and get the hashCode method.
 		Method hashCodeMethod;
 		try {
-			hashCodeMethod = testedClass.getMethod("hashCode");
+			hashCodeMethod = testedClass.getMethod("hashCode"); // NON-NLS
 		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
 			return false;
 		}
 
@@ -659,8 +639,9 @@ extends ExemplarTestCase<T>
 		// Try and get the toString() method.
 		Method toStringMethod;
 		try {
-			toStringMethod = testedClass.getMethod("toString");
+			toStringMethod = testedClass.getMethod("toString"); // NON-NLS
 		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
 			return false;
 		}
 

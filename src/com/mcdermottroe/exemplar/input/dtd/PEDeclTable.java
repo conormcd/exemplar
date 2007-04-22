@@ -43,10 +43,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mcdermottroe.exemplar.Constants;
+import com.mcdermottroe.exemplar.Copyable;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.ui.Message;
+
+import static com.mcdermottroe.exemplar.Constants.Character.PERCENT;
+import static com.mcdermottroe.exemplar.Constants.Character.SEMI_COLON;
+import static com.mcdermottroe.exemplar.Constants.Regex.VALID_PE_NAME;
 
 /** A symbol table for parameter entities.
 
@@ -54,7 +58,7 @@ import com.mcdermottroe.exemplar.ui.Message;
 	@since	0.1
 */
 public class PEDeclTable
-implements Cloneable
+implements Copyable<PEDeclTable>
 {
 	/** Enumerated type for the type of parameter entity this is. */
 	public enum ParameterEntityType {
@@ -122,7 +126,7 @@ implements Cloneable
 				contents == null || contents.length() < 0
 			)
 		{
-			throw new ParameterEntityException(Message.DTDPE_INVALID_PEDECL);
+			throw new ParameterEntityException(Message.DTDPE_INVALID_PEDECL());
 		}
 
 		switch (type) {
@@ -157,7 +161,7 @@ implements Cloneable
 		@throws ParameterEntityException	if the entity cannot be resolved.
 		@see InputStreamReader
 	*/
-	public Reader peRefReader(String name, String dtdPath)
+	public Reader peRefReader(String name, File dtdPath)
 	throws ParameterEntityException
 	{
 		DBC.REQUIRE(name != null);
@@ -170,16 +174,16 @@ implements Cloneable
 
 			try {
 				// Construct the path to the file
-				String pathToFile;
+				File file;
 				if (fileTableEntry.startsWith(File.separator)) {
-					pathToFile = fileTableEntry;
+					file = new File(fileTableEntry);
 				} else {
-					pathToFile = dtdPath + File.separator + fileTableEntry;
+					file = new File(dtdPath, fileTableEntry);
 				}
 
 				peRefReader = new InputStreamReader(
 					new FileInputStream(
-						pathToFile
+						file
 					)
 				);
 			} catch (FileNotFoundException e) {
@@ -194,13 +198,13 @@ implements Cloneable
 						);
 					} catch(IOException ioe) {
 						throw new ParameterEntityException(
-							Message.DTDPE_UNRESOLVED_PE_REF,
+							Message.DTDPE_UNRESOLVED_PE_REF(),
 							ioe
 						);
 					}
 				} catch (MalformedURLException mfue) {
 					throw new ParameterEntityException(
-						Message.DTDPE_UNRESOLVED_PE_REF,
+						Message.DTDPE_UNRESOLVED_PE_REF(),
 						mfue
 					);
 				}
@@ -212,7 +216,7 @@ implements Cloneable
 			peRefReader = new StringReader(contents);
 		} else {
 			throw new ParameterEntityException(
-				Message.DTDPE_UNRESOLVED_PE_REF
+				Message.DTDPE_UNRESOLVED_PE_REF()
 			);
 		}
 
@@ -232,19 +236,15 @@ implements Cloneable
 	public String replacePERefs(String s)
 	throws ParameterEntityException
 	{
-		DBC.REQUIRE(s != null);
-
 		String text;
 		if (s != null) {
 			text = s;
 		} else {
 			text = "";
 		}
-		if	(
-				text.indexOf((int)Constants.Character.PERCENT) != -1 &&
-				text.indexOf((int)Constants.Character.SEMI_COLON) != -1
-			)
-		{
+		int percent = (int)PERCENT;
+		int semicolon = (int)SEMI_COLON;
+		if (text.indexOf(percent) != -1 && text.indexOf(semicolon) != -1) {
 			// The text potentially has a parameter entity reference in it.
 
 			// Create vectors to store the indices of % and ; occurrences
@@ -252,7 +252,6 @@ implements Cloneable
 			List<Integer> semicolonIndices = new ArrayList<Integer>();
 
 			// Get the indices of all the occurences of the % character
-			int percent = (int)Constants.Character.PERCENT;
 			int poffset = 0;
 			int index;
 			while ((index = text.indexOf(percent, poffset)) != -1) {
@@ -261,7 +260,6 @@ implements Cloneable
 			}
 
 			// Get the indices of all the occurences of the ; character
-			int semicolon = (int)Constants.Character.SEMI_COLON;
 			int soffset = 0;
 			while ((index = text.indexOf(semicolon, soffset)) != -1) {
 				semicolonIndices.add(index);
@@ -319,7 +317,7 @@ implements Cloneable
 						// If the PERef was valid then an error must be thrown
 						// otherwise it was a false positive and should be
 						// ignored.
-						if (peRefKey.matches(Constants.Regex.VALID_PE_NAME)) {
+						if (peRefKey.matches(VALID_PE_NAME)) {
 							// The PERef was valid
 							throw new ParameterEntityException(
 								Message.DTDPE_UNDECLARED_PE(
@@ -334,22 +332,16 @@ implements Cloneable
 
 		return text;
 	}
+    
+    /** {@inheritDoc} */
+    public PEDeclTable getCopy() {
+        PEDeclTable copy = new PEDeclTable();
+        copy.table = new HashMap<String, String>(table);
+        copy.fileTable = new HashMap<String, String>(fileTable);
+        return copy;
+    }
 
-	/** Clone this {@link PEDeclTable}.
-
-		@return								A clone of this object.
-		@throws CloneNotSupportedException	if the clone cannot be made.
-	*/
-	public Object clone()
-	throws CloneNotSupportedException
-	{
-		PEDeclTable clone = (PEDeclTable)super.clone();
-		clone.table = new HashMap<String, String>(table);
-		clone.fileTable = new HashMap<String, String>(fileTable);
-		return clone;
-	}
-
-	/** See {@link Object#toString()}.
+    /** See {@link Object#toString()}.
 
 		@return	A descriptive {@link String}.
 	*/

@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -29,12 +29,16 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
+import com.mcdermottroe.exemplar.model.XMLMarkupDeclaration;
+
 import junit.com.mcdermottroe.exemplar.InterfaceTestCase;
 
-/** Test class for {@link com.mcdermottroe.exemplar.model.XMLMarkupDeclaration}.
+/** Test class for {@link XMLMarkupDeclaration}.
 
 	@author	Conor McDermottroe
 	@since	0.2
 */
-public class XMLMarkupDeclarationTest extends InterfaceTestCase {
+public class XMLMarkupDeclarationTest
+extends InterfaceTestCase<XMLMarkupDeclaration>
+{
 }

@@ -36,7 +36,9 @@ import com.mcdermottroe.exemplar.Utils;
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class UtilsTest extends UtilityClassTestCase {
+public class UtilsTest
+extends UtilityClassTestCase<Utils>
+{
 	/** Test {@link Utils#areDeeplyEqual(Object, Object)} with two null
 		references.
 	*/
@@ -53,7 +55,7 @@ public class UtilsTest extends UtilityClassTestCase {
 	public void testAreDeeplyEqualNullObject() {
 		assertFalse(
 			"null is not equal to a non-null Object",
-			Utils.areDeeplyEqual(null, "NOT NULL")
+			Utils.areDeeplyEqual(null, "NOT NULL")	// NON-NLS
 		);
 	}
 
@@ -63,7 +65,7 @@ public class UtilsTest extends UtilityClassTestCase {
 	public void testAreDeeplyEqualObjectNull() {
 		assertFalse(
 			"A non-null Object is not equal to null",
-			Utils.areDeeplyEqual("NOT NULL", null)
+			Utils.areDeeplyEqual("NOT NULL", null)	// NON-NLS
 		);
 	}
 
@@ -73,7 +75,7 @@ public class UtilsTest extends UtilityClassTestCase {
 	public void testAreDeeplyEqualObjectObjectEqual() {
 		assertTrue(
 			"Two equal objects are equal",
-			Utils.areDeeplyEqual("EQUAL", "EQUAL")
+			Utils.areDeeplyEqual("EQUAL", "EQUAL")	// NON-NLS
 		);
 	}
 
@@ -83,7 +85,87 @@ public class UtilsTest extends UtilityClassTestCase {
 	public void testAreDeeplyEqualObjectObjectNotEqual() {
 		assertFalse(
 			"Two non-equal objects are non-equal",
-			Utils.areDeeplyEqual("EQUAL", "NOT EQUAL")
+			Utils.areDeeplyEqual("EQUAL", "NOT EQUAL")	// NON-NLS
+		);
+	}
+
+	/** Test {@link Utils#areAllDeeplyEqual(Object[], Object[])} with two null
+		arrays.
+	*/
+	public void testAreAllDeeplyEqualTwoNull() {
+		assertTrue(
+			"Two null arrays are equal",
+			Utils.areAllDeeplyEqual(null, null)
+		);
+	}
+
+	/** Test {@link Utils#areAllDeeplyEqual(Object[], Object[])} with one null
+		and one empty array.
+	*/
+	public void testAreAllDeeplyEqualOneNullOneEmpty() {
+		String[] a = {};
+		assertFalse(
+			"A null array is different from an empty one",
+			Utils.areAllDeeplyEqual(null, a)
+		);
+	}
+
+	/** Test {@link Utils#areAllDeeplyEqual(Object[], Object[])} with one empty
+		and one null array.
+	*/
+	public void testAreAllDeeplyEqualOneEmptyOneNull() {
+		String[] a = {};
+		assertFalse(
+			"An empty array is different from a null one",
+			Utils.areAllDeeplyEqual(a, null)
+		);
+	}
+
+	/** Test {@link Utils#areAllDeeplyEqual(Object[], Object[])} with two empty
+		arrays.
+	*/
+	public void testAreAllDeeplyEqualTwoEmpty() {
+		String[] a = {};
+		String[] b = {};
+		assertTrue(
+			"Two empty arrays are equal",
+			Utils.areAllDeeplyEqual(a, b)
+		);
+	}
+
+	/** Test {@link Utils#areAllDeeplyEqual(Object[], Object[])} with one empty
+		and one populated array.
+	*/
+	public void testAreAllDeeplyEqualOneEmptyOnePopulated() {
+		String[] a = {};
+		String[] b = {"foo"}; // NON-NLS
+		assertFalse(
+			"An emtpy array is different from a populated one",
+			Utils.areAllDeeplyEqual(a, b)
+		);
+	}
+
+	/** Test {@link Utils#areAllDeeplyEqual(Object[], Object[])} with one
+		populated and one empty array.
+	*/
+	public void testAreAllDeeplyEqualOnePopulatedOneEmpty() {
+		String[] a = {"foo"};	// NON-NLS
+		String[] b = {};
+		assertFalse(
+			"A populated array is different from an emtpy one",
+			Utils.areAllDeeplyEqual(a, b)
+		);
+	}
+
+	/** Test {@link Utils#areAllDeeplyEqual(Object[], Object[])} with two
+		populated equal arrays.
+	*/
+	public void testAreAllDeeplyEqualTwoEqualPopulated() {
+		String[] a = {"foo"};	// NON-NLS
+		String[] b = {"foo"}; // NON-NLS
+		assertTrue(
+			"Two populated arrays are equal",
+			Utils.areAllDeeplyEqual(a, b)
 		);
 	}
 }

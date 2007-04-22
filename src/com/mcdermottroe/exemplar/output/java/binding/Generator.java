@@ -32,7 +32,7 @@ package com.mcdermottroe.exemplar.output.java.binding;
 import java.io.File;
 import java.util.Map;
 
-import com.mcdermottroe.exemplar.Constants;
+import com.mcdermottroe.exemplar.CopyException;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.model.XMLAttribute;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
@@ -47,12 +47,21 @@ import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.Options;
 import com.mcdermottroe.exemplar.utils.Strings;
 
+import static com.mcdermottroe.exemplar.Constants.Character.COLON;
+import static com.mcdermottroe.exemplar.Constants.Character.RIGHT_CURLY;
+import static com.mcdermottroe.exemplar.Constants.Character.TAB;
+import static com.mcdermottroe.exemplar.Constants.EOL;
+import static com.mcdermottroe.exemplar.Constants.Format.Filenames.JAVA;
+import static com.mcdermottroe.exemplar.Constants.PROGRAM_NAME;
+
 /** A class which generates data binding Java parsers.
 
 	@author	Conor McDermottroe
 	@since	0.2
 */
-public class Generator extends XMLParserSourceGenerator {
+public class Generator
+extends XMLParserSourceGenerator<Generator>
+{
 	/** The base package, if any, where the output code is going to live. */
 	protected String basePackage;
 
@@ -67,16 +76,19 @@ public class Generator extends XMLParserSourceGenerator {
 	{
 		// The parent does all the work.
 		super();
+		basePackage = null;
 	}
 
 	/** {@inheritDoc} */
-	public void generateParser(XMLDocumentType model, File directory)
+	@Override public void generateParser(XMLDocumentType model, File directory)
 	throws XMLParserGeneratorException
 	{
 		// Set some of the common stuff
-		basePackage = Options.getString("output-package");
+		basePackage = Options.getString("output-package"); // NON-NLS
 		if (basePackage == null) {
-			throw new XMLParserGeneratorException("TODO");
+			throw new XMLParserGeneratorException(
+				Message.MANDATORY_OPTIONS_NOT_SET()
+			);
 		}
 
 		// Get the elements
@@ -85,19 +97,19 @@ public class Generator extends XMLParserSourceGenerator {
 		// Only create code if there are some elements
 		if (elements != null && !elements.isEmpty()) {
 			// Create the root parser class
-			Log.debug("Creating root parser class");
+			Log.debug("Creating root parser class"); // NON-NLS
 			createRootParserClass(directory);
 
 			// Create the support classes
-			Log.debug("Creating support classes");
-			File supportDir = new File(directory, "support");
+			Log.debug("Creating support classes"); // NON-NLS
+			File supportDir = new File(directory, "support"); // NON-NLS
 			createXMLComponentClass(supportDir);
 			createXMLContentClass(supportDir);
 			createAbstractElementClass(supportDir);
 
 			// Create one class per element
-			Log.debug("Creating element classes");
-			File elementsDir = new File(directory, "element");
+			Log.debug("Creating element classes"); // NON-NLS
+			File elementsDir = new File(directory, "element"); // NON-NLS
 			for (String elementName : elements.keySet()) {
 				XMLMarkupDeclaration markupDecl = elements.get(elementName);
 				if (markupDecl instanceof XMLElement) {
@@ -110,12 +122,12 @@ public class Generator extends XMLParserSourceGenerator {
 	}
 
 	/** {@inheritDoc} */
-	public String describeLanguage() {
-		return "The Java language";
+	@Override public String describeLanguage() {
+		return Message.LANGUAGE_JAVA();
 	}
 
 	/** {@inheritDoc} */
-	public String describeAPI() {
+	@Override public String describeAPI() {
 		return "A data binding API.";
 	}
 
@@ -129,7 +141,7 @@ public class Generator extends XMLParserSourceGenerator {
 	protected void createRootParserClass(File dir)
 	throws XMLParserGeneratorException
 	{
-		Log.debug("Creating root parser class");
+		Log.debug("Creating root parser class"); // NON-NLS
 		DBC.REQUIRE(dir != null);
 		if (dir == null) {
 			return;
@@ -142,33 +154,39 @@ public class Generator extends XMLParserSourceGenerator {
 
 		// Get the template
 		String messageFormatTemplate = loadCodeFragment(
-			"ROOT_PARSER_CLASS"
+			"ROOT_PARSER_CLASS" // NON-NLS
 		);
 		DBC.ASSERT(messageFormatTemplate != null);
 
 		// Make the root parser class name
-		String rootParserClassName = Options.getString("vocabulary");
-		rootParserClassName =	rootParserClassName.substring(0, 1)
-									.toUpperCase() +
-								rootParserClassName.substring(1);
+		String vocabularyName = Options.getString("vocabulary"); // NON-NLS
+		StringBuilder rootParserClassName  = new StringBuilder(vocabularyName);
+		rootParserClassName.replace(
+			0,
+			1,
+			vocabularyName.substring(0, 1).toUpperCase()
+		);
 
 		// Make the contents of the output file
 		String outputFileContents = Strings.formatMessage(
 			messageFormatTemplate,
-			Constants.PROGRAM_NAME,
+			PROGRAM_NAME,
 			timestamp,
 			basePackage,
 			rootParserClassName
 		);
 
 		// Write out the file
-		File file = new File(dir, rootParserClassName + ".java");
 		try {
-			OutputUtils.writeStringToFile(outputFileContents, file);
+			OutputUtils.writeStringToFile(
+				outputFileContents,
+				dir,
+				String.format(JAVA, rootParserClassName)
+			);
 		} catch (OutputException e) {
 			throw new XMLParserGeneratorException(
 				Message.FILE_WRITE_FAILED(
-					file.getAbsolutePath()
+					e.getFile().getAbsolutePath()
 				),
 				e
 			);
@@ -186,7 +204,7 @@ public class Generator extends XMLParserSourceGenerator {
 	protected void createAbstractElementClass(File dir)
 	throws XMLParserGeneratorException
 	{
-		Log.debug("Creating abstract element class");
+		Log.debug("Creating abstract element class"); // NON-NLS
 		DBC.REQUIRE(dir != null);
 		if (dir == null) {
 			return;
@@ -199,20 +217,20 @@ public class Generator extends XMLParserSourceGenerator {
 
 		// Get the template
 		String messageFormatTemplate = loadCodeFragment(
-			"ABSTRACT_ELEMENT_CLASS"
+			"ABSTRACT_ELEMENT_CLASS" // NON-NLS
 		);
 		DBC.ASSERT(messageFormatTemplate != null);
 
 		// Make the contents of the output file
 		String outputFileContents = Strings.formatMessage(
 			messageFormatTemplate,
-			Constants.PROGRAM_NAME,
+			PROGRAM_NAME,
 			timestamp,
 			basePackage
 		);
 
 		// Write out the file
-		File file = new File(dir, Constants.PROGRAM_NAME + "Element.java");
+		File file = new File(dir, PROGRAM_NAME + "Element.java");
 		try {
 			OutputUtils.writeStringToFile(outputFileContents, file);
 		} catch (OutputException e) {
@@ -237,12 +255,12 @@ public class Generator extends XMLParserSourceGenerator {
 	protected void createElementClass(XMLElement element, File dir)
 	throws XMLParserGeneratorException
 	{
-		Log.debug("Creating the Element class for " + element.getName());
 		DBC.REQUIRE(element != null);
 		DBC.REQUIRE(dir != null);
 		if (element == null || dir == null) {
 			return;
 		}
+		Log.debug("Creating the Element class for " + element.getName());
 
 		// Ensure that the directory exists
 		if (!dir.exists()) {
@@ -252,7 +270,7 @@ public class Generator extends XMLParserSourceGenerator {
 		// Get the element name and make an appropriate class name. 
 		String elementName = element.getName();
 		String className;
-		int indexOfColon = elementName.indexOf(':');
+		int indexOfColon = elementName.indexOf((int)COLON);
 		if (indexOfColon > 0) {
 			className = elementName.substring(
 							indexOfColon + 1,
@@ -273,8 +291,8 @@ public class Generator extends XMLParserSourceGenerator {
 			String attributeName = attribute.getName();
 
 			String fixedValue = null;
-			constructorCode.append(Constants.Character.TAB);
-			constructorCode.append(Constants.Character.TAB);
+			constructorCode.append(TAB);
+			constructorCode.append(TAB);
 			constructorCode.append("attributes.put(\"");
 			constructorCode.append(attributeName);
 			constructorCode.append("\", new Attribute(\"");
@@ -303,26 +321,26 @@ public class Generator extends XMLParserSourceGenerator {
 					DBC.UNREACHABLE_CODE();
 					return;
 			}
-			constructorCode.append(Constants.EOL);
+			constructorCode.append(EOL);
 
 			// The getter
-			accessMethods.append(Constants.EOL);
-			accessMethods.append(Constants.Character.TAB);
+			accessMethods.append(EOL);
+			accessMethods.append(TAB);
 			accessMethods.append("/** Getter for the ");
 			accessMethods.append(attributeName);
 			accessMethods.append(" attribute.");
-			accessMethods.append(Constants.EOL);
-			accessMethods.append(Constants.EOL);
-			accessMethods.append(Constants.Character.TAB);
-			accessMethods.append(Constants.Character.TAB);
+			accessMethods.append(EOL);
+			accessMethods.append(EOL);
+			accessMethods.append(TAB);
+			accessMethods.append(TAB);
 			accessMethods.append("@return The value of the ");
 			accessMethods.append(attributeName);
 			accessMethods.append(" attribute.");
-			accessMethods.append(Constants.EOL);
-			accessMethods.append(Constants.Character.TAB);
+			accessMethods.append(EOL);
+			accessMethods.append(TAB);
 			accessMethods.append("*/");
-			accessMethods.append(Constants.EOL);
-			accessMethods.append(Constants.Character.TAB);
+			accessMethods.append(EOL);
+			accessMethods.append(TAB);
 			accessMethods.append("public String get");
 			accessMethods.append(
 				(
@@ -331,9 +349,9 @@ public class Generator extends XMLParserSourceGenerator {
 				).replaceAll("\\W+", "_")
 			);
 			accessMethods.append("() {");
-			accessMethods.append(Constants.EOL);
-			accessMethods.append(Constants.Character.TAB);
-			accessMethods.append(Constants.Character.TAB);
+			accessMethods.append(EOL);
+			accessMethods.append(TAB);
+			accessMethods.append(TAB);
 			if (fixedValue == null) {
 				accessMethods.append("return ((Attribute)attributes.get(\"");
 				accessMethods.append(attributeName);
@@ -343,30 +361,30 @@ public class Generator extends XMLParserSourceGenerator {
 				accessMethods.append(fixedValue);
 				accessMethods.append("\";");
 			}
-			accessMethods.append(Constants.EOL);
-			accessMethods.append(Constants.Character.TAB);
-			accessMethods.append("}");
-			accessMethods.append(Constants.EOL);
+			accessMethods.append(EOL);
+			accessMethods.append(TAB);
+			accessMethods.append(RIGHT_CURLY);
+			accessMethods.append(EOL);
 
 			// The setter
 			if (fixedValue == null) {
-				accessMethods.append(Constants.EOL);
-				accessMethods.append(Constants.Character.TAB);
+				accessMethods.append(EOL);
+				accessMethods.append(TAB);
 				accessMethods.append("/** Setter for the ");
 				accessMethods.append(attributeName);
 				accessMethods.append(" attribute.");
-				accessMethods.append(Constants.EOL);
-				accessMethods.append(Constants.EOL);
-				accessMethods.append(Constants.Character.TAB);
-				accessMethods.append(Constants.Character.TAB);
+				accessMethods.append(EOL);
+				accessMethods.append(EOL);
+				accessMethods.append(TAB);
+				accessMethods.append(TAB);
 				accessMethods.append("@param value The value to set the ");
 				accessMethods.append(attributeName);
 				accessMethods.append(" attribute to.");
-				accessMethods.append(Constants.EOL);
-				accessMethods.append(Constants.Character.TAB);
+				accessMethods.append(EOL);
+				accessMethods.append(TAB);
 				accessMethods.append("*/");
-				accessMethods.append(Constants.EOL);
-				accessMethods.append(Constants.Character.TAB);
+				accessMethods.append(EOL);
+				accessMethods.append(TAB);
 				accessMethods.append("public void set");
 				accessMethods.append(
 					(
@@ -375,27 +393,27 @@ public class Generator extends XMLParserSourceGenerator {
 					).replaceAll("\\W+", "_")
 				);
 				accessMethods.append("(String value) {");
-				accessMethods.append(Constants.EOL);
-				accessMethods.append(Constants.Character.TAB);
-				accessMethods.append(Constants.Character.TAB);
+				accessMethods.append(EOL);
+				accessMethods.append(TAB);
+				accessMethods.append(TAB);
 				accessMethods.append("Attribute att = (Attribute)");
 				accessMethods.append("attributes.remove(\"");
 				accessMethods.append(attributeName);
 				accessMethods.append("\");");
-				accessMethods.append(Constants.EOL);
-				accessMethods.append(Constants.Character.TAB);
-				accessMethods.append(Constants.Character.TAB);
+				accessMethods.append(EOL);
+				accessMethods.append(TAB);
+				accessMethods.append(TAB);
 				accessMethods.append("att.setValue(value);");
-				accessMethods.append(Constants.EOL);
-				accessMethods.append(Constants.Character.TAB);
-				accessMethods.append(Constants.Character.TAB);
+				accessMethods.append(EOL);
+				accessMethods.append(TAB);
+				accessMethods.append(TAB);
 				accessMethods.append("attributes.put(\"");
 				accessMethods.append(attributeName);
 				accessMethods.append("\", att);");
-				accessMethods.append(Constants.EOL);
-				accessMethods.append(Constants.Character.TAB);
+				accessMethods.append(EOL);
+				accessMethods.append(TAB);
 				accessMethods.append("}");
-				accessMethods.append(Constants.EOL);
+				accessMethods.append(EOL);
 			}
 		}
 
@@ -406,7 +424,7 @@ public class Generator extends XMLParserSourceGenerator {
 		// Make the contents of the output file
 		String outputFileContents = Strings.formatMessage(
 			messageFormatTemplate,
-			Constants.PROGRAM_NAME,
+			PROGRAM_NAME,
 			timestamp,
 			basePackage,
 			elementName,
@@ -416,7 +434,7 @@ public class Generator extends XMLParserSourceGenerator {
 		);
 
 		// Write out the file
-		File file = new File(dir, className + ".java");
+		File file = new File(dir, String.format(JAVA, className));
 		try {
 			OutputUtils.writeStringToFile(outputFileContents, file);
 		} catch (OutputException e) {
@@ -459,13 +477,13 @@ public class Generator extends XMLParserSourceGenerator {
 		// Make the contents of the output file
 		String outputFileContents = Strings.formatMessage(
 			messageFormatTemplate,
-			Constants.PROGRAM_NAME,
+			PROGRAM_NAME,
 			timestamp,
 			basePackage
 		);
 
 		// Write out the file
-		File file = new File(dir, "XMLContent.java");
+		File file = new File(dir, String.format(JAVA, "XMLContent"));
 		try {
 			OutputUtils.writeStringToFile(outputFileContents, file);
 		} catch (OutputException e) {
@@ -508,13 +526,13 @@ public class Generator extends XMLParserSourceGenerator {
 		// Make the contents of the output file
 		String outputFileContents = Strings.formatMessage(
 			messageFormatTemplate,
-			Constants.PROGRAM_NAME,
+			PROGRAM_NAME,
 			timestamp,
 			basePackage
 		);
 
 		// Write out the file
-		File file = new File(dir, "XMLComponent.java");
+		File file = new File(dir, String.format(JAVA, "XMLComponent"));
 		try {
 			OutputUtils.writeStringToFile(outputFileContents, file);
 		} catch (OutputException e) {
@@ -525,5 +543,21 @@ public class Generator extends XMLParserSourceGenerator {
 				e
 			);
 		}
+	}
+
+	/** {@inheritDoc} */
+	public Generator getCopy()
+	throws CopyException
+	{
+		Generator copy;
+		try {
+			copy = new Generator();
+		} catch (XMLParserGeneratorException e) {
+			throw new CopyException(e);
+		}
+		copy.basePackage = basePackage;
+		copy.codeFragments = codeFragments;
+		copy.timestamp = timestamp;
+		return copy;
 	}
 }

@@ -44,10 +44,18 @@ public class PEDeclTableTest
 extends NormalClassTestCase<PEDeclTable>
 {
 	/** {@inheritDoc} */
-	public void setUp() throws Exception {
+	@Override public void setUp() throws Exception {
 		super.setUp();
 
+		PEDeclTable a = new PEDeclTable();
+		a.addNewPE("foo", "bar", PEDeclTable.ParameterEntityType.VALUE);
+
+		PEDeclTable b = new PEDeclTable();
+		a.addNewPE("foo", "baz", PEDeclTable.ParameterEntityType.VALUE);
+
 		addSample(new PEDeclTable());
+		addSample(a);
+		addSample(b);
 	}
 
 	/** Basic adding and replacement test. The tests that
@@ -133,5 +141,59 @@ extends NormalClassTestCase<PEDeclTable>
 			Message.DTDPEDECLTABLE(0, 1),
 			pedt.toString()
 		);
+	}
+
+	/** Test {@link PEDeclTable#replacePERefs(String)}. */
+	public void testReplacePERefs() {
+		String[] input = {
+			null,
+			"",
+			"%foo;",
+			"%%%foo;;;",
+			"foo%foo;%bar;%baz;",
+		};
+		String[] expected = {
+			"",
+			"",
+			"bar",
+			"%%bar;;",
+			"foobarbazquux",
+		};
+
+		PEDeclTable testData = new PEDeclTable();
+		try {
+			testData.addNewPE(
+				"foo",
+				"bar",
+				PEDeclTable.ParameterEntityType.VALUE
+			);
+			testData.addNewPE(
+				"bar",
+				"baz",
+				PEDeclTable.ParameterEntityType.VALUE
+			);
+			testData.addNewPE(
+				"baz",
+				"quux",
+				PEDeclTable.ParameterEntityType.VALUE
+			);
+		} catch (ParameterEntityException e) {
+			e.printStackTrace();
+			fail("Failed to create test data"); // NON-NLS
+			return;
+		}
+
+		for (int i = 0; i < input.length; i++) {
+			try {
+				assertEquals(
+					"PEDeclTable.replacePERefs()",
+					expected[i],
+					testData.replacePERefs(input[i])
+				);
+			} catch (ParameterEntityException e) {
+				e.printStackTrace();
+				fail("ParameterEntityException thrown");
+			}
+		}
 	}
 }

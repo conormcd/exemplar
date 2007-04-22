@@ -35,10 +35,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mcdermottroe.exemplar.Constants;
+import com.mcdermottroe.exemplar.CopyException;
+import com.mcdermottroe.exemplar.Copyable;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.ui.Message;
+
+import static com.mcdermottroe.exemplar.Constants.Character.LEFT_PAREN;
+import static com.mcdermottroe.exemplar.Constants.Character.RIGHT_PAREN;
 
 /** A class representing an XML DTD/Schema of some sort.
 
@@ -46,7 +50,7 @@ import com.mcdermottroe.exemplar.ui.Message;
 	@since	0.1
 */
 public class XMLDocumentType
-implements Cloneable
+implements Copyable<XMLDocumentType>
 {
 	/** Enum value for {@link XMLDocumentType}s which define elements with
 		attribute lists.
@@ -92,12 +96,13 @@ implements Cloneable
 	public XMLDocumentType()
 	throws XMLDocumentTypeException
 	{
-		markupDecls = new ArrayList<XMLMarkupDeclaration>();
-		feature = null;
-		elements = null;
-		attlists = null;
-		entities = null;
-		notations = null;
+		markupDecls = new ArrayList<XMLMarkupDeclaration>(0);
+
+		// Allocate storage for the various hashes
+		attlists = new HashMap<String, XMLMarkupDeclaration>(0);
+		elements = new HashMap<String, XMLMarkupDeclaration>(0);
+		entities = new HashMap<String, XMLMarkupDeclaration>(0);
+		notations = new HashMap<String, XMLMarkupDeclaration>(0);
 
 		separateObjects();
 		associateAttlistsWithElements();
@@ -119,11 +124,13 @@ implements Cloneable
 		DBC.REQUIRE(markup != null);
 
 		markupDecls = new ArrayList<XMLMarkupDeclaration>(markup);
-		feature = null;
-		elements = null;
-		attlists = null;
-		entities = null;
-		notations = null;
+
+		// Allocate storage for the various hashes
+		int markupDeclsSize = markupDecls.size();
+		attlists = new HashMap<String, XMLMarkupDeclaration>(markupDeclsSize);
+		elements = new HashMap<String, XMLMarkupDeclaration>(markupDeclsSize);
+		entities = new HashMap<String, XMLMarkupDeclaration>(markupDeclsSize);
+		notations = new HashMap<String, XMLMarkupDeclaration>(markupDeclsSize);
 
 		separateObjects();
 		associateAttlistsWithElements();
@@ -140,7 +147,7 @@ implements Cloneable
 		DBC.REQUIRE(notations != null);
 
 		// Ensure there is storage for the features
-		feature = new HashMap<Integer, Boolean>();
+		feature = new HashMap<Integer, Boolean>(4);
 
 		// Calculate some features
 		feature.put(ATTLISTS, !attlists.isEmpty());
@@ -162,12 +169,6 @@ implements Cloneable
 	throws XMLDocumentTypeException
 	{
 		DBC.REQUIRE(markupDecls != null);
-
-		// Allocate storage for the various hashes
-		attlists = new HashMap<String, XMLMarkupDeclaration>();
-		elements = new HashMap<String, XMLMarkupDeclaration>();
-		entities = new HashMap<String, XMLMarkupDeclaration>();
-		notations = new HashMap<String, XMLMarkupDeclaration>();
 
 		// Go through the list of markup declarations and put the objects in
 		// the correct hashes.
@@ -260,7 +261,7 @@ implements Cloneable
 		// Make sure that featureName is a valid feature
 		if (!feature.containsKey(featureName)) {
 			throw new XMLDocumentTypeException(
-				Message.XMLDOCTYPE_UNSUPPORTED_FEATURE
+				Message.XMLDOCTYPE_UNSUPPORTED_FEATURE()
 			);
 		}
 
@@ -277,21 +278,6 @@ implements Cloneable
 	public boolean hasAttlists() {
 		try {
 			return hasFeature(ATTLISTS);
-		} catch (XMLDocumentTypeException e) {
-			DBC.IGNORED_EXCEPTION(e);
-			return false;
-		}
-	}
-
-	/** Shorthand for finding out if the current document type declares any
-		entities.
-
-		@return	True if the document type declares entities and false in every
-				other case, including if errors occur.
-	*/
-	public boolean hasEntities() {
-		try {
-			return hasFeature(ENTITIES);
 		} catch (XMLDocumentTypeException e) {
 			DBC.IGNORED_EXCEPTION(e);
 			return false;
@@ -338,56 +324,57 @@ implements Cloneable
 		return new HashMap<String, XMLMarkupDeclaration>(notations);
 	}
 
-	/** Implement {@link Object#clone()}.
-
-		@return								A clone of this object.
-		@throws CloneNotSupportedException	if the clone cannot be created.
-	*/
-	@Override public Object clone()
-	throws CloneNotSupportedException
+    /** {@inheritDoc} */
+    public XMLDocumentType getCopy()
+	throws CopyException
 	{
-		XMLDocumentType clone = (XMLDocumentType)super.clone();
+		XMLDocumentType copy;
+		try {
+			copy = new XMLDocumentType();
+		} catch (XMLDocumentTypeException e) {
+			throw new CopyException(e);
+		}
 		if (markupDecls != null) {
-			clone.markupDecls = new ArrayList<XMLMarkupDeclaration>(
+			copy.markupDecls = new ArrayList<XMLMarkupDeclaration>(
 				markupDecls
 			);
 		} else {
-			clone.markupDecls = null;
+			copy.markupDecls = null;
 		}
 		if (feature != null) {
-			clone.feature = new HashMap<Integer, Boolean>(feature);
+			copy.feature = new HashMap<Integer, Boolean>(feature);
 		} else {
-			clone.feature = null;
+			copy.feature = null;
 		}
 		if (elements != null) {
-			clone.elements = new HashMap<String, XMLMarkupDeclaration>(
+			copy.elements = new HashMap<String, XMLMarkupDeclaration>(
 				elements
 			);
 		} else {
-			clone.elements = null;
+			copy.elements = null;
 		}
 		if (attlists != null) {
-			clone.attlists = new HashMap<String, XMLMarkupDeclaration>(
+			copy.attlists = new HashMap<String, XMLMarkupDeclaration>(
 				attlists
 			);
 		} else {
-			clone.attlists = null;
+			copy.attlists = null;
 		}
 		if (entities != null) {
-			clone.entities = new HashMap<String, XMLMarkupDeclaration>(
+			copy.entities = new HashMap<String, XMLMarkupDeclaration>(
 				entities
 			);
 		} else {
-			clone.entities = null;
+			copy.entities = null;
 		}
 		if (notations != null) {
-			clone.notations = new HashMap<String, XMLMarkupDeclaration>(
+			copy.notations = new HashMap<String, XMLMarkupDeclaration>(
 				notations
 			);
 		} else {
-			clone.notations = null;
+			copy.notations = null;
 		}
-		return clone;
+		return copy;
 	}
 
 	/** See {@link Object#equals(Object)}.
@@ -434,9 +421,9 @@ implements Cloneable
 	@Override public String toString() {
 		StringBuilder description = new StringBuilder();
 		description.append(getClass().getName());
-		description.append(Constants.Character.LEFT_PAREN);
+		description.append(LEFT_PAREN);
 		description.append(hashCode());
-		description.append(Constants.Character.RIGHT_PAREN);
+		description.append(RIGHT_PAREN);
 		return description.toString();
 	}
 }

@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,8 @@
 */
 package junit.com.mcdermottroe.exemplar.ui;
 
+import com.mcdermottroe.exemplar.ui.MessageException;
+
 import junit.com.mcdermottroe.exemplar.ExceptionClassTestCase;
 
 /** Test class for {@link com.mcdermottroe.exemplar.ui.MessageException}.
@@ -36,5 +38,7 @@ import junit.com.mcdermottroe.exemplar.ExceptionClassTestCase;
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class MessageExceptionTest extends ExceptionClassTestCase {
+public class MessageExceptionTest
+extends ExceptionClassTestCase<MessageException>
+{
 }

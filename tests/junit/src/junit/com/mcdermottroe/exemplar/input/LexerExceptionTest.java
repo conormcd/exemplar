@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -29,12 +29,16 @@
 */
 package junit.com.mcdermottroe.exemplar.input;
 
+import com.mcdermottroe.exemplar.input.LexerException;
+
 import junit.com.mcdermottroe.exemplar.ExceptionClassTestCase;
 
-/** Test class for {@link com.mcdermottroe.exemplar.input.LexerException}.
+/** Test class for {@link LexerException}.
 
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class LexerExceptionTest extends ExceptionClassTestCase {
+public class LexerExceptionTest
+extends ExceptionClassTestCase<LexerException>
+{
 }

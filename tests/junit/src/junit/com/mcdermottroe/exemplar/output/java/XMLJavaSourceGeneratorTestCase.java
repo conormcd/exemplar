@@ -40,7 +40,7 @@ import junit.com.mcdermottroe.exemplar.output.XMLParserSourceGeneratorTestCase;
 	@since	0.1
 */
 public abstract class
-XMLJavaSourceGeneratorTestCase<T extends XMLJavaSourceGenerator>
+XMLJavaSourceGeneratorTestCase<T extends XMLJavaSourceGenerator<T>>
 extends XMLParserSourceGeneratorTestCase<T>
 {
 }

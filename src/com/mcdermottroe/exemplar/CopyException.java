@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006, 2007
+	Copyright (c) 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -27,19 +27,64 @@
 	NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package junit.com.mcdermottroe.exemplar.model;
+package com.mcdermottroe.exemplar;
 
-import com.mcdermottroe.exemplar.model.XMLAggregateObject;
+/** An exception that can be thrown in response to any error which occurs while
+	calling an implementation of {@link Copyable#getCopy()}.
 
-import junit.com.mcdermottroe.exemplar.AbstractClassTestCase;
-
-/** Test class for {@link XMLAggregateObject}.
-
-	@author		Conor McDermottroe
-	@since		0.1
-	@param	<T>	The type of {@link XMLAggregateObject} to test.
+	@author	Conor McDermottroe
+	@since	0.2
 */
-public class XMLAggregateObjectTest<T extends XMLAggregateObject<T>>
-extends AbstractClassTestCase<XMLAggregateObject<T>>
+public class CopyException
+extends Exception
 {
+	/** CopyException without a description. */
+	public CopyException() {
+		super();
+	}
+
+	/** CopyException with a description.
+
+		@param message The description of the exception.
+	*/
+	public CopyException(String message) {
+		super(message);
+	}
+
+	/** CopyException with a description and a reference to an exception which
+		caused it.
+
+		@param message	The description of the exception.
+		@param cause	The cause of the exception.
+	*/
+	public CopyException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	/** CopyException with a reference to the exception that caused it.
+
+		@param cause The cause of the exception.
+	*/
+	public CopyException(Throwable cause) {
+		super(cause);
+	}
+
+	/** {@inheritDoc} */
+	public CopyException getCopy() {
+		CopyException copy;
+
+		String message = getMessage();
+		Throwable cause = getCause();
+		if (message != null && cause != null) {
+			copy = new CopyException(message, cause);
+		} else if (message != null) {
+			copy = new CopyException(message);
+		} else if (cause != null) {
+			copy = new CopyException(cause);
+		} else {
+			copy = new CopyException();
+		}
+		copy.setStackTrace(copyStackTrace(getStackTrace()));
+		return copy;
+    }
 }

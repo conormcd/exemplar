@@ -29,9 +29,15 @@
 */
 package com.mcdermottroe.exemplar.model;
 
-import com.mcdermottroe.exemplar.Constants;
+import com.mcdermottroe.exemplar.CopyException;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
+
+import static com.mcdermottroe.exemplar.Constants.Character.COMMA;
+import static com.mcdermottroe.exemplar.Constants.Character.LEFT_PAREN;
+import static com.mcdermottroe.exemplar.Constants.Character.RIGHT_PAREN;
+import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
+import static com.mcdermottroe.exemplar.Constants.HASHCODE_MAGIC_NUMBER;
 
 /** An {@link XMLObject} which represents elements.
 
@@ -39,7 +45,7 @@ import com.mcdermottroe.exemplar.Utils;
 	@since	0.1
 */
 public class XMLElement
-extends XMLNamedObject
+extends XMLNamedObject<XMLElement>
 implements XMLMarkupDeclaration
 {
 	/** An enumerated type for the types of content type. */
@@ -60,7 +66,7 @@ implements XMLMarkupDeclaration
 	/** A tree describing the arrangement of the contents of this {@link
 		#XMLElement}.
 	*/
-	private XMLObject contentSpec;
+	private XMLAggregateObject<?> contentSpec;
 
 	/** A reference to the attribute list, if any that this element has. */
 	private XMLAttributeList attlist;
@@ -114,7 +120,7 @@ implements XMLMarkupDeclaration
 
 		@return	The content spec for this {@link XMLElement}
 	*/
-	public XMLObject getContentSpec() {
+	public XMLAggregateObject<?> getContentSpec() {
 		return contentSpec;
 	}
 
@@ -146,21 +152,41 @@ implements XMLMarkupDeclaration
 	}
 
 	/** {@inheritDoc} */
+	@Override public XMLElement getCopy()
+	throws CopyException
+	{
+		XMLElement copy = new XMLElement();
+		if (attlist != null) {
+			copy.attlist = attlist.getCopy();
+		} else {
+			copy.attlist = null;
+		}
+		if (contentSpec != null) {
+			copy.contentSpec = contentSpec.getCopy();
+		} else {
+			copy.contentSpec = null;
+		}
+		copy.contentType = contentType;
+		copy.name = name;
+		return copy;
+	}
+
+	/** {@inheritDoc} */
 	@Override public String toString() {
 		StringBuilder desc = new StringBuilder();
 		desc.append(name);
-		desc.append(Constants.Character.COMMA);
-		desc.append(Constants.Character.SPACE);
+		desc.append(COMMA);
+		desc.append(SPACE);
 		desc.append(contentType);
-		desc.append(Constants.Character.COMMA);
-		desc.append(Constants.Character.SPACE);
+		desc.append(COMMA);
+		desc.append(SPACE);
 		desc.append(contentSpec);
 		if (attlist != null) {
-			desc.append(Constants.Character.COMMA);
-			desc.append(Constants.Character.SPACE);
-			desc.append(Constants.Character.RIGHT_PAREN);
+			desc.append(COMMA);
+			desc.append(SPACE);
+			desc.append(RIGHT_PAREN);
 			desc.append(attlist.toString());
-			desc.append(Constants.Character.LEFT_PAREN);
+			desc.append(LEFT_PAREN);
 		}
 
 		return XMLObject.toStringHelper(getClass().getName(), desc.toString());
@@ -196,7 +222,7 @@ implements XMLMarkupDeclaration
 	/** {@inheritDoc} */
 	@Override public int hashCode() {
 		int hashCode = super.hashCode();
-		hashCode *= Constants.HASHCODE_MAGIC_NUMBER;
+		hashCode *= HASHCODE_MAGIC_NUMBER;
 		hashCode += Utils.genericHashCode(attlist, contentSpec, contentType);
 		return hashCode;
 	}

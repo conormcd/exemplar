@@ -29,16 +29,12 @@
 */
 package com.mcdermottroe.exemplar;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.Options;
+import com.mcdermottroe.exemplar.utils.Strings;
 
 /** A base class for all of the exceptions in the program. This is intended to
 	provide nice chained exception backtraces for all derived exceptions.
@@ -48,7 +44,7 @@ import com.mcdermottroe.exemplar.ui.Options;
 */
 public abstract class Exception
 extends java.lang.Exception
-implements Cloneable
+implements Copyable<Exception>
 {
 	/** Exception without a description. */
 	protected Exception() {
@@ -98,7 +94,7 @@ implements Cloneable
 			String causeName = cause.getClass().getName();
 			String message = cause.getMessage();
 			if (message == null) {
-				message = Message.EXCEPTION_NO_MESSAGE;
+				message = Message.EXCEPTION_NO_MESSAGE();
 			}
 
 			StringBuilder traceMessage = new StringBuilder(causeName);
@@ -116,40 +112,27 @@ implements Cloneable
 		return trace;
 	}
 
-	/** Implement {@link Object#clone()}.
+	/** A helper method for the implementations of {@link Copyable#getCopy()} in
+		child classes of this class to deep-copy a stack trace.
 
-		@return								A clone of this {@link Exception}.
-		@throws CloneNotSupportedException	if this {@link Exception} cannot be
-											cloned.
+		@param	trace	The stack trace to copy.
+		@return			A deep-copy of the stack trace.
 	*/
-	@Override public Object clone()
-	throws CloneNotSupportedException
-	{
-		super.clone();
-		try {
-			// Serialize the exception
-			ByteArrayOutputStream storage = new ByteArrayOutputStream();
-			ObjectOutputStream out = new ObjectOutputStream(storage);
-			out.writeObject(this);
-			out.close();
-
-			// Deserialize the exception
-			ByteArrayInputStream input = new ByteArrayInputStream(
-				storage.toByteArray()
+	protected StackTraceElement[] copyStackTrace(StackTraceElement[] trace) {
+		StackTraceElement[] newTrace = new StackTraceElement[trace.length];
+		for (int i = 0; i < newTrace.length; i++) {
+			DBC.ASSERT(trace[i] != null);
+			newTrace[i] = new StackTraceElement(
+				trace[i].getClassName(),
+				trace[i].getMethodName(),
+				trace[i].getFileName(),
+				trace[i].getLineNumber()
 			);
-			ObjectInputStream in = new ObjectInputStream(input);
-			Object o = in.readObject();
-			in.close();
-
-			return o;
-		} catch (ClassNotFoundException e) {
-			throw new CloneNotSupportedException(e.toString());
-		} catch (IOException e) {
-			throw new CloneNotSupportedException(e.toString());
 		}
+		return newTrace;
 	}
 
-	/** Implement {@link Object#equals(Object)} in a way which will be
+    /** Implement {@link Object#equals(Object)} in a way which will be
 		consistent with {@link #hashCode()}.
 
 		@param	o	The other {@link Object} to compare with.
@@ -166,8 +149,7 @@ implements Cloneable
 			return false;
 		}
 
-		Exception other = (Exception)o;
-		return throwablesEqual(this, other);
+		return throwablesEqual(this, (Throwable)o);
 	}
 
 	/** Recursively test that two {@link Throwable}s are equal. This is
@@ -199,7 +181,6 @@ implements Cloneable
 	@Override public int hashCode() {
 		return Utils.genericHashCode(
 			getMessage(),
-//			getCause(),
 			getBackTrace()
 		);
 	}
@@ -224,20 +205,14 @@ implements Cloneable
 
 		@param t	The {@link Throwable} to get the stack trace from.
 		@return		A {@link String} representation of the stack trace in the
-					format of one frame per line. All lines are indented by one
-					indentation unit as defined by {@link Constants.UI#INDENT}.
+					format of one frame per line. All lines are indented by
+					{@link Strings#indent(String)}.
 	*/
 	private static String exceptionStackTrace(Throwable t) {
-		DBC.REQUIRE(t != null);
-		if (t == null) {
-			return null;
-		}
-
 		StackTraceElement[] trace = t.getStackTrace();
 		StringBuilder ret = new StringBuilder();
 		for (StackTraceElement traceElement : trace) {
-			ret.append(Constants.UI.INDENT);
-			ret.append(traceElement);
+			ret.append(Strings.indent(traceElement.toString()));
 			ret.append(Constants.EOL);
 		}
 		return ret.toString();

@@ -49,7 +49,7 @@ public final class DBC {
 	/** Sometimes an {@link AssertionError} must be stored and thrown later
 		rather than throwing it immediately due to bootstrapping issues.
 	*/
-	private static AssertionError storedAssertion;
+	private static AssertionError storedAssertion = null;
 
 	/** A flag to allow tests to force this class to throw assertions
 		immediately rather than cacheing them. This will imply that debugging
@@ -60,11 +60,6 @@ public final class DBC {
 	/** Prevent this class from being externally instantiated. */
 	private DBC() {
 		UNREACHABLE_CODE();
-	}
-
-	/** Ensure static fields are initialised. */
-	static {
-		storedAssertion = null;
 	}
 
 	/** An assertion mechanism which does more than the <code>assert</code>
@@ -117,7 +112,8 @@ public final class DBC {
 		// Java not Perl.
 		int assertionPoint = -1;
 		int caller = -1;
-		StackTraceElement[] trace = new AssertionError().getStackTrace();
+		AssertionError dummyAssertion = new AssertionError();
+		StackTraceElement[] trace = dummyAssertion.getStackTrace();
 		for (int i = 0; i < trace.length; i++) {
 			String traceMessage = trace[i].toString();
 			if (!traceMessage.startsWith(thisClass)) {
@@ -184,6 +180,7 @@ public final class DBC {
 		@see #ASSERT(boolean)
 	*/
 	public static void UNREACHABLE_CODE() {
+		Log.debug(Message.UNREACHABLE_CODE_REACHED());
 		ASSERT(false);
 	}
 
@@ -196,6 +193,7 @@ public final class DBC {
 		@see #ASSERT(boolean)
 	*/
 	public static void IGNORED_ERROR() {
+		Log.debug(Message.IGNORING_ERROR());
 		ASSERT(false);
 	}
 
@@ -206,7 +204,7 @@ public final class DBC {
 		@param	t	The exception to be ignored.
 	*/
 	public static void IGNORED_EXCEPTION(Throwable t) {
-		Log.debug(Message.IGNORING_EXCEPTION, t);
+		Log.debug(Message.IGNORING_EXCEPTION(), t);
 	}
 
 	/** A method to allow tests to clear the stored delayed assertion. This

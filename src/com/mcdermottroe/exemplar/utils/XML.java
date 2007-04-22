@@ -31,9 +31,14 @@ package com.mcdermottroe.exemplar.utils;
 
 import java.text.ParseException;
 
-import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.ui.Message;
+
+import static com.mcdermottroe.exemplar.Constants.BASE_HEXADECIMAL;
+import static com.mcdermottroe.exemplar.Constants.Character.AMPERSAND;
+import static com.mcdermottroe.exemplar.Constants.Character.HASH;
+import static com.mcdermottroe.exemplar.Constants.Character.SEMI_COLON;
+import static com.mcdermottroe.exemplar.Constants.Format.Code.XML.CHAR_ESCAPE;
 
 /** A collection of XML-specific {@link String} handling methods.
 
@@ -66,22 +71,18 @@ public final class XML {
 		}
 
 		StringBuilder returnValue = new StringBuilder(s.length());
-		StringBuilder refBuffer;
 		for (int i = 0; i < s.length(); i++) {
-			if (s.charAt(i) == '&') {
+			if (s.charAt(i) == AMPERSAND) {
 				// Read until a semi-colon is found
-				refBuffer = new StringBuilder();
+				StringBuilder refBuffer = new StringBuilder();
 				int j = i;
 				while (true) {
 					if (j == s.length()) {
 						// Unterminated reference
-						throw new ParseException(
-							Message.UNTERMINATED_REF,
-							i
-						);
+						throw new ParseException(Message.UNTERMINATED_REF(), i);
 					}
 					refBuffer.append(s.charAt(j));
-					if (s.charAt(j) == ';') {
+					if (s.charAt(j) == SEMI_COLON) {
 						break;
 					}
 					j++;
@@ -96,7 +97,9 @@ public final class XML {
 			} else {
 				// This is a non-reference character, convert it to a character
 				// reference and append it.
-				returnValue.append(String.format("&#x%04X;", (int)s.charAt(i)));
+				returnValue.append(
+					String.format(CHAR_ESCAPE, (int)s.charAt(i))
+				);
 			}
 		}
 
@@ -123,22 +126,21 @@ public final class XML {
 		}
 
 		StringBuilder returnValue = new StringBuilder(s.length());
-		StringBuilder refBuffer;
 		for (int i = 0; i < s.length(); i++) {
-			if (s.charAt(i) == '&') {
+			if (s.charAt(i) == AMPERSAND) {
 				// Read until a semi-colon is found
-				refBuffer = new StringBuilder();
+				StringBuilder refBuffer = new StringBuilder();
 				int j = i;
 				while (true) {
 					if (j == s.length()) {
 						// Unterminated reference
 						throw new ParseException(
-							Message.UNTERMINATED_REF,
+							Message.UNTERMINATED_REF(),
 							i
 						);
 					}
 					refBuffer.append(s.charAt(j));
-					if (s.charAt(j) == ';') {
+					if (s.charAt(j) == SEMI_COLON) {
 						break;
 					}
 					j++;
@@ -147,7 +149,7 @@ public final class XML {
 				// refBuffer =~ /^&.*;$/
 
 				// Ignore non-character references
-				if (refBuffer.length() > 3 && refBuffer.charAt(1) == '#') {
+				if (refBuffer.length() > 3 && refBuffer.charAt(1) == HASH) {
 					// Character reference
 					int charRefValue;
 					if (refBuffer.length() >= 5 && refBuffer.charAt(2) == 'x') {
@@ -155,7 +157,7 @@ public final class XML {
 						try {
 							charRefValue = Integer.parseInt(
 								refBuffer.substring(3, refBuffer.length() - 1),
-								Constants.BASE_HEXADECIMAL
+								BASE_HEXADECIMAL
 							);
 						} catch (NumberFormatException e) {
 							throw new ParseException(
@@ -177,19 +179,15 @@ public final class XML {
 						}
 					}
 
-					// Now append the resolved character to the returnValue
-					if	(
-							charRefValue >= 0 &&
-							charRefValue <= Character.MAX_VALUE
-						)
-					{
-						returnValue.append((char)charRefValue);
-					} else {
+					if (charRefValue < 0) {
 						throw new ParseException(
 							Message.MALFORMED_CHAR_REF(refBuffer),
 							i
 						);
 					}
+
+					// Now append the resolved character to the returnValue
+					returnValue.append(Character.toChars(charRefValue));
 				} else {
 					// This is an entity reference, just append it to the
 					// output.

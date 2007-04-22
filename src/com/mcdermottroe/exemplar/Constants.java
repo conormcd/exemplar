@@ -68,11 +68,17 @@ public interface Constants {
 	*/
 	String PACKAGE = Constants.class.getPackage().getName();
 
+	/** The system property name for the current working directory. */
+	String CWD_PROPERTY = "user.dir";
+
 	/** The current working directory at runtime. */
-	String CWD = System.getProperty("user.dir");
+	String CWD = System.getProperty(CWD_PROPERTY);
+
+	/** The system property name for the end of line marker. */
+	String EOL_PROPERTY = "line.separator";
 
 	/** The system end of line marker. */
-	String EOL = System.getProperty("line.separator");
+	String EOL = System.getProperty(EOL_PROPERTY);
 
 	/** The timestamp format used in the templates. A timestamp which includes
 		the time might seem more appropriate, but it breaks test code which
@@ -83,8 +89,7 @@ public interface Constants {
 	/** The default message that is displayed if something really screws up in
 		the localisation process. This <i>should</i> never be seen by users.
 	*/
-	String DEFAULT_MESSAGE =	"An error occurred before any diagnostic " +
-								"messages could be loaded.";
+	String DEFAULT_MESSAGE =	"An error occurred before any diagnostic messages could be loaded.";
 
 	/** A close approximation to infinity. :-) */
 	int INFINITY = Integer.MAX_VALUE;
@@ -93,15 +98,6 @@ public interface Constants {
 		{@link Object#hashCode()}.
 	*/
 	int HASHCODE_MAGIC_NUMBER = 29;
-
-	/** The start of an XML hexadecimal character reference. */
-	String CHAR_REF_HEX_PREFIX = "&#x";
-
-	/** The start of a Java Unicode character escape. */
-	String UNICODE_ESCAPE_PREFIX = "\\u";
-
-	/** The number of digits in a Java Unicode escape sequence. */
-	int UNICODE_ESCAPE_NUM_DIGITS = 4;
 
 	/** The base for the decimal number system. */
 	int BASE_DECIMAL = 10;
@@ -123,8 +119,8 @@ public interface Constants {
 		/** The ampersand character '&', '\u0026'. */
 		char AMPERSAND = '&';
 
-		/** The backslash character '\', '\u005c'. */
-		char BACKSLASH = '\\';
+		/** The carriage return character '\r', '\u000d'. */
+		char CARRIAGE_RETURN = '\r';
 
 		/** The colon character ':', '\u003a'. */
 		char COLON = ':';
@@ -157,6 +153,9 @@ public interface Constants {
 
 		/** The minus character '-', '\u002d'. */
 		char MINUS = '-';
+
+		/** The new line character '\n', '\u000a'. */
+		char NEW_LINE = '\n';
 
 		/** The null character '\0', '\u0000'. */
 		char NULL = '\0';
@@ -198,6 +197,45 @@ public interface Constants {
 
 		/** The underscore character '_', '\u005f'. */
 		char UNDERSCORE = '_';
+	}
+
+	/** Format strings. */
+	interface Format {
+		/** The Java Unicode character escape. */
+		String UNICODE = "\\u%04X";
+
+		/** Format strings used in code output. */
+		interface Code {
+			/** Java code. */
+			interface Java {
+				/** A Java package statement. */
+				String PACKAGE = "package %s;";
+			}
+
+			/** XML markup. */
+			interface XML {
+				/** An XML character reference. */
+				String CHAR_ESCAPE = "&#x%04X;";
+			}
+		}
+
+		/** Format strings to construct file names. */
+		interface Filenames {
+			/** A Java file name. */
+			String JAVA = "%s.java";
+
+			/** A Java parser file name. */
+			String JAVA_PARSER = "%sParser.java";
+
+			/** A JFlex file name. */
+			String JFLEX = "%s.jflex";
+		}
+
+		/** Format strings for use in UIs. */
+		interface UI {
+			/** The format of a command line option. */
+			String OPTION = "--%s";
+		}
 	}
 
 	/** Input module constants. */
@@ -292,14 +330,6 @@ public interface Constants {
 			*/
 			String ENTITIES_FILE = "entities.properties";
 
-			/** A message format string for the JFlex specification for the
-				parser (lexer really) for the XML vocabulary being parsed.
-			*/
-			String JFLEX_FILE_FMT = "{0}.jflex";
-
-			/** A message format string for the driver class Java file. */
-			String PARSER_FILE_FMT = "{0}Parser.java";
-
 			/** The internal buffer size for the parser. */
 			int BUFFER_SIZE = 512;
 		}
@@ -315,9 +345,6 @@ public interface Constants {
 		the one described in {@link java.util.regex.Pattern}.
 	*/
 	interface Regex {
-		/** The first backreference. */
-		String FIRST_BACKREFERENCE = "$1";
-
 		/** A regex that matches nothing but 1 or more digits. */
 		String DIGITS = "^\\d+$";
 
@@ -327,55 +354,23 @@ public interface Constants {
 		/** The prefix for the package name for all of the JUnit classes. */
 		String JUNIT_PACKAGE_PREFIX = "^junit\\.";
 
-		/** A regex to match the beginning of a MessageFormat variable. */
-		String MESSAGE_FORMAT_VAR_START = "\\{";
-
-		/** A regex to match the end of a MessageFormat variable. */
-		String MESSAGE_FORMAT_VAR_END = "\\}";
-
-		/** A regex to match a variable in a {@link java.text.MessageFormat}
-			string. Captures all of the variable name. Does not match variables
-			that make use of SubFormatPatterns.
-		*/
-		String MESSAGE_FORMAT_VAR_NAME =	'(' +
-											"\\d+|" +
-											"\\d+,number|" +
-											"\\d+,number,integer|" +
-											"\\d+,number,currency|" +
-											"\\d+,number,percent|" +
-											"\\d+,date|" +
-											"\\d+,date,short|" +
-											"\\d+,date,medium|" +
-											"\\d+,date,long|" +
-											"\\d+,date,full|" +
-											"\\d+,time|" +
-											"\\d+,time,short|" +
-											"\\d+,time,medium|" +
-											"\\d+,time,long|" +
-											"\\d+,time,full" +
-											')';
-
-		/** A regular expression to match trailing whitespace not including the
-			line terminating characters. Captures the line terminating
-			characters. "Whitespace" in this context means either the space
-			character or the tab character. "Line terminating characters" in
-			this context means any combination of carriage-return and new-line
-			characters.
-		*/
-		String TRAILING_WHITESPACE = "[ \t]*([\r\n]+)";
-
 		/** A regex matching valid parameter entity names. */
 		String VALID_PE_NAME = "^[A-Za-z0-9\\._:-]+$";
-
-		/** A regex which matches one or more whitespace characters. In this
-			context, "whitespace" means whitespace as defined by the \s
-			primitive described in {@link java.util.regex.Pattern}.
-		*/
-		String WHITESPACE = "\\s+";
 	}
 
 	/** Constants for UI. */
 	interface UI {
+		/** An English message to be used where we can't even load a message
+			in the native tongue which complains that a basic message is missing
+			from the localisation properties file.
+		*/
+		String COULD_NOT_LOAD_MESSAGE_MISSING = "Localisation error: could not load MESSAGE_MISSING_MESSAGE_FORMAT";
+
+		/** A message to display if we've been denied access to the Message
+			class which holds all of the localised messages.
+		*/
+		String DENIED_ACCESS_TO_MESSAGE_CLASS = "Denied access to the Message class.";
+
 		/** The standard indent in the UI is 4 space characters. Spaces are used
 			in lieu of tabs as tab characters are mangled by many terminals.
 		*/

@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2003-2006
+	Copyright (c) 2003-2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -68,5 +68,24 @@ public class ParameterEntityException extends Exception {
 	*/
 	public ParameterEntityException(Throwable cause) {
 		super(cause);
+	}
+
+	/** {@inheritDoc} */
+	public ParameterEntityException getCopy() {
+		ParameterEntityException copy;
+
+		String message = getMessage();
+		Throwable cause = getCause();
+		if (message != null && cause != null) {
+			copy = new ParameterEntityException(message, cause);
+		} else if (message != null) {
+			copy = new ParameterEntityException(message);
+		} else if (cause != null) {
+			copy = new ParameterEntityException(cause);
+		} else {
+			copy = new ParameterEntityException();
+		}
+		copy.setStackTrace(copyStackTrace(getStackTrace()));
+		return copy;
 	}
 }

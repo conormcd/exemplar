@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -38,8 +38,11 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.TreeMap;
 
-import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
+
+import static com.mcdermottroe.exemplar.Constants.Character.FULL_STOP;
+import static com.mcdermottroe.exemplar.Constants.Regex.DIGITS;
+import static com.mcdermottroe.exemplar.Constants.Regex.EXIT_STATUS_MNEMONIC;
 
 /** A class to wrap and explain exit status codes produced by the {@link
 	com.mcdermottroe.exemplar.ui.cli.Main CLI UI}.
@@ -80,14 +83,14 @@ public final class ExitStatus {
 			String exitSpec = e.nextElement();
 			String mnemonic = exitSpec.substring(
 				0,
-				exitSpec.indexOf((int)Constants.Character.FULL_STOP)
+				exitSpec.indexOf((int)FULL_STOP)
 			);
 			String numericForm = exitSpec.substring(
-				exitSpec.indexOf((int)Constants.Character.FULL_STOP) + 1
+				exitSpec.indexOf((int)FULL_STOP) + 1
 			);
 			if	(
-					mnemonic.matches(Constants.Regex.EXIT_STATUS_MNEMONIC) &&
-					numericForm.matches(Constants.Regex.DIGITS)
+					mnemonic.matches(EXIT_STATUS_MNEMONIC) &&
+					numericForm.matches(DIGITS)
 				)
 			{
 				int number = Integer.parseInt(numericForm);

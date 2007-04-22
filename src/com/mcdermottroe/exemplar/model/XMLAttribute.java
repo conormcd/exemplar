@@ -33,10 +33,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.mcdermottroe.exemplar.Constants;
+import com.mcdermottroe.exemplar.Copyable;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.ui.Message;
+
+import static com.mcdermottroe.exemplar.Constants.Character.COMMA;
+import static com.mcdermottroe.exemplar.Constants.Character.LEFT_PAREN;
+import static com.mcdermottroe.exemplar.Constants.Character.RIGHT_PAREN;
+import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
 
 /** A class representing attributes for use within {@link
 	com.mcdermottroe.exemplar.model.XMLAttributeList}s.
@@ -45,32 +50,32 @@ import com.mcdermottroe.exemplar.ui.Message;
 	@since	0.1
 */
 public class XMLAttribute
-implements Cloneable, Comparable<XMLAttribute>
+implements Comparable<XMLAttribute>, Copyable<XMLAttribute>
 {
 	/** Enumerated type for the content types of XML attributes. */
 	public enum ContentType {
 		/** Invalid content type, should never be used outside of this class. */
-		INVALID		("<<INVALID>>"),
+		INVALID		("<<INVALID>>"),	// NON-NLS
 		/** An XML attribute with value type CDATA. */
-		CDATA		("CDATA"),
+		CDATA		("CDATA"),			// NON-NLS
 		/** An XML attribute with value type ID. */
-		ID			("ID"),
+		ID			("ID"),				// NON-NLS
 		/** An XML attribute with value type IDREF. */
-		IDREF		("IDREF"),
+		IDREF		("IDREF"),			// NON-NLS
 		/** An XML attribute with value type IDREFS. */
-		IDREFS		("IDREFS"),
+		IDREFS		("IDREFS"),			// NON-NLS
 		/** An XML attribute with value type ENTITY. */
-		ENTITY		("ENTITY"),
+		ENTITY		("ENTITY"),			// NON-NLS
 		/** An XML attribute with value type ENTITIES. */
-		ENTITIES	("ENTITIES"),
+		ENTITIES	("ENTITIES"),		// NON-NLS
 		/** An XML attribute with value type NMTOKEN. */
-		NMTOKEN		("NMTOKEN"),
+		NMTOKEN		("NMTOKEN"),		// NON-NLS
 		/** An XML attribute with value type NMTOKENS. */
-		NMTOKENS	("NMTOKENS"),
+		NMTOKENS	("NMTOKENS"),		// NON-NLS
 		/** An XML attribute with value type NOTATION. */
-		NOTATION	("NOTATION"),
+		NOTATION	("NOTATION"),		// NON-NLS
 		/** An XML attribute with value type ENUMERATION. */
-		ENUMERATION	("ENUMERATION");
+		ENUMERATION	("ENUMERATION");	// NON-NLS
 
 		/** The {@link String} representation of the type of attribute. */
 		private String stringRepresentation;
@@ -95,15 +100,15 @@ implements Cloneable, Comparable<XMLAttribute>
 	/** Enumerated type for the default type of XML attributes. */
 	public enum DefaultType {
 		/** Invalid default type. */
-		INVALID	("<<INVALID>>"),
+		INVALID	("<<INVALID>>"),	// NON-NLS
 		/** Required default type. */
-		REQUIRED("REQUIRED"),
+		REQUIRED("REQUIRED"),		// NON-NLS
 		/** Implied default type. */
-		IMPLIED	("IMPLIED"),
+		IMPLIED	("IMPLIED"),		// NON-NLS
 		/** Fixed default type. */
-		FIXED	("FIXED"),
+		FIXED	("FIXED"),			// NON-NLS
 		/** Attvalue defualt type. */
-		ATTVALUE("ATTVALUE");
+		ATTVALUE("ATTVALUE");		// NON-NLS
 
 		/** The {@link String} representation of the type of attribute. */
 		private String stringRepresentation;
@@ -146,10 +151,10 @@ implements Cloneable, Comparable<XMLAttribute>
 	/** Create an invalid, empty XMLAttribute. */
 	public XMLAttribute() {
 		name = null;
-		attributeType = ContentType.INVALID;
 		values = null;
-		defaultDeclType = DefaultType.INVALID;
 		defaultValue = null;
+		attributeType = ContentType.INVALID;
+		defaultDeclType = DefaultType.INVALID;
 	}
 
 	/** Access method to retrieve the {@link #name} of the attribute.
@@ -239,14 +244,11 @@ implements Cloneable, Comparable<XMLAttribute>
 		@param	vals	The values to add to the attribute.
 	*/
 	public void setValues(List<String> vals) {
-		DBC.REQUIRE(vals != null);
-		if (vals == null) {
-			return;
+		if (vals != null) {
+			values = new ArrayList<String>(vals);
+		} else {
+			values = null;
 		}
-
-		values = new ArrayList<String>(vals);
-
-		DBC.ENSURE(values.size() == vals.size());
 	}
 
 	/** Accessor for the {@link #defaultDeclType}.
@@ -297,10 +299,7 @@ implements Cloneable, Comparable<XMLAttribute>
 		defaultValue = other.getDefaultValue();
 	}
 
-	/** Compare this attribute declaration with another, the value by which
-		comparisons are made is the name. In other words, if a {@link
-		java.util.Collection} of {@link XMLAttribute} objects is sorted, it is
-		ordered by their names.
+	/** Compare this attribute declaration with another.
 
 		@param	other	Another {@link XMLAttribute} to compare this {@link
 						XMLAttribute} to.
@@ -309,28 +308,59 @@ implements Cloneable, Comparable<XMLAttribute>
 						object <code>other</code> respectively.
 	*/
 	public int compareTo(XMLAttribute other) {
-		return name.compareTo(other.getName());
-	}
-
-	/** Implement {@link Object#clone()}.
-
-		@return								A clone of this object.
-		@throws CloneNotSupportedException	if the clone cannot be created.
-	*/
-	@Override public Object clone()
-	throws CloneNotSupportedException
-	{
-		XMLAttribute clone = (XMLAttribute)super.clone();
-		clone.name = name;
-		clone.attributeType = attributeType;
-		clone.values = null;
-		if (values != null) {
-			clone.values = new ArrayList<String>(values);
+		// Non-null > null
+		if (other == null) {
+			return 1;
 		}
-		clone.defaultDeclType = defaultDeclType;
-		clone.defaultValue = defaultValue;
-		return clone;
+
+		// For field comparisons
+		int fieldCompare;
+
+		// Compare names
+		fieldCompare = Utils.compare(name, other.getName());
+		if (fieldCompare != 0) {
+			return fieldCompare;
+		}
+
+		// Compare content types
+		fieldCompare = Utils.compare(attributeType, other.getType());
+		if (fieldCompare != 0) {
+			return fieldCompare;
+		}
+
+		// Compare values
+		fieldCompare = Utils.compare(values, other.getValues());
+		if (fieldCompare != 0) {
+			return fieldCompare;
+		}
+
+		// Compare defaultDeclTypes
+		fieldCompare = Utils.compare(
+			defaultDeclType,
+			other.getDefaultDeclType()
+		);
+		if (fieldCompare != 0) {
+			return fieldCompare;
+		}
+
+		// Compare defaultValues
+		return Utils.compare(defaultValue, other.getDefaultValue());
 	}
+
+    /** {@inheritDoc} */
+    public XMLAttribute getCopy() {
+        XMLAttribute copy = new XMLAttribute();
+        copy.attributeType = attributeType;
+        copy.defaultDeclType = defaultDeclType;
+        copy.defaultValue = defaultValue;
+        copy.name = name;
+        if (values != null) {
+            copy.values = new ArrayList<String>(values);
+        } else {
+            copy.values = null;
+        }
+        return copy;
+    }
 
 	/** See {@link Object#equals(Object)}.
 
@@ -384,10 +414,10 @@ implements Cloneable, Comparable<XMLAttribute>
 	@Override public String toString() {
 		StringBuilder desc = new StringBuilder();
 		desc.append(name);
-		desc.append(Constants.Character.COMMA);
-		desc.append(Constants.Character.SPACE);
+		desc.append(COMMA);
+		desc.append(SPACE);
 		if (attributeType.equals(ContentType.INVALID)) {
-			desc.append(Message.XMLOBJECT_NOT_CONFIGURED);
+			desc.append(Message.XMLOBJECT_NOT_CONFIGURED());
 		} else if	(
 						attributeType.equals(ContentType.NOTATION) ||
 						attributeType.equals(ContentType.ENUMERATION)
@@ -396,14 +426,14 @@ implements Cloneable, Comparable<XMLAttribute>
 			if (attributeType.equals(ContentType.NOTATION)) {
 				desc.append(ContentType.NOTATION.toString());
 			}
-			desc.append(Constants.Character.LEFT_PAREN);
+			desc.append(LEFT_PAREN);
 			desc.append(values.toString());
-			desc.append(Constants.Character.RIGHT_PAREN);
+			desc.append(RIGHT_PAREN);
 		} else {
 			desc.append(attributeType);
 		}
-		desc.append(Constants.Character.COMMA);
-		desc.append(Constants.Character.SPACE);
+		desc.append(COMMA);
+		desc.append(SPACE);
 		if	(
 				defaultDeclType.equals(DefaultType.FIXED) ||
 				defaultDeclType.equals(DefaultType.ATTVALUE)
@@ -412,9 +442,9 @@ implements Cloneable, Comparable<XMLAttribute>
 			if (defaultDeclType.equals(DefaultType.FIXED)) {
 				desc.append(DefaultType.FIXED);
 			}
-			desc.append(Constants.Character.LEFT_PAREN);
+			desc.append(LEFT_PAREN);
 			desc.append(defaultValue);
-			desc.append(Constants.Character.RIGHT_PAREN);
+			desc.append(RIGHT_PAREN);
 		} else {
 			desc.append(defaultDeclType);
 		}

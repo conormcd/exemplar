@@ -36,8 +36,9 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
+
+import static com.mcdermottroe.exemplar.Constants.PACKAGE;
 
 /** A single point of entry for all logging within the program.
 
@@ -103,7 +104,7 @@ public final class Log {
 	}
 
 	/** The underlying {@link Logger} through which all logging will flow. */
-	private static final Logger LOGGER = Logger.getLogger(Constants.PACKAGE);
+	private static final Logger LOGGER = Logger.getLogger(PACKAGE);
 
 	/** Log messages have to be delayed until after the UI has been
 		initialised. Any messages logged before then are stored here for later
@@ -215,7 +216,7 @@ public final class Log {
 		finished initialising the {@link Options}. Calling this method before
 		{@link Options#isInitialised()} returns true is a no-op.
 	*/
-	public static synchronized void flushDelayedMessages() {
+	public static void flushDelayedMessages() {
 		if (Options.isInitialised()) {
 			List<LogRecord> dlm = new ArrayList<LogRecord>(
 				delayedLogMessages
@@ -310,7 +311,7 @@ public final class Log {
 					Exception}, then the exception may be passed here.
 		@param 	l	The {@link Level} at which the message is to be logged.
 	*/
-	private static synchronized void doLog(Object m, Throwable t, Level l) {
+	private static void doLog(Object m, Throwable t, Level l) {
 		String message = "";
 		if (m != null) {
 			message = m.toString();
@@ -329,7 +330,7 @@ public final class Log {
 
 		@param	logRecord	The {@link LogRecord} to log.
 	*/
-	private static synchronized void doLog(LogRecord logRecord) {
+	private static void doLog(LogRecord logRecord) {
 		DBC.REQUIRE(logRecord != null);
 		if (logRecord == null) {
 			return;
@@ -339,9 +340,9 @@ public final class Log {
 		// who wrote java.util.logging.Logger don't check.
 		boolean hasHandlers = false;
 		Handler[] handlers = LOGGER.getHandlers();
-		for (int i = 0; i < handlers.length; i++) {
-			DBC.ASSERT(handlers[i] != null);
-			if (handlers[i] != null) {
+		for (Handler h : handlers) {
+			DBC.ASSERT(h != null);
+			if (h != null) {
 				hasHandlers = true;
 			}
 		}
@@ -377,11 +378,11 @@ public final class Log {
 	*/
 	private static StackTraceElement caller() {
 		String thisClassName = Log.class.getName();
-		StackTraceElement[] trace = (new Exception()).getStackTrace();
+		StackTraceElement[] trace = new Exception().getStackTrace();
 		StackTraceElement caller = null;
-		for (int i = 0; i < trace.length; i++) {
-			caller = trace[i];
-			String traceClassName = trace[i].getClassName();
+		for (StackTraceElement te : trace) {
+			caller = te;
+			String traceClassName = te.getClassName();
 			if (!thisClassName.equals(traceClassName)) {
 				break;
 			}

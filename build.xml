@@ -92,6 +92,10 @@
 	</target>
 	<target name="build-lexer" depends="build-configure">
 		<jflex file="${lexer-spec}" skeleton="${lexer-skeleton}" />
+		<replace	file="${lexer-file}"
+					token="private java.util.Stack zzStreams = new java.util.Stack();"
+					value="private java.util.Stack&lt;ZzFlexStreamInfo&gt; zzStreams = new java.util.Stack&lt;ZzFlexStreamInfo&gt;();"
+		/> 
 	</target>
 	<target	name="build-parser"
 			depends="build-configure,build-lexer"
@@ -106,12 +110,12 @@
 				interface="true"
 		/>
 		<replace	file="${src}/${namespace}/input/dtd/${parser-file}"
-					token="extends java_cup.runtime.lr_parser implements Cloneable, InputModule"
+					token="extends java_cup.runtime.lr_parser implements Copyable&lt;Parser&gt;, InputModule"
 					value="extends java_cup.runtime.lr_parser"
 		/> 
 		<replace	file="${src}/${namespace}/input/dtd/${parser-file}"
 					token="extends java_cup.runtime.lr_parser"
-					value="extends java_cup.runtime.lr_parser implements Cloneable, InputModule"
+					value="extends java_cup.runtime.lr_parser implements Copyable&lt;Parser&gt;, InputModule"
 		/> 
 	</target>
 	<target	name="build"
@@ -266,6 +270,13 @@
 				<exclude name="input/dtd/Parser.java" />
 				<exclude name="input/dtd/ParserSymbols.java" />
 			</fileset>
+		</checkstyle>
+		<checkstyle
+			config="tests/checkstyle/common_config_junit.xml"
+			classpathref="jar-classpath"
+			failOnViolation="false"
+			failureProperty="checkstyle.common.junit.failed"
+		>
 			<fileset dir="tests/junit">
 				<include name="**/*.java" />
 			</fileset>
@@ -397,6 +408,7 @@
 		<condition property="checkstyle.failed">
 			<or>
 				<isset property="checkstyle.common.failed" />
+				<isset property="checkstyle.common.junit.failed" />
 				<isset property="checkstyle.import.src.failed" />
 				<isset property="checkstyle.import.junit.failed" />
 				<isset property="checkstyle.generic.failed" />
@@ -419,10 +431,11 @@
 			description="Run all of the JUnit tests."
 	>
 		<mkdir dir="tests/junit/results" />
-		<junit failureproperty="junit-failed">
+		<junit failureproperty="junit-failed" fork="yes" forkmode="once">
 			<classpath>
 				<path refid="build-classpath" />
 			</classpath>
+			<jvmarg value="-ea" />
 			<formatter type="xml" />
 			<batchtest todir="tests/junit/results">
 				<fileset dir="${classes}">

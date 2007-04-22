@@ -39,7 +39,7 @@ import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
 	@author	Conor McDermottroe
 	@since	0.2
 */
-public abstract class XMLObjectTestCase<T extends XMLObject>
+public abstract class XMLObjectTestCase<T extends XMLObject<T>>
 extends NormalClassTestCase<T>
 {
 }

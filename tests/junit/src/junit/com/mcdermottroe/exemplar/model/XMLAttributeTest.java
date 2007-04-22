@@ -29,6 +29,9 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mcdermottroe.exemplar.model.XMLAttribute;
 
 import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
@@ -47,6 +50,58 @@ extends NormalClassTestCase<XMLAttribute>
 	{
 		super.setUp();
 
+		XMLAttribute sample = new XMLAttribute();
+		sample.setDefaultDecl(XMLAttribute.DefaultType.FIXED, "foo"); // NON-NLS
+
 		addSample(new XMLAttribute());
+		addSample(sample);
+	}
+
+	/** Test {@link XMLAttribute#getName()} and {@link
+		XMLAttribute#setName(String)}.
+	*/
+	public void testName() {
+		for (XMLAttribute sample : samples()) {
+			if (sample != null) {
+				String originalName = sample.getName();
+				sample.setName("foo");	// NON-NLS
+				assertEquals(
+					"setName && getName roundtrip",
+					"foo",
+					sample.getName()
+				);
+				sample.setName(originalName);
+				assertEquals(
+					"setName && getName roundtrip",
+					originalName,
+					sample.getName()
+				);
+			}
+		}
+	}
+
+	/** Test {@link XMLAttribute#getValues()} and {@link
+		XMLAttribute#setValues(List)}.
+	*/
+	public void testValues() {
+		List<String> testValues = new ArrayList<String>();
+		testValues.add("foo"); // NON-NLS
+		for (XMLAttribute sample : samples()) {
+			if (sample != null) {
+				List<String> originalValues = sample.getValues();
+				sample.setValues(testValues);
+				assertEquals(
+					"setValues && getValues roundtrip",
+					testValues,
+					sample.getValues()
+				);
+				sample.setValues(originalValues);
+				assertEquals(
+					"setValues && getValues roundtrip",
+					originalValues,
+					sample.getValues()
+				);
+			}
+		}
 	}
 }

@@ -31,9 +31,14 @@ package junit.com.mcdermottroe.exemplar;
 
 import junit.framework.TestCase;
 
-import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.Options;
+
+import static com.mcdermottroe.exemplar.Constants.Character.LEFT_PAREN;
+import static com.mcdermottroe.exemplar.Constants.Character.RIGHT_PAREN;
+import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
+import static com.mcdermottroe.exemplar.Constants.PACKAGE;
+import static com.mcdermottroe.exemplar.Constants.Regex.JUNIT_PACKAGE_PREFIX;
 
 /** A root class for all tests in Exemplar.
 
@@ -47,7 +52,7 @@ extends TestCase
 	/** The {@link Class} of the class which is being tested by the runtime 
 		type of this {@link ExemplarTestCase} object.
 	*/
-	protected Class testedClass;
+	protected Class<?> testedClass;
 
 	/** Set up the JUnit test.
 
@@ -60,10 +65,7 @@ extends TestCase
 
 		testedClass = null;
 		String className = getClass().getName();
-		className = className.replaceFirst(
-			Constants.Regex.JUNIT_PACKAGE_PREFIX,
-			""
-		);
+		className = className.replaceFirst(JUNIT_PACKAGE_PREFIX, "");
 		className = className.replaceFirst("Test$", "");
 		try {
 			testedClass = Class.forName(className);
@@ -71,10 +73,10 @@ extends TestCase
 			fail(
 				"Failed to find class " +
 				className +
-				Constants.Character.SPACE +
-				Constants.Character.LEFT_PAREN +
+				SPACE +
+				LEFT_PAREN +
 				e.toString() +
-				Constants.Character.RIGHT_PAREN
+				RIGHT_PAREN
 			);
 			return;
 		}
@@ -84,16 +86,16 @@ extends TestCase
 	}
 
 	/** When this method is inherited by every test it will make sure that all 
-		of the tested classes are in the same package as {@link Constants}
-		which is in the root package.
+		of the tested classes are in the same package as {@link
+		com.mcdermottroe.exemplar.Constants} which is in the root package.
 
-		@see Constants
+		@see com.mcdermottroe.exemplar.Constants
 	*/
 	public void testCorrectPackage() {
 		if (testedClass != null) {
 			assertTrue(
 				"Checking tested class package is rooted in the base package.",
-				testedClass.getPackage().getName().startsWith(Constants.PACKAGE)
+				testedClass.getPackage().getName().startsWith(PACKAGE)
 			);
 		}
 	}

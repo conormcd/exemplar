@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2004, 2005, 2006
+	Copyright (c) 2004-2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -68,5 +68,24 @@ public class XMLDocumentTypeException extends Exception {
 	*/
 	public XMLDocumentTypeException(Throwable cause) {
 		super(cause);
+	}
+
+	/** {@inheritDoc} */
+	public XMLDocumentTypeException getCopy() {
+		XMLDocumentTypeException copy;
+
+		String message = getMessage();
+		Throwable cause = getCause();
+		if (message != null && cause != null) {
+			copy = new XMLDocumentTypeException(message, cause);
+		} else if (message != null) {
+			copy = new XMLDocumentTypeException(message);
+		} else if (cause != null) {
+			copy = new XMLDocumentTypeException(cause);
+		} else {
+			copy = new XMLDocumentTypeException();
+		}
+		copy.setStackTrace(copyStackTrace(getStackTrace()));
+		return copy;
 	}
 }

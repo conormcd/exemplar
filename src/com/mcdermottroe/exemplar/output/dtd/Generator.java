@@ -30,13 +30,14 @@
 package com.mcdermottroe.exemplar.output.dtd;
 
 import java.io.File;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.mcdermottroe.exemplar.Constants;
+import com.mcdermottroe.exemplar.CopyException;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.model.XMLAlternative;
 import com.mcdermottroe.exemplar.model.XMLAttribute;
@@ -60,6 +61,24 @@ import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.Options;
 import com.mcdermottroe.exemplar.utils.Strings;
+import com.mcdermottroe.exemplar.utils.XML;
+
+import static com.mcdermottroe.exemplar.Constants.Character.COMMA;
+import static com.mcdermottroe.exemplar.Constants.Character.DOUBLE_QUOTE;
+import static com.mcdermottroe.exemplar.Constants.Character.HASH;
+import static com.mcdermottroe.exemplar.Constants.Character.LEFT_PAREN;
+import static com.mcdermottroe.exemplar.Constants.Character.PIPE;
+import static com.mcdermottroe.exemplar.Constants.Character.PLUS;
+import static com.mcdermottroe.exemplar.Constants.Character.QUESTION_MARK;
+import static com.mcdermottroe.exemplar.Constants.Character.RIGHT_PAREN;
+import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
+import static com.mcdermottroe.exemplar.Constants.Character.STAR;
+import static com.mcdermottroe.exemplar.Constants.EOL;
+import static com.mcdermottroe.exemplar.Constants.Output.DTD.FILE_FMT;
+import static com.mcdermottroe.exemplar.Constants.PROGRAM_NAME;
+import static com.mcdermottroe.exemplar.Constants.XMLExternalIdentifier.NDATA;
+import static com.mcdermottroe.exemplar.Constants.XMLExternalIdentifier.PUBLIC;
+import static com.mcdermottroe.exemplar.Constants.XMLExternalIdentifier.SYSTEM;
 
 /** A class which generates a DTD for this XML vocabulary.
 
@@ -67,8 +86,7 @@ import com.mcdermottroe.exemplar.utils.Strings;
 	@since	0.1
 */
 public class Generator
-extends XMLParserSourceGenerator
-implements Constants.XMLExternalIdentifier
+extends XMLParserSourceGenerator<Generator>
 {
 	/** Creates a source generator that produces DTDs.
 
@@ -107,7 +125,7 @@ implements Constants.XMLExternalIdentifier
 		File outputFile = new File(
 			sourceDirectory,
 			Strings.formatMessage(
-				Constants.Output.DTD.FILE_FMT,
+				FILE_FMT,
 				vocabulary
 			)
 		);
@@ -167,11 +185,9 @@ implements Constants.XMLExternalIdentifier
 				StringBuilder declTail = new StringBuilder();
 				for (XMLAttribute att : attlist) {
 					// The attribute name
-					declTail.append(Constants.EOL);
-					declTail.append(Constants.UI.INDENT);
-					declTail.append(Constants.UI.INDENT);
-					declTail.append(att.getName());
-					declTail.append(Constants.Character.SPACE);
+					declTail.append(EOL);
+					declTail.append(Strings.indent(att.getName(), 2));
+					declTail.append(SPACE);
 
 					// The attribute type
 					XMLAttribute.ContentType attType = att.getType();
@@ -182,21 +198,16 @@ implements Constants.XMLExternalIdentifier
 					{
 						if (attType.equals(XMLAttribute.ContentType.NOTATION)) {
 							declTail.append(XMLAttribute.ContentType.NOTATION);
-							declTail.append(Constants.Character.SPACE);
+							declTail.append(SPACE);
 						}
 
-						declTail.append(Constants.Character.LEFT_PAREN);
-						declTail.append(
-							Strings.join(
-								Constants.Character.PIPE,
-								att.getValues()
-							)
-						);
-						declTail.append(Constants.Character.RIGHT_PAREN);
-						declTail.append(Constants.Character.SPACE);
+						declTail.append(LEFT_PAREN);
+						declTail.append(Strings.join(PIPE, att.getValues()));
+						declTail.append(RIGHT_PAREN);
+						declTail.append(SPACE);
 					} else {
 						declTail.append(attType);
-						declTail.append(Constants.Character.SPACE);
+						declTail.append(SPACE);
 					}
 
 					// The DefaultDecl portion of the AttDef
@@ -204,21 +215,21 @@ implements Constants.XMLExternalIdentifier
 					defaultDeclType = att.getDefaultDeclType();
 					switch (defaultDeclType) {
 						case FIXED:
-							declTail.append(Constants.Character.HASH);
+							declTail.append(HASH);
 							declTail.append(XMLAttribute.DefaultType.FIXED);
-							declTail.append(Constants.Character.SPACE);
-							declTail.append(Constants.Character.DOUBLE_QUOTE);
+							declTail.append(SPACE);
+							declTail.append(DOUBLE_QUOTE);
 							declTail.append(att.getDefaultValue());
-							declTail.append(Constants.Character.DOUBLE_QUOTE);
+							declTail.append(DOUBLE_QUOTE);
 							break;
 						case ATTVALUE:
-							declTail.append(Constants.Character.DOUBLE_QUOTE);
+							declTail.append(DOUBLE_QUOTE);
 							declTail.append(att.getDefaultValue());
-							declTail.append(Constants.Character.DOUBLE_QUOTE);
+							declTail.append(DOUBLE_QUOTE);
 							break;
 						case IMPLIED:
 						case REQUIRED:
-							declTail.append(Constants.Character.HASH);
+							declTail.append(HASH);
 							declTail.append(defaultDeclType);
 							break;
 						case INVALID:
@@ -226,7 +237,7 @@ implements Constants.XMLExternalIdentifier
 							DBC.IGNORED_ERROR();
 					}
 				}
-				declTail.append(Constants.EOL);
+				declTail.append(EOL);
 
 				Log.debug(
 							"Creating attribute list declaration for " + 
@@ -253,19 +264,21 @@ implements Constants.XMLExternalIdentifier
 
 			StringBuilder entityDeclTail = new StringBuilder();
 			if (entity.isInternal()) {
-				entityDeclTail.append(Constants.Character.DOUBLE_QUOTE);
-				entityDeclTail.append(
-					escapeCharactersToCharacterReferences(
-						entity.value()
-					)
-				);
-				entityDeclTail.append(Constants.Character.DOUBLE_QUOTE);
+				entityDeclTail.append(DOUBLE_QUOTE);
+				try {
+					entityDeclTail.append(
+						XML.toCharacterReferences(entity.value())
+					);
+				} catch (ParseException e) {
+					throw new XMLParserGeneratorException(e);
+				}
+				entityDeclTail.append(DOUBLE_QUOTE);
 			} else {
 				XMLExternalIdentifier extID = entity.externalID();
 				if (extID.publicID() != null) {
 					entityDeclTail.append(PUBLIC);
 					entityDeclTail.append(extID.publicID());
-					entityDeclTail.append(Constants.Character.SPACE);
+					entityDeclTail.append(SPACE);
 					entityDeclTail.append(extID.systemID());
 				} else {
 					entityDeclTail.append(SYSTEM);
@@ -277,9 +290,9 @@ implements Constants.XMLExternalIdentifier
 					case EXTERNAL_PARSED:
 						break;
 					case EXTERNAL_UNPARSED:
-						entityDeclTail.append(Constants.Character.SPACE);
+						entityDeclTail.append(SPACE);
 						entityDeclTail.append(NDATA);
-						entityDeclTail.append(Constants.Character.SPACE);
+						entityDeclTail.append(SPACE);
 						entityDeclTail.append(entity.getNotation());
 						break;
 					case UNINITIALISED:
@@ -311,7 +324,7 @@ implements Constants.XMLExternalIdentifier
 
 			String pubOrSys = "";
 			StringBuilder notationDeclTail = new StringBuilder();
-			notationDeclTail.append(Constants.Character.DOUBLE_QUOTE);
+			notationDeclTail.append(DOUBLE_QUOTE);
 			if (extID.publicID() != null && extID.systemID() != null) {
 				pubOrSys = PUBLIC;
 				notationDeclTail.append(extID.publicID());
@@ -326,7 +339,7 @@ implements Constants.XMLExternalIdentifier
 			} else {
 				DBC.UNREACHABLE_CODE();
 			}
-			notationDeclTail.append(Constants.Character.DOUBLE_QUOTE);
+			notationDeclTail.append(DOUBLE_QUOTE);
 
 			Log.debug("Creating notation declaration for " + notationName);
 			notationDecls.append(
@@ -346,7 +359,7 @@ implements Constants.XMLExternalIdentifier
 				Strings.formatMessage(
 					dtdFile,
 					vocabulary,
-					Constants.PROGRAM_NAME,
+					PROGRAM_NAME,
 					timestamp,
 					elementDecls.toString(),
 					entityDecls.toString(),
@@ -366,83 +379,13 @@ implements Constants.XMLExternalIdentifier
 
 	/** {@inheritDoc} */
 	@Override public String describeLanguage() {
-		return "The XML DTD language";
+		return Message.LANGUAGE_DTD();
 	}
 
 	/** {@inheritDoc} */
 	@Override public String describeAPI() {
 		DBC.UNREACHABLE_CODE();
 		return null;
-	}
-
-	/** Escape all characters in the given String with their XML character 
-		references. Any character or entity references already in the {@link
-		String} will be passed through.
-
-		@param s	The String to escape the characters in.
-		@return		A String containing nothing but character references.
-	*/
-	private static String escapeCharactersToCharacterReferences(String s) {
-		DBC.REQUIRE(s != null);
-		if (s == null) {
-			return null;
-		}
-
-		StringBuilder result = new StringBuilder();
-		char[] characters = s.toCharArray();
-		for (int i = 0; i < characters.length; i++) {
-			if	(
-					characters[i] == Constants.Character.AMPERSAND &&
-					i + 1 < characters.length
-				)
-			{
-
-				int startIndex = i + 1;
-				if (characters[startIndex] == Constants.Character.HASH) {
-					startIndex++;
-				}
-				int semicolonIndex = -1;
-				for (int j = startIndex; j < characters.length; j++) {
-					boolean doBreak = false;
-					switch (characters[j]) {
-						case Constants.Character.SEMI_COLON:
-							semicolonIndex = j;
-							doBreak = true;
-							break;
-						case Constants.Character.FULL_STOP:
-						case Constants.Character.MINUS:
-						case Constants.Character.UNDERSCORE:
-						case Constants.Character.COLON:
-							// Do nothing
-							break;
-						default:
-							if (!Character.isLetterOrDigit(characters[j])) {
-								doBreak = true;
-							}
-					}
-					if (doBreak) {
-						break;
-					}
-				}
-
-				if (semicolonIndex >= 0) {
-					for (int j = i; j <= semicolonIndex; j++) {
-						result.append(characters[j]);
-					}
-					i = semicolonIndex;
-				} else {
-					result.append(Constants.CHAR_REF_HEX_PREFIX);
-					result.append(Integer.toHexString((int)characters[i]));
-					result.append(Constants.Character.SEMI_COLON);
-				}
-			} else {
-				result.append(Constants.CHAR_REF_HEX_PREFIX);
-				result.append(Integer.toHexString((int)characters[i]));
-				result.append(Constants.Character.SEMI_COLON);
-			}
-		}
-
-		return result.toString();
 	}
 
 	/** Convert either an {@link com.mcdermottroe.exemplar.model.XMLSequence}
@@ -464,14 +407,13 @@ implements Constants.XMLExternalIdentifier
 
 			// Create the sequence
 			List<String> contentSpecs = new ArrayList<String>();
-			for (XMLObject xmlObject : seq) {
+			for (XMLObject<?> xmlObject : seq) {
 				contentSpecs.add(objectTreeToContentSpec(xmlObject));
 			}
-			String sep =	String.valueOf(Constants.Character.COMMA) +
-							Constants.Character.SPACE;
-			ret.append(Constants.Character.LEFT_PAREN);
+			String sep = String.valueOf(COMMA) + SPACE;
+			ret.append(LEFT_PAREN);
 			ret.append(Strings.join(sep, contentSpecs));
-			ret.append(Constants.Character.RIGHT_PAREN);
+			ret.append(RIGHT_PAREN);
 
 			// Now put the ?, + or * on where appropriate
 			int min = seq.getMinOccurs();
@@ -480,13 +422,13 @@ implements Constants.XMLExternalIdentifier
 			DBC.ASSERT(max >= 0);
 			if (min == 0) {
 				if (max == 1) {
-					ret.append(Constants.Character.QUESTION_MARK);
+					ret.append(QUESTION_MARK);
 				} else {
-					ret.append(Constants.Character.STAR);
+					ret.append(STAR);
 				}
 			} else {
 				if (max > 1) {
-					ret.append(Constants.Character.PLUS);
+					ret.append(PLUS);
 				}
 			}
 		} else if (o instanceof XMLAlternative) {
@@ -494,35 +436,32 @@ implements Constants.XMLExternalIdentifier
 
 			// Create the alternative list
 			List<String> contentSpecs = new ArrayList<String>();
-			for (XMLObject xmlObject : alt) {
+			for (XMLObject<?> xmlObject : alt) {
 				contentSpecs.add(objectTreeToContentSpec(xmlObject));
 			}
-			String sep =	String.valueOf(Constants.Character.SPACE) +
-							Constants.Character.PIPE +
-							Constants.Character.SPACE;
-			ret.append(Constants.Character.LEFT_PAREN);
+			String sep = String.valueOf(SPACE) + PIPE + SPACE;
+			ret.append(LEFT_PAREN);
 			ret.append(Strings.join(sep, contentSpecs));
-			ret.append(Constants.Character.RIGHT_PAREN);
+			ret.append(RIGHT_PAREN);
 		} else if (o instanceof XMLMixedContent) {
 			XMLMixedContent mixed = (XMLMixedContent)o;
 
 			// Create the alternative list
-			Iterator<XMLObject> it = mixed.iterator();
-			ret.append(Constants.Character.LEFT_PAREN);
-			XMLObject first = it.next();
-			DBC.ASSERT(first instanceof XMLContent);
+			Iterator<XMLObject<?>> it = mixed.iterator();
+			ret.append(LEFT_PAREN);
+			XMLObject<?> first = it.next();
 			ret.append(objectTreeToContentSpec(first));
 			if (it.hasNext()) {
 				while (it.hasNext()) {
-					ret.append(Constants.Character.SPACE);
-					ret.append(Constants.Character.PIPE);
-					ret.append(Constants.Character.SPACE);
+					ret.append(SPACE);
+					ret.append(PIPE);
+					ret.append(SPACE);
 					ret.append(objectTreeToContentSpec(it.next()));
 				}
-				ret.append(Constants.Character.RIGHT_PAREN);
-				ret.append(Constants.Character.STAR);
+				ret.append(RIGHT_PAREN);
+				ret.append(STAR);
 			} else {
-				ret.append(Constants.Character.RIGHT_PAREN);
+				ret.append(RIGHT_PAREN);
 			}
 		} else if (o instanceof XMLContent) {
 			ret.append("#PCDATA");
@@ -533,5 +472,20 @@ implements Constants.XMLExternalIdentifier
 		}
 
 		return ret.toString();
+	}
+
+	/** {@inheritDoc} */
+	public Generator getCopy()
+	throws CopyException
+	{
+		Generator copy;
+		try {
+			copy = new Generator();
+		} catch (XMLParserGeneratorException e) {
+			throw new CopyException(e);
+		}
+		copy.codeFragments = codeFragments;
+		copy.timestamp = timestamp;
+		return copy;
 	}
 }

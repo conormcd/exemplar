@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2004, 2005, 2006
+	Copyright (c) 2004-2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -35,8 +35,13 @@ package com.mcdermottroe.exemplar.model;
 	@since	0.1
 */
 public class XMLContent
-extends XMLObject
+extends XMLObject<XMLContent>
 {
+	/** {@inheritDoc} */
+	@Override public XMLContent getCopy() {
+		return new XMLContent();
+	}
+
 	/** {@inheritDoc} */
 	@Override public String toString() {
 		return XMLObject.toStringHelper(getClass().getName(), "");

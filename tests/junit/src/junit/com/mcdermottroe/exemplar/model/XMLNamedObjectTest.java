@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -29,12 +29,17 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
+import com.mcdermottroe.exemplar.model.XMLNamedObject;
+
 import junit.com.mcdermottroe.exemplar.AbstractClassTestCase;
 
 /** Test class for {@link com.mcdermottroe.exemplar.model.XMLNamedObject}.
 
-	@author	Conor McDermottroe
-	@since	0.1
+	@author		Conor McDermottroe
+	@since		0.1
+	@param	<T>	The type of {@link XMLNamedObject} to test.
 */
-public class XMLNamedObjectTest extends AbstractClassTestCase {
+public class XMLNamedObjectTest<T extends XMLNamedObject<T>>
+extends AbstractClassTestCase<XMLNamedObject<T>>
+{
 }

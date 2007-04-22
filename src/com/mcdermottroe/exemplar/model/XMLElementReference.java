@@ -36,8 +36,7 @@ package com.mcdermottroe.exemplar.model;
 	@since	0.1
 */
 public class XMLElementReference
-extends XMLNamedObject
-implements Cloneable
+extends XMLNamedObject<XMLElementReference>
 {
 	/** A no-arg constructor to aid in testing. */
 	public XMLElementReference() {
@@ -51,6 +50,15 @@ implements Cloneable
 	public XMLElementReference(String elementName) {
 		super();
 		setName(elementName);
+	}
+
+	/** {@inheritDoc} */
+	@Override public XMLElementReference getCopy() {
+		if (name != null) {
+			return new XMLElementReference(name);
+		} else {
+			return new XMLElementReference();
+		}
 	}
 
 	/** {@inheritDoc} */

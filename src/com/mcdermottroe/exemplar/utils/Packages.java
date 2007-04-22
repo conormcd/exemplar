@@ -39,8 +39,14 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
+
+import static com.mcdermottroe.exemplar.Constants.Character.EXCLAMATION_MARK;
+import static com.mcdermottroe.exemplar.Constants.Character.FULL_STOP;
+import static com.mcdermottroe.exemplar.Constants.Character.SLASH;
+import static com.mcdermottroe.exemplar.Constants.JAR_METAINF_DIR;
+import static com.mcdermottroe.exemplar.Constants.PACKAGE;
+import static com.mcdermottroe.exemplar.Constants.URL_JAR_PREFIX;
 
 /** General purpose utility methods that can be used anywhere in the program.
 
@@ -98,10 +104,7 @@ public final class Packages {
 			return new ArrayList<String>(allPackages);
 		}
 
-		String packagePath = Constants.PACKAGE.replace(
-			Constants.Character.FULL_STOP,
-			Constants.Character.SLASH
-		);
+		String packagePath = PACKAGE.replace(FULL_STOP, SLASH);
 
 		List<String> packages = new ArrayList<String>();
 
@@ -114,7 +117,7 @@ public final class Packages {
 				)
 			{
 				URL url = e.nextElement();
-				if (url.toString().startsWith(Constants.URL_JAR_PREFIX)) {
+				if (url.toString().startsWith(URL_JAR_PREFIX)) {
 					packages.addAll(readPackagesFromJar(url));
 				}
 			}
@@ -131,19 +134,20 @@ public final class Packages {
 		within it.
 
 		@param	url	The {@link URL} of the JAR file to read from.
-		@return		A list of packages contained within the JAR file
+		@return		A {@link List} of packages contained within the JAR file.
 	*/
 	private static List<String> readPackagesFromJar(URL url) {
-		List<String> packages = new ArrayList<String>();
+		List<String> packages;
 
-		if (!url.toString().startsWith(Constants.URL_JAR_PREFIX)) {
+		if (!url.toString().startsWith(URL_JAR_PREFIX)) {
+			packages = new ArrayList<String>(0);
 			return packages;
 		}
 
 		String jarFilePath = url.toString();
 		jarFilePath = jarFilePath.substring(
-			Constants.URL_JAR_PREFIX.length(),
-			jarFilePath.indexOf((int)Constants.Character.EXCLAMATION_MARK)
+			URL_JAR_PREFIX.length(),
+			jarFilePath.indexOf((int)EXCLAMATION_MARK)
 		);
 		JarFile jar = null;
 		try {
@@ -154,20 +158,20 @@ public final class Packages {
 
 		if (jar != null) {
 			List<JarEntry> jarEntries = Collections.list(jar.entries());
+			packages = new ArrayList<String>(jarEntries.size());
 			for (JarEntry jarEntry : jarEntries) {
 				String entry = jarEntry.toString();
 				char lastChar = entry.charAt(entry.length() - 1);
-				if (lastChar == Constants.Character.SLASH) {
+				if (lastChar == SLASH) {
 					entry = entry.substring(0, entry.length() - 1);
-					if (!entry.equals(Constants.JAR_METAINF_DIR)) {
-						entry = entry.replace(
-							Constants.Character.SLASH,
-							Constants.Character.FULL_STOP
-						);
+					if (!entry.equals(JAR_METAINF_DIR)) {
+						entry = entry.replace(SLASH, FULL_STOP);
 						packages.add(entry);
 					}
 				}
 			}
+		} else {
+			packages = new ArrayList<String>(0);
 		}
 
 		return packages;

@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2004, 2005, 2006
+	Copyright (c) 2004-2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -35,10 +35,13 @@ import com.mcdermottroe.exemplar.model.XMLDocumentType;
 	is currently not extended by anything, but is left as a stub point for
 	future implementations.
 
-	@author	Conor McDermottroe
-	@since	0.1
+	@author		Conor McDermottroe
+	@since		0.1
+	@param	<T>	The type of {@link XMLParserObjectGenerator}.
 */
-public abstract class XMLParserObjectGenerator extends XMLParserGenerator {
+public abstract class XMLParserObjectGenerator<T extends XMLParserGenerator<T>>
+extends XMLParserGenerator<T>
+{
 	/** Protected constructor to prevent direct instantiation of this class. */
 	protected XMLParserObjectGenerator() {
 		super();

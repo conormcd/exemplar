@@ -37,10 +37,13 @@ import java.lang.reflect.Modifier;
 /** Test class for all utility classes (classes with no public constructors and
 	with all fields and methods declared static).
 
-	@author	Conor McDermottroe
-	@since	0.1
+	@author		Conor McDermottroe
+	@since		0.1
+	@param	<T>	The type of the utility class being tested.
 */
-public abstract class UtilityClassTestCase extends ExemplarTestCase {
+public abstract class UtilityClassTestCase<T>
+extends ExemplarTestCase<T>
+{
 	/** Utility classes must only have one constructor and it must be private.
 		This prevents someone from accidentally instantiating the class.
 	*/
@@ -49,7 +52,7 @@ public abstract class UtilityClassTestCase extends ExemplarTestCase {
 			return;
 		}
 
-		Constructor[] constructors = testedClass.getDeclaredConstructors();
+		Constructor<?>[] constructors = testedClass.getDeclaredConstructors();
 
 		// Make sure there's only one.
 		if (constructors.length != 1) {
@@ -58,15 +61,16 @@ public abstract class UtilityClassTestCase extends ExemplarTestCase {
 		}
 
 		// Make sure that it's private.
-		if (!(Modifier.isPrivate(constructors[0].getModifiers()))) {
+		if (!Modifier.isPrivate(constructors[0].getModifiers())) {
 			fail("The constructor is not private");
 			return;
 		}
 
 		// Make sure that it's a no-arg constructor.
-		assertTrue(
+		assertEquals(
 			"The constructor takes no arguments",
-			constructors[0].getParameterTypes().length == 0
+			0,
+			constructors[0].getParameterTypes().length
 		);
 	}
 
@@ -77,7 +81,7 @@ public abstract class UtilityClassTestCase extends ExemplarTestCase {
 		}
 
 		for (Field field : testedClass.getDeclaredFields()) {
-			if (!(Modifier.isStatic(field.getModifiers()))) {
+			if (!Modifier.isStatic(field.getModifiers())) {
 				fail(field.getName() + " is not static");
 				return;
 			}
@@ -92,7 +96,7 @@ public abstract class UtilityClassTestCase extends ExemplarTestCase {
 		}
 
 		for (Method method : testedClass.getDeclaredMethods()) {
-			if (!(Modifier.isStatic(method.getModifiers()))) {
+			if (!Modifier.isStatic(method.getModifiers())) {
 				fail(method.getName() + " is not static");
 				return;
 			}

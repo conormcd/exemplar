@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -78,6 +78,5 @@ public interface InputModule {
 		@return A {@link String} describing the language that the implementing
 				class parses.
 	*/
-	@Override
-	String toString();
+	@Override String toString();
 }

@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2005, 2006
+	Copyright (c) 2005, 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -34,12 +34,15 @@ import java.util.Locale;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.utils.Packages;
+
+import static com.mcdermottroe.exemplar.Constants.Character.FULL_STOP;
+import static com.mcdermottroe.exemplar.Constants.Input.CLASS;
+import static com.mcdermottroe.exemplar.Constants.Input.PACKAGE;
 
 /** Input handling utilities.
 
@@ -73,11 +76,11 @@ public final class InputUtils {
 		}
 
 		StringBuilder parserClassName = new StringBuilder();
-		parserClassName.append(Constants.Input.PACKAGE);
-		parserClassName.append(Constants.Character.FULL_STOP);
+		parserClassName.append(PACKAGE);
+		parserClassName.append(FULL_STOP);
 		parserClassName.append(name.toLowerCase(Locale.getDefault()));
-		parserClassName.append(Constants.Character.FULL_STOP);
-		parserClassName.append(Constants.Input.CLASS);
+		parserClassName.append(FULL_STOP);
+		parserClassName.append(CLASS);
 		Class<?> parserClass = Class.forName(parserClassName.toString());
 
 		DBC.ENSURE(InputModule.class.isAssignableFrom(parserClass));
@@ -105,7 +108,7 @@ public final class InputUtils {
 	public static XMLDocumentType parse(String inputFile, String inputType)
 	throws InputException, ParserException
 	{
-		Log.debug("Attempting to parse " + inputFile + " as a " + inputType);
+		Log.debug(Message.ATTEMPTING_TO_PARSE(inputFile, inputType));
 		DBC.REQUIRE(inputFile != null);
 		DBC.REQUIRE(inputType != null);
 		if (inputFile == null || inputType == null) {
@@ -114,36 +117,31 @@ public final class InputUtils {
 
 		try {
 			Object inputMod = parserClass(inputType).newInstance();
-			Log.debug(
-				"Created new parser instace: " +
-				inputMod.getClass().getName()
-			);
 			if (inputMod instanceof InputModule) {
 				InputModule inputModule = (InputModule)inputMod;
-				Log.debug("Handing off " + inputFile + " to parser");
 				return inputModule.parse(inputFile);
 			} else {
-				throw new InputException(Message.UNSUPPORTED_INPUT_TYPE);
+				throw new InputException(Message.UNSUPPORTED_INPUT_TYPE());
 			}
 		} catch (ClassNotFoundException e) {
 			// Couldn't find the parser class. This usually means that the
 			// requested input method is not supported.
-			throw new InputException(Message.UNSUPPORTED_INPUT_TYPE, e);
+			throw new InputException(Message.UNSUPPORTED_INPUT_TYPE(), e);
 		} catch (IllegalAccessException e) {
 			// This is only reachable if the no-arg constructor for the
 			// InputModule is private/protected.
-			throw new InputException(Message.UNSUPPORTED_INPUT_TYPE, e);
+			throw new InputException(Message.UNSUPPORTED_INPUT_TYPE(), e);
 		} catch (InstantiationException e) {
 			// This is only reachable if the constructor for the InputModule
 			// fails in some way. This can happen if the code fragments for the
 			// module fail to load.
-			throw new InputException(Message.UNSUPPORTED_INPUT_TYPE, e);
+			throw new InputException(Message.UNSUPPORTED_INPUT_TYPE(), e);
 		}
 	}
 
 	/** Find out the available input languages. This is done by querying the
 		{@link Packages#findSubPackages} method to find all of the packages
-		below {@link com.mcdermottroe.exemplar.Constants.Input#PACKAGE} which 
+		below {@link com.mcdermottroe.exemplar.Constants.Input#PACKAGE} which
 		are in the prescribed form.
 
 		@return	A {@link SortedMap} where the keys are tokens representing 
@@ -154,14 +152,10 @@ public final class InputUtils {
 		SortedMap<String, String> availableInputLanguages;
 		availableInputLanguages = new TreeMap<String, String>();
 
-		List<String> packages = Packages.findSubPackages(
-			Constants.Input.PACKAGE
-		);
+		List<String> packages = Packages.findSubPackages(PACKAGE);
 		for (String packageName : packages) {
-			String inputMethod = packageName.substring(
-				Constants.Input.PACKAGE.length() + 1
-			);
-			if (inputMethod.indexOf((int)Constants.Character.FULL_STOP) == -1) {
+			String inputMethod = packageName.substring(PACKAGE.length() + 1);
+			if (inputMethod.indexOf((int)FULL_STOP) == -1) {
 				try {
 					Class<?> generatorClass = parserClass(inputMethod);
 					Object gen = generatorClass.newInstance();

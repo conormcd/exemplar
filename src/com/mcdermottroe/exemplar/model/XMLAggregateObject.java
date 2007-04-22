@@ -33,29 +33,31 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.utils.Strings;
+
+import static com.mcdermottroe.exemplar.Constants.HASHCODE_MAGIC_NUMBER;
 
 /** An {@link com.mcdermottroe.exemplar.model.XMLObject} which represents
 	alternative lists or sequences of {@link
 	com.mcdermottroe.exemplar.model.XMLObject}s.
 
-	@author	Conor McDermottroe
-	@since	0.1
+	@author		Conor McDermottroe
+	@since		0.1
+	@param	<T>	The type of aggreagate object.
 */
-public abstract class XMLAggregateObject
-extends XMLObject
-implements Iterable<XMLObject>
+public abstract class XMLAggregateObject<T extends XMLAggregateObject<T>>
+extends XMLObject<T>
+implements Iterable<XMLObject<?>>
 {
 	/** The contents of the collection. */
-	private List<XMLObject> contents;
+	protected List<XMLObject<?>> contents;
 
 	/** Simple constructor. */
 	protected XMLAggregateObject() {
 		super();
-		contents = new ArrayList<XMLObject>();
+		contents = new ArrayList<XMLObject<?>>(0);
 	}
 
 	/** Return the number of elements in the object.
@@ -71,7 +73,7 @@ implements Iterable<XMLObject>
 
 		@return An {@link Iterator} over the contents in the object.
 	*/
-	public Iterator<XMLObject> iterator() {
+	public Iterator<XMLObject<?>> iterator() {
 		DBC.ASSERT(contents != null);
 		return contents.iterator();
 	}
@@ -81,7 +83,7 @@ implements Iterable<XMLObject>
 		@param	xo	The {@link com.mcdermottroe.exemplar.model.XMLObject} to
 					add to the calculation.
 	*/
-	public void addObject(XMLObject xo) {
+	public void addObject(XMLObject<?> xo) {
 		DBC.REQUIRE(xo != null);
 		DBC.REQUIRE(contents != null);
 		if (xo == null || contents == null) {
@@ -110,13 +112,13 @@ implements Iterable<XMLObject>
 		@param	other	The other {@link
 						com.mcdermottroe.exemplar.model.XMLAggregateObject}.
 	*/
-	public void append(XMLAggregateObject other) {
+	public void append(XMLAggregateObject<?> other) {
 		DBC.REQUIRE(other != null);
 		if (other == null) {
 			return;
 		}
 
-		for (XMLObject xmlObject : other) {
+		for (XMLObject<?> xmlObject : other) {
 			addObject(xmlObject);
 		}
 	}
@@ -125,8 +127,8 @@ implements Iterable<XMLObject>
 
 		@return A copy of the contents member.
 	*/
-	public List<XMLObject> getContents() {
-		return new ArrayList<XMLObject>(contents);
+	public List<XMLObject<?>> getContents() {
+		return new ArrayList<XMLObject<?>>(contents);
 	}
 
 	/** {@inheritDoc} */
@@ -138,7 +140,7 @@ implements Iterable<XMLObject>
 			return false;
 		}
 
-		XMLAggregateObject other = (XMLAggregateObject)o;
+		XMLAggregateObject<?> other = (XMLAggregateObject<?>)o;
 		if (super.equals(other)) {
 			if (Utils.areDeeplyEqual(contents, other.getContents())) {
 				return true;
@@ -151,7 +153,7 @@ implements Iterable<XMLObject>
 	@Override public int hashCode() {
 		int hashCode = super.hashCode();
 
-		hashCode *= Constants.HASHCODE_MAGIC_NUMBER;
+		hashCode *= HASHCODE_MAGIC_NUMBER;
 		hashCode += contents.hashCode();
 
 		return hashCode;

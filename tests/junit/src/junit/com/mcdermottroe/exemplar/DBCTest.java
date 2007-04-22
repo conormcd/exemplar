@@ -37,7 +37,9 @@ import com.mcdermottroe.exemplar.ui.Options;
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class DBCTest extends UtilityClassTestCase {
+public class DBCTest
+extends UtilityClassTestCase<DBC>
+{
 	/** Test that ASSERT(true) works correctly.
 
 		@see DBC#ASSERT(boolean)
@@ -109,5 +111,43 @@ public class DBCTest extends UtilityClassTestCase {
 		fail("ASSERT(true) failed to set off the delayed AssertionError");
 		DBC._setThrowImmediately(false);
 		DBC._clearDelayedAssertation();
+	}
+
+	/** Test {@link DBC#UNREACHABLE_CODE()}. */
+	public void testUnreachableCode() {
+		DBC._setThrowImmediately(true);
+		try {
+			DBC.UNREACHABLE_CODE();
+		} catch (AssertionError e) {
+			assertTrue("UNREACHABLE_CODE() works as expected", true);
+			DBC._clearDelayedAssertation();
+			DBC._setThrowImmediately(false);
+			return;
+		}
+		fail("UNREACHABLE_CODE() did not throw an AssertionError");
+		DBC._clearDelayedAssertation();
+		DBC._setThrowImmediately(false);
+	}
+
+	/** Test {@link DBC#IGNORED_ERROR()}. */
+	public void testIgnoredError() {
+		DBC._setThrowImmediately(true);
+		try {
+			DBC.IGNORED_ERROR();
+		} catch (AssertionError e) {
+			assertTrue("IGNORED_ERROR() works as expected", true);
+			DBC._clearDelayedAssertation();
+			DBC._setThrowImmediately(false);
+			return;
+		}
+		fail("IGNORED_ERROR() did not throw an AssertionError");
+		DBC._clearDelayedAssertation();
+		DBC._setThrowImmediately(false);
+	}
+
+	/** Test {@link DBC#IGNORED_EXCEPTION(Throwable)}. */
+	public void testIgnoredException() {
+		DBC.IGNORED_EXCEPTION(new Exception());
+		assertTrue("IGNORED_EXCEPTION works as expected", true);
 	}
 }

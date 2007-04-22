@@ -33,11 +33,11 @@ import com.mcdermottroe.exemplar.model.XMLNamedObject;
 
 /** Parent class to all subclasses of {@link XMLNamedObject}.
 
+	@author		Conor McDermottroe
+	@since		0.2
 	@param	<T>	The type of {@link XMLNamedObject} being tested.
-	@author	Conor McDermottroe
-	@since	0.2
 */
-public abstract class XMLNamedObjectTestCase<T extends XMLNamedObject>
+public abstract class XMLNamedObjectTestCase<T extends XMLNamedObject<T>>
 extends XMLObjectTestCase<T>
 {
 	/** {@inheritDoc} */
@@ -48,7 +48,7 @@ extends XMLObjectTestCase<T>
 	/** Test that it is possible to both name and re-name a named object. */
 	public void testNamingWorks() {
 		// Now test the samples
-		for (XMLNamedObject obj : samples()) {
+		for (XMLNamedObject<T> obj : samples()) {
 			if (obj != null) {
 				String originalName = obj.getName();
 				obj.setName("test");

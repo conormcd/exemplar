@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2004, 2005, 2006
+	Copyright (c) 2004-2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,11 @@
 */
 package com.mcdermottroe.exemplar.model;
 
-import com.mcdermottroe.exemplar.Constants;
+import java.util.ArrayList;
+
+import com.mcdermottroe.exemplar.CopyException;
+
+import static com.mcdermottroe.exemplar.Constants.Character.PIPE;
 
 /** An {@link com.mcdermottroe.exemplar.model.XMLObject} which represents
 	alternative lists of {@link com.mcdermottroe.exemplar.model.XMLObject}s.
@@ -39,10 +43,26 @@ import com.mcdermottroe.exemplar.Constants;
 	@since	0.1
 */
 public class XMLAlternative
-extends XMLAggregateObject
+extends XMLAggregateObject<XMLAlternative>
 {
 	/** {@inheritDoc} */
+	@Override public XMLAlternative getCopy()
+	throws CopyException
+	{
+		XMLAlternative copy = new XMLAlternative();
+		if (contents != null) {
+			copy.contents = new ArrayList<XMLObject<?>>(contents.size());
+			for (XMLObject<?> o : contents) {
+				copy.contents.add(o.getCopy());
+			}
+		} else {
+			copy.contents = null;
+		}
+		return copy;
+	}
+
+	/** {@inheritDoc} */
 	@Override public String toString() {
-		return toString(getClass().getName(), Constants.Character.PIPE);
+		return toString(getClass().getName(), PIPE);
 	}
 }

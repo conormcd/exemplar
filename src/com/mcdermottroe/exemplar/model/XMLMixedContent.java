@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,12 @@
 */
 package com.mcdermottroe.exemplar.model;
 
-import com.mcdermottroe.exemplar.Constants;
+import java.util.ArrayList;
+
+import com.mcdermottroe.exemplar.CopyException;
+
+import static com.mcdermottroe.exemplar.Constants.Character.PIPE;
+import static com.mcdermottroe.exemplar.Constants.Character.STAR;
 
 /** An {@link com.mcdermottroe.exemplar.model.XMLObject} which represents the
 	concept of mixed content in XML.  This roughly corresponds to the
@@ -39,17 +44,30 @@ import com.mcdermottroe.exemplar.Constants;
 	@since	0.1
 */
 public class XMLMixedContent
-extends XMLAggregateObject
+extends XMLAggregateObject<XMLMixedContent>
 {
+	/** {@inheritDoc} */
+	@Override public XMLMixedContent getCopy()
+	throws CopyException
+	{
+		XMLMixedContent copy = new XMLMixedContent();
+		if (contents != null) {
+			copy.contents = new ArrayList<XMLObject<?>>(contents.size());
+			for (XMLObject<?> o : contents) {
+				copy.contents.add(o.getCopy());
+			}
+		} else {
+			copy.contents = null;
+		}
+		return copy;
+	}
+
 	/** {@inheritDoc} */
 	@Override public String toString() {
 		StringBuilder desc = new StringBuilder(
-			toString(
-				getClass().getName(),
-				Constants.Character.PIPE
-			)
+			toString(getClass().getName(), PIPE)
 		);
-		desc.append(Constants.Character.STAR);
+		desc.append(STAR);
 		return desc.toString();
 	}
 }

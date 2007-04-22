@@ -5,7 +5,7 @@
 	vim:filetype=xml:ts=4
 -->
 <!--
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 <module name="Checker">
 	<module name="TreeWalker">
 		<module name="ReturnCount">
-			<property name="max" value="3" />
+			<property name="max" value="10" />
 		</module>
 	</module>
 </module>

@@ -38,9 +38,7 @@ import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
-import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
-import com.mcdermottroe.exemplar.Exception;
 import com.mcdermottroe.exemplar.input.InputException;
 import com.mcdermottroe.exemplar.input.InputUtils;
 import com.mcdermottroe.exemplar.input.ParserException;
@@ -53,16 +51,37 @@ import com.mcdermottroe.exemplar.ui.MessageException;
 import com.mcdermottroe.exemplar.ui.Options;
 import com.mcdermottroe.exemplar.utils.Strings;
 
+import static com.mcdermottroe.exemplar.Constants.Character.MINUS;
+import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
+import static com.mcdermottroe.exemplar.Constants.Character.TAB;
+import static com.mcdermottroe.exemplar.Constants.EOL;
+import static com.mcdermottroe.exemplar.Constants.Format.UI.OPTION;
+import static com.mcdermottroe.exemplar.Constants.PROGRAM_NAME;
+import static com.mcdermottroe.exemplar.Constants.PROGRAM_VERSION;
+import static com.mcdermottroe.exemplar.Constants.UI.CLI.ARG_ARG;
+import static com.mcdermottroe.exemplar.Constants.UI.CLI.DEFAULT_TERMINAL_WIDTH;
+import static com.mcdermottroe.exemplar.Constants.UI.CLI.ENUM_ARG;
+import static com.mcdermottroe.exemplar.Constants.UI.CLI.EXIT_FAIL_ARGS;
+import static com.mcdermottroe.exemplar.Constants.UI.CLI.EXIT_FAIL_CODE_GEN;
+import static com.mcdermottroe.exemplar.Constants.UI.CLI.EXIT_FAIL_INPUT;
+import static com.mcdermottroe.exemplar.Constants.UI.CLI.EXIT_FAIL_L10N;
+import static com.mcdermottroe.exemplar.Constants.UI.CLI.EXIT_SUCCESS;
+import static com.mcdermottroe.exemplar.Constants.UI.CLI.HELP_OPTION_NAME;
+import static com.mcdermottroe.exemplar.Constants.UI.CLI.OPTIONS_LINE;
+import static com.mcdermottroe.exemplar.Constants.UI.CLI.OPTION_PREFIX;
+import static com.mcdermottroe.exemplar.Constants.UI.CLI.USAGE_LINE_MSG_FMT;
+import static com.mcdermottroe.exemplar.Constants.UI.CLI.VERBOSE_OPTION_NAME;
+import static com.mcdermottroe.exemplar.Constants.UI.CLI.VERSION_OPTION_NAME;
+import static com.mcdermottroe.exemplar.Constants.UI.INDENT;
+
 /** A class to provide a main entry point for the program.
 
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public final class Main
-implements Constants.UI.CLI
-{
+public final class Main {
 	/** The time that {@link #main(String[])} was called. */
-	private static long startTime;
+	private static long startTime = 0L;
 
 	/** Private constructor to prevent instantiation of this class. */
 	private Main() {
@@ -86,31 +105,24 @@ implements Constants.UI.CLI
 		Log.setLevel(Log.LogLevel.WARNING);
 
 		// Print a copyright header
-		Log.info(
-			Constants.PROGRAM_NAME +
-			Constants.Character.SPACE +
-			Constants.PROGRAM_VERSION
-		);
-		for (String copyrightLine : Constants.COPYRIGHT_MESSAGE) {
-			Log.info(copyrightLine);
+		for (String line : Message.COPYRIGHT().split(EOL)) {
+			Log.info(line);
 		}
 		Log.info("");
 
 		// Localise the program if possible
 		try {
-			Log.debug("Loading messages");
 			Message.localise();
-			Log.debug("Messages loaded");
 		} catch (MessageException e) {
 			abort(ExitStatus.getExitCode(EXIT_FAIL_L10N), e);
 		}
 
 		// Process the arguments
-		Log.debug("Processing arguments");
+		Log.debug(Message.UI_PROGRESS_OPTIONS());
 		for (int i = 0; i < args.length; i++) {
-			String helpOption = OPTION_PREFIX + HELP_OPTION_NAME;
-			String verboseOption = OPTION_PREFIX + VERBOSE_OPTION_NAME;
-			String versionOption = OPTION_PREFIX + VERSION_OPTION_NAME;
+			String helpOption = String.format(OPTION, HELP_OPTION_NAME);
+			String verboseOption = String.format(OPTION, VERBOSE_OPTION_NAME);
+			String versionOption = String.format(OPTION, VERSION_OPTION_NAME);
 			if (args[i].equals(helpOption)) {
 				cleanExit(usageMessage());
 			} else if (args[i].equals(verboseOption)) {
@@ -140,14 +152,14 @@ implements Constants.UI.CLI
 				);
 			}
 		}
-		Log.debug("Arguments processed");
+		Log.debug(Message.UI_PROGRESS_DONE());
 		Options.setUIFinished();
 
 		// Make sure that all of the mandatory options were set.
 		if (!Options.allMandatoryOptionsSet()) {
 			abort(
 					ExitStatus.getExitCode(EXIT_FAIL_ARGS),
-					Message.MANDATORY_OPTIONS_NOT_SET
+					Message.MANDATORY_OPTIONS_NOT_SET()
 			);
 		}
 
@@ -155,38 +167,34 @@ implements Constants.UI.CLI
 		XMLDocumentType doctype = null;
 
 		// Parse the input
-		Log.debug("Begin parse phase");
 		try {
-			Log.info("Parsing " + Options.getString("input") + "...");
+			Log.info(
+				Message.UI_PROGRESS_PARSING_INPUT(
+					Options.getString("input") // NON-NLS
+				)
+			);
 			doctype =	InputUtils.parse(
-							Options.getString("input"),
-							Options.getString("input-type")
+							Options.getString("input"),		// NON-NLS
+							Options.getString("input-type")	// NON-NLS
 						);
 		} catch (InputException e) {
 			abort(ExitStatus.getExitCode(EXIT_FAIL_INPUT), e);
 		} catch (ParserException e) {
 			abort(ExitStatus.getExitCode(EXIT_FAIL_INPUT), e);
 		}
-		Log.debug("End parse phase");
 
 		// Create the output
-		Log.debug("Begin generate phase");
 		try {
-			Log.info(
-				"Generating output for " +
-				Options.getString("vocabulary") +
-				"..."
-			);
+			Log.info(Message.UI_PROGRESS_GENERATING_PARSER());
 			OutputUtils.generateParser(
 				doctype,
-				Options.getString("output"),
-				Options.getString("output-language"),
-				Options.getString("output-api")
+				Options.getString("output"),			// NON-NLS
+				Options.getString("output-language"),	// NON-NLS
+				Options.getString("output-api")			// NON-NLS
 			);
 		} catch (OutputException e) {
 			abort(ExitStatus.getExitCode(EXIT_FAIL_CODE_GEN), e);
 		}
-		Log.debug("End generate phase");
 
 		// Indicate success
 		cleanExit(null);
@@ -197,7 +205,7 @@ implements Constants.UI.CLI
 		@return	The version of the program, unadorned.
 	*/
 	private static String versionMessage() {
-		return	Constants.PROGRAM_VERSION;
+		return PROGRAM_VERSION;
 	}
 
 	/** Format a usage message.
@@ -249,33 +257,23 @@ implements Constants.UI.CLI
 		// Output any diagnostic message before doing anything else.
 		if (why.length() > 0) {
 			usage.append(why.trim());
-			usage.append(Constants.EOL);
-			usage.append(Constants.EOL);
+			usage.append(EOL);
+			usage.append(EOL);
 		}
 
 		// Output the name of the program and the copyright message
-		usage.append(Constants.PROGRAM_NAME);
-		usage.append(Constants.Character.SPACE);
-		usage.append(Constants.PROGRAM_VERSION);
-		usage.append(Constants.EOL);
-		for (String copyrightLine : Constants.COPYRIGHT_MESSAGE) {
-			usage.append(copyrightLine);
-			usage.append(Constants.EOL);
-		}
-		usage.append(Constants.EOL);
+		usage.append(Message.COPYRIGHT());
+		usage.append(EOL);
 
 		// Now describe the usage of the program
 		usage.append(
-			Strings.formatMessage(
-				usageLineMessageFormat,
-				Constants.PROGRAM_NAME
-			)
+			Strings.formatMessage(usageLineMessageFormat, PROGRAM_NAME)
 		);
 
 		// Find the column that option descriptions start in.
 		int optionDescColumn = 0;
 		for (String optionName : Options.getAllOptionNames()) {
-			int length =	Constants.UI.INDENT.length() +
+			int length =	INDENT.length() +
 							OPTION_PREFIX.length() +
 							optionName.length();
 			if (Options.isArgument(optionName)) {
@@ -302,11 +300,8 @@ implements Constants.UI.CLI
 		{
 			String optionName = optionNames.next();
 
-			// Indent the option
-			usage.append(Constants.UI.INDENT);
-
 			// Print the option and any arguments it may take.
-			usage.append(OPTION_PREFIX).append(optionName);
+			usage.append(Strings.indent(String.format(OPTION, optionName)));
 			if (Options.isArgument(optionName)) {
 				usage.append(argArg);
 			} else if (Options.isEnum(optionName)) {
@@ -319,7 +314,7 @@ implements Constants.UI.CLI
 
 			// Find out the length of the option including the indent before it
 			// and the arguments to it if any.
-			int length =	Constants.UI.INDENT.length() +
+			int length =	INDENT.length() +
 							OPTION_PREFIX.length() +
 							optionName.length();
 			if (Options.isArgument(optionName)) {
@@ -338,36 +333,38 @@ implements Constants.UI.CLI
 			StringBuilder descColumnIndent;
 			descColumnIndent = new StringBuilder(optionDescColumn);
 			for (int j = 0; j < optionDescColumn; j++) {
-				descColumnIndent.append(Constants.Character.SPACE);
+				descColumnIndent.append(SPACE);
 			}
 
 			// Pad out the space between the end of the option name and the
 			// description.
 			for (int j = 0; j <= optionDescColumn - length; j++) {
-				usage.append(Constants.Character.SPACE);
+				usage.append(SPACE);
 			}
 
 			// Add the description of the option
 			usage.append(
-					wrapText(
-								Options.getDescription(optionName),
-								optionDescColumn
-							)
+				Strings.wrap(
+					Options.getDescription(optionName),
+					DEFAULT_TERMINAL_WIDTH,
+					optionDescColumn
+				)
 			);
-			usage.append(Constants.EOL);
+			usage.append(EOL);
 
 			// If the option is an Enum, print the legal options and their
 			// descriptions.
 			if (Options.isEnum(optionName)) {
-				usage.append(Constants.EOL);
+				usage.append(EOL);
 				usage.append(descColumnIndent);
 				usage.append(
-						wrapText(
-									Message.OPTION_ENUM_ARGS_HEADER,
-									optionDescColumn
-								)
+					Strings.wrap(
+						Message.OPTION_ENUM_ARGS_HEADER(),
+						DEFAULT_TERMINAL_WIDTH,
+						optionDescColumn
+					)
 				);
-				usage.append(Constants.EOL);
+				usage.append(EOL);
 
 				// Get the set of potential Enum values
 				Map<String, String> enumOptions;
@@ -395,100 +392,60 @@ implements Constants.UI.CLI
 							j++
 						)
 					{
-						usage.append(Constants.Character.SPACE);
+						usage.append(SPACE);
 					}
-					usage.append(Constants.Character.MINUS);
-					usage.append(Constants.Character.SPACE);
+					usage.append(MINUS);
+					usage.append(SPACE);
 					usage.append(
-						wrapText(
+						Strings.wrap(
 							enumOptions.get(enumValue),
+							DEFAULT_TERMINAL_WIDTH,
 							optionDescColumn + longestEnumVal + 3
 						)
 					);
-					usage.append(Constants.EOL);
+					usage.append(EOL);
 				}
 			}
 
 			// Tell the user if the option is mandatory
 			if (Options.isMandatory(optionName)) {
-				usage.append(Constants.EOL);
+				usage.append(EOL);
 				usage.append(descColumnIndent);
 				usage.append(
-					wrapText(
-						Message.OPTION_IS_MANDATORY,
+					Strings.wrap(
+						Message.OPTION_IS_MANDATORY(),
+						DEFAULT_TERMINAL_WIDTH,
 						optionDescColumn
 					)
 				);
-				usage.append(Constants.EOL);
+				usage.append(EOL);
 			}
 
 			// If the option has a default, describe it now
 			String defaultValue = Options.describeDefault(optionName);
 			if (defaultValue != null && !Options.isSwitch(optionName)) {
-				usage.append(Constants.EOL);
+				usage.append(EOL);
 				usage.append(descColumnIndent);
 				usage.append(
-					wrapText(
+					Strings.wrap(
 						Message.OPTION_DEFAULT(defaultValue),
+						DEFAULT_TERMINAL_WIDTH,
 						optionDescColumn
 					)
 				);
-				usage.append(Constants.EOL);
+				usage.append(EOL);
 			}
 
 			// Put a blank line between option descriptions.
-			usage.append(Constants.EOL);
+			usage.append(EOL);
 		}
 
 		return usage.toString();
 	}
 
-	/** Wrap and indent a {@link String} to fit a certain terminal width.
-
-		@param	text	The text to wrap.
-		@param	indent	How far indented the text is to start with.
-		@return			A wrapped and indented copy of the text parameter.
-	*/
-	private static String wrapText(String text, int indent) {
-		DBC.REQUIRE(text != null);
-		DBC.REQUIRE(indent >= 0);
-		if (text == null || indent < 0) {
-			return null;
-		}
-
-		// WARNING: If any word is longer than this value then this method will
-		// loop infnitely.
-		int longestAllowableWord = DEFAULT_TERMINAL_WIDTH - indent;
-
-		// Split the text into words
-		String[] words = text.split(Constants.Regex.WHITESPACE);
-		DBC.ASSERT(words.length > 0);
-
-		// Start wrapping
-		DBC.ASSERT(words[0].length() < longestAllowableWord);
-		StringBuilder wrappedText = new StringBuilder(words[0]);
-		int cursor = indent + words[0].length();
-		for (int i = 1; i < words.length; i++) {
-			DBC.ASSERT(words[i].length() < longestAllowableWord);
-			if (cursor + words[i].length() + 1 < DEFAULT_TERMINAL_WIDTH) {
-				wrappedText.append(Constants.Character.SPACE);
-				wrappedText.append(words[i]);
-				cursor += words[i].length() + 1;
-			} else {
-				wrappedText.append(Constants.EOL);
-				for (int j = 0; j < indent; j++) {
-					wrappedText.append(Constants.Character.SPACE);
-				}
-				wrappedText.append(words[i]);
-				cursor = indent + words[i].length();
-			}
-		}
-
-		return wrappedText.toString();
-	}
-
 	/** Shorthand for a clean exit. The program will exit with the exit code
-		corresponding to {@link #EXIT_SUCCESS}.
+		corresponding to {@link
+		com.mcdermottroe.exemplar.Constants.UI.CLI#EXIT_SUCCESS}.
 
 		@param	message	A message to send to the user. If this is null, nothing
 						is sent.
@@ -503,12 +460,10 @@ implements Constants.UI.CLI
 			Log.info(message);
 			Log.setLevel(oldLevel);
 		}
-		Log.debug("Exiting successfully");
-		Log.info("");
 		Log.info(
-					"Finished in " + 
-					((System.currentTimeMillis() - startTime) / 1000.0) + 
-					" seconds"
+			Message.UI_PROGRESS_FINISHED_TIME(
+				(double)(System.currentTimeMillis() - startTime) / 1000.0
+			)
 		);
 		System.exit(ExitStatus.getExitCode(EXIT_SUCCESS));
 	}
@@ -526,11 +481,10 @@ implements Constants.UI.CLI
 			Log.error(message);
 		}
 		Log.debug("Aborting, code " + code);
-		Log.info("");
 		Log.info(
-					"Finished in " + 
-					((System.currentTimeMillis() - startTime) / 1000.0) + 
-					" seconds"
+			Message.UI_PROGRESS_FINISHED_TIME(
+				(double)(System.currentTimeMillis() - startTime) / 1000.0
+			)
 		);
 		System.exit(code);
 	}
@@ -549,37 +503,44 @@ implements Constants.UI.CLI
 			@return			A {@link String} suitable for the console.
 		*/
 		@Override public String format(LogRecord record) {
-			String message = record.getMessage();
-			if (message == null) {
+			if (record == null) {
 				return "";
 			}
 
+			// Create the buffer for the message with the raw message itself.
+			StringBuilder message = new StringBuilder(
+				String.valueOf(record.getMessage())
+			);
+
+			// If debugging is turned on, add some extra info
 			if (Options.isDebugSet()) {
-				message =	Message.DEBUG_CLASS_AND_METHOD(
-								record.getSourceClassName(),
-								record.getSourceMethodName()
-							) +
-							Constants.Character.SPACE +
-							message;
-			}
-
-			Throwable cause = record.getThrown();
-			if (cause != null) {
-				message += "\n\tException: ";
-				if (cause instanceof Exception) {
-					message += ((Exception)cause).toString();
-				} else {
-					message += cause;
-				}
-			}
-
-			if (message.matches(Constants.Regex.TRAILING_WHITESPACE)) {
-				return message.replaceAll(
-					Constants.Regex.TRAILING_WHITESPACE,
-					Constants.EOL
+				message.insert(0, SPACE);
+				message.insert(
+					0,
+					Message.DEBUG_CLASS_AND_METHOD(
+						record.getSourceClassName(),
+						record.getSourceMethodName()
+					)
 				);
 			}
-			return message + Constants.EOL;
+
+			// Now add the exception, if any
+			Throwable cause = record.getThrown();
+			if (cause != null) {
+				message.append(EOL);
+				message.append(TAB);
+				message.append("Exception: ");
+				message.append(cause);
+			}
+
+			String messageAsString = Strings.trimTrailingSpace(message);
+			if (!messageAsString.endsWith(EOL)) {
+				message = new StringBuilder(messageAsString);
+				message.append(EOL);
+				return message.toString();
+			} else {
+				return messageAsString;
+			}
 		}
 	}
 }

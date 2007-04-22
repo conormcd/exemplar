@@ -34,10 +34,15 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.utils.Strings;
+
+import static com.mcdermottroe.exemplar.Constants.Character.COMMA;
+import static com.mcdermottroe.exemplar.Constants.Character.LEFT_PAREN;
+import static com.mcdermottroe.exemplar.Constants.Character.RIGHT_PAREN;
+import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
+import static com.mcdermottroe.exemplar.Constants.HASHCODE_MAGIC_NUMBER;
 
 /** An {@link XMLObject} which represents attribute lists.
 
@@ -45,7 +50,7 @@ import com.mcdermottroe.exemplar.utils.Strings;
 	@since	0.1
 */
 public class XMLAttributeList
-extends XMLNamedObject
+extends XMLNamedObject<XMLAttributeList>
 implements XMLMarkupDeclaration, Iterable<XMLAttribute>
 {
 	/** The list of attributes. */
@@ -95,17 +100,29 @@ implements XMLMarkupDeclaration, Iterable<XMLAttribute>
 
 	/** {@inheritDoc} */
 	@Override public String toString() {
-		String sep =	String.valueOf(Constants.Character.RIGHT_PAREN) +
-						Constants.Character.COMMA +
-						Constants.Character.SPACE +
-						Constants.Character.LEFT_PAREN;
+		StringBuilder sep = new StringBuilder(4);
+		sep.append(RIGHT_PAREN);
+		sep.append(COMMA);
+		sep.append(SPACE);
+		sep.append(LEFT_PAREN);
 
 		StringBuilder desc = new StringBuilder();
-		desc.append(Constants.Character.LEFT_PAREN);
+		desc.append(LEFT_PAREN);
 		desc.append(Strings.join(sep, this));
-		desc.append(Constants.Character.RIGHT_PAREN);
+		desc.append(RIGHT_PAREN);
 
 		return XMLObject.toStringHelper(getClass().getName(), desc.toString());
+	}
+
+	/** {@inheritDoc} */
+	@Override public XMLAttributeList getCopy() {
+		XMLAttributeList copy = new XMLAttributeList();
+		copy.attributes = new ArrayList<XMLAttribute>(attributes.size());
+		for (XMLAttribute att : attributes) {
+			copy.attributes.add(att.getCopy());
+		}
+		copy.setName(getName());
+		return copy;
 	}
 
 	/** {@inheritDoc} */
@@ -130,7 +147,7 @@ implements XMLMarkupDeclaration, Iterable<XMLAttribute>
 	@Override public int hashCode() {
 		int hashCode = super.hashCode();
 
-		hashCode *= Constants.HASHCODE_MAGIC_NUMBER;
+		hashCode *= HASHCODE_MAGIC_NUMBER;
 		hashCode += attributes.hashCode();
 
 		return hashCode;

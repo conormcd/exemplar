@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2003-2006
+	Copyright (c) 2003-2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -68,5 +68,24 @@ public class ParserException extends Exception {
 	*/
 	public ParserException(Throwable cause) {
 		super(cause);
+	}
+
+	/** {@inheritDoc} */
+	public ParserException getCopy() {
+		ParserException copy;
+
+		String message = getMessage();
+		Throwable cause = getCause();
+		if (message != null && cause != null) {
+			copy = new ParserException(message, cause);
+		} else if (message != null) {
+			copy = new ParserException(message);
+		} else if (cause != null) {
+			copy = new ParserException(cause);
+		} else {
+			copy = new ParserException();
+		}
+		copy.setStackTrace(copyStackTrace(getStackTrace()));
+		return copy;
 	}
 }

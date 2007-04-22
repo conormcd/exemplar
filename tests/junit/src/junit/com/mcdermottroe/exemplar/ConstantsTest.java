@@ -29,10 +29,14 @@
 */
 package junit.com.mcdermottroe.exemplar;
 
+import com.mcdermottroe.exemplar.Constants;
+
 /** Test class for com.mcdermottroe.exemplar.Constants.
 
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class ConstantsTest extends InterfaceTestCase {
+public class ConstantsTest
+extends InterfaceTestCase<Constants>
+{
 }

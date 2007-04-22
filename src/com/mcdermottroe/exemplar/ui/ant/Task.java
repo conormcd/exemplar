@@ -40,7 +40,7 @@ import java.util.logging.LogRecord;
 
 import org.apache.tools.ant.BuildException;
 
-import com.mcdermottroe.exemplar.Constants;
+import com.mcdermottroe.exemplar.Copyable;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Exception;
 import com.mcdermottroe.exemplar.input.InputException;
@@ -53,6 +53,13 @@ import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.MessageException;
 import com.mcdermottroe.exemplar.ui.Options;
+import com.mcdermottroe.exemplar.utils.Strings;
+
+import static com.mcdermottroe.exemplar.Constants.Character.MINUS;
+import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
+import static com.mcdermottroe.exemplar.Constants.Character.UNDERSCORE;
+import static com.mcdermottroe.exemplar.Constants.EOL;
+import static com.mcdermottroe.exemplar.Constants.UI.Ant.SETTER_PREFIX;
 
 /** The Ant task "UI" for Exemplar.
 
@@ -61,7 +68,7 @@ import com.mcdermottroe.exemplar.ui.Options;
 */
 public class Task
 extends org.apache.tools.ant.Task
-implements Cloneable, Constants.UI.Ant
+implements Copyable<Task>
 {
 	/** Any errors encountered will be added to this list and this list will be
 		flushed periodically.
@@ -95,15 +102,15 @@ implements Cloneable, Constants.UI.Ant
 		);
 
 		// Make a new list for the errors
-		errors = new ArrayList<String>();
+		errors = new ArrayList<String>(0);
 
 		// Localise the program, if possible.
 		try {
 			Message.localise();
 		} catch (MessageException e) {
-			errors.add(Message.ANT_LOCALISATION_ERROR);
+			errors.add(Message.ANT_LOCALISATION_ERROR());
 			for (String traceElement : e.getBackTrace()) {
-				errors.add(Constants.UI.INDENT + traceElement);
+				errors.add(Strings.indent(traceElement));
 			}
 			return;
 		}
@@ -173,18 +180,16 @@ implements Cloneable, Constants.UI.Ant
 		long startTime = System.currentTimeMillis();
 
 		// Ant needs a non-empty String to make a blank line - lame.
-		String blankLine = Character.toString(Constants.Character.SPACE);
+		String blankLine = Character.toString(SPACE);
 
 		// Print a header for the build
-		Log.info(
-			Constants.PROGRAM_NAME +
-			Constants.Character.SPACE +
-			Constants.PROGRAM_VERSION
-		);
-		for (String copyrightLine : Constants.COPYRIGHT_MESSAGE) {
-			Log.info(copyrightLine);
+		for (String line : Message.COPYRIGHT().split(EOL)) {
+			if ("".equals(line)) {
+				Log.info(blankLine);
+			} else {
+				Log.info(line);
+			}
 		}
-		Log.info(blankLine);
 
 		// Fail the build if there were any errors thrown during the setup of
 		// the Task
@@ -197,19 +202,19 @@ implements Cloneable, Constants.UI.Ant
 
 		// Make sure that the mandatory options have been set
 		if (!Options.allMandatoryOptionsSet()) {
-			die(Message.MANDATORY_OPTIONS_NOT_SET);
+			die(Message.MANDATORY_OPTIONS_NOT_SET());
 		}
 
 		// Get all of the options
-		Log.info(Message.UI_PROGRESS_OPTIONS);
-		String inputType = Options.getString("input-type");
+		Log.info(Message.UI_PROGRESS_OPTIONS());
+		String inputType = Options.getString("input-type"); // NON-NLS
 		DBC.ASSERT(inputType != null);
-		String input = Options.getString("input");
+		String input = Options.getString("input"); // NON-NLS
 		DBC.ASSERT(input != null);
-		String outputApi = Options.getString("output-api");
-		String outputLanguage = Options.getString("output-language");
+		String outputApi = Options.getString("output-api"); // NON-NLS
+		String outputLanguage = Options.getString("output-language"); // NON-NLS
 		DBC.ASSERT(outputLanguage != null);
-		String output = Options.getString("output");
+		String output = Options.getString("output"); // NON-NLS
 		DBC.ASSERT(output != null);
 
 		// Parse the input
@@ -218,13 +223,13 @@ implements Cloneable, Constants.UI.Ant
 		try {
 			doctype = InputUtils.parse(input, inputType);
 		} catch (InputException e) {
-			die(Message.UI_PROGRESS_INPUT_PARSE_FAILED, e);
+			die(Message.UI_PROGRESS_INPUT_PARSE_FAILED(), e);
 		} catch (ParserException e) {
-			die(Message.UI_PROGRESS_INPUT_PARSE_FAILED, e);
+			die(Message.UI_PROGRESS_INPUT_PARSE_FAILED(), e);
 		}
 
 		// Generate the output
-		Log.info(Message.UI_PROGRESS_GENERATING_PARSER);
+		Log.info(Message.UI_PROGRESS_GENERATING_PARSER());
 		try {
 			OutputUtils.generateParser(
 				doctype,
@@ -233,9 +238,9 @@ implements Cloneable, Constants.UI.Ant
 				outputApi
 			);
 		} catch (OutputException e) {
-			die(Message.UI_PROGRESS_FAILED_TO_CREATE_OUTPUT, e);
+			die(Message.UI_PROGRESS_FAILED_TO_CREATE_OUTPUT(), e);
 		}
-		Log.info(Message.UI_PROGRESS_DONE);
+		Log.info(Message.UI_PROGRESS_DONE());
 
 		// Record the end time and generate the String number of seconds this
 		// task took.
@@ -398,10 +403,7 @@ implements Cloneable, Constants.UI.Ant
 								Locale.getDefault()
 							) +
 							optName.substring(1);
-		methodName = methodName.replace(
-			Constants.Character.MINUS,
-			Constants.Character.UNDERSCORE
-		);
+		methodName = methodName.replace(MINUS, UNDERSCORE);
 		return methodName;
 	}
 
@@ -421,10 +423,7 @@ implements Cloneable, Constants.UI.Ant
 
 		String optionName = methodName.substring(SETTER_PREFIX.length());
 		optionName = optionName.toLowerCase(Locale.getDefault());
-		optionName = optionName.replace(
-			Constants.Character.UNDERSCORE,
-			Constants.Character.MINUS
-		);
+		optionName = optionName.replace(UNDERSCORE, MINUS);
 
 		return optionName;
 	}
@@ -455,17 +454,11 @@ implements Cloneable, Constants.UI.Ant
 		throw new BuildException("");
 	}
 
-	/** Clone this {@link Task}.
-
-		@return								A clone of this object.
-		@throws CloneNotSupportedException	if the clone cannot be created.
-	*/
-	public Object clone()
-	throws CloneNotSupportedException
-	{
-		Task clone = (Task)super.clone();
-		clone.errors = new ArrayList<String>(errors);
-		return clone;
+	/** {@inheritDoc} */
+	public Task getCopy() {
+		Task copy = new Task();
+		copy.errors = new ArrayList<String>(errors);
+		return copy;
 	}
 
 	/** See {@link Object#equals(Object)}.

@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -29,13 +29,17 @@
 */
 package junit.com.mcdermottroe.exemplar.output;
 
+import com.mcdermottroe.exemplar.output.XMLParserSourceGenerator;
+
 import junit.com.mcdermottroe.exemplar.AbstractClassTestCase;
 
-/** Test class for {@link
-	com.mcdermottroe.exemplar.output.XMLParserSourceGenerator}.
+/** Test class for {@link XMLParserSourceGenerator}.
 
 	@author	Conor McDermottroe
 	@since	0.1
+	@param	<T>	The type of {@link XMLParserSourceGenerator} to test.
 */
-public class XMLParserSourceGeneratorTest extends AbstractClassTestCase {
+public class XMLParserSourceGeneratorTest<T extends XMLParserSourceGenerator<T>>
+extends AbstractClassTestCase<T>
+{
 }

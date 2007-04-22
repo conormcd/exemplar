@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2004, 2005, 2006
+	Copyright (c) 2004-2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,7 @@
 */
 package com.mcdermottroe.exemplar.output.java.sax1;
 
+import com.mcdermottroe.exemplar.CopyException;
 import com.mcdermottroe.exemplar.output.XMLParserGeneratorException;
 import com.mcdermottroe.exemplar.output.java.XMLJavaSourceGenerator;
 
@@ -38,7 +39,9 @@ import com.mcdermottroe.exemplar.output.java.XMLJavaSourceGenerator;
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class Generator extends XMLJavaSourceGenerator {
+public class Generator
+extends XMLJavaSourceGenerator<Generator>
+{
 	/** Creates a source generator which produces parsers in the Java language
 		which implement the SAX version 1 API.
 
@@ -55,5 +58,20 @@ public class Generator extends XMLJavaSourceGenerator {
 	/** {@inheritDoc} */
 	@Override public String describeAPI() {
 		return "The SAX1 API";
+	}
+
+	/** {@inheritDoc} */
+	public Generator getCopy()
+	throws CopyException
+	{
+		Generator copy;
+		try {
+			copy = new Generator();
+		} catch (XMLParserGeneratorException e) {
+			throw new CopyException(e);
+		}
+		copy.codeFragments = codeFragments;
+		copy.timestamp = timestamp;
+		return copy;
 	}
 }

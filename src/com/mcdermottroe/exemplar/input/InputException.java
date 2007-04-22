@@ -70,4 +70,23 @@ extends Exception
 	public InputException(Throwable cause) {
 		super(cause);
 	}
+
+	/** {@inheritDoc} */
+	public InputException getCopy() {
+		InputException copy;
+
+		String message = getMessage();
+		Throwable cause = getCause();
+		if (message != null && cause != null) {
+			copy = new InputException(message, cause);
+		} else if (message != null) {
+			copy = new InputException(message);
+		} else if (cause != null) {
+			copy = new InputException(cause);
+		} else {
+			copy = new InputException();
+		}
+		copy.setStackTrace(copyStackTrace(getStackTrace()));
+		return copy;
+	}
 }

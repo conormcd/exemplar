@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006, 2007
+	Copyright (c) 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -27,19 +27,17 @@
 	NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package junit.com.mcdermottroe.exemplar.model;
+package junit.com.mcdermottroe.exemplar;
 
-import com.mcdermottroe.exemplar.model.XMLAggregateObject;
+import com.mcdermottroe.exemplar.Copyable;
 
-import junit.com.mcdermottroe.exemplar.AbstractClassTestCase;
-
-/** Test class for {@link XMLAggregateObject}.
+/** Test class for {@link Copyable}.
 
 	@author		Conor McDermottroe
-	@since		0.1
-	@param	<T>	The type of {@link XMLAggregateObject} to test.
+	@since		0.2
+	@param	<T>	The type of {@link Copyable} to test.
 */
-public class XMLAggregateObjectTest<T extends XMLAggregateObject<T>>
-extends AbstractClassTestCase<XMLAggregateObject<T>>
+public class CopyableTest<T>
+extends InterfaceTestCase<Copyable<T>>
 {
 }

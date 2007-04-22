@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006
+	Copyright (c) 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -29,18 +29,19 @@
 */
 package com.mcdermottroe.exemplar.model;
 
-import com.mcdermottroe.exemplar.Constants;
-import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
+
+import static com.mcdermottroe.exemplar.Constants.HASHCODE_MAGIC_NUMBER;
 
 /** A feature-adding subclass of {@link XMLObject} which adds a name to the
 	base {@link XMLObject}.
 
-	@author	Conor McDermottroe
-	@since	0.1
+	@author		Conor McDermottroe
+	@since		0.1
+	@param	<T>	The type of XMLNamedObject.
 */
-public abstract class XMLNamedObject
-extends XMLObject
+public abstract class XMLNamedObject<T extends XMLNamedObject<T>>
+extends XMLObject<T>
 {
 	/** The name of the {@link XMLObject}. */
 	protected String name;
@@ -56,7 +57,6 @@ extends XMLObject
 		@param	newName	The name of this {@link XMLObject}.
 	*/
 	public void setName(String newName) {
-		DBC.REQUIRE(newName != null);
 		name = newName;
 	}
 
@@ -70,22 +70,15 @@ extends XMLObject
 
 	/** {@inheritDoc} */
 	@Override public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null) {
+		if (!super.equals(o)) {
 			return false;
 		}
 		if (!(o instanceof XMLNamedObject)) {
 			return false;
 		}
 
-		XMLNamedObject other = (XMLNamedObject)o;
-		if (super.equals(o)) {
-			return Utils.areDeeplyEqual(name, other.getName());
-		}
-
-		return false;
+		XMLNamedObject<?> other = (XMLNamedObject<?>)o;
+		return Utils.areDeeplyEqual(name, other.getName());
 	}
 
 	/** See {@link Object#hashCode()}.
@@ -95,12 +88,12 @@ extends XMLObject
 	@Override public int hashCode() {
 		int hashCode = super.hashCode();
 		if (hashCode != 0) {
-			hashCode *= Constants.HASHCODE_MAGIC_NUMBER;
+			hashCode *= HASHCODE_MAGIC_NUMBER;
 		}
 		if (name != null) {
 			hashCode += name.hashCode();
 		}
-		hashCode *= Constants.HASHCODE_MAGIC_NUMBER;
+		hashCode *= HASHCODE_MAGIC_NUMBER;
 		return hashCode;
 	}
 }

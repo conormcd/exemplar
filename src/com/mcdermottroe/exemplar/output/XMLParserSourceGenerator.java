@@ -35,7 +35,6 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.ui.Log;
@@ -43,14 +42,21 @@ import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.Options;
 import com.mcdermottroe.exemplar.utils.Strings;
 
+import static com.mcdermottroe.exemplar.Constants.CWD;
+import static com.mcdermottroe.exemplar.Constants.Character.FULL_STOP;
+import static com.mcdermottroe.exemplar.Constants.Output.CLASS;
+import static com.mcdermottroe.exemplar.Constants.Output.PACKAGE;
+import static com.mcdermottroe.exemplar.Constants.TIMESTAMP_FORMAT;
+
 /** An interface for XML parser generators that produce source code.
 
-	@author	Conor McDermottroe
-	@since	0.1
+	@author		Conor McDermottroe
+	@since		0.1
+	@param	<T>	The type of {@link XMLParserSourceGenerator}.
 */
-public abstract class XMLParserSourceGenerator
-extends XMLParserGenerator
-implements Cloneable
+public abstract
+class XMLParserSourceGenerator<T extends XMLParserSourceGenerator<T>>
+extends XMLParserGenerator<T>
 {
 	/** The code fragments that the source generator will use. */
 	protected ResourceBundle codeFragments;
@@ -76,16 +82,13 @@ implements Cloneable
 			codeFragments = OutputUtils.getCodeFragments(getClass().getName());
 		} catch (MissingResourceException e) {
 			throw new XMLParserGeneratorException(
-				Message.XMLPARSER_LOAD_CODE_FRAGMENT_FAILED,
+				Message.XMLPARSER_LOAD_CODE_FRAGMENT_FAILED(),
 				e
 			);
 		}
 
 		// Format the timestamp
-		timestamp = Strings.formatMessage(
-			Constants.TIMESTAMP_FORMAT,
-			new Date()
-		);
+		timestamp = Strings.formatMessage(TIMESTAMP_FORMAT, new Date());
 
 		DBC.ENSURE(codeFragments != null);
 		DBC.ENSURE(timestamp != null);
@@ -129,7 +132,7 @@ implements Cloneable
 		if (fileOrDir != null) {
 			sourceDirectory = fileOrDir.getAbsoluteFile();
 		} else {
-			sourceDirectory = new File(Constants.CWD);
+			sourceDirectory = new File(CWD);
 		}
 
 		// Resolve the targetDirectory parameter into an absolute path that
@@ -153,43 +156,43 @@ implements Cloneable
 	/** Get an {@link XMLParserSourceGenerator} based on a pair of language and
 		API.
 
-		@param language	The language.
+		@param lang		The language.
 		@param api		The API, may be null if no API applies.
 		@return			An instantiated {@link XMLParserSourceGenerator} which 
 						will generate code for the language and API requested.
 						Will return null if anything goes wrong.
 	*/
-	public static XMLParserSourceGenerator create(String language, String api) {
+	public static XMLParserSourceGenerator<?> create(String lang, String api) {
 		Log.debug(
-			"Attempting to create an instance of " +
+			"Attempting to create an instance of " +	// NON-NLS
 			XMLParserSourceGenerator.class +
-			" for language \"" +
-			language +
-			"\" and API \"" +
+			" for language \"" +						// NON-NLS
+			lang +
+			"\" and API \"" +							// NON-NLS
 			api +
 			"\"."
 		);
-		DBC.REQUIRE(language != null);
-		if (language == null) {
+		DBC.REQUIRE(lang != null);
+		if (lang == null) {
 			return null;
 		}
 
-		XMLParserSourceGenerator generator = null;
+		XMLParserSourceGenerator<?> generator = null;
 		try {
 			// Create the String version of the XMLParserSourceGenerator class
 			// name.
 			StringBuilder generatorClassName = new StringBuilder();
-			generatorClassName.append(Constants.Output.PACKAGE);
-			generatorClassName.append(Constants.Character.FULL_STOP);
+			generatorClassName.append(PACKAGE);
+			generatorClassName.append(FULL_STOP);
 			generatorClassName.append(
-				language.toLowerCase(Locale.getDefault())
+				lang.toLowerCase(Locale.getDefault())
 			);
 			if (api != null) {
-				generatorClassName.append(Constants.Character.FULL_STOP);
+				generatorClassName.append(FULL_STOP);
 				generatorClassName.append(api.toLowerCase(Locale.getDefault()));
 			}
-			generatorClassName.append(Constants.Character.FULL_STOP);
-			generatorClassName.append(Constants.Output.CLASS);
+			generatorClassName.append(FULL_STOP);
+			generatorClassName.append(CLASS);
 
 			// Now turn the class name into a class.
 			Class<?> generatorClass;
@@ -244,18 +247,18 @@ implements Cloneable
 				return codeFragments.getString(fragmentName);
 			} catch (ClassCastException e) {
 				throw new XMLParserGeneratorException(
-					Message.XMLPARSER_LOAD_CODE_FRAGMENT_FAILED,
+					Message.XMLPARSER_LOAD_CODE_FRAGMENT_FAILED(),
 					e
 				);
 			} catch (MissingResourceException e) {
 				throw new XMLParserGeneratorException(
-					Message.XMLPARSER_LOAD_CODE_FRAGMENT_FAILED,
+					Message.XMLPARSER_LOAD_CODE_FRAGMENT_FAILED(),
 					e
 				);
 			}
 		} else {
 			throw new XMLParserGeneratorException(
-				Message.XMLPARSER_LOAD_CODE_FRAGMENT_FAILED
+				Message.XMLPARSER_LOAD_CODE_FRAGMENT_FAILED()
 			);
 		}
 	}
@@ -391,16 +394,5 @@ implements Cloneable
 		} else {
 			return loadCodeFragment(fragmentName);
 		}
-	}
-
-	/** Implement {@link Object#clone()}.
-
-		@return								A clone of this object.
-		@throws CloneNotSupportedException	if the clone cannot be created.
-	*/
-	@Override public Object clone()
-	throws CloneNotSupportedException
-	{
-		return super.clone();
 	}
 }

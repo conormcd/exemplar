@@ -29,26 +29,27 @@
 */
 package com.mcdermottroe.exemplar.model;
 
-import com.mcdermottroe.exemplar.Constants;
+import com.mcdermottroe.exemplar.CopyException;
+import com.mcdermottroe.exemplar.Copyable;
+
+import static com.mcdermottroe.exemplar.Constants.Character.EQUALS;
+import static com.mcdermottroe.exemplar.Constants.Character.LEFT_PAREN;
+import static com.mcdermottroe.exemplar.Constants.Character.RIGHT_PAREN;
+import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
 
 /** The superclass for most objects contained within an {@link
 	XMLDocumentType}.
 
-	@author	Conor McDermottroe
-	@since	0.1
+	@author		Conor McDermottroe
+	@since		0.1
+	@param	<T>	The type of {@link XMLObject}
 */
-public abstract class XMLObject
-implements Cloneable
+public abstract class XMLObject<T extends XMLObject<T>>
+implements Copyable<T>
 {
-	/** Clone this {@link XMLObject}.
-
-		@return								A clone of this object.
-		@throws	CloneNotSupportedException	if the clone fails.
-	*/
-	public Object clone()
-	throws CloneNotSupportedException
-	{
-		return super.clone();
+	/** Protect the constructor. */
+	protected XMLObject() {
+		super();
 	}
 
 	/** See {@link Object#equals(Object)}.
@@ -84,14 +85,17 @@ implements Cloneable
 	*/
 	static String toStringHelper(String className, String classDetails) {
 		StringBuilder description = new StringBuilder(className);
-		description.append(Constants.Character.SPACE);
-		description.append(Constants.Character.EQUALS);
-		description.append(Constants.Character.SPACE);
-		description.append(Constants.Character.LEFT_PAREN);
+		description.append(SPACE);
+		description.append(EQUALS);
+		description.append(SPACE);
+		description.append(LEFT_PAREN);
 		description.append(classDetails);
-		description.append(Constants.Character.RIGHT_PAREN);
+		description.append(RIGHT_PAREN);
 		return description.toString();
 	}
+
+	/** {@inheritDoc} */
+	public abstract T getCopy() throws CopyException;
 
 	/** See {@link Object#toString()}.
 

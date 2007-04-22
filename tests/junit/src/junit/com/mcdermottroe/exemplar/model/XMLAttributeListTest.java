@@ -29,6 +29,7 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
+import com.mcdermottroe.exemplar.model.XMLAttribute;
 import com.mcdermottroe.exemplar.model.XMLAttributeList;
 
 /** Test class for {@link XMLAttributeList}.
@@ -45,6 +46,11 @@ extends XMLNamedObjectTestCase<XMLAttributeList>
 	{
 		super.setUp();
 
+		XMLAttribute attribute = new XMLAttribute();
+		XMLAttributeList attlist = new XMLAttributeList();
+		attlist.addAttribute(attribute);
+
 		addSample(new XMLAttributeList());
+		addSample(attlist);
 	}
 }

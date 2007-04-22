@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2003-2006
+	Copyright (c) 2003-2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -67,5 +67,24 @@ public class LexerException extends Exception {
 	*/
 	public LexerException(Throwable cause) {
 		super(cause);
+	}
+
+	/** {@inheritDoc} */
+	public LexerException getCopy() {
+		LexerException copy;
+
+		String message = getMessage();
+		Throwable cause = getCause();
+		if (message != null && cause != null) {
+			copy = new LexerException(message, cause);
+		} else if (message != null) {
+			copy = new LexerException(message);
+		} else if (cause != null) {
+			copy = new LexerException(cause);
+		} else {
+			copy = new LexerException();
+		}
+		copy.setStackTrace(copyStackTrace(getStackTrace()));
+		return copy;
 	}
 }

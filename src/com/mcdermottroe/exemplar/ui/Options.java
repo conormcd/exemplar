@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2005, 2006
+	Copyright (c) 2005, 2006, 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -48,8 +48,22 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.DBC;
+
+import static com.mcdermottroe.exemplar.Constants.Character.COMMA;
+import static com.mcdermottroe.exemplar.Constants.Character.FULL_STOP;
+import static com.mcdermottroe.exemplar.Constants.Character.LEFT_PAREN;
+import static com.mcdermottroe.exemplar.Constants.Character.RIGHT_PAREN;
+import static com.mcdermottroe.exemplar.Constants.Options.ARGUMENT;
+import static com.mcdermottroe.exemplar.Constants.Options.CASESENSITIVE_PROPERTY;
+import static com.mcdermottroe.exemplar.Constants.Options.DEFAULT_PROPERTY;
+import static com.mcdermottroe.exemplar.Constants.Options.DESCRIPTION_PROPERTY;
+import static com.mcdermottroe.exemplar.Constants.Options.ENUM;
+import static com.mcdermottroe.exemplar.Constants.Options.MANDATORY_PROPERTY;
+import static com.mcdermottroe.exemplar.Constants.Options.MULTIVALUE_PROPERTY;
+import static com.mcdermottroe.exemplar.Constants.Options.SWITCH;
+import static com.mcdermottroe.exemplar.Constants.Options.TYPE_PROPERTY;
+import static com.mcdermottroe.exemplar.Constants.Options.VALUE_PROPERTY;
 
 /** A class to allow for the global tracking of options selected via any of the
 	UI modules.
@@ -57,19 +71,17 @@ import com.mcdermottroe.exemplar.DBC;
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public final class Options
-implements Constants.Options
-{
+public final class Options {
 	/** The map containing all of the options. */
-	private static Map<String, Option> options;
+	private static Map<String, Option> options = null;
 
 	/** Whether or not the UI has finished setting the options. */
-	private static boolean uiFinished;
+	private static boolean uiFinished = false;
 
 	/** Special case for the debug option to prevent infinite looping in
 		assertions.
 	*/
-	private static boolean debug;
+	private static boolean debug = false;
 
 	/** Private constructor to make sure that nobody can instantiate this
 		class.
@@ -80,9 +92,6 @@ implements Constants.Options
 
 	/** Try and initialise this class really early. */
 	static {
-		options = null;
-		debug = false;
-		uiFinished = false;
 		try {
 			Message.localise();
 		} catch (MessageException e) {
@@ -126,7 +135,7 @@ implements Constants.Options
 				String optionName = e.nextElement();
 				optionName = optionName.substring(
 					0,
-					optionName.indexOf((int)Constants.Character.FULL_STOP)
+					optionName.indexOf((int)FULL_STOP)
 				);
 				optionNames.add(optionName);
 			}
@@ -201,9 +210,7 @@ implements Constants.Options
 				Enumeration<String> entries = optionsDefinitions.getKeys();
 				while (entries.hasMoreElements()) {
 					String entry = entries.nextElement();
-					String prefix =	optionName +
-									Constants.Character.FULL_STOP +
-									VALUE_PROPERTY;
+					String prefix =	optionName + FULL_STOP + VALUE_PROPERTY;
 					if (entry.startsWith(prefix)) {
 						if (entry.equals(prefix)) {
 							// It is an error to be both dynamic and have fixed
@@ -240,9 +247,7 @@ implements Constants.Options
 					if (allowedValues.isEmpty()) {
 						String dynamicMethodClass = dynamicMethod.substring(
 							0,
-							dynamicMethod.lastIndexOf(
-								(int)Constants.Character.FULL_STOP
-							)
+							dynamicMethod.lastIndexOf((int)FULL_STOP)
 						);
 						String dynamicMethodMethod = dynamicMethod.substring(
 							dynamicMethodClass.length() + 1
@@ -284,7 +289,7 @@ implements Constants.Options
 
 							// Now call the method
 							try {
-								SortedMap dynValues;
+								SortedMap<?, ?> dynValues;
 								dynValues = (SortedMap)dMMethod.invoke(null);
 								for (Object key : dynValues.keySet()) {
 									allowedValues.put(
@@ -314,7 +319,7 @@ implements Constants.Options
 				Set<String> defaultValues = null;
 				if (optionDefault != null) {
 					String[] defVal = optionDefault.split(
-						String.valueOf(Constants.Character.COMMA)
+						String.valueOf(COMMA)
 					);
 					defaultValues = new HashSet<String>(defVal.length, 1.0f);
 					for (String defValue : defVal) {
@@ -464,7 +469,7 @@ implements Constants.Options
 			if (optionToSet instanceof Enum) {
 				// The string is a list of comma separated values
 				String[] rawValues = optionValue.split(
-					String.valueOf(Constants.Character.COMMA)
+					String.valueOf(COMMA)
 				);
 				vals = new ArrayList<Object>(rawValues.length);
 				for (String rawV : rawValues) {
@@ -644,7 +649,7 @@ implements Constants.Options
 					if (count == 0) {
 						ret.append(next.toString());
 					} else {
-						ret.append(Constants.Character.COMMA);
+						ret.append(COMMA);
 						ret.append(next.toString());
 					}
 					count++;
@@ -841,11 +846,7 @@ implements Constants.Options
 													)
 	{
 		try {
-			return rb.getString(
-				optionName +
-				Constants.Character.FULL_STOP +
-				propertyName
-			);
+			return rb.getString(optionName + FULL_STOP + propertyName);
 		} catch (MissingResourceException e) {
 			DBC.IGNORED_EXCEPTION(e);
 			return null;
@@ -872,11 +873,7 @@ implements Constants.Options
 													)
 	{
 		try {
-			String prop = rb.getString(
-				optionName +
-				Constants.Character.FULL_STOP +
-				propertyName
-			);
+			String prop = rb.getString(optionName + FULL_STOP + propertyName);
 			return Boolean.valueOf(prop);
 		} catch (MissingResourceException e) {
 			DBC.IGNORED_EXCEPTION(e);
@@ -911,7 +908,6 @@ implements Constants.Options
 		/** Null initialiser, sets everything to defaults. */
 		protected Option() {
 			name = "";
-			value = null;
 			description = "";
 			mandatory = false;
 			multiValue = false;
@@ -936,7 +932,6 @@ implements Constants.Options
 						)
 		{
 			name = optionName;
-			value = null;
 			description = optionDesc;
 			mandatory = optionMandatory;
 			multiValue = optionMultiValue;
@@ -1005,9 +1000,9 @@ implements Constants.Options
 		*/
 		@Override public String toString() {
 			StringBuilder desc = new StringBuilder(getClass().getName());
-			desc.append(Constants.Character.LEFT_PAREN);
+			desc.append(LEFT_PAREN);
 			desc.append(name);
-			desc.append(Constants.Character.RIGHT_PAREN);
+			desc.append(RIGHT_PAREN);
 			return desc.toString();
 		}
 	}
