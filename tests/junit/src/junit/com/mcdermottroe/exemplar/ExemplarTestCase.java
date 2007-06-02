@@ -29,16 +29,24 @@
 */
 package junit.com.mcdermottroe.exemplar;
 
+import java.io.File;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import junit.framework.TestCase;
 
+import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.Options;
+import com.mcdermottroe.exemplar.utils.Strings;
 
+import static com.mcdermottroe.exemplar.Constants.Character.COMMA;
 import static com.mcdermottroe.exemplar.Constants.Character.LEFT_PAREN;
 import static com.mcdermottroe.exemplar.Constants.Character.RIGHT_PAREN;
 import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
 import static com.mcdermottroe.exemplar.Constants.PACKAGE;
-import static com.mcdermottroe.exemplar.Constants.Regex.JUNIT_PACKAGE_PREFIX;
 
 /** A root class for all tests in Exemplar.
 
@@ -49,7 +57,15 @@ import static com.mcdermottroe.exemplar.Constants.Regex.JUNIT_PACKAGE_PREFIX;
 public abstract class ExemplarTestCase<T>
 extends TestCase
 {
-	/** The {@link Class} of the class which is being tested by the runtime 
+	/** This is the message to use when an always-pass assert is used. */
+	protected static final String DELIBERATE_PASS = "Deliberate pass, no test.";
+
+	/** A {@link File} for the temp directory. */
+	protected static final File TMP = new File(
+		System.getProperty("java.io.tmpdir")
+	);
+
+	/** The {@link Class} of the class which is being tested by the runtime
 		type of this {@link ExemplarTestCase} object.
 	*/
 	protected Class<?> testedClass;
@@ -65,8 +81,12 @@ extends TestCase
 
 		testedClass = null;
 		String className = getClass().getName();
-		className = className.replaceFirst(JUNIT_PACKAGE_PREFIX, "");
-		className = className.replaceFirst("Test$", "");
+		if (className.startsWith("junit.")) {
+			className = className.substring(6);
+		}
+		if (className.endsWith("Test")) {
+			className = className.substring(0, className.length() - 4);
+		}
 		try {
 			testedClass = Class.forName(className);
 		} catch (ClassNotFoundException e) {
@@ -81,8 +101,12 @@ extends TestCase
 			return;
 		}
 
+		assertNotNull("TMP is null", TMP);
+		assertTrue("TMP dir does not exist", TMP.exists());
+
+		Options.reset();
 		Message.localise();
-		Options.set("debug", "true");
+		Log.clearHandlers();
 	}
 
 	/** When this method is inherited by every test it will make sure that all 
@@ -98,5 +122,46 @@ extends TestCase
 				testedClass.getPackage().getName().startsWith(PACKAGE)
 			);
 		}
+	}
+
+	/** Test that all of the methods in the tested class have at least some
+		testing methods for them.
+	*/
+	public void testAllMethodsBeingTested() {
+		Method[] methods = testedClass.getDeclaredMethods();
+		SortedSet<String> missingMethods = new TreeSet<String>();
+		for (Method m : methods) {
+			String methodName = m.getName();
+			if (!Modifier.isPublic(m.getModifiers())) {
+				continue;
+			}
+			if (methodName.startsWith("_")) {
+				continue;
+			}
+			String testMethodName =	"test" +
+									methodName.substring(0, 1).toUpperCase() +
+									methodName.substring(1);
+
+			boolean found = false;
+			Method[] testMethods = getClass().getMethods();
+			for (Method testMethod : testMethods) {
+				if (testMethod.getName().startsWith(testMethodName)) {
+					found = true;
+					break;
+				}
+			}
+
+			if (!found) {
+				missingMethods.add(methodName);
+			}
+		}
+
+		String missing = Strings.join(
+			String.valueOf(COMMA) + SPACE,
+			missingMethods
+		);
+		assertTrue(
+			"Missing test methods for: " + missing, missingMethods.isEmpty()
+		);
 	}
 }

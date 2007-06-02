@@ -48,4 +48,7 @@
 
 	<!-- Allow anything from the junit classes. -->
 	<allow pkg="junit.com.mcdermottroe.exemplar" />
+
+	<!-- Allow Apache Ant. -->
+	<allow pkg="org.apache.tools.ant" />
 </import-control>

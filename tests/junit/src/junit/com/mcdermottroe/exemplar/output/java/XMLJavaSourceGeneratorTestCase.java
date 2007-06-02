@@ -29,7 +29,16 @@
 */
 package junit.com.mcdermottroe.exemplar.output.java;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.io.File;
+
 import com.mcdermottroe.exemplar.output.java.XMLJavaSourceGenerator;
+import com.mcdermottroe.exemplar.ui.Options;
+
+import static com.mcdermottroe.exemplar.Constants.Format.Filenames.JAVA_PARSER;
+import static com.mcdermottroe.exemplar.Constants.Format.Filenames.JFLEX;
+import static com.mcdermottroe.exemplar.Constants.Output.Java.ENTITIES_FILE;
 
 import junit.com.mcdermottroe.exemplar.output.XMLParserSourceGeneratorTestCase;
 
@@ -43,4 +52,15 @@ public abstract class
 XMLJavaSourceGeneratorTestCase<T extends XMLJavaSourceGenerator<T>>
 extends XMLParserSourceGeneratorTestCase<T>
 {
+	/** {@inheritDoc} */
+	@Override public Collection<File> generatedFiles(File outputDir) {
+		String vocabulary = Options.getString("vocabulary");
+		Collection<File> retVal = new ArrayList<File>();
+		retVal.add(new File(outputDir, String.format(JAVA_PARSER, vocabulary)));
+		retVal.add(new File(outputDir, String.format(JFLEX, vocabulary)));
+		if (Options.isSet("include", "entities")) {
+			retVal.add(new File(outputDir, ENTITIES_FILE));
+		}
+		return retVal;
+	}
 }

@@ -43,11 +43,6 @@ extends XMLNamedObjectTestCase<XMLNotation>
 	/** {@inheritDoc} */
 	@Override public void setUp() throws Exception {
 		super.setUp();
-		addSample(new XMLNotation());
-		addSample(new XMLNotation("notationName", new XMLExternalIdentifier()));
-		addSample(
-			new XMLNotation("otherNotation", new XMLExternalIdentifier())
-		);
 		addSample(
 			new XMLNotation(
 				"notationName",
@@ -72,5 +67,64 @@ extends XMLNamedObjectTestCase<XMLNotation>
 				new XMLExternalIdentifier("foo", "baz")
 			)
 		);
+	}
+
+	/** Test the constructor for {@link XMLNotation}. */
+	public void testConstructor() {
+		XMLNotation xn = null;
+		boolean fellThrough = false;
+
+		try {
+			xn = new XMLNotation(null, null);
+			fellThrough = true;
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+		}
+		assertFalse(
+			"Illegal use of constructor did not result in exception",
+			fellThrough
+		);
+		assertNull("Object constructed", xn);
+
+		try {
+			xn = new XMLNotation(null, new XMLExternalIdentifier("foo", "bar"));
+			fellThrough = true;
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+		}
+		assertFalse(
+			"Illegal use of constructor did not result in exception",
+			fellThrough
+		);
+		assertNull("Object constructed", xn);
+
+
+		try {
+			xn = new XMLNotation("foo", null);
+			fellThrough = true;
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+		}
+		assertFalse(
+			"Illegal use of constructor did not result in exception",
+			fellThrough
+		);
+		assertNull("Object constructed", xn);
+	}
+
+	/** Test {@link XMLNotation#getExtID()}. */
+	public void testGetExtID() {
+		for (XMLNotation sample : samples()) {
+			if (sample != null) {
+				XMLExternalIdentifier xei = null;
+				try {
+					xei = sample.getExtID();
+				} catch (AssertionError e) {
+					assertNotNull("AssertionError was null", e);
+					fail("getExtID returned null");
+				}
+				assertNotNull("External identifier was null", xei);
+			}
+		}
 	}
 }

@@ -29,8 +29,6 @@
 */
 package com.mcdermottroe.exemplar.ui;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -91,66 +89,22 @@ Log.warning("The foo subsystem is almost out of memory!");
 	@since	0.2
 */
 public final class Log {
-	/** An enumerated type describing the legal levels of logging. */
-	public enum LogLevel {
-		/** Fatal or unignorable errors. */
-		ERROR,
-		/** Ignorable errors. */
-		WARNING,
-		/** Informational messages. */
-		INFO,
-		/** Debugging aids. */
-		DEBUG,
-	}
+	/** The singleton instance for this class. */
+	private static final Log logInst = new Log();
 
 	/** The underlying {@link Logger} through which all logging will flow. */
-	private static final Logger LOGGER = Logger.getLogger(PACKAGE);
+	private Logger logger;
 
-	/** Log messages have to be delayed until after the UI has been
-		initialised. Any messages logged before then are stored here for later
-		logging.
-	*/
-	private static List<LogRecord> delayedLogMessages = null;
-
-	/** To ensure that code called by the initialiser does not cause problems
-		we use this boolean to force all calls to {@link #doLog(Object,
-		Throwable, Level)} to delay log messages until the initialiser is done.
-	*/
-	private static boolean classInitialised = false;
-
-	/** Initialiser for this class. We remove all handlers and disable sending
-		messages up the chain of {@link Handler}s so that the user can be sure
-		of where the messages are going once they register their own {@link
-		Handler}(s) using {@link #registerHandler(Handler)}. The default {@link
-		Level} is set to {@link Level#INFO} (or {@link Level#ALL} if debugging
-		is turned on).
-	*/
-	static {
-		// Remove all of the handlers
-		for (Handler h : LOGGER.getHandlers()) {
-			LOGGER.removeHandler(h);
-		}
+	/** Constructor for the singleton object. */
+	private Log() {
+		// Set the underlying Logger
+		logger = Logger.getLogger(PACKAGE);
 
 		// Don't pass logging events up the chain
-		LOGGER.setUseParentHandlers(false);
+		logger.setUseParentHandlers(false);
 
 		// Set the default log level
-		if (Options.isDebugSet()) {
-			LOGGER.setLevel(Level.ALL);
-		} else {
-			LOGGER.setLevel(Level.INFO);
-		}
-
-		// The delayed log messages go here.
-		if (delayedLogMessages == null) {
-			delayedLogMessages = new ArrayList<LogRecord>();
-		}
-		classInitialised = true;
-	}
-
-	/** Private constructor to prevent instantiation of this class. */
-	private Log() {
-		DBC.UNREACHABLE_CODE();
+		logger.setLevel(Level.INFO);
 	}
 
 	/** Register a {@link Handler} as the destination for all log messages.
@@ -159,7 +113,14 @@ public final class Log {
 						passed to.
 	*/
 	public static void registerHandler(Handler handler) {
-		LOGGER.addHandler(handler);
+		logInst.logger.addHandler(handler);
+	}
+
+	/** Clear all {@link Handler}s from the underlying logger. */
+	public static void clearHandlers() {
+		for (Handler h : logInst.logger.getHandlers()) {
+			logInst.logger.removeHandler(h);
+		}
 	}
 
 	/** Get the current {@link LogLevel} of the underlying {@link Logger}.
@@ -167,7 +128,7 @@ public final class Log {
 		@return	THe current {@link LogLevel}.
 	*/
 	public static LogLevel getLevel() {
-		int level = LOGGER.getLevel().intValue();
+		int level = logInst.logger.getLevel().intValue();
 
 		int severe = Level.SEVERE.intValue();
 		int warning = Level.WARNING.intValue();
@@ -184,7 +145,6 @@ public final class Log {
 			returnValue = LogLevel.DEBUG;
 		}
 
-		DBC.ENSURE(returnValue != null);
 		return returnValue;
 	}
 
@@ -196,35 +156,18 @@ public final class Log {
 	public static void setLevel(LogLevel level) {
 		switch (level) {
 			case ERROR:
-				LOGGER.setLevel(Level.SEVERE);
+				logInst.logger.setLevel(Level.SEVERE);
 				break;
 			case WARNING:
-				LOGGER.setLevel(Level.WARNING);
+				logInst.logger.setLevel(Level.WARNING);
 				break;
 			case INFO:
-				LOGGER.setLevel(Level.INFO);
+				logInst.logger.setLevel(Level.INFO);
 				break;
 			case DEBUG:
-				LOGGER.setLevel(Level.FINE);
-				break;
 			default:
-				DBC.UNREACHABLE_CODE();
-		}
-	}
-
-	/** Flush out any delayed messages. UIs should call this once they have
-		finished initialising the {@link Options}. Calling this method before
-		{@link Options#isInitialised()} returns true is a no-op.
-	*/
-	public static void flushDelayedMessages() {
-		if (Options.isInitialised()) {
-			List<LogRecord> dlm = new ArrayList<LogRecord>(
-				delayedLogMessages
-			);
-			delayedLogMessages.clear();
-			for (LogRecord message : dlm) {
-				doLog(message);
-			}
+				logInst.logger.setLevel(Level.FINE);
+				break;
 		}
 	}
 
@@ -332,42 +275,25 @@ public final class Log {
 	*/
 	private static void doLog(LogRecord logRecord) {
 		DBC.REQUIRE(logRecord != null);
-		if (logRecord == null) {
+
+		// Don't bother logging if there are no handlers.
+		Handler[] handlers = logInst.logger.getHandlers();
+		if (handlers.length <= 0) {
 			return;
 		}
 
-		// Make sure that none of the handlers are null, because the people
-		// who wrote java.util.logging.Logger don't check.
-		boolean hasHandlers = false;
-		Handler[] handlers = LOGGER.getHandlers();
-		for (Handler h : handlers) {
-			DBC.ASSERT(h != null);
-			if (h != null) {
-				hasHandlers = true;
+		// Hack to make levels work, because for some reason, levels below
+		// INFO don't ever log out.
+		Level level = logRecord.getLevel();
+		if (Options.isDebugSet()) {
+			if (Level.INFO.intValue() > level.intValue()) {
+				level = Level.INFO;
 			}
 		}
+		logRecord.setLevel(level);
 
-		if (classInitialised && hasHandlers && Options.isInitialised()) {
-			// Flush any delayed logs.
-			flushDelayedMessages();
-
-			// Hack to make levels work, because for some reason, levels below
-			// INFO don't ever log out.
-			Level level = logRecord.getLevel();
-			if (Options.isDebugSet()) {
-				if (Level.INFO.intValue() > level.intValue()) {
-					level = Level.SEVERE;
-				}
-			}
-			logRecord.setLevel(level);
-
-			LOGGER.log(logRecord);
-		} else {
-			if (delayedLogMessages == null) {
-				delayedLogMessages = new ArrayList<LogRecord>();
-			}
-			delayedLogMessages.add(logRecord);
-		}
+		// Now do the logging
+		logInst.logger.log(logRecord);
 	}
 
 	/** Find the method and class from where the "outer" method of this class
@@ -387,7 +313,6 @@ public final class Log {
 				break;
 			}
 		}
-		DBC.ENSURE(caller != null);
 		return caller;
 	}
 }

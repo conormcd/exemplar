@@ -34,6 +34,8 @@ import com.mcdermottroe.exemplar.model.XMLElementReference;
 import com.mcdermottroe.exemplar.model.XMLMixedContent;
 import com.mcdermottroe.exemplar.model.XMLSequence;
 
+import static com.mcdermottroe.exemplar.Constants.INFINITY;
+
 /** Test class for {@link XMLSequence}.
 
 	@author	Conor McDermottroe
@@ -49,7 +51,9 @@ extends XMLAggregateObjectTestCase<XMLSequence>
 		super.setUp();
 
 		XMLAlternative sampleAlternative = new XMLAlternative();
-		XMLElementReference sampleElementReference = new XMLElementReference();
+		XMLElementReference sampleElementReference = new XMLElementReference(
+			"foo"
+		);
 		XMLMixedContent sampleMixedContent = new XMLMixedContent();
 		XMLSequence sampleSequence = new XMLSequence();
 
@@ -83,5 +87,77 @@ extends XMLAggregateObjectTestCase<XMLSequence>
 		sampleF.addObject(sampleMixedContent);
 		sampleF.addObject(sampleSequence);
 		addSample(sampleF);
+
+		// Sample G
+		XMLSequence sampleG = sampleF.getCopy();
+		sampleG.setMinMaxOccurs(0, 1);
+		addSample(sampleG);
+
+		// Sample H
+		XMLSequence sampleH = sampleF.getCopy();
+		sampleH.setMinMaxOccurs(0, INFINITY);
+		addSample(sampleH);
+	}
+
+	/** Test {@link XMLSequence#setMinMaxOccurs(int, int)}. */
+	public void testSetMinMaxOccurs() {
+		for (XMLSequence sample : samples()) {
+			if (sample != null) {
+				// Get the original settings
+				int min = sample.getMinOccurs();
+				int max = sample.getMaxOccurs();
+
+				// Try some legal settings
+				try {
+					sample.setMinMaxOccurs(0, 1);			// ?
+					sample.setMinMaxOccurs(0, INFINITY);	// *
+					sample.setMinMaxOccurs(1, INFINITY);	// +
+					sample.setMinMaxOccurs(1, 2);			// {1,2}
+				} catch (AssertionError e) {
+					assertNotNull("AssertionError was null", e);
+					fail("setMinMaxOccurs failed when given legal values");
+				}
+
+				// Try some illegal settings
+				boolean fellThrough = false;
+				try {
+					sample.setMinMaxOccurs(-1, 0);
+					sample.setMinMaxOccurs(INFINITY, INFINITY);
+					sample.setMinMaxOccurs(-2, -1);
+					sample.setMinMaxOccurs(2, 1);
+					fellThrough = true;
+				} catch (AssertionError e) {
+					assertNotNull("AssertionError was null", e);
+				}
+				assertFalse(
+					"setMinMaxOccurs did not fail when given illegal values",
+					fellThrough
+				);
+
+				// Return the values to their original settings.
+				sample.setMinMaxOccurs(min, max);
+			}
+		}
+	}
+
+	/** Test {@link XMLSequence#getMinOccurs()}. */
+	public void testGetMinOccurs() {
+		for (XMLSequence sample : samples()) {
+			if (sample != null) {
+				int min = sample.getMinOccurs();
+				assertTrue("min is negative", min >= 0);
+				assertTrue("min is finite", min < INFINITY);
+			}
+		}
+	}
+
+	/** Test {@link XMLSequence#getMaxOccurs()}. */
+	public void testGetMaxOccurs() {
+		for (XMLSequence sample : samples()) {
+			if (sample != null) {
+				int max = sample.getMaxOccurs();
+				assertTrue("max is negative or zero", max > 0);
+			}
+		}
 	}
 }

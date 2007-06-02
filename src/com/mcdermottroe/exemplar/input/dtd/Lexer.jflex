@@ -42,6 +42,7 @@ import com.mcdermottroe.exemplar.Copyable;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.input.LexerException;
+import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.utils.XML;
 
@@ -131,7 +132,7 @@ import static com.mcdermottroe.exemplar.Constants.XMLExternalIdentifier.SYSTEM;
 			} catch (ParseException e) {
 				throw new ParameterEntityException(e);
 			}
-			pedeclTable.addNewPE(name, value, PEDeclTable.ParameterEntityType.VALUE);
+			pedeclTable.addNewPE(name, value, ParameterEntityType.VALUE);
 		} else if (rest.startsWith(PUBLIC) || rest.startsWith(SYSTEM)) {
 			// PUBLIC PEs have a PubidLiteral
 			boolean hasPubidLiteral = false;
@@ -176,7 +177,7 @@ import static com.mcdermottroe.exemplar.Constants.XMLExternalIdentifier.SYSTEM;
 			}
 
 			// The content can be gotten from the URI
-			pedeclTable.addNewPE(name, systemLiteral, PEDeclTable.ParameterEntityType.URI);
+			pedeclTable.addNewPE(name, systemLiteral, ParameterEntityType.URI);
 		} else {
 			throw new ParameterEntityException(Message.DTDPE_INVALID_PEDECL());
 		}
@@ -435,7 +436,7 @@ LexerException, ParameterEntityException
 					}
 				} else {
 					// Ignore
-					DBC.IGNORED_ERROR();
+					Log.debug("Ignoring processing instruction: " + name);
 				}
 			}
 <YYINITIAL>"<!--"~"-->"

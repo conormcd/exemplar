@@ -29,6 +29,8 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
+import com.mcdermottroe.exemplar.model.XMLContent;
+import com.mcdermottroe.exemplar.model.XMLElementReference;
 import com.mcdermottroe.exemplar.model.XMLMixedContent;
 
 /** Test class for {@link XMLMixedContent}.
@@ -45,6 +47,17 @@ extends XMLAggregateObjectTestCase<XMLMixedContent>
 	{
 		super.setUp();
 
+		// Sample A
 		addSample(new XMLMixedContent());
+
+		// Sample B
+		XMLMixedContent sampleB = new XMLMixedContent();
+		sampleB.addObject(new XMLContent());
+		addSample(sampleB);
+
+		// Sample C
+		XMLMixedContent sampleC = new XMLMixedContent();
+		sampleC.addObject(new XMLElementReference("foo"));
+		addSample(sampleC);
 	}
 }

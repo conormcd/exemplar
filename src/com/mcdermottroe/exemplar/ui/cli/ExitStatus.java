@@ -29,23 +29,17 @@
 */
 package com.mcdermottroe.exemplar.ui.cli;
 
-import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.TreeMap;
 
 import com.mcdermottroe.exemplar.DBC;
+import com.mcdermottroe.exemplar.utils.Resources;
 
 import static com.mcdermottroe.exemplar.Constants.Character.FULL_STOP;
-import static com.mcdermottroe.exemplar.Constants.Regex.DIGITS;
-import static com.mcdermottroe.exemplar.Constants.Regex.EXIT_STATUS_MNEMONIC;
 
-/** A class to wrap and explain exit status codes produced by the {@link
-	com.mcdermottroe.exemplar.ui.cli.Main CLI UI}.
+/** A class to wrap and explain exit status codes produced by the {@link Main
+	CLI UI}.
 
 	@author	Conor McDermottroe
 	@since	0.1
@@ -64,56 +58,38 @@ public final class ExitStatus {
 		initialise();
 	}
 
-	/** Initialisation routine to pull the exit codes out of the
-		{@link ResourceBundle} and load them into the stash.
+	/** Initialisation routine to pull the exit codes out of the JAR and load
+		them into the stash.
 	*/
 	private static void initialise() {
 		exitCodes = new HashSet<ExitCode>();
 
-		ResourceBundle rb = null;
-		try {
-			rb = ResourceBundle.getBundle(ExitStatus.class.getName());
-		} catch (MissingResourceException e) {
-			DBC.IGNORED_EXCEPTION(e);
-			abort();
-		}
-		DBC.ASSERT(rb != null);
+		Map<String, String> resources = Resources.get(ExitStatus.class);
+		for (String key : resources.keySet()) {
+			String mnemonic = key.substring(0, key.indexOf((int)FULL_STOP));
+			String numericForm = key.substring(key.indexOf((int)FULL_STOP) + 1);
+			String description = resources.get(key);
 
-		for (Enumeration<String> e = rb.getKeys(); e.hasMoreElements(); ) {
-			String exitSpec = e.nextElement();
-			String mnemonic = exitSpec.substring(
-				0,
-				exitSpec.indexOf((int)FULL_STOP)
-			);
-			String numericForm = exitSpec.substring(
-				exitSpec.indexOf((int)FULL_STOP) + 1
-			);
-			if	(
-					mnemonic.matches(EXIT_STATUS_MNEMONIC) &&
-					numericForm.matches(DIGITS)
-				)
-			{
-				int number = Integer.parseInt(numericForm);
-				String description = rb.getString(exitSpec);
-				exitCodes.add(new ExitCode(number, mnemonic, description));
-			}
+			int number = Integer.parseInt(numericForm);
+			exitCodes.add(new ExitCode(number, mnemonic, description));
 		}
-	}
-
-	/** Abort the program by exiting -1 (255). */
-	private static void abort() {
-		System.exit(-1);
 	}
 
 	/** Convert a mnemonic exit code to an integer suitable for returning to
 		the calling shell.
 
 		@param mnemonic	The mnemonic String for the exit code.
-		@return			An integer exit code.
+		@return			An integer exit code or -1 if an error occurs.
 	*/
 	public static int getExitCode(String mnemonic) {
+		// Mnemonics cannot be null
 		DBC.REQUIRE(mnemonic != null);
+		DBC.REQUIRE(!exitCodes.isEmpty());
+
+		// Ensure that the exit codes have been loaded.
 		initialise();
+
+		// Now find the exit code.
 		for (ExitCode exitCode : exitCodes) {
 			if (exitCode.getMnemonic().equals(mnemonic)) {
 				return exitCode.getNumericForm();
@@ -121,106 +97,15 @@ public final class ExitStatus {
 		}
 
 		// It shouldn't be possible to get here.
-		//
-		// The following is what should happen if it makes it to here (in order
-		// of increasing desperation :-)).
-		abort();
 		DBC.UNREACHABLE_CODE();
 		return -1;
 	}
 
-	/** Get an {@link Iterator} over the exit codes.
+	/** Get all of the exit codes.
 
-		@return An Iterator over the exit codes.
+		@return	A copy of the {@link Set} of exit codes.
 	*/
-	public static Iterator<String> iterator() {
-		initialise();
-		Map<Integer, String> ret = new TreeMap<Integer, String>();
-		for (ExitCode exitCode : exitCodes) {
-			ret.put(
-				exitCode.getNumericForm(),
-				exitCode.getMnemonic()
-			);
-		}
-		return ret.values().iterator();
-	}
-
-	/** Retrieve the description of the exit status.
-
-		@param	mnemonic	The mnemonic that the exit status is known by.
-		@return				A description of the exit status.
-	*/
-	public static String getDescription(String mnemonic) {
-		DBC.REQUIRE(mnemonic != null);
-		initialise();
-		for (ExitCode exitCode : exitCodes) {
-			if (exitCode.getMnemonic().equals(mnemonic)) {
-				return exitCode.getDescription();
-			}
-		}
-
-		abort();
-		DBC.UNREACHABLE_CODE();
-		return null;
-	}
-
-	/** A struct for keeping exit codes.
-
-		@author	Conor McDermottroe
-		@since	0.1
-	*/
-	private static final class ExitCode {
-		/** The numeric form to be passed to {@link System#exit(int)}. */
-		private int numericForm;
-
-		/** The short name for the exit code. */
-		private String mnemonic;
-
-		/** A description of the exit code and what it's used for. */
-		private String description;
-
-		/** Simple constructor, just sets the members.
-
-			@param code	The value for {@link #numericForm}.
-			@param name The value for {@link #mnemonic}.
-			@param desc The value for {@link #description}.
-		*/
-		private ExitCode(int code, String name, String desc) {
-			numericForm = code;
-			mnemonic = name;
-			description = desc;
-		}
-
-		/** Getter for the {@link #numericForm} member.
-
-			@return The value of the {@link #numericForm} member.
-		*/
-		public int getNumericForm() {
-			return numericForm;
-		}
-
-		/** Getter for the {@link #mnemonic} member.
-
-			@return The value of the {@link #mnemonic} member.
-		*/
-		public String getMnemonic() {
-			return mnemonic;
-		}
-
-		/** Getter for the {@link #description} member.
-
-			@return The value of the {@link #description} member.
-		*/
-		public String getDescription() {
-			return description;
-		}
-
-		/** Synonym for {@link #getMnemonic()}.
-
-			@return The value of the {@link #mnemonic} member.
-		*/
-		@Override public String toString() {
-			return getMnemonic();
-		}
+	public static Set<ExitCode> getExitCodes() {
+		return new HashSet<ExitCode>(exitCodes);
 	}
 }

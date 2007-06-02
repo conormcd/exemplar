@@ -30,6 +30,7 @@
 package com.mcdermottroe.exemplar.model;
 
 import com.mcdermottroe.exemplar.Utils;
+import com.mcdermottroe.exemplar.DBC;
 
 import static com.mcdermottroe.exemplar.Constants.HASHCODE_MAGIC_NUMBER;
 
@@ -44,20 +45,16 @@ public abstract class XMLNamedObject<T extends XMLNamedObject<T>>
 extends XMLObject<T>
 {
 	/** The name of the {@link XMLObject}. */
-	protected String name;
+	protected final String name;
 
-	/** Constructor which just initialises storage. */
-	protected XMLNamedObject() {
-		super();
-		name = null;
-	}
+	/** Constructor which sets the name.
 
-	/** Access method to set the name of this {@link XMLObject}.
-
-		@param	newName	The name of this {@link XMLObject}.
+		@param	objectName	The name of the object.
 	*/
-	public void setName(String newName) {
-		name = newName;
+	protected XMLNamedObject(String objectName) {
+		super();
+		DBC.REQUIRE(objectName != null);
+		name = objectName;
 	}
 
 	/** Access method to retrieve the name of this {@link XMLObject}.
@@ -71,9 +68,6 @@ extends XMLObject<T>
 	/** {@inheritDoc} */
 	@Override public boolean equals(Object o) {
 		if (!super.equals(o)) {
-			return false;
-		}
-		if (!(o instanceof XMLNamedObject)) {
 			return false;
 		}
 

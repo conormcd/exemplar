@@ -29,6 +29,9 @@
 */
 package junit.com.mcdermottroe.exemplar.ui.cli;
 
+import java.util.Set;
+
+import com.mcdermottroe.exemplar.ui.cli.ExitCode;
 import com.mcdermottroe.exemplar.ui.cli.ExitStatus;
 
 import junit.com.mcdermottroe.exemplar.UtilityClassTestCase;
@@ -41,4 +44,48 @@ import junit.com.mcdermottroe.exemplar.UtilityClassTestCase;
 public class ExitStatusTest
 extends UtilityClassTestCase<ExitStatus>
 {
+	/** Test {@link ExitStatus#getExitCodes()}. */
+	public void testGetExitCodes() {
+		Set<ExitCode> exitCodes = ExitStatus.getExitCodes();
+		assertNotNull("Exit codes were null", exitCodes);
+	}
+
+	/** Test {@link ExitStatus#getExitCode(String)}. */
+	public void testGetExitCode() {
+		for (ExitCode exitCodes : ExitStatus.getExitCodes()) {
+			assertNotNull("An exit code was null", exitCodes);
+			int code = ExitStatus.getExitCode(exitCodes.getMnemonic());
+			assertFalse("Exit code was negative", code < 0);
+		}
+	}
+
+	/** Test {@link ExitStatus#getExitCode(String)}. */
+	public void testGetExitCodeNull() {
+		boolean fellThrough = false;
+		try {
+			ExitStatus.getExitCode(null);
+			fellThrough = true;
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+		}
+		assertFalse(
+			"ExitStatus.getExitCode(null) did not fail the assert",
+			fellThrough
+		);
+	}
+
+	/** Test {@link ExitStatus#getExitCode(String)}.*/
+	public void testGetExitCodeBadMnemonic() {
+		boolean fellThrough = false;
+		try {
+			ExitStatus.getExitCode("FAKE");
+			fellThrough = true;
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+		}
+		assertFalse(
+			"ExitStatus.getExitCode(\"FAKE\") did not fail the assert",
+			fellThrough
+		);
+	}
 }

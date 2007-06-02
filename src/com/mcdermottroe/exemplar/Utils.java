@@ -100,14 +100,14 @@ public final class Utils {
 					<code>b</code>.
 	*/
 	public static <T> int compare(Comparable<T> a, T b) {
-		if (a != null) {
+		if (a != null && b != null) {
 			return a.compareTo(b);
+		} else if (a != null) {
+			return 1;
+		} else if (b != null) {
+			return -1;
 		} else {
-			if (b != null) {
-				return -1;
-			} else {
-				return 0;
-			}
+			return 0;
 		}
 	}
 

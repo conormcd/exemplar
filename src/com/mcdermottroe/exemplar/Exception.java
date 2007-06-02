@@ -32,7 +32,6 @@ package com.mcdermottroe.exemplar;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.Options;
 import com.mcdermottroe.exemplar.utils.Strings;
 
@@ -57,7 +56,6 @@ implements Copyable<Exception>
 	*/
 	protected Exception(String message) {
 		super(message);
-		DBC.REQUIRE(message != null);
 	}
 
 	/** Exception with a description and a reference to an exception which
@@ -68,8 +66,6 @@ implements Copyable<Exception>
 	*/
 	protected Exception(String message, Throwable cause) {
 		super(message, cause);
-		DBC.REQUIRE(message != null);
-		DBC.REQUIRE(cause != null);
 	}
 
 	/** Exception with a reference to the exception that caused it.
@@ -78,7 +74,6 @@ implements Copyable<Exception>
 	*/
 	protected Exception(Throwable cause) {
 		super(cause);
-		DBC.REQUIRE(cause != null);
 	}
 
 	/** Get the backtrace as a {@link List} of {@link String}s.
@@ -93,9 +88,6 @@ implements Copyable<Exception>
 		while (cause != null) {
 			String causeName = cause.getClass().getName();
 			String message = cause.getMessage();
-			if (message == null) {
-				message = Message.EXCEPTION_NO_MESSAGE();
-			}
 
 			StringBuilder traceMessage = new StringBuilder(causeName);
 			traceMessage.append(Constants.Character.COLON);
@@ -115,18 +107,18 @@ implements Copyable<Exception>
 	/** A helper method for the implementations of {@link Copyable#getCopy()} in
 		child classes of this class to deep-copy a stack trace.
 
-		@param	trace	The stack trace to copy.
+		@param	t		The stack trace to copy.
 		@return			A deep-copy of the stack trace.
 	*/
-	protected StackTraceElement[] copyStackTrace(StackTraceElement[] trace) {
-		StackTraceElement[] newTrace = new StackTraceElement[trace.length];
+	protected static StackTraceElement[] copyStackTrace(StackTraceElement[] t) {
+		StackTraceElement[] newTrace = new StackTraceElement[t.length];
 		for (int i = 0; i < newTrace.length; i++) {
-			DBC.ASSERT(trace[i] != null);
+			DBC.ASSERT(t[i] != null);
 			newTrace[i] = new StackTraceElement(
-				trace[i].getClassName(),
-				trace[i].getMethodName(),
-				trace[i].getFileName(),
-				trace[i].getLineNumber()
+				t[i].getClassName(),
+				t[i].getMethodName(),
+				t[i].getFileName(),
+				t[i].getLineNumber()
 			);
 		}
 		return newTrace;

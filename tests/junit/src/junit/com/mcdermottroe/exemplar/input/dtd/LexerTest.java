@@ -29,6 +29,7 @@
 */
 package junit.com.mcdermottroe.exemplar.input.dtd;
 
+import java.io.File;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
@@ -55,5 +56,92 @@ extends NormalClassTestCase<Lexer>
 		addSample(new Lexer(nullReader));
 		addSample(new Lexer(new InputStreamReader(System.in)));
 		addSample(new Lexer(System.in));
+	}
+
+	/** Test {@link Lexer#setDtdPath(File)}. */
+	public void testSetDtdPath() {
+		File exists = new File(System.getProperty("java.home"));
+		File doesNotExist = new File("/does/not/exist/at/all");
+		for (Lexer sample : samples()) {
+			if (sample != null) {
+				try {
+					sample.setDtdPath(exists);
+				} catch (AssertionError e) {
+					assertNotNull("AssertionError was null", e);
+					fail("setDtdPath threw an AssertionError");
+				}
+				boolean fellThrough = false;
+				try {
+					sample.setDtdPath(doesNotExist);
+					fellThrough = true;
+				} catch (AssertionError e) {
+					// Correct behaviour
+					assertNotNull("AssertionError was null", e);
+				}
+				if (fellThrough) {
+					fail("setDtdPath did not throw an AssertionError");
+				}
+			}
+		}
+	}
+
+	/** Test {@link Lexer#next_token()}. */
+	public void testNext_token() {
+		assertTrue(DELIBERATE_PASS, true);
+	}
+
+	/** Test {@link Lexer#yybegin(int)}. */
+	public void testYybegin() {
+		assertTrue(DELIBERATE_PASS, true);
+	}
+
+	/** Test {@link Lexer#yycharat(int)}. */
+	public void testYycharat() {
+		assertTrue(DELIBERATE_PASS, true);
+	}
+
+	/** Test {@link Lexer#yyclose()}. */
+	public void testYyclose() {
+		assertTrue(DELIBERATE_PASS, true);
+	}
+
+	/** Test {@link Lexer#yylength()}. */
+	public void testYylength() {
+		assertTrue(DELIBERATE_PASS, true);
+	}
+
+	/** Test {@link Lexer#yymoreStreams()}. */
+	public void testYymoreStreams() {
+		assertTrue(DELIBERATE_PASS, true);
+	}
+
+	/** Test {@link Lexer#yypopStream()}. */
+	public void testYypopStream() {
+		assertTrue(DELIBERATE_PASS, true);
+	}
+
+	/** Test {@link Lexer#yypushStream(Reader)}. */
+	public void testYypushStream() {
+		assertTrue(DELIBERATE_PASS, true);
+	}
+
+	/** Test {@link Lexer#yypushback(int)}. */
+	public void testYypushback() {
+		assertTrue(DELIBERATE_PASS, true);
+	}
+
+	/** Test {@link Lexer#yyreset(Reader)}. */
+	public void testYyreset() {
+		assertTrue(DELIBERATE_PASS, true);
+	}
+
+	/** Test {@link Lexer#yystate()}. */
+	public void testYystate() {
+		assertTrue(DELIBERATE_PASS, true);
+	}
+
+	/** Test {@link Lexer#yytext()}. */
+	public void testYytext() {
+		assertTrue(DELIBERATE_PASS, true);
 	}
 }

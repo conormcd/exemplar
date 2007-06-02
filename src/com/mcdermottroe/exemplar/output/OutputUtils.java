@@ -34,22 +34,17 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
 import com.mcdermottroe.exemplar.DBC;
-import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.utils.Packages;
-import com.mcdermottroe.exemplar.utils.Strings;
 
 import static com.mcdermottroe.exemplar.Constants.Character.FULL_STOP;
-import static com.mcdermottroe.exemplar.Constants.Output.CLASS;
-import static com.mcdermottroe.exemplar.Constants.Output.CODE_FRAGMENTS_FILE_NAME;
 import static com.mcdermottroe.exemplar.Constants.Output.PACKAGE;
 
 /** Output handling utility methods.
@@ -61,26 +56,6 @@ public final class OutputUtils {
 	/** Private constructor to prevent instantiation of this class. */
 	private OutputUtils() {
 		DBC.UNREACHABLE_CODE();
-	}
-
-	/** Load the code fragment resource bundle for a given source generator.
-
-		@param generatorName	The canonical name of the {@link
-								XMLParserSourceGenerator} class.
-		@return					The correct {@link ResourceBundle} for the
-								given {@link XMLParserSourceGenerator}.
-	*/
-	public static ResourceBundle getCodeFragments(String generatorName) {
-		DBC.REQUIRE(generatorName != null);
-		if (generatorName == null) {
-			return null;
-		}
-
-		String genName = generatorName.substring(
-			0,
-			generatorName.length() - CLASS.length() - 1
-		);
-		return ResourceBundle.getBundle(genName + CODE_FRAGMENTS_FILE_NAME);
 	}
 
 	/** Generate a parser given an {@link XMLDocumentType} and the type of
@@ -177,9 +152,6 @@ public final class OutputUtils {
 	{
 		DBC.REQUIRE(s != null);
 		DBC.REQUIRE(file != null);
-		if (s == null || file == null) {
-			return;
-		}
 
 		BufferedWriter output = null;
 		boolean outputOpen = false;
@@ -270,7 +242,7 @@ public final class OutputUtils {
 		@return A {@link SortedSet} containing a {@link LanguageAPIPair} for
 				every legal combination of language and API.
 	*/
-	private static SortedSet<LanguageAPIPair> availableLanguageAPIPairs() {
+	public static SortedSet<LanguageAPIPair> availableLanguageAPIPairs() {
 		SortedSet<LanguageAPIPair> ret = new TreeSet<LanguageAPIPair>();
 
 		List<String> pNames = Packages.findSubPackages(PACKAGE);
@@ -306,128 +278,5 @@ public final class OutputUtils {
 		}
 
 		return ret;
-	}
-
-	/** A class representing a language-API pair.
-
-		@author	Conor McDermottroe
-		@since	0.1
-	*/
-	private static final class LanguageAPIPair
-	implements Comparable<LanguageAPIPair>
-	{
-		/** The language. May not be null. */
-		private String language;
-
-		/** The API. May be null. */
-		private String api;
-
-		/** Basic constructor to set the members.
-
-			@param theLanguage	The value for the language member.
-			@param theApi		The value for the api member.
-		*/
-		private LanguageAPIPair(String theLanguage, String theApi) {
-			DBC.REQUIRE(theLanguage != null);
-			language = theLanguage;
-			api = theApi;
-			DBC.ENSURE(language != null);
-		}
-
-		/** Accessor for the language member.
-
-			@return The language member. Guaranteed not to be null.
-		*/
-		public String getLanguage() {
-			DBC.ENSURE(language != null);
-			return language;
-		}
-
-		/** Accessor for the api member.
-
-			@return The api member. May be null.
-		*/
-		public String getAPI() {
-			return api;
-		}
-
-		/** See {@link Object#equals(Object)}.
-
-			@param	o	The object to compare against.
-			@return		True if <code>this</code> is equal to <code>o</code>.
-		*/
-		@Override public boolean equals(Object o) {
-			if (this == o) {
-				return true;
-			}
-			if (o == null || !(o instanceof LanguageAPIPair)) {
-				return false;
-			}
-
-			LanguageAPIPair other = (LanguageAPIPair)o;
-			if (!Utils.areDeeplyEqual(language, other.getLanguage())) {
-				return false;
-			}
-			if (!Utils.areDeeplyEqual(api, other.getAPI())) {
-				return false;
-			}
-
-			return true;
-		}
-
-		/** See {@link Object#hashCode()}.
-
-			@return	A hash code.
-		*/
-		@Override public int hashCode() {
-			return Utils.genericHashCode(language, api);
-		}
-
-		/** See {@link Object#toString()}.
-
-			@return	A descriptive {@link String}.
-		*/
-		@Override public String toString() {
-			return Strings.deepToString(language, api);
-		}
-
-		/** Implement {@link Comparable} so that {@link LanguageAPIPair}
-			objects can be contained in a sorted {@link java.util.Collection}.
-
-			@param	other	The object to compare this one to.
-			@return			-1, 0 or 1 if this object is less-than, equal to,
-							or greater than o, respectively.
-		*/
-		public int compareTo(LanguageAPIPair other) {
-			// This is required by the general contract of
-			// Comparable.compareTo(Object)
-			DBC.REQUIRE(other != null);
-			if (other == null) {
-				throw new NullPointerException();
-			}
-
-			int result;
-			int langCompare = language.compareTo(other.getLanguage());
-			if (langCompare == 0) {
-				if (api == null) {
-					if (other.getAPI() == null) {
-						result = 0;
-					} else {
-						result = -1;
-					}
-				} else {
-					String otherAPI = other.getAPI();
-					if (otherAPI == null) {
-						result = 1;
-					} else {
-						result = api.compareTo(otherAPI);
-					}
-				}
-			} else {
-				result = langCompare;
-			}
-
-			return result;
-		}
 	}
 }

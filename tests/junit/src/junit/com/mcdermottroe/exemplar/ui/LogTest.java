@@ -29,9 +29,16 @@
 */
 package junit.com.mcdermottroe.exemplar.ui;
 
-import com.mcdermottroe.exemplar.ui.Log;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
-import junit.com.mcdermottroe.exemplar.UtilityClassTestCase;
+import com.mcdermottroe.exemplar.ui.Log;
+import com.mcdermottroe.exemplar.ui.LogLevel;
+import com.mcdermottroe.exemplar.ui.Options;
+
+import junit.com.mcdermottroe.exemplar.SingletonClassTestCase;
 
 /** Test class for {@link com.mcdermottroe.exemplar.ui.Log}.
 
@@ -39,6 +46,293 @@ import junit.com.mcdermottroe.exemplar.UtilityClassTestCase;
 	@since	0.2
 */
 public class LogTest
-extends UtilityClassTestCase<Log>
+extends SingletonClassTestCase<Log>
 {
+	/** A test {@link Handler} to capture logged {@link LogRecord}s for
+		inspection.
+	*/
+	public static class LogTestLogHandler
+	extends Handler
+	{
+		/** The records that have been logged. */
+		private List<LogRecord> records;
+
+		/** Create a new {@link LogTestLogHandler}. */
+		public LogTestLogHandler() {
+			super();
+			records = new ArrayList<LogRecord>();
+		}
+
+		/** Implement {@link Handler#publish(LogRecord)}.
+
+			@param	logRecord	The log record to publish.
+		*/
+		@Override public void publish(LogRecord logRecord) {
+			records.add(logRecord);
+		}
+
+		/** Implement {@link Handler#flush()}. */
+		@Override public void flush() {
+			// Do nothing
+		}
+
+		/** Implement {@link Handler#close()}. */
+		@Override public void close() {
+			// Do nothing
+		}
+
+		/** Get the last record which was logged.
+
+			@return	The last {@link LogRecord} which was logged.
+		*/
+		public LogRecord getLastRecord() {
+			if (!records.isEmpty()) {
+				return records.get(records.size() - 1);
+			} else {
+				return null;
+			}
+		}
+	}
+
+	/** The {@link Handler} to use. */
+	private LogTestLogHandler testHandler = null;
+
+	/** {@inheritDoc} */
+	@Override public void setUp()
+	throws Exception
+	{
+		super.setUp();
+		testHandler = new LogTestLogHandler();
+		Log.registerHandler(testHandler);
+	}
+
+	/** Test {@link Log#clearHandlers()}. */
+	public void testClearHandlers() {
+		try {
+			Log.clearHandlers();
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+		}
+		Log.registerHandler(testHandler);
+	}
+
+	/** Test {@link Log#getLevel()}. */
+	public void testGetLevel() {
+		try {
+			Log.getLevel();
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+			fail("Log.getLevel() failed an assert.");
+		}
+	}
+
+	/** Test {@link Log#setLevel(LogLevel)}. */
+	public void testSetLevel() {
+		LogLevel originalLevel = null;
+		try {
+			originalLevel = Log.getLevel();
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+			fail("Assertion failure when getting original log level");
+		}
+		assertNotNull("Original level is null", originalLevel);
+		for (LogLevel l : LogLevel.values()) {
+			Log.setLevel(l);
+			assertEquals("Log.setLevel(new) did not stick", l, Log.getLevel());
+			Log.setLevel(originalLevel);
+			assertEquals(
+				"Log.setLevel(original) did not stick",
+				originalLevel,
+				Log.getLevel()
+			);
+		}
+	}
+
+	/** Test {@link Log#registerHandler(Handler)}. */
+	public void testRegisterHandler() {
+		try {
+			Log.registerHandler(testHandler);
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+			fail("Log.registerHandler(Handler) failed an assertion");
+		}
+		try {
+			Log.clearHandlers();
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+			fail("Log.clearHandlers() failed an assertion");
+		}
+		try {
+			Log.registerHandler(testHandler);
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+			fail("Log.registerHandler(Handler) failed an assertion");
+		}
+	}
+
+	/** Test {@link Log#debug(Object)}. */
+	public void testDebugOneArg() {
+		Options.reset();
+		Options.set("debug", "true");
+		try {
+			Log.debug("foo");
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+			fail("Log.debug(Object) failed an assertion");
+		}
+		LogRecord logRecord = testHandler.getLastRecord();
+		assertNotNull("testHandler.getLastRecord() == null", logRecord);
+		assertEquals(
+			"logRecord.getMessage() != \"foo\"",
+			"foo",
+			logRecord.getMessage()
+		);
+		Options.reset();
+	}
+
+	/** Test {@link Log#debug(Object, Throwable)}. */
+	public void testDebugTwoArgs() {
+		Options.reset();
+		Options.set("debug", "true");
+		Exception testException = new Exception();
+		try {
+			Log.debug("foo", testException);
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+			fail("Log.debug(Object, Throwable) failed an assertion");
+		}
+		LogRecord logRecord = testHandler.getLastRecord();
+		assertNotNull("testHandler.getLastRecord() == null", logRecord);
+		assertEquals(
+			"logRecord.getMessage() != \"foo\"",
+			"foo",
+			logRecord.getMessage()
+		);
+		assertEquals(
+			"logRecord.getMessage() != \"foo\"",
+			testException,
+			logRecord.getThrown()
+		);
+		Options.reset();
+	}
+
+	/** Test {@link Log#error(Object)}. */
+	public void testErrorOneArg() {
+		try {
+			Log.error("foo");
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+			fail("Log.error(Object) failed an assertion");
+		}
+		LogRecord logRecord = testHandler.getLastRecord();
+		assertNotNull("testHandler.getLastRecord() == null", logRecord);
+		assertEquals(
+			"logRecord.getMessage() != \"foo\"",
+			"foo",
+			logRecord.getMessage()
+		);
+	}
+
+	/** Test {@link Log#error(Object, Throwable)}. */
+	public void testErrorTwoArgs() {
+		Exception testException = new Exception();
+		try {
+			Log.error("foo", testException);
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+			fail("Log.debug(Object, Throwable) failed an assertion");
+		}
+		LogRecord logRecord = testHandler.getLastRecord();
+		assertNotNull("testHandler.getLastRecord() == null", logRecord);
+		assertEquals(
+			"logRecord.getMessage() != \"foo\"",
+			"foo",
+			logRecord.getMessage()
+		);
+		assertEquals(
+			"logRecord.getMessage() != \"foo\"",
+			testException,
+			logRecord.getThrown()
+		);
+	}
+
+	/** Test {@link Log#info(Object)}. */
+	public void testInfoOneArg() {
+		try {
+			Log.info("foo");
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+			fail("Log.info(Object) failed an assertion");
+		}
+		LogRecord logRecord = testHandler.getLastRecord();
+		assertNotNull("testHandler.getLastRecord() == null", logRecord);
+		assertEquals(
+			"logRecord.getMessage() != \"foo\"",
+			"foo",
+			logRecord.getMessage()
+		);
+	}
+
+	/** Test {@link Log#info(Object, Throwable)}. */
+	public void testInfoTwoArgs() {
+		Exception testException = new Exception();
+		try {
+			Log.info("foo", testException);
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+			fail("Log.info(Object, Throwable) failed an assertion");
+		}
+		LogRecord logRecord = testHandler.getLastRecord();
+		assertNotNull("testHandler.getLastRecord() == null", logRecord);
+		assertEquals(
+			"logRecord.getMessage() != \"foo\"",
+			"foo",
+			logRecord.getMessage()
+		);
+		assertEquals(
+			"logRecord.getMessage() != \"foo\"",
+			testException,
+			logRecord.getThrown()
+		);
+	}
+
+	/** Test {@link Log#warning(Object)}. */
+	public void testWarningOneArg() {
+		try {
+			Log.warning("foo");
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+			fail("Log.warning(Object) failed an assertion");
+		}
+		LogRecord logRecord = testHandler.getLastRecord();
+		assertNotNull("testHandler.getLastRecord() == null", logRecord);
+		assertEquals(
+			"logRecord.getMessage() != \"foo\"",
+			"foo",
+			logRecord.getMessage()
+		);
+	}
+
+	/** Test {@link Log#warning(Object, Throwable)}. */
+	public void testWarningTwoArgs() {
+		Exception testException = new Exception();
+		try {
+			Log.warning("foo", testException);
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+			fail("Log.warning(Object, Throwable) failed an assertion");
+		}
+		LogRecord logRecord = testHandler.getLastRecord();
+		assertNotNull("testHandler.getLastRecord() == null", logRecord);
+		assertEquals(
+			"logRecord.getMessage() != \"foo\"",
+			"foo",
+			logRecord.getMessage()
+		);
+		assertEquals(
+			"logRecord.getMessage() != \"foo\"",
+			testException,
+			logRecord.getThrown()
+		);
+	}
 }

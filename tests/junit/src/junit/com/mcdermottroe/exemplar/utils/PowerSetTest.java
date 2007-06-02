@@ -146,7 +146,6 @@ extends NormalClassTestCase<PowerSet<String>>
 					fail("PowerSet.contains(null) did not throw NPE");
 				} catch (NullPointerException e) {
 					// Correct behaviour
-					assertTrue("PowerSet.contains(null) throws NPE", true);
 				}
 
 				// Test that it contains the empty set.
@@ -217,6 +216,22 @@ extends NormalClassTestCase<PowerSet<String>>
 		}
 	}
 
+	/** Test {@link PowerSet#getBaseSet()}. */
+	public void testGetBaseSet() {
+		for (PowerSet<String> sample : samples()) {
+			if (sample != null) {
+				Set<String> baseSet = sample.getBaseSet();
+				assertNotNull("getBaseSet returned null", baseSet);
+				if (baseSet.isEmpty()) {
+					assertTrue(
+						"getBaseSet => empty but PowerSet => non-empty",
+						sample.isEmpty()
+					);
+				}
+			}
+		}
+	}
+
 	/** Test {@link PowerSet#isEmpty()}. */
 	public void testIsEmpty() {
 		for (PowerSet<String> sample : samples()) {
@@ -244,13 +259,12 @@ extends NormalClassTestCase<PowerSet<String>>
 						fail("NoSuchElementException thrown");
 						return;
 					}
-					assertTrue("iter.hasNext() works", true);
 					try {
 						iter.next();
 						fail("iter.next() after end did not fail");
 						return;
 					} catch (NoSuchElementException e) {
-						assertTrue("iter.next() after end works", true);
+						assertNotNull("NoSuchElementException was null", e);
 					}
 				}
 				Iterator<Set<String>> iter = sample.iterator();
@@ -259,7 +273,7 @@ extends NormalClassTestCase<PowerSet<String>>
 					fail("remove() did not fail");
 					return;
 				} catch (UnsupportedOperationException e) {
-					assertTrue("remove failed as expected", true);
+					assertNotNull("UnsupportedOperationException was null", e);
 				}
 				String iteratorString = iter.toString();
 				if (iteratorString == null || iteratorString.length() <= 0) {
@@ -279,7 +293,7 @@ extends NormalClassTestCase<PowerSet<String>>
 					fail("PowerSet.remove() did not throw an exception");
 					return;
 				} catch (UnsupportedOperationException e) {
-					assertTrue("PowerSet.remove() threw an exception", true);
+					assertNotNull("UnsupportedOperationException was null", e);
 				}
 			}
 		}
@@ -295,7 +309,7 @@ extends NormalClassTestCase<PowerSet<String>>
 					fail("PowerSet.removeAll() did not throw an exception");
 					return;
 				} catch (UnsupportedOperationException e) {
-					assertTrue("PowerSet.removeAll() threw an exception", true);
+					assertNotNull("UnsupportedOperationException was null", e);
 				}
 			}
 		}
@@ -311,7 +325,7 @@ extends NormalClassTestCase<PowerSet<String>>
 					fail("PowerSet.removeAll() did not throw an exception");
 					return;
 				} catch (UnsupportedOperationException e) {
-					assertTrue("PowerSet.removeAll() threw an exception", true);
+					assertNotNull("UnsupportedOperationException was null", e);
 				}
 			}
 		}
@@ -341,9 +355,9 @@ extends NormalClassTestCase<PowerSet<String>>
 						int size = sample.size();
 						fail("PowerSet.size() did not throw an exception");
 					} catch (UnsupportedOperationException e) {
-						assertTrue(
-							"PowerSet.size() threw an exception as expected",
-							true
+						assertNotNull(
+							"UnsupportedOperationException was null",
+							e
 						);
 					}
 				}

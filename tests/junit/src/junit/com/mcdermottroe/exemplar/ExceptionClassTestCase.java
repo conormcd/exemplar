@@ -176,8 +176,6 @@ extends NormalClassTestCase<Exception>
 				}
 			}
 		}
-
-		assertTrue("getBackTrace works as expected", true);
 	}
 
 	/** Test the method {@link Exception#toString()} on a set of sample
@@ -198,8 +196,6 @@ extends NormalClassTestCase<Exception>
 				}
 			}
 		}
-
-		assertTrue("toString works as expected", true);
 	}
 
 	/** Create a sample object using the no-arg constructor.

@@ -29,8 +29,16 @@
 */
 package junit.com.mcdermottroe.exemplar.input.dtd;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Map;
+
 import com.mcdermottroe.exemplar.input.dtd.PEDeclTable;
 import com.mcdermottroe.exemplar.input.dtd.ParameterEntityException;
+import com.mcdermottroe.exemplar.input.dtd.ParameterEntityType;
 import com.mcdermottroe.exemplar.ui.Message;
 
 import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
@@ -48,10 +56,10 @@ extends NormalClassTestCase<PEDeclTable>
 		super.setUp();
 
 		PEDeclTable a = new PEDeclTable();
-		a.addNewPE("foo", "bar", PEDeclTable.ParameterEntityType.VALUE);
+		a.addNewPE("foo", "bar", ParameterEntityType.VALUE);
 
 		PEDeclTable b = new PEDeclTable();
-		a.addNewPE("foo", "baz", PEDeclTable.ParameterEntityType.VALUE);
+		a.addNewPE("foo", "baz", ParameterEntityType.VALUE);
 
 		addSample(new PEDeclTable());
 		addSample(a);
@@ -72,7 +80,7 @@ extends NormalClassTestCase<PEDeclTable>
 		PEDeclTable pedt = new PEDeclTable();
 
 		try {
-			pedt.addNewPE("foo", "bar", PEDeclTable.ParameterEntityType.VALUE);
+			pedt.addNewPE("foo", "bar", ParameterEntityType.VALUE);
 		} catch (ParameterEntityException e) {
 			e.printStackTrace();
 			fail("Exception thrown when adding an entry to the PEDeclTable");
@@ -85,7 +93,7 @@ extends NormalClassTestCase<PEDeclTable>
 		);
 
 		try {
-			pedt.addNewPE("bar", "baz", PEDeclTable.ParameterEntityType.VALUE);
+			pedt.addNewPE("bar", "baz", ParameterEntityType.VALUE);
 		} catch (ParameterEntityException e) {
 			e.printStackTrace();
 			fail("Exception thrown when adding an entry to the PEDeclTable");
@@ -115,10 +123,7 @@ extends NormalClassTestCase<PEDeclTable>
 			pedt.replacePERefs("foo%baz;bar");
 			fail("Substituting a non-existant PE did not throw an exception.");
 		} catch (ParameterEntityException e) {
-			assertTrue(
-				"Substituting a non-existant PE correctly threw an exception",
-				true
-			);
+			assertNotNull("ParameterEntityException was null", e);
 		}
 	}
 
@@ -129,7 +134,7 @@ extends NormalClassTestCase<PEDeclTable>
 			pedt.addNewPE(
 				"foo",
 				"http://www.google.com",
-				PEDeclTable.ParameterEntityType.URI
+				ParameterEntityType.URI
 			);
 		} catch (ParameterEntityException e) {
 			e.printStackTrace();
@@ -143,7 +148,7 @@ extends NormalClassTestCase<PEDeclTable>
 		);
 	}
 
-	/** Test {@link PEDeclTable#replacePERefs(String)}. */
+	/** Test {@link PEDeclTable#replacePERefs(CharSequence)}. */
 	public void testReplacePERefs() {
 		String[] input = {
 			null,
@@ -165,17 +170,17 @@ extends NormalClassTestCase<PEDeclTable>
 			testData.addNewPE(
 				"foo",
 				"bar",
-				PEDeclTable.ParameterEntityType.VALUE
+				ParameterEntityType.VALUE
 			);
 			testData.addNewPE(
 				"bar",
 				"baz",
-				PEDeclTable.ParameterEntityType.VALUE
+				ParameterEntityType.VALUE
 			);
 			testData.addNewPE(
 				"baz",
 				"quux",
-				PEDeclTable.ParameterEntityType.VALUE
+				ParameterEntityType.VALUE
 			);
 		} catch (ParameterEntityException e) {
 			e.printStackTrace();
@@ -194,6 +199,309 @@ extends NormalClassTestCase<PEDeclTable>
 				e.printStackTrace();
 				fail("ParameterEntityException thrown");
 			}
+		}
+	}
+
+	/** Test {@link PEDeclTable#addNewPE(String, String, ParameterEntityType)}.
+	*/
+	public void testAddNewPE() {
+		for (PEDeclTable sample : samples()) {
+			if (sample != null) {
+				try {
+					sample.addNewPE(
+						"Conor",
+						"McDermottroe",
+						ParameterEntityType.VALUE
+					);
+				} catch (ParameterEntityException e) {
+					assertNotNull("ParameterEntityException was null", e);
+					fail("Calling add(String, String, VALUE) failed an assert");
+				} catch (AssertionError e) {
+					assertNotNull("AssertionError was null", e);
+					fail("Calling add(String, String, VALUE) failed an assert");
+				}
+				try {
+					sample.addNewPE(
+						"Conor",
+						"McDermottroe",
+						ParameterEntityType.URI
+					);
+				} catch (ParameterEntityException e) {
+					assertNotNull("ParameterEntityException was null", e);
+					fail("Calling add(String, String, VALUE) failed an assert");
+				} catch (AssertionError e) {
+					assertNotNull("AssertionError was null", e);
+					fail("Calling add(String, String, VALUE) failed an assert");
+				}
+			}
+		}
+	}
+
+	/** Test {@link PEDeclTable#getFileTable()}. */
+	public void testGetFileTable() {
+		for (PEDeclTable sample : samples()) {
+			if (sample != null) {
+				boolean returnedNull = false;
+				try {
+					Map<String, String> ft = sample.getFileTable();
+					returnedNull = ft == null;
+				} catch (AssertionError e) {
+					assertNotNull("AssertionError was null", e);
+					fail("getFileTable() failed an assert");
+				}
+				assertFalse("getFileTable() returned null", returnedNull);
+			}
+		}
+	}
+
+	/** Test {@link PEDeclTable#getTable()}. */
+	public void testGetTable() {
+		for (PEDeclTable sample : samples()) {
+			if (sample != null) {
+				boolean returnedNull = false;
+				try {
+					Map<String, String> t = sample.getTable();
+					returnedNull = t == null;
+				} catch (AssertionError e) {
+					assertNotNull("AssertionError was null", e);
+					fail("getTable() failed an assert");
+				}
+				assertFalse("getTable() returned null", returnedNull);
+			}
+		}
+	}
+
+	/** Test {@link PEDeclTable#peRefReader(String, File)}. */
+	public void testPeRefReaderValuePE() {
+		PEDeclTable testTable = new PEDeclTable();
+		try {
+			testTable.addNewPE("foo", "bar", ParameterEntityType.VALUE);
+			Reader r = testTable.peRefReader("foo", new File("/dev/null"));
+			assertTrue("Reader was not ready", r.ready());
+			StringBuilder result = new StringBuilder();
+			while (r.ready()) {
+				int character = r.read();
+				if (character == -1) {
+					break;
+				}
+				assertTrue(
+					"Invalid character received",
+					character >= 0 && character <= (int)Character.MAX_VALUE
+				);
+				result.append(Character.toChars(character));
+			}
+			assertEquals(
+				"Reader did not output expected output",
+				"bar",
+				result.toString()
+			);
+		} catch (ParameterEntityException e) {
+			assertNotNull("ParameterEntityException was null", e);
+			fail("Unexpected ParameterEntityException");
+		} catch (IOException e) {
+			assertNotNull("IOException was null", e);
+			fail("Unexpected IOException");
+		}
+	}
+
+	/** Test {@link PEDeclTable#peRefReader(String, File)}. */
+	public void testPeRefReaderURLPEFile() {
+		// Create the temp file
+		String tmpDirName = System.getProperty("java.io.tmpdir");
+		assertNotNull("TMPDIR name is null", tmpDirName);
+		File tmpDir = new File(tmpDirName);
+		assertNotNull("TMPDIR is null", tmpDir);
+		assertTrue("TMPDIR does not exist", tmpDir.exists());
+		File tmpFile = new File(
+			tmpDir,
+			"PEDeclTableTest.testPeRefReaderURLPEFile"
+		);
+		assertNotNull("Temp file is null", tmpFile);
+		assertFalse("Temp file already exists", tmpFile.exists());
+		BufferedWriter writer = null;
+		try {
+			writer = new BufferedWriter(new FileWriter(tmpFile));
+			writer.write("bar");
+		} catch (IOException e) {
+			assertNotNull("IOException is null", e);
+			fail("Unexpected IOException");
+		} finally {
+			if (writer != null) {
+				try {
+					writer.close();
+				} catch (IOException e) {
+					assertNotNull("IOException is null", e);
+					fail("Unexpected IOException");
+				}
+			}
+		}
+
+		PEDeclTable testTable = new PEDeclTable();
+		try {
+			testTable.addNewPE(
+				"foo",
+				tmpFile.getAbsolutePath(),
+				ParameterEntityType.URI
+			);
+			Reader r = testTable.peRefReader("foo", tmpDir);
+			assertTrue("Reader was not ready", r.ready());
+			StringBuilder result = new StringBuilder();
+			while (r.ready()) {
+				int character = r.read();
+				if (character == -1) {
+					break;
+				}
+				assertTrue(
+					"Invalid character received",
+					character >= 0 && character <= (int)Character.MAX_VALUE
+				);
+				result.append(Character.toChars(character));
+			}
+			assertEquals(
+				"Reader did not output expected output",
+				"bar",
+				result.toString()
+			);
+		} catch (ParameterEntityException e) {
+			assertNotNull("ParameterEntityException was null", e);
+			fail("Unexpected ParameterEntityException");
+		} catch (IOException e) {
+			assertNotNull("IOException was null", e);
+			fail("Unexpected IOException");
+		}
+
+		PEDeclTable testTable2 = new PEDeclTable();
+		try {
+			testTable2.addNewPE(
+				"foo",
+				"PEDeclTableTest.testPeRefReaderURLPEFile",
+				ParameterEntityType.URI
+			);
+			Reader r = testTable2.peRefReader("foo", tmpDir);
+			assertTrue("Reader was not ready", r.ready());
+			StringBuilder result = new StringBuilder();
+			while (r.ready()) {
+				int character = r.read();
+				if (character == -1) {
+					break;
+				}
+				assertTrue(
+					"Invalid character received",
+					character >= 0 && character <= (int)Character.MAX_VALUE
+				);
+				result.append(Character.toChars(character));
+			}
+			assertEquals(
+				"Reader did not output expected output",
+				"bar",
+				result.toString()
+			);
+		} catch (ParameterEntityException e) {
+			assertNotNull("ParameterEntityException was null", e);
+			fail("Unexpected ParameterEntityException");
+		} catch (IOException e) {
+			assertNotNull("IOException was null", e);
+			fail("Unexpected IOException");
+		}
+
+		// Now clean up the temp file
+		assertTrue("Failed to delete the temp file", tmpFile.delete());
+	}
+
+	/** Test {@link PEDeclTable#peRefReader(String, File)}. */
+	public void testPeRefReaderNegative() {
+		for (PEDeclTable sample : samples()) {
+			if (sample != null) {
+				boolean fellThrough = false;
+				try {
+					sample.peRefReader(null, null);
+				} catch (ParameterEntityException e) {
+					assertNotNull("ParameterEntityException was null", e);
+					fail("Unexpected ParameterEntityException");
+				} catch (AssertionError e) {
+					assertNotNull("AssertionError was null", e);
+				}
+				assertFalse(
+					"PEDeclTable.peRefReader(null, null) passed assert",
+					fellThrough
+				);
+
+				fellThrough = false;
+				try {
+					sample.peRefReader("foo", null);
+					fellThrough = true;
+				} catch (ParameterEntityException e) {
+					assertNotNull("ParameterEntityException was null", e);
+					fail("Unexpected ParameterEntityException");
+				} catch (AssertionError e) {
+					assertNotNull("AssertionError was null", e);
+				}
+				assertFalse(
+					"PEDeclTable.peRefReader(String, null) passed assert",
+					fellThrough
+				);
+
+				fellThrough = false;
+				try {
+					sample.peRefReader(null, new File("/dev/null"));
+					fellThrough = true;
+				} catch (ParameterEntityException e) {
+					assertNotNull("ParameterEntityException was null", e);
+					fail("Unexpected ParameterEntityException");
+				} catch (AssertionError e) {
+					assertNotNull("AssertionError was null", e);
+				}
+				assertFalse(
+					"PEDeclTable.peRefReader(null, File) passed assert",
+					fellThrough
+				);
+
+				fellThrough = false;
+				try {
+					sample.peRefReader("notDefined", new File("/dev/null"));
+					fellThrough = true;
+				} catch (ParameterEntityException e) {
+					assertNotNull("ParameterEntityException was null", e);
+				} catch (AssertionError e) {
+					assertNotNull("AssertionError was null", e);
+					fail("Unexpected AssertionError");
+				}
+				assertFalse(
+					"PEDeclTable.peRefReader(undef, File) passed assert",
+					fellThrough
+				);
+			}
+		}
+
+		// Test the MalformedURLException code path
+		PEDeclTable malformedURLExceptionTable = new PEDeclTable();
+		try {
+			malformedURLExceptionTable.addNewPE(
+				"foo",
+				"http127.0.0.1path",
+				ParameterEntityType.URI
+			);
+			malformedURLExceptionTable.peRefReader(
+				"foo",
+				new File("/dev/null")
+			);
+			fail("Failed to deal with a MFUE");
+		} catch (ParameterEntityException e) {
+			assertNotNull("ParameterEntityException was null", e);
+		}
+
+		// Test the IOException code path
+		PEDeclTable ioExceptionTable = new PEDeclTable();
+		try {
+			ioExceptionTable.addNewPE(
+				"foo",
+				"http://127.0.0.1/path/which/does/not/exist",
+				ParameterEntityType.URI
+			);
+			ioExceptionTable.peRefReader("foo", new File("/dev/null"));
+			fail("Failed to deal with a IOException");
+		} catch (ParameterEntityException e) {
+			assertNotNull("ParameterEntityException was null", e);
 		}
 	}
 }

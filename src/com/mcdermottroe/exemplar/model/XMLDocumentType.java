@@ -52,26 +52,6 @@ import static com.mcdermottroe.exemplar.Constants.Character.RIGHT_PAREN;
 public class XMLDocumentType
 implements Copyable<XMLDocumentType>
 {
-	/** Enum value for {@link XMLDocumentType}s which define elements with
-		attribute lists.
-	*/
-	private static final int ATTLISTS = 0;
-
-	/** Enum value for {@link XMLDocumentType}s which define elements. */
-	private static final int ELEMENTS = 1;
-
-	/** Enum value for {@link XMLDocumentType}s which define entities. */
-	private static final int ENTITIES = 2;
-
-	/** Enum value for {@link XMLDocumentType}s which define notations. */
-	private static final int NOTATIONS = 3;
-
-	/** A list of all the markup declarations in the document type. */
-	private List<XMLMarkupDeclaration> markupDecls;
-
-	/** A map of all the features that this DTD/Schema uses. */
-	private Map<Integer, Boolean> feature;
-
 	/** A map of all the elements in this DTD/Schema. */
 	private Map<String, XMLMarkupDeclaration> elements;
 
@@ -83,31 +63,6 @@ implements Copyable<XMLDocumentType>
 
 	/** A map of all the notations in this DTD/Schema. */
 	private Map<String, XMLMarkupDeclaration> notations;
-
-	/** A no-arg constructor to aid in testing. This effectively creates an
-		empty vocabulary description. It's useless for actually generating
-		anything.
-
-		@throws	XMLDocumentTypeException	if either {@link
-											#separateObjects()} or {@link
-											#associateAttlistsWithElements()}
-											throws one.
-	*/
-	public XMLDocumentType()
-	throws XMLDocumentTypeException
-	{
-		markupDecls = new ArrayList<XMLMarkupDeclaration>(0);
-
-		// Allocate storage for the various hashes
-		attlists = new HashMap<String, XMLMarkupDeclaration>(0);
-		elements = new HashMap<String, XMLMarkupDeclaration>(0);
-		entities = new HashMap<String, XMLMarkupDeclaration>(0);
-		notations = new HashMap<String, XMLMarkupDeclaration>(0);
-
-		separateObjects();
-		associateAttlistsWithElements();
-		calculateFeatures();
-	}
 
 	/** Make an {@link XMLDocumentType} out of a {@link Collection} of markup
 		declarations.
@@ -123,105 +78,41 @@ implements Copyable<XMLDocumentType>
 	{
 		DBC.REQUIRE(markup != null);
 
-		markupDecls = new ArrayList<XMLMarkupDeclaration>(markup);
-
 		// Allocate storage for the various hashes
-		int markupDeclsSize = markupDecls.size();
-		attlists = new HashMap<String, XMLMarkupDeclaration>(markupDeclsSize);
-		elements = new HashMap<String, XMLMarkupDeclaration>(markupDeclsSize);
-		entities = new HashMap<String, XMLMarkupDeclaration>(markupDeclsSize);
-		notations = new HashMap<String, XMLMarkupDeclaration>(markupDeclsSize);
-
-		separateObjects();
-		associateAttlistsWithElements();
-		calculateFeatures();
-	}
-
-	/** Determine what features of DTDs/Schemas the current {@link
-		XMLDocumentType} uses.
-	*/
-	private void calculateFeatures() {
-		DBC.REQUIRE(attlists != null);
-		DBC.REQUIRE(elements != null);
-		DBC.REQUIRE(entities != null);
-		DBC.REQUIRE(notations != null);
-
-		// Ensure there is storage for the features
-		feature = new HashMap<Integer, Boolean>(4);
-
-		// Calculate some features
-		feature.put(ATTLISTS, !attlists.isEmpty());
-		feature.put(ELEMENTS, !elements.isEmpty());
-		feature.put(ENTITIES, !entities.isEmpty());
-		feature.put(NOTATIONS, !notations.isEmpty());
-
-		DBC.ENSURE(feature != null);
-	}
-
-	/** Rip through the vector of markup declarations and separate them into
-		their respective hashes.
-
-		@throws	XMLDocumentTypeException	if any of the objects in {@link
-											#markupDecls} cannot be classified
-											according to their types.
-	*/
-	private void separateObjects()
-	throws XMLDocumentTypeException
-	{
-		DBC.REQUIRE(markupDecls != null);
+		int markupSize = 0;
+		if (markup != null) {
+			markupSize = markup.size();
+		}
+		attlists = new HashMap<String, XMLMarkupDeclaration>(markupSize);
+		elements = new HashMap<String, XMLMarkupDeclaration>(markupSize);
+		entities = new HashMap<String, XMLMarkupDeclaration>(markupSize);
+		notations = new HashMap<String, XMLMarkupDeclaration>(markupSize);
 
 		// Go through the list of markup declarations and put the objects in
 		// the correct hashes.
-		for (XMLMarkupDeclaration xmlObject : markupDecls) {
-			boolean classified = false;
-			if (xmlObject instanceof XMLAttributeList) {
-				attlists.put(xmlObject.getName(), xmlObject);
-				classified = true;
-			} else if (xmlObject instanceof XMLElement) {
-				elements.put(xmlObject.getName(), xmlObject);
-				classified = true;
-			} else if (xmlObject instanceof XMLEntity) {
-				entities.put(xmlObject.getName(), xmlObject);
-				classified = true;
-			} else if (xmlObject instanceof XMLNotation) {
-				notations.put(xmlObject.getName(), xmlObject);
-				classified = true;
-			} else if (xmlObject == null) {
-				// ignore
-				classified = true;
-			}
-
-			// If the xmlObject was not classified then it means it wasn't
-			// supposed to be there.
-			if (!classified) {
-				DBC.UNREACHABLE_CODE();
-				throw new XMLDocumentTypeException(
-					Message.XMLDOCTYPE_XMLOBJECT_IN_MARKUPDECLS(
-						xmlObject.toString()
-					)
-				);
+		if (markup != null) {
+			for (XMLMarkupDeclaration xmlObject : markup) {
+				if (xmlObject == null) {
+					continue;
+				}
+				Class<? extends XMLMarkupDeclaration> c = xmlObject.getClass();
+				if (XMLAttributeList.class.isAssignableFrom(c)) {
+					attlists.put(xmlObject.getName(), xmlObject);
+				} else if (XMLElement.class.isAssignableFrom(c)) {
+					elements.put(xmlObject.getName(), xmlObject);
+				} else if (XMLEntity.class.isAssignableFrom(c)) {
+					entities.put(xmlObject.getName(), xmlObject);
+				} else if (XMLNotation.class.isAssignableFrom(c)) {
+					notations.put(xmlObject.getName(), xmlObject);
+				}
 			}
 		}
-	}
 
-	/** Associate attribute lists with their parent elements.
-
-		@throws	XMLDocumentTypeException	if an attribute is discovered that
-											there is no element to attach it
-											to.
-	*/
-	private void associateAttlistsWithElements()
-	throws XMLDocumentTypeException
-	{
-		DBC.REQUIRE(attlists != null);
-		DBC.REQUIRE(elements != null);
-
+		// Associate attributes with their elements.
 		for (String name : attlists.keySet()) {
 			// Get the XMLAttributeList and corresponding XMLElement
 			XMLAttributeList attlist = (XMLAttributeList)attlists.get(name);
-			DBC.ASSERT(attlist != null);
 			XMLElement element = (XMLElement)elements.get(name);
-			DBC.ASSERT(element != null);
 
 			// Associate the two
 			if (element != null) {
@@ -233,40 +124,6 @@ implements Copyable<XMLDocumentType>
 				);
 			}
 		}
-
-		DBC.ENSURE(attlists != null);
-		DBC.ENSURE(elements != null);
-	}
-
-	/** Given a feature, determine if the current document type uses it.
-
-		@param	featureName					The name of the feature to check.
-		@return								true if <code>featureName</code> is
-											used by the current document type,
-											false otherwise.
-		@throws	XMLDocumentTypeException	if <code>featureName</code> is not
-											a valid feature name.
-	*/
-	private boolean hasFeature(Integer featureName)
-	throws XMLDocumentTypeException
-	{
-		DBC.REQUIRE(featureName != null);
-
-		// Require that features have been determined
-		if (feature == null) {
-			calculateFeatures();
-		}
-		DBC.ASSERT(feature != null);
-
-		// Make sure that featureName is a valid feature
-		if (!feature.containsKey(featureName)) {
-			throw new XMLDocumentTypeException(
-				Message.XMLDOCTYPE_UNSUPPORTED_FEATURE()
-			);
-		}
-
-		// Actually do the check
-		return feature.get(featureName);
 	}
 
 	/** Shorthand for finding out if the current document type declares any
@@ -276,12 +133,7 @@ implements Copyable<XMLDocumentType>
 				every other case, including if errors occur.
 	*/
 	public boolean hasAttlists() {
-		try {
-			return hasFeature(ATTLISTS);
-		} catch (XMLDocumentTypeException e) {
-			DBC.IGNORED_EXCEPTION(e);
-			return false;
-		}
+		return attlists != null && !attlists.isEmpty();
 	}
 
 	/** Accessor for elements.
@@ -290,7 +142,6 @@ implements Copyable<XMLDocumentType>
 				this {@link XMLDocumentType}.
 	*/
 	public Map<String, XMLMarkupDeclaration> elements() {
-		DBC.REQUIRE(elements != null);
 		return new HashMap<String, XMLMarkupDeclaration>(elements);
 	}
 
@@ -300,7 +151,6 @@ implements Copyable<XMLDocumentType>
 				declared in this {@link XMLDocumentType}
 	*/
 	public Map<String, XMLMarkupDeclaration> attlists() {
-		DBC.REQUIRE(attlists != null);
 		return new HashMap<String, XMLMarkupDeclaration>(attlists);
 	}
 
@@ -310,7 +160,6 @@ implements Copyable<XMLDocumentType>
 				declared in this {@link XMLDocumentType}.
 	*/
 	public Map<String, XMLMarkupDeclaration> entities() {
-		DBC.REQUIRE(entities != null);
 		return new HashMap<String, XMLMarkupDeclaration>(entities);
 	}
 
@@ -320,7 +169,6 @@ implements Copyable<XMLDocumentType>
 				this {@link XMLDocumentType}.
 	*/
 	public Map<String, XMLMarkupDeclaration> notations() {
-		DBC.REQUIRE(notations != null);
 		return new HashMap<String, XMLMarkupDeclaration>(notations);
 	}
 
@@ -328,53 +176,17 @@ implements Copyable<XMLDocumentType>
     public XMLDocumentType getCopy()
 	throws CopyException
 	{
-		XMLDocumentType copy;
 		try {
-			copy = new XMLDocumentType();
+			List<XMLMarkupDeclaration> all;
+			all = new ArrayList<XMLMarkupDeclaration>();
+			all.addAll(attlists.values());
+			all.addAll(elements.values());
+			all.addAll(entities.values());
+			all.addAll(notations.values());
+			return new XMLDocumentType(all);
 		} catch (XMLDocumentTypeException e) {
 			throw new CopyException(e);
 		}
-		if (markupDecls != null) {
-			copy.markupDecls = new ArrayList<XMLMarkupDeclaration>(
-				markupDecls
-			);
-		} else {
-			copy.markupDecls = null;
-		}
-		if (feature != null) {
-			copy.feature = new HashMap<Integer, Boolean>(feature);
-		} else {
-			copy.feature = null;
-		}
-		if (elements != null) {
-			copy.elements = new HashMap<String, XMLMarkupDeclaration>(
-				elements
-			);
-		} else {
-			copy.elements = null;
-		}
-		if (attlists != null) {
-			copy.attlists = new HashMap<String, XMLMarkupDeclaration>(
-				attlists
-			);
-		} else {
-			copy.attlists = null;
-		}
-		if (entities != null) {
-			copy.entities = new HashMap<String, XMLMarkupDeclaration>(
-				entities
-			);
-		} else {
-			copy.entities = null;
-		}
-		if (notations != null) {
-			copy.notations = new HashMap<String, XMLMarkupDeclaration>(
-				notations
-			);
-		} else {
-			copy.notations = null;
-		}
-		return copy;
 	}
 
 	/** See {@link Object#equals(Object)}.

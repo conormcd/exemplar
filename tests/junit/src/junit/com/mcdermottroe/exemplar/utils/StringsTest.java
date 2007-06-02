@@ -31,7 +31,6 @@ package junit.com.mcdermottroe.exemplar.utils;
 
 import java.text.MessageFormat;
 
-import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.utils.PowerSet;
 import com.mcdermottroe.exemplar.utils.Strings;
 
@@ -62,11 +61,11 @@ extends UtilityClassTestCase<Strings>
 	/** Basic sanity check for {@link Strings#formatMessage(String, Object...)}.
 	*/
 	public void testFormatMessageManyArgs() {
-		String formatMessage = "{{0}{}{1,date,long}}";
+		String formatMessage = "{{0}{}{1,date,long}} ";
 		String result = Strings.formatMessage(formatMessage, "foo", 0);
 		String expectedResult =	"{foo{}" +
 								MessageFormat.format("{0,date,long}", 0) +
-								"}";
+								"} ";
 
 		assertEquals(
 			"Strings.formatMessage(String, Object...)",
@@ -121,7 +120,7 @@ extends UtilityClassTestCase<Strings>
 
 		for (int i = 0; i < input.length; i++) {
 			assertEquals(
-				"Strings.toCanonicalForm(" + input[i] + ")",
+				Strings.join("", "Strings.toCanonicalForm(", input[i], ")"),
 				expected[i],
 				Strings.toCanonicalForm(input[i])
 			);
@@ -212,23 +211,21 @@ extends UtilityClassTestCase<Strings>
 
 	/** Do some negative testing on {@link Strings#wrap(CharSequence, int)}. */
 	public void testWrapTwoArgsNegative() {
+		boolean fellThrough = false;
 		try {
-			assertNull(
-				"A width of less than 0 produces null",
-				Strings.wrap("foo", -1)
-			);
+			Strings.wrap("foo", -1);
+			fellThrough = true;
 		} catch (AssertionError e) {
-			assertTrue("A width of less than 0 causes a DBC exception", true);
+			assertNotNull("AssertionError was null", e);
 		}
+		assertFalse("Fell through", fellThrough);
 		try {
-			assertNull(
-				"A width of 0 produces null",
-				Strings.wrap("foo", 0)
-			);
+			Strings.wrap("foo", 0);
+			fellThrough = true;
 		} catch (AssertionError e) {
-			assertTrue("A width of 0 causes a DBC exception", true);
+			assertNotNull("AssertionError was null", e);
 		}
-		DBC._clearDelayedAssertation();
+		assertFalse("Fell through", fellThrough);
 	}
 
 	/** Test {@link Strings#wrap(CharSequence, int, int)}. */
@@ -261,42 +258,35 @@ extends UtilityClassTestCase<Strings>
 		Strings#wrap(CharSequence, int, int)}.
 	*/
 	public void testWrapThreeArgsNegative() {
+		boolean fellThrough = false;
 		try {
-			assertNull(
-				"A width of less than 0 produces null",
-				Strings.wrap("foo", -1, 0)
-			);
+			Strings.wrap("foo", -1, 0);
+			fellThrough = true;
 		} catch (AssertionError e) {
-			assertTrue("A width of less than 0 causes a DBC exception", true);
+			assertNotNull("AssertionError was null", e);
 		}
+		assertFalse("Fell through", fellThrough);
 		try {
-			assertNull(
-				"A width of 0 produces null",
-				Strings.wrap("foo", 0, 0)
-			);
+			Strings.wrap("foo", 0, 0);
+			fellThrough = true;
 		} catch (AssertionError e) {
-			assertTrue("A width of 0 causes a DBC exception", true);
+			assertNotNull("AssertionError was null", e);
 		}
+		assertFalse("Fell through", fellThrough);
 		try {
-			assertNull(
-				"A negative indent produces null",
-				Strings.wrap("foo", 100, -1)
-			);
+			Strings.wrap("foo", 100, -1);
+			fellThrough = true;
 		} catch (AssertionError e) {
-			assertTrue("A negative indent causes a DBC exception", true);
+			assertNotNull("AssertionError was null", e);
 		}
+		assertFalse("Fell through", fellThrough);
 		try {
-			assertNull(
-				"An indent greater than the width produces null",
-				Strings.wrap("foo", 10, 20)
-			);
+			Strings.wrap("foo", 10, 20);
+			fellThrough = true;
 		} catch (AssertionError e) {
-			assertTrue(
-				"An indent greater than the width causes a DBC exception",
-				true
-			);
+			assertNotNull("AssertionError was null", e);
 		}
-		DBC._clearDelayedAssertation();
+		assertFalse("Fell through", fellThrough);
 	}
 
 	/** Test {@link Strings#nativeLineEndings(CharSequence)}. */
@@ -364,5 +354,79 @@ extends UtilityClassTestCase<Strings>
 			"[null, foo, Power set of the set {  }]",
 			Strings.deepToString((Object[])input)
 		);
+	}
+
+	/** Test {@link Strings#join(CharSequence, Object...)}. */
+	public void testJoin() {
+		String[][][] input = {
+			{
+				{
+					null,
+				},
+				{
+				},
+			},
+			{
+				{
+					"",
+				},
+				{
+					"foo",
+					"bar",
+					"baz",
+				},
+			},
+			{
+				{
+					",",
+				},
+				{
+					"foo",
+					"bar",
+					"baz",
+				},
+			},
+		};
+		String[] expected = {
+			"",
+			"foobarbaz",
+			"foo,bar,baz",
+		};
+
+		assertEquals("Broken test data", input.length, expected.length);
+		for (int i = 0; i < input.length; i++) {
+			assertEquals("Broken test data", 2, input[i].length);
+			assertEquals("Broken test data", 1, input[i][0].length);
+			assertEquals(
+				"Input does not match expected output",
+				expected[i],
+				Strings.join(input[i][0][0], (Object[])input[i][1])
+			);
+		}
+	}
+
+	/** Test {@link Strings#indent(String, int)}. */
+	public void testIndent() {
+		Object[][] input = {
+			{"foo", 0, },
+		};
+		Object[] expected = {
+			"foo",
+		};
+
+		assertEquals("Broken test data", input.length, expected.length);
+		for (int i = 0; i < input.length; i++) {
+			assertEquals("Broken test data", 2, input[i].length);
+			assertTrue("Broken test data", input[i][0] instanceof String);
+			assertTrue("Broken test data", input[i][1] instanceof Integer);
+			assertEquals(
+				"Input does not match expected output",
+				expected[i],
+				Strings.indent(
+					(String)input[i][0],
+					(Integer)input[i][1]
+				)
+			);
+		}
 	}
 }

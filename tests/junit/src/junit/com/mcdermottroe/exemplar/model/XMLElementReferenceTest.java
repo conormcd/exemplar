@@ -43,7 +43,6 @@ extends XMLNamedObjectTestCase<XMLElementReference>
 	@Override public void setUp() throws Exception {
 		super.setUp();
 
-		addSample(new XMLElementReference());
 		addSample(new XMLElementReference("foo"));
 		addSample(new XMLElementReference("bar"));
 	}

@@ -45,9 +45,36 @@ extends NormalClassTestCase<XMLExternalIdentifier>
 	@Override public void setUp() throws Exception {
 		super.setUp();
 
-		addSample(new XMLExternalIdentifier());
 		addSample(new XMLExternalIdentifier("foo", null));
 		addSample(new XMLExternalIdentifier(null, "bar"));
 		addSample(new XMLExternalIdentifier("baz", "quux"));
 	}
-}
+
+	/** Test {@link XMLExternalIdentifier#publicID()}. */
+	public void testPublicID() {
+		for (XMLExternalIdentifier sample : samples()) {
+			if (sample != null) {
+				String pubID = sample.publicID();
+				if (pubID != null) {
+					assertNotSame("PUBLIC ID was an empty String", "", pubID);
+				}
+			}
+		}
+	}
+
+
+	/** Test {@link XMLExternalIdentifier#systemID()}. */
+	public void testSystemID() {
+		for (XMLExternalIdentifier sample : samples()) {
+			if (sample != null) {
+				String systemID = sample.systemID();
+				if (systemID != null) {
+					assertNotSame(
+						"SYSTEM ID was an empty String",
+						"",
+						systemID
+					);
+				}
+			}
+		}
+	}}

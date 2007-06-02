@@ -29,6 +29,8 @@
 */
 package junit.com.mcdermottroe.exemplar.ui;
 
+import java.util.Set;
+
 import com.mcdermottroe.exemplar.ui.Options;
 
 import junit.com.mcdermottroe.exemplar.UtilityClassTestCase;
@@ -41,4 +43,26 @@ import junit.com.mcdermottroe.exemplar.UtilityClassTestCase;
 public class OptionsTest
 extends UtilityClassTestCase<Options>
 {
+	/** Test {@link Options#allMandatoryOptionsSet()}. */
+	public void testAllMandatoryOptionsSet() {
+		try {
+			Options.allMandatoryOptionsSet();
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError", e);
+			fail("allMandatoryOptionsSet() failed an assertion.");
+		}
+	}
+
+	/** Test {@link Options#getAllOptionNames()}. */
+	public void testGetAllOptionNames() {
+		Set<String> optionNames = null;
+		try {
+			optionNames = Options.getAllOptionNames();
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError", e);
+			fail("getAllOptionNames() failed an assertion.");
+		}
+		assertNotNull("getAllOptionNames() == null", optionNames);
+		assertFalse("No option names were returned.", optionNames.isEmpty());
+	}
 }

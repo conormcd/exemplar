@@ -30,6 +30,9 @@
 package junit.com.mcdermottroe.exemplar.input.dtd;
 
 import com.mcdermottroe.exemplar.input.dtd.Parser;
+import com.mcdermottroe.exemplar.input.ParserException;
+import com.mcdermottroe.exemplar.ui.Options;
+import com.mcdermottroe.exemplar.model.XMLDocumentType;
 
 import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
 
@@ -48,5 +51,89 @@ extends NormalClassTestCase<Parser>
 		addSample(new Parser());
 
 		ignoreHashCodeTests = true;
+	}
+
+	/** Test {@link Parser#parse(String)} */
+	public void testParseString() {
+		for (Parser sample : samples()) {
+			if (sample != null) {
+				XMLDocumentType doctype = null;
+				try {
+					doctype = sample.parse("/dev/null");
+				} catch (ParserException e) {
+					assertNotNull("ParserException was null", e);
+					fail("parse(String) threw a ParserException");
+				}
+				assertNotNull("parse(String) returned null", doctype);
+			}
+		}
+	}
+
+	/** Test {@link Parser#debug_message(String)}. */
+	public void testDebug_message() {
+		String[] input = {
+			null,
+			"foo",
+			"bar",
+			"# Current token is #",
+			"# Current token is #23",
+		};
+		Options.set("debug", "true");
+		Options.set("debug-level", "100");
+
+		for (Parser sample : samples()) {
+			if (sample != null) {
+				for (String message : input) {
+					try {
+						sample.debug_message(message);
+					} catch (AssertionError e) {
+						assertNotNull("AssertionError was null", e);
+						fail("debug_message() failed an assertion");
+					}
+				}
+			}
+		}
+	}
+
+	/** Test {@link Parser#EOF_sym()}. */
+	public void testEOF_sym() {
+		assertTrue(DELIBERATE_PASS, true);
+	}
+
+	/** Test {@link Parser#action_table()}. */
+	public void testAction_table() {
+		assertTrue(DELIBERATE_PASS, true);
+	}
+
+	/** Test {@link
+		Parser#do_action(int,java_cup.runtime.lr_parser,java.util.Stack, int)}.
+	*/
+	public void testDo_action() {
+		assertTrue(DELIBERATE_PASS, true);
+	}
+
+	/** Test {@link Parser#error_sym()}. */
+	public void testError_sym() {
+		assertTrue(DELIBERATE_PASS, true);
+	}
+
+	/** Test {@link Parser#production_table()} ()}. */
+	public void testProduction_table() {
+		assertTrue(DELIBERATE_PASS, true);
+	}
+
+	/** Test {@link Parser#reduce_table()}. */
+	public void testReduce_table() {
+		assertTrue(DELIBERATE_PASS, true);
+	}
+
+	/** Test {@link Parser#start_production()}. */
+	public void testStart_production() {
+		assertTrue(DELIBERATE_PASS, true);
+	}
+
+	/** Test {@link Parser#start_state()}. */
+	public void testStart_state() {
+		assertTrue(DELIBERATE_PASS, true);
 	}
 }

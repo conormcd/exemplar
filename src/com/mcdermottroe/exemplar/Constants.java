@@ -29,6 +29,8 @@
 */
 package com.mcdermottroe.exemplar;
 
+import java.util.regex.Pattern;
+
 /** Holds non-user-visible constant values for the entire program.
 	The constants are organized into several inner interfaces to keep them
 	categorized and to allow some classes to "implement" them in order to
@@ -50,7 +52,7 @@ public interface Constants {
 		by the roadmap. A copy of the roadmap can be found in the root
 		directory of the source distribution.
 	*/
-	String PROGRAM_VERSION = "0.1.0";
+	String PROGRAM_VERSION = "0.1.1";
 
 	/** A short message about the copyright and license. The years mentioned in
 		this message correspond to the range of years for all of the files
@@ -127,6 +129,9 @@ public interface Constants {
 
 		/** The comma character ',', '\u002c'. */
 		char COMMA = ',';
+
+		/** The dollar character '$', '\u0024'. */
+		char DOLLAR = '$';
 
 		/** The double quote character '"', '\u0022'. */
 		char DOUBLE_QUOTE = '"';
@@ -351,11 +356,8 @@ public interface Constants {
 		/** A regex that matches valid keys in the exit status resource file. */
 		String EXIT_STATUS_MNEMONIC = "^[A-Z0-9][A-Z0-9_]+[A-Z0-9]$";
 
-		/** The prefix for the package name for all of the JUnit classes. */
-		String JUNIT_PACKAGE_PREFIX = "^junit\\.";
-
 		/** A regex matching valid parameter entity names. */
-		String VALID_PE_NAME = "^[A-Za-z0-9\\._:-]+$";
+		Pattern VALID_PE_NAME = Pattern.compile("^[A-Za-z0-9\\._:-]+$"); // NON-NLS
 	}
 
 	/** Constants for UI. */
@@ -426,13 +428,13 @@ public interface Constants {
 			String EXIT_FAIL_CODE_GEN = "EXIT_FAIL_CODE_GEN";
 
 			/** The key for the string that is displayed as the argument to an
-				{@link com.mcdermottroe.exemplar.ui.Options.Argument}
+				{@link com.mcdermottroe.exemplar.ui.options.Argument}
 				description.
 			*/
 			String ARG_ARG = "argArg";
 
 			/** The key for the string that is displayed as the argument to an
-				{@link com.mcdermottroe.exemplar.ui.Options.Enum}
+				{@link com.mcdermottroe.exemplar.ui.options.Enum}
 				description.
 			*/
 			String ENUM_ARG = "enumArg";

@@ -29,6 +29,8 @@
 */
 package com.mcdermottroe.exemplar.model;
 
+import java.util.ArrayList;
+
 import com.mcdermottroe.exemplar.CopyException;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
@@ -48,72 +50,34 @@ public class XMLElement
 extends XMLNamedObject<XMLElement>
 implements XMLMarkupDeclaration
 {
-	/** An enumerated type for the types of content type. */
-	public enum ContentType {
-		/** The element is always empty. */
-		EMPTY,
-		/** The element may contain any content. */
-		ANY,
-		/** The element contains mixed content. */
-		MIXED,
-		/** The element contains child elements. */
-		CHILDREN
-	}
-
-	/** The type of content this XMLElement may hold. */
-	private ContentType contentType;
-
-	/** A tree describing the arrangement of the contents of this {@link
-		#XMLElement}.
-	*/
-	private XMLAggregateObject<?> contentSpec;
+	/** The content model for the element. */
+	private XMLElementContentModel contentModel;
 
 	/** A reference to the attribute list, if any that this element has. */
 	private XMLAttributeList attlist;
 
-	/** A no-arg constructor to aid in testing. */
-	public XMLElement() {
-		super();
-		contentType = ContentType.ANY;
-		contentSpec = null;
-		attlist = null;
+	/** Create a new {@link XMLElement}.
+
+		@param	elementName	The name of the element.
+		@param	content		The content model of the element.
+	*/
+	public XMLElement(String elementName, XMLElementContentModel content) {
+		super(elementName);
+		DBC.REQUIRE(content != null);
+		contentModel = content;
+		attlist = new XMLAttributeList(
+			elementName,
+			new ArrayList<XMLAttribute>()
+		);
 	}
 
-	/** Make a new {@link XMLElement} with the specified content type.
+	/** Accessor for the content model.
 
-		@param	cType	The type of content this {@link XMLElement} may hold.
+		@return	The content model.
 	*/
-	public XMLElement(ContentType cType) {
-		super();
-		contentType = cType;
-		contentSpec = null;
-		attlist = null;
-	}
-
-	/** Make a new {@link XMLElement} with the given content specification and
-		a content type of {@link ContentType#MIXED}.
-
-		@param	cSpec	The content specification for this element.
-	*/
-	public XMLElement(XMLMixedContent cSpec) {
-		super();
-		DBC.REQUIRE(cSpec != null);
-		contentType = ContentType.MIXED;
-		contentSpec = cSpec;
-		attlist = null;
-	}
-
-	/** Make a new {@link XMLElement} with the give content specification and a
-		content type of {@link ContentType#CHILDREN}.
-
-		@param	cSpec	The content specification for this element.
-	*/
-	public XMLElement(XMLSequence cSpec) {
-		super();
-		DBC.REQUIRE(cSpec != null);
-		contentType = ContentType.CHILDREN;
-		contentSpec = cSpec;
-		attlist = null;
+	public XMLElementContentModel getContentModel() {
+		DBC.ENSURE(contentModel != null);
+		return contentModel;
 	}
 
 	/**	Accessor for the content spec.
@@ -121,7 +85,8 @@ implements XMLMarkupDeclaration
 		@return	The content spec for this {@link XMLElement}
 	*/
 	public XMLAggregateObject<?> getContentSpec() {
-		return contentSpec;
+		DBC.REQUIRE(contentModel != null);
+		return contentModel.getContentSpec();
 	}
 
 	/** Access method to retrieve the type of content this {@link XMLElement}
@@ -129,8 +94,9 @@ implements XMLMarkupDeclaration
 
 		@return	The content type of this element.
 	*/
-	public ContentType getContentType() {
-		return contentType;
+	public XMLElementContentType getContentType() {
+		DBC.REQUIRE(contentModel != null);
+		return contentModel.getContentType();
 	}
 
 	/** Access method to set the reference to the attribute list for
@@ -148,6 +114,7 @@ implements XMLMarkupDeclaration
 		@return This elements attribute list.
 	*/
 	public XMLAttributeList getAttlist() {
+		DBC.ENSURE(attlist != null);
 		return attlist;
 	}
 
@@ -155,19 +122,8 @@ implements XMLMarkupDeclaration
 	@Override public XMLElement getCopy()
 	throws CopyException
 	{
-		XMLElement copy = new XMLElement();
-		if (attlist != null) {
-			copy.attlist = attlist.getCopy();
-		} else {
-			copy.attlist = null;
-		}
-		if (contentSpec != null) {
-			copy.contentSpec = contentSpec.getCopy();
-		} else {
-			copy.contentSpec = null;
-		}
-		copy.contentType = contentType;
-		copy.name = name;
+		XMLElement copy = new XMLElement(name, contentModel);
+		copy.setAttlist(attlist);
 		return copy;
 	}
 
@@ -177,10 +133,10 @@ implements XMLMarkupDeclaration
 		desc.append(name);
 		desc.append(COMMA);
 		desc.append(SPACE);
-		desc.append(contentType);
+		desc.append(contentModel.getContentType());
 		desc.append(COMMA);
 		desc.append(SPACE);
-		desc.append(contentSpec);
+		desc.append(contentModel.getContentSpec());
 		if (attlist != null) {
 			desc.append(COMMA);
 			desc.append(SPACE);
@@ -205,13 +161,11 @@ implements XMLMarkupDeclaration
 			XMLElement other = (XMLElement)o;
 			Object[] thisFields = {
 				attlist,
-				contentSpec,
-				contentType,
+				contentModel,
 			};
 			Object[] otherFields = {
 				other.getAttlist(),
-				other.getContentSpec(),
-				other.getContentType(),
+				other.getContentModel(),
 			};
 			return Utils.areAllDeeplyEqual(thisFields, otherFields);
 		}
@@ -223,7 +177,7 @@ implements XMLMarkupDeclaration
 	@Override public int hashCode() {
 		int hashCode = super.hashCode();
 		hashCode *= HASHCODE_MAGIC_NUMBER;
-		hashCode += Utils.genericHashCode(attlist, contentSpec, contentType);
+		hashCode += Utils.genericHashCode(attlist, contentModel);
 		return hashCode;
 	}
 }

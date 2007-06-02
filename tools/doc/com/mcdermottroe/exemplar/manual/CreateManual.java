@@ -49,6 +49,7 @@ import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.MessageException;
 import com.mcdermottroe.exemplar.ui.Options;
 import com.mcdermottroe.exemplar.ui.cli.ExitStatus;
+import com.mcdermottroe.exemplar.ui.cli.ExitCode;
 import com.mcdermottroe.exemplar.utils.XML;
 
 import static com.mcdermottroe.exemplar.Constants.EOL;
@@ -332,16 +333,15 @@ public class CreateManual {
 		StringBuilder ret = new StringBuilder();
 		ret.append("\t\t\t<xsl:when test=\"@id='exitcodes'\">").append(EOL);
 
-		for (Iterator<String> it = ExitStatus.iterator(); it.hasNext(); ) {
-			String exitMnemonic = it.next();
-
+		for (ExitCode exitCode : ExitStatus.getExitCodes()) {
 			ret.append("\t\t\t\t<refsect2>").append(EOL);
 			ret.append("\t\t\t\t\t<title>");
-			ret.append(ExitStatus.getExitCode(exitMnemonic)).append(": ");
-			ret.append(exitMnemonic);
+			ret.append(exitCode.getNumericForm());
+			ret.append(": ");
+			ret.append(exitCode.getMnemonic());
 			ret.append("</title>").append(EOL);
 			ret.append("\t\t\t\t\t<para>");
-			ret.append(ExitStatus.getDescription(exitMnemonic));
+			ret.append(exitCode.getDescription());
 			ret.append("</para>").append(EOL);
 			ret.append("\t\t\t\t</refsect2>").append(EOL);
 		}

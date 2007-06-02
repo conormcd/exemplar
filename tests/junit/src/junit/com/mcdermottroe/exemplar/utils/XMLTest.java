@@ -76,8 +76,7 @@ extends UtilityClassTestCase<XML>
 			XML.toCharacterReferences("foo&amp");
 			fail("Unterminated reference not detected");
 		} catch (ParseException e) {
-			e.printStackTrace();
-			assertTrue("Unterminated reference accurately detected.", true);
+			assertNotNull("ParseException was null", e);
 		}
 	}
 
@@ -274,7 +273,7 @@ extends UtilityClassTestCase<XML>
 			XML.resolveCharacterReferences("A&ampA");
 			fail("Unterminated reference not correctly detected.");
 		} catch (ParseException e) {
-			assertTrue("Unterminated reference correctly detected.", true);
+			assertNotNull("ParseException was null", e);
 		}
 	}
 
@@ -287,7 +286,7 @@ extends UtilityClassTestCase<XML>
 			XML.resolveCharacterReferences("&ampA");
 			fail("Unterminated reference not correctly detected.");
 		} catch (ParseException e) {
-			assertTrue("Unterminated reference correctly detected.", true);
+			assertNotNull("ParseException was null", e);
 		}
 	}
 
@@ -300,7 +299,7 @@ extends UtilityClassTestCase<XML>
 			XML.resolveCharacterReferences("Q&");
 			fail("Unterminated reference not correctly detected.");
 		} catch (ParseException e) {
-			assertTrue("Unterminated reference correctly detected.", true);
+			assertNotNull("ParseException was null", e);
 		}
 	}
 
@@ -313,10 +312,7 @@ extends UtilityClassTestCase<XML>
 			XML.resolveCharacterReferences("f&#6f;o");
 			fail("Malformed character reference not correctly detected.");
 		} catch (ParseException e) {
-			assertTrue(
-				"Malformed character reference correctly detected.",
-				true
-			);
+			assertNotNull("ParseException was null", e);
 		}
 	}
 
@@ -329,10 +325,7 @@ extends UtilityClassTestCase<XML>
 			XML.resolveCharacterReferences("f&#x123z;o");
 			fail("Malformed character reference not correctly detected.");
 		} catch (ParseException e) {
-			assertTrue(
-				"Malformed character reference correctly detected.",
-				true
-			);
+			assertNotNull("ParseException was null", e);
 		}
 	}
 
@@ -344,10 +337,7 @@ extends UtilityClassTestCase<XML>
 			XML.resolveCharacterReferences("&#-10;");
 			fail("Negative character reference not correctly detected.");
 		} catch (ParseException e) {
-			assertTrue(
-				"Negative character reference correctly detected.",
-				true
-			);
+			assertNotNull("ParseException was null", e);
 		}
 	}
 
@@ -359,10 +349,7 @@ extends UtilityClassTestCase<XML>
 			XML.resolveCharacterReferences("&#x-A;");
 			fail("Negative character reference not correctly detected.");
 		} catch (ParseException e) {
-			assertTrue(
-				"Negative character reference correctly detected.",
-				true
-			);
+			assertNotNull("ParseException was null", e);
 		}
 	}
 }

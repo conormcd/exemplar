@@ -29,10 +29,9 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.mcdermottroe.exemplar.model.XMLAttribute;
+import com.mcdermottroe.exemplar.model.XMLAttributeContentType;
+import com.mcdermottroe.exemplar.model.XMLAttributeDefaultType;
 
 import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
 
@@ -50,57 +49,55 @@ extends NormalClassTestCase<XMLAttribute>
 	{
 		super.setUp();
 
-		XMLAttribute sample = new XMLAttribute();
-		sample.setDefaultDecl(XMLAttribute.DefaultType.FIXED, "foo"); // NON-NLS
+		XMLAttribute sampleA = new XMLAttribute(
+			"foo",
+			XMLAttributeContentType.CDATA(),
+			XMLAttributeDefaultType.FIXED("foo")
+		);
 
-		addSample(new XMLAttribute());
-		addSample(sample);
+		addSample(sampleA);
 	}
 
-	/** Test {@link XMLAttribute#getName()} and {@link
-		XMLAttribute#setName(String)}.
-	*/
-	public void testName() {
+	/** Test {@link XMLAttribute#getDefaultDeclType()}. */
+	public void testGetDefaultDeclType() {
 		for (XMLAttribute sample : samples()) {
 			if (sample != null) {
-				String originalName = sample.getName();
-				sample.setName("foo");	// NON-NLS
-				assertEquals(
-					"setName && getName roundtrip",
-					"foo",
-					sample.getName()
-				);
-				sample.setName(originalName);
-				assertEquals(
-					"setName && getName roundtrip",
-					originalName,
-					sample.getName()
-				);
+				try {
+					sample.getDefaultDeclType();
+				} catch (AssertionError e) {
+					assertNotNull("AssertionError was null", e);
+					fail("An assertion was thrown by getDefaultDeclType()");
+				}
 			}
 		}
 	}
 
-	/** Test {@link XMLAttribute#getValues()} and {@link
-		XMLAttribute#setValues(List)}.
-	*/
-	public void testValues() {
-		List<String> testValues = new ArrayList<String>();
-		testValues.add("foo"); // NON-NLS
+	/** Test {@link XMLAttribute#getName()}. */
+	public void testGetName() {
 		for (XMLAttribute sample : samples()) {
 			if (sample != null) {
-				List<String> originalValues = sample.getValues();
-				sample.setValues(testValues);
-				assertEquals(
-					"setValues && getValues roundtrip",
-					testValues,
-					sample.getValues()
-				);
-				sample.setValues(originalValues);
-				assertEquals(
-					"setValues && getValues roundtrip",
-					originalValues,
-					sample.getValues()
-				);
+				try {
+					sample.getName();
+				} catch (AssertionError e) {
+					assertNotNull("AssertionError was null", e);
+					fail("An assertion was thrown by getName()");
+				}
+			}
+		}
+	}
+
+	/** Test {@link XMLAttribute#getType()}. */
+	public void testGetType() {
+		for (XMLAttribute sample : samples()) {
+			if (sample != null) {
+				XMLAttributeContentType type = null;
+				try {
+					type = sample.getType();
+				} catch (AssertionError e) {
+					assertNotNull("AssertionError was null", e);
+					fail("An assertion was thrown by getName()");
+				}
+				assertNotNull("Type was null", type);
 			}
 		}
 	}

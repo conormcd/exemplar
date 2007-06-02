@@ -30,11 +30,9 @@
 package com.mcdermottroe.exemplar.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.utils.Strings;
 
@@ -54,29 +52,21 @@ extends XMLNamedObject<XMLAttributeList>
 implements XMLMarkupDeclaration, Iterable<XMLAttribute>
 {
 	/** The list of attributes. */
-	private List<XMLAttribute> attributes;
+	private final List<XMLAttribute> attributes;
 
-	/** Basic constructor. All XMLAttributeLists start empty and anonymous. */
-	public XMLAttributeList() {
+	/** Create a new attribute list.
+
+		@param	elementName	The name of the element to which this attribute list
+							is to be attached.
+		@param	atts		The attribute definitions which make up this
+							attribute list.
+	*/
+	public XMLAttributeList(String elementName, List<XMLAttribute> atts) {
 		// Do the base class initialisation
-		super();
+		super(elementName);
 
 		// Create the attribute list.
-		attributes = new ArrayList<XMLAttribute>();
-	}
-
-	/** Add a new attribute to {@link #attributes the list}.
-
-		@param	newAttribute	The new attribute to add to the list.
-	*/
-	public void addAttribute(XMLAttribute newAttribute) {
-		DBC.REQUIRE(attributes != null);
-		DBC.REQUIRE(newAttribute != null);
-
-		attributes.add(newAttribute);
-
-		DBC.ENSURE(attributes != null);
-		DBC.ENSURE(attributes.get(attributes.size() - 1).equals(newAttribute));
+		attributes = new ArrayList<XMLAttribute>(atts);
 	}
 
 	/**	Access method for the {@link #attributes}.
@@ -84,10 +74,7 @@ implements XMLMarkupDeclaration, Iterable<XMLAttribute>
 		@return	An {@link Iterator} over the {@link #attributes}.
 	*/
 	public Iterator<XMLAttribute> iterator() {
-		DBC.REQUIRE(attributes != null);
-
-		Collections.sort(attributes);
-		return attributes.iterator();
+		return getAttributes().iterator();
 	}
 
 	/** Getter for the {@link #attributes} member.
@@ -108,7 +95,7 @@ implements XMLMarkupDeclaration, Iterable<XMLAttribute>
 
 		StringBuilder desc = new StringBuilder();
 		desc.append(LEFT_PAREN);
-		desc.append(Strings.join(sep, this));
+		desc.append(Strings.join(sep, attributes));
 		desc.append(RIGHT_PAREN);
 
 		return XMLObject.toStringHelper(getClass().getName(), desc.toString());
@@ -116,13 +103,7 @@ implements XMLMarkupDeclaration, Iterable<XMLAttribute>
 
 	/** {@inheritDoc} */
 	@Override public XMLAttributeList getCopy() {
-		XMLAttributeList copy = new XMLAttributeList();
-		copy.attributes = new ArrayList<XMLAttribute>(attributes.size());
-		for (XMLAttribute att : attributes) {
-			copy.attributes.add(att.getCopy());
-		}
-		copy.setName(getName());
-		return copy;
+		return new XMLAttributeList(getName(), attributes);
 	}
 
 	/** {@inheritDoc} */

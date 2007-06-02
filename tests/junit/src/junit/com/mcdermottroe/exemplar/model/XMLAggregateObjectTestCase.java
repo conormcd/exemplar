@@ -29,12 +29,15 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.model.XMLAggregateObject;
+import com.mcdermottroe.exemplar.model.XMLElementReference;
 import com.mcdermottroe.exemplar.model.XMLObject;
+import com.mcdermottroe.exemplar.model.XMLSequence;
 
 /** Parent class to all subclasses of {@link XMLAggregateObject}.
 
@@ -46,19 +49,6 @@ public abstract
 class XMLAggregateObjectTestCase<T extends XMLAggregateObject<T>>
 extends XMLObjectTestCase<T>
 {
-	/** Test {@link XMLAggregateObject#numElements()}. */
-	public void testNumElements() {
-		boolean success = true;
-		for (T sample : samples()) {
-			if (sample != null) {
-				if (sample.numElements() < 0) {
-					success = false;
-				}
-			}
-		}
-		assertTrue("Test numElements >= 0", success);
-	}
-
 	/** Test {@link XMLAggregateObject#iterator()}. */
 	public void testIterator() {
 		boolean success = true;
@@ -66,10 +56,10 @@ extends XMLObjectTestCase<T>
 			if (sample != null) {
 				int count = 0;
 				for (Object o : sample) {
-					System.out.println(o);
+					assertNotNull("Null object returned from iterator", o);
 					count++;
 				}
-				if (count != sample.numElements()) {
+				if (count != sample.getContents().size()) {
 					success = false;
 				}
 			}
@@ -109,6 +99,48 @@ extends XMLObjectTestCase<T>
 				}
 			}
 		}
-		assertTrue("getContents() returns the same list as iterator()", true);
+	}
+
+	/** Test {@link XMLAggregateObject#append(XMLAggregateObject)}. */
+	public void testAppend() {
+		// The list of added objects
+		List<XMLObject<?>> objectsToAdd = new ArrayList<XMLObject<?>>();
+		objectsToAdd.add(new XMLElementReference("foo"));
+		objectsToAdd.add(new XMLElementReference("bar"));
+
+		// Now create an XMLSequence with those objects
+		XMLSequence seq = new XMLSequence();
+		for (XMLObject<?> xo : objectsToAdd) {
+			seq.addObject(xo);
+		}
+
+		// Now test all the non-null samples
+		for (T sample : samples()) {
+			if (sample != null) {
+				List<XMLObject<?>> expected = sample.getContents();
+				expected.addAll(objectsToAdd);
+				sample.append(seq);
+				assertEquals(
+					"Appending null changed the contents!",
+					expected,
+					sample.getContents()
+				);
+			}
+		}
+	}
+
+	/** Test {@link XMLAggregateObject#append(XMLAggregateObject)}. */
+	public void testAppendNull() {
+		for (T sample : samples()) {
+			if (sample != null) {
+				List<XMLObject<?>> originalContents = sample.getContents();
+				sample.append(null);
+				assertEquals(
+					"Appending null changed the contents!",
+					originalContents,
+					sample.getContents()
+				);
+			}
+		}
 	}
 }

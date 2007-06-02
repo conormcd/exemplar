@@ -29,6 +29,8 @@
 */
 package junit.com.mcdermottroe.exemplar.output;
 
+import java.io.File;
+
 import com.mcdermottroe.exemplar.output.OutputException;
 
 import junit.com.mcdermottroe.exemplar.ExceptionClassTestCase;
@@ -41,4 +43,39 @@ import junit.com.mcdermottroe.exemplar.ExceptionClassTestCase;
 public class OutputExceptionTest
 extends ExceptionClassTestCase<OutputException>
 {
+	/** The test file to use. */
+	private static final File testFile = new File("/dev/null");
+
+	/** {@inheritDoc} */
+	@Override public void setUp()
+	throws Exception
+	{
+		super.setUp();
+
+		OutputException testException = new OutputException();
+
+		addSample(new OutputException(testFile));
+		addSample(new OutputException("Message", testFile));
+		addSample(new OutputException(testException, testFile));
+		addSample(new OutputException("Message", testException, testFile));
+	}
+
+	/** Test that {@link OutputException#getFile()} returns either null or
+		{@link #testFile}.
+	*/
+	public void testGetFile() {
+		for (Exception sample : samples()) {
+			if (sample != null) {
+				assertTrue(
+					"Sample is not an OutputException",
+					sample instanceof OutputException
+				);
+				File f = ((OutputException)sample).getFile();
+				assertTrue(
+					"getFile() failed",
+					f == null || testFile.equals(f)
+				);
+			}
+		}
+	}
 }

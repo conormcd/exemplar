@@ -38,40 +38,6 @@
 		<property name="tabWidth" value="4" />
 
 		<!--
-			Naming Conventions
-		-->
-		<module name="AbstractClassName">
-			<property name="format" value="^[A-Z][A-Za-z]+$" />
-		</module>
-		<module name="ConstantName">
-			<property name="format" value="^[A-Z]+(_[A-Z]+)*$" />
-		</module>
-		<module name="LocalFinalVariableName">
-			<property name="format" value="^[a-z]+([A-Z][a-z]*)*$" />
-		</module>
-		<module name="LocalVariableName">
-			<property name="format" value="^[a-z]+([A-Z][a-z]*)*$" />
-		</module>
-		<module name="MemberName">
-			<property name="format" value="^[a-z]+([A-Z][a-z]*)*$" />
-		</module>
-		<module name="MethodName">
-			<property name="format" value="^[a-z]+([A-Z][a-z]*)*$" />
-		</module>
-		<module name="PackageName">
-			<property name="format" value="^[a-z0-9]+(\.[a-z0-9]+)*$" />
-		</module>
-		<module name="ParameterName">
-			<property name="format" value="^[a-z]+([A-Z][a-z]*)*$" />
-		</module>
-		<module name="StaticVariableName">
-			<property name="format" value="^[a-z]+([A-Z][a-z]*)*$" />
-		</module>
-		<module name="TypeName">
-			<property name="format" value="^([A-Z][a-z]*)+$" />
-		</module>
-
-		<!--
 			Size Violations
 		-->
 		<module name="LineLength">

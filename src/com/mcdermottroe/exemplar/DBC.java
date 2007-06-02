@@ -31,7 +31,6 @@ package com.mcdermottroe.exemplar;
 
 import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
-import com.mcdermottroe.exemplar.ui.Options;
 
 /** Provide some rudimentary Design By Contract&trade; facilities. This class
 	attempts to mimic the Design By Contract&trade; mechanisms present in
@@ -46,17 +45,6 @@ import com.mcdermottroe.exemplar.ui.Options;
 			Prentice-Hall.</a>
 */
 public final class DBC {
-	/** Sometimes an {@link AssertionError} must be stored and thrown later
-		rather than throwing it immediately due to bootstrapping issues.
-	*/
-	private static AssertionError storedAssertion = null;
-
-	/** A flag to allow tests to force this class to throw assertions
-		immediately rather than cacheing them. This will imply that debugging
-		is turned on.
-	*/
-	private static boolean _throwImmediately = false;
-
 	/** Prevent this class from being externally instantiated. */
 	private DBC() {
 		UNREACHABLE_CODE();
@@ -66,43 +54,17 @@ public final class DBC {
 		keyword found in Java version 1.4 and later. This assertion mechanism
 		includes information on where the assertion was thrown from. These
 		assertions only run if the "debug" option is set. The correct way to
-		test for this condition is with {@link Options#isDebugSet()}, otherwise
-		the call to this method could become recursive.
+		test for this condition is with {@link
+		com.mcdermottroe.exemplar.ui.Options#isDebugSet()}, otherwise the call
+		to this method could become recursive.
 
 		@param	assertion		The boolean expression which should be true.
-		@see 	Options#isDebugSet()
+		@see 	com.mcdermottroe.exemplar.ui.Options#isDebugSet()
 	*/
 	public static void ASSERT(boolean assertion) {
-		// Quickly exit if the assertion will pass anyway.
-		if (assertion && storedAssertion == null) {
+		// Bail out quickly if the assertion is true
+		if (assertion) {
 			return;
-		}
-
-		// Figure out what course of action to take.
-		//
-		// The options are:
-		// 1) Discard the assertion thrown.
-		// 2) Defer the throwing of the assertion
-		//    until later.
-		// 3) Throw a previously deferred assertion.
-		// 4) Throw the current assertion.
-		boolean throwLater;
-		if (_throwImmediately) {
-			throwLater = false;
-		} else {
-			throwLater = !(Options.isInitialised() && Options.isDebugSet());
-		}
-
-		// If there is already an assertion it is dealt with here rather than
-		// wasting time craeting a new one.
-		if (storedAssertion != null) {
-			if (throwLater) {
-				// The earliest assertion should be the one fired, so ignore
-				// the one failing here.
-				return;
-			} else {
-				throw storedAssertion;
-			}
 		}
 
 		// Find the current fully qualified class name in a package-neutral way.
@@ -112,8 +74,7 @@ public final class DBC {
 		// Java not Perl.
 		int assertionPoint = -1;
 		int caller = -1;
-		AssertionError dummyAssertion = new AssertionError();
-		StackTraceElement[] trace = dummyAssertion.getStackTrace();
+		StackTraceElement[] trace = new AssertionError().getStackTrace();
 		for (int i = 0; i < trace.length; i++) {
 			String traceMessage = trace[i].toString();
 			if (!traceMessage.startsWith(thisClass)) {
@@ -134,19 +95,12 @@ public final class DBC {
 		if (caller != -1) {
 			callerPoint = trace[caller].toString();
 		}
-		AssertionError newAssertion = new AssertionError(
+		throw new AssertionError(
 			Message.ASSERTION_MESSAGE(
 				assertPoint,
 				callerPoint
 			)
 		);
-
-		// Now either throw or defer the assertion.
-		if (throwLater) {
-			storedAssertion = newAssertion;
-		} else {
-			throw newAssertion;
-		}
 	}
 
 	/** Alias of {@link #ASSERT(boolean)} for describing a precondition for a
@@ -184,19 +138,6 @@ public final class DBC {
 		ASSERT(false);
 	}
 
-	/** A marker for an ignored error. This should be used in cases where the
-		programmer does not care about the existance of an error, but would
-		like to be notified of it if running in debug mode. This can be useful
-		in situations where an error is successfully avoided by the code, yet
-		the existance of the error might be useful while debugging.
-
-		@see #ASSERT(boolean)
-	*/
-	public static void IGNORED_ERROR() {
-		Log.debug(Message.IGNORING_ERROR());
-		ASSERT(false);
-	}
-
 	/** A marker for an ignored exception. To be used in cases where the
 		programmer is forced to catch an exception but wishes to continue
 		processing anyway.
@@ -205,22 +146,5 @@ public final class DBC {
 	*/
 	public static void IGNORED_EXCEPTION(Throwable t) {
 		Log.debug(Message.IGNORING_EXCEPTION(), t);
-	}
-
-	/** A method to allow tests to clear the stored delayed assertion. This
-		must not be called from actual code, only from test code.
-	*/
-	public static void _clearDelayedAssertation() {
-		storedAssertion = null;
-	}
-
-	/** A method to allow tests to force this class to throw assertions
-		immediately rather than cacheing them. This will imply that debugging
-		is turned on.
-
-		@param	value	The value to set the flag to.
-	*/
-	public static void _setThrowImmediately(boolean value) {
-		_throwImmediately = value;
 	}
 }

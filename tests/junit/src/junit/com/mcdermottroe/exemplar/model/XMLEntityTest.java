@@ -44,13 +44,148 @@ extends XMLNamedObjectTestCase<XMLEntity>
 	@Override public void setUp() throws Exception {
 		super.setUp();
 
-		addSample(new XMLEntity());
-		addSample(new XMLEntity("value"));
-		addSample(new XMLEntity(new XMLExternalIdentifier()));
-		addSample(
-			new XMLEntity(
-				new XMLExternalIdentifier("foo", "bar")
-			)
-		);
+		XMLEntity[] samples = new XMLEntity[3];
+
+		samples[0] =	new XMLEntity("name", "value");
+		samples[1] =	new XMLEntity(
+							"name",
+							new XMLExternalIdentifier("foo", "bar")
+						);
+		samples[2] =	new XMLEntity(
+							"name",
+							new XMLExternalIdentifier("foo", "bar"),
+							"notation"
+						);
+
+		for (XMLEntity sample : samples) {
+			addSample(sample);
+		}
+	}
+
+	/** Test the constructor for {@link XMLEntity}. */
+	public void testConstructor() {
+		boolean fellThrough = false;
+		XMLEntity xe = null;
+
+		try {
+			xe = new XMLEntity(null, (String)null);
+			fellThrough = true;
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+		}
+		assertFalse("new XMLEntity((String)null)", fellThrough);
+		assertNull("XMLEntity was not null", xe);
+
+		try {
+			xe = new XMLEntity(null, (XMLExternalIdentifier)null);
+			fellThrough = true;
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+		}
+		assertFalse("new XMLEntity((XMLExternalIdentifier)null)", fellThrough);
+		assertNull("XMLEntity was not null", xe);
+
+		try {
+			xe = new XMLEntity(null, null, null);
+			fellThrough = true;
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+		}
+		assertFalse("new XMLEntity(null, null, null)", fellThrough);
+		assertNull("XMLEntity was not null", xe);
+
+		try {
+			xe = new XMLEntity(
+				null,
+				new XMLExternalIdentifier("foo", "bar"),
+				null
+			);
+			fellThrough = true;
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+		}
+		assertFalse("new XMLEntity(null, XEI(foo, bar), null)", fellThrough);
+		assertNull("XMLEntity was not null", xe);
+
+		try {
+			xe = new XMLEntity(null, null, "notation");
+			fellThrough = true;
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+		}
+		assertFalse("new XMLEntity(null, null, \"notation\")", fellThrough);
+		assertNull("XMLEntity was not null", xe);
+	}
+
+	/** Test {@link XMLEntity#externalID()}. */
+	public void testExternalID() {
+		for (XMLEntity sample : samples()) {
+			if (sample != null) {
+				try {
+					sample.externalID();
+				} catch (AssertionError e) {
+					assertNotNull("AssertionError was null", e);
+					fail("XMLExternalIdentifier.externalID() threw assertion");
+				}
+			}
+		}
+	}
+
+	/** Test {@link XMLEntity#getNotation()}. */
+	public void testGetNotation() {
+		for (XMLEntity sample : samples()) {
+			if (sample != null) {
+				try {
+					sample.getNotation();
+				} catch (AssertionError e) {
+					assertNotNull("AssertionError was null", e);
+					fail("XMLExternalIdentifier.getNotation() threw assertion");
+				}
+			}
+		}
+	}
+
+	/** Test {@link XMLEntity#isInternal()}. */
+	public void testIsInternal() {
+		for (XMLEntity sample : samples()) {
+			if (sample != null) {
+				assertEquals(
+					"isInternal() lies",
+					sample.externalID() == null && sample.getNotation() == null,
+					sample.isInternal()
+				);
+			}
+		}
+	}
+
+	/** Test {@link XMLEntity#type()}. */
+	public void testType() {
+		for (XMLEntity sample : samples()) {
+			if (sample != null) {
+				try {
+					sample.type();
+				} catch (AssertionError e) {
+					assertNotNull("AssertionError was null", e);
+					fail("sample.type() threw an AsssertionError");
+				}
+			}
+		}
+	}
+
+	/** Test {@link XMLEntity#value()}. */
+	public void testValue() {
+		for (XMLEntity sample : samples()) {
+			if (sample != null) {
+				String value = sample.value();
+				if (sample.isInternal()) {
+					assertNotNull("Value was null for internal entity", value);
+				} else {
+					assertNull(
+						"Value was not null for non-internal entity",
+						value
+					);
+				}
+			}
+		}
 	}
 }

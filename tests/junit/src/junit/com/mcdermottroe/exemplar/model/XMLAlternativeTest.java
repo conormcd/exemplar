@@ -47,7 +47,9 @@ extends XMLAggregateObjectTestCase<XMLAlternative>
 		super.setUp();
 
 		XMLAlternative sampleAlternative = new XMLAlternative();
-		XMLElementReference sampleElementReference = new XMLElementReference();
+		XMLElementReference sampleElementReference = new XMLElementReference(
+			"foo"
+		);
 		XMLMixedContent sampleMixedContent = new XMLMixedContent();
 		XMLSequence sampleSequence = new XMLSequence();
 

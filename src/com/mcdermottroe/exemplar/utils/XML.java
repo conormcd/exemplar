@@ -187,7 +187,12 @@ public final class XML {
 					}
 
 					// Now append the resolved character to the returnValue
-					returnValue.append(Character.toChars(charRefValue));
+					// unless it's an ampersand, in which case we leave it be.
+					if (charRefValue == (int)AMPERSAND) {
+						returnValue.append(refBuffer);
+					} else {
+						returnValue.append(Character.toChars(charRefValue));
+					}
 				} else {
 					// This is an entity reference, just append it to the
 					// output.

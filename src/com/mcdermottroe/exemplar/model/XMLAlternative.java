@@ -50,13 +50,9 @@ extends XMLAggregateObject<XMLAlternative>
 	throws CopyException
 	{
 		XMLAlternative copy = new XMLAlternative();
-		if (contents != null) {
-			copy.contents = new ArrayList<XMLObject<?>>(contents.size());
-			for (XMLObject<?> o : contents) {
-				copy.contents.add(o.getCopy());
-			}
-		} else {
-			copy.contents = null;
+		copy.contents = new ArrayList<XMLObject<?>>(contents.size());
+		for (XMLObject<?> o : contents) {
+			copy.contents.add(o.getCopy());
 		}
 		return copy;
 	}

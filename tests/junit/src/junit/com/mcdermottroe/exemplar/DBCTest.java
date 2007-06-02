@@ -30,7 +30,6 @@
 package junit.com.mcdermottroe.exemplar;
 
 import com.mcdermottroe.exemplar.DBC;
-import com.mcdermottroe.exemplar.ui.Options;
 
 /** Test class for the {@link DBC} class.
 
@@ -44,110 +43,114 @@ extends UtilityClassTestCase<DBC>
 
 		@see DBC#ASSERT(boolean)
 	*/
-	public void testAssertTrue() {
-		DBC._setThrowImmediately(true);
+	public void testASSERTTrue() {
 		try {
 			DBC.ASSERT(true);
 		} catch (AssertionError e) {
 			e.printStackTrace();
 			fail("ASSERT(true) threw an AssertionError");
-			DBC._clearDelayedAssertation();
-			DBC._setThrowImmediately(false);
-			return;
 		}
-		assertTrue("ASSERT(true) works as expected", true);
-		DBC._clearDelayedAssertation();
-		DBC._setThrowImmediately(false);
 	}
 
 	/** Test that ASSERT(false) works correctly.
 
 		@see DBC#ASSERT(boolean)
 	*/
-	public void testAssertFalse() {
-		DBC._setThrowImmediately(true);
+	public void testASSERTFalse() {
+		boolean fellThrough = false;
 		try {
 			DBC.ASSERT(false);
+			fellThrough = true;
 		} catch (AssertionError e) {
-			assertTrue("ASSERT(false) works as expected", true);
-			DBC._clearDelayedAssertation();
-			DBC._setThrowImmediately(false);
-			return;
+			assertNotNull("AssertionError was null", e);
 		}
-		fail("ASSERT(false) did not throw an AssertionError");
-		DBC._clearDelayedAssertation();
-		DBC._setThrowImmediately(false);
+		if (fellThrough) {
+			fail("ASSERT(false) did not throw an AssertionError");
+		}
 	}
 
-	/** Test that the delayed assertion mechanism works as expected.
+	/** Test that REQUIRE(true) works correctly.
 
-		@see DBC#ASSERT(boolean)
+		@see DBC#REQUIRE(boolean)
 	*/
-	public void testDelayedAssert() {
-		DBC._setThrowImmediately(false);
-		Options.set("debug", "false");
+	public void testREQUIRETrue() {
 		try {
-			DBC.ASSERT(false);
+			DBC.REQUIRE(true);
 		} catch (AssertionError e) {
-			fail(
-				"ASSERT(false) with debugging turned off threw" +
-				" an AssertionError"
-			);
-			DBC._clearDelayedAssertation();
-			return;
+			e.printStackTrace();
+			fail("REQUIRE(true) threw an AssertionError");
 		}
-		Options.set("debug", "true");
-		DBC._setThrowImmediately(true);
+	}
+
+	/** Test that REQUIRE(false) works correctly.
+
+		@see DBC#REQUIRE(boolean)
+	*/
+	public void testREQUIREFalse() {
+		boolean fellThrough = false;
 		try {
-			DBC.ASSERT(true);
+			DBC.REQUIRE(false);
+			fellThrough = true;
 		} catch (AssertionError e) {
-			assertTrue(
-				"ASSERT(true) triggered the delayed AssertionError", 
-				true
-			);
-			DBC._clearDelayedAssertation();
-			return;
+			assertNotNull("AssertionError was null", e);
 		}
-		fail("ASSERT(true) failed to set off the delayed AssertionError");
-		DBC._setThrowImmediately(false);
-		DBC._clearDelayedAssertation();
+		if (fellThrough) {
+			fail("REQUIRE(false) did not throw an AssertionError");
+		}
+	}
+
+	/** Test that ENSURE(true) works correctly.
+
+		@see DBC#ENSURE(boolean)
+	*/
+	public void testENSURETrue() {
+		try {
+			DBC.ENSURE(true);
+		} catch (AssertionError e) {
+			e.printStackTrace();
+			fail("ENSURE(true) threw an AssertionError");
+		}
+	}
+
+	/** Test that ENSURE(false) works correctly.
+
+		@see DBC#ENSURE(boolean)
+	*/
+	public void testENSUREFalse() {
+		boolean fellThrough = false;
+		try {
+			DBC.ENSURE(false);
+			fellThrough = true;
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+		}
+		if (fellThrough) {
+			fail("ENSURE(false) did not throw an AssertionError");
+		}
 	}
 
 	/** Test {@link DBC#UNREACHABLE_CODE()}. */
-	public void testUnreachableCode() {
-		DBC._setThrowImmediately(true);
+	public void testUNREACHABLE_CODE() {
+		boolean fellThrough = false;
 		try {
 			DBC.UNREACHABLE_CODE();
+			fellThrough = true;
 		} catch (AssertionError e) {
-			assertTrue("UNREACHABLE_CODE() works as expected", true);
-			DBC._clearDelayedAssertation();
-			DBC._setThrowImmediately(false);
-			return;
+			assertNotNull("AssertionError was null", e);
 		}
-		fail("UNREACHABLE_CODE() did not throw an AssertionError");
-		DBC._clearDelayedAssertation();
-		DBC._setThrowImmediately(false);
-	}
-
-	/** Test {@link DBC#IGNORED_ERROR()}. */
-	public void testIgnoredError() {
-		DBC._setThrowImmediately(true);
-		try {
-			DBC.IGNORED_ERROR();
-		} catch (AssertionError e) {
-			assertTrue("IGNORED_ERROR() works as expected", true);
-			DBC._clearDelayedAssertation();
-			DBC._setThrowImmediately(false);
-			return;
-		}
-		fail("IGNORED_ERROR() did not throw an AssertionError");
-		DBC._clearDelayedAssertation();
-		DBC._setThrowImmediately(false);
+		assertFalse(
+			"UNREACHABLE_CODE() did not throw an AssertionError",
+			fellThrough
+		);
 	}
 
 	/** Test {@link DBC#IGNORED_EXCEPTION(Throwable)}. */
-	public void testIgnoredException() {
-		DBC.IGNORED_EXCEPTION(new Exception());
-		assertTrue("IGNORED_EXCEPTION works as expected", true);
+	public void testIGNORED_EXCEPTION() {
+		try {
+			DBC.IGNORED_EXCEPTION(new Exception());
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+			fail("DBC.IGNORED_EXCEPTION(Throwable) threw an assert");
+		}
 	}
 }

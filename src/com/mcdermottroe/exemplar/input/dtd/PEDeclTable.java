@@ -38,10 +38,9 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import com.mcdermottroe.exemplar.Copyable;
 import com.mcdermottroe.exemplar.DBC;
@@ -60,14 +59,6 @@ import static com.mcdermottroe.exemplar.Constants.Regex.VALID_PE_NAME;
 public class PEDeclTable
 implements Copyable<PEDeclTable>
 {
-	/** Enumerated type for the type of parameter entity this is. */
-	public enum ParameterEntityType {
-		/** A parameter entity having an immediate value. */
-		VALUE,
-		/** A parameter entity referencing its content via a URI. */
-		URI
-	}
-
 	/**	A table of parameter entities that have immediate values not URI
 		references.
 	*/
@@ -223,116 +214,52 @@ implements Copyable<PEDeclTable>
 		return peRefReader;
 	}
 
-	/** Replace all the parameter entities in a {@link String}.
+	/**	Replace all the parameter entities in a {@link CharSequence}.
 
-		@param s							The text to replace entity
-											references in.
+		@param string						The text to replace entity
+	 										references in.
 		@return								A copy of the parameter
-											<code>text</code> with all the
+											<code>string</code> with all the
 											entity references replaced.
 		@throws	ParameterEntityException	if a reference to an  undeclared
-											parameter entity
+											parameter entity is encountered.
 	*/
-	public String replacePERefs(String s)
+	public String replacePERefs(CharSequence string)
 	throws ParameterEntityException
 	{
-		String text;
-		if (s != null) {
-			text = s;
-		} else {
-			text = "";
+		if (string == null) {
+			return "";
 		}
-		int percent = (int)PERCENT;
-		int semicolon = (int)SEMI_COLON;
-		if (text.indexOf(percent) != -1 && text.indexOf(semicolon) != -1) {
-			// The text potentially has a parameter entity reference in it.
 
-			// Create vectors to store the indices of % and ; occurrences
-			List<Integer> percentIndices = new ArrayList<Integer>();
-			List<Integer> semicolonIndices = new ArrayList<Integer>();
-
-			// Get the indices of all the occurences of the % character
-			int poffset = 0;
-			int index;
-			while ((index = text.indexOf(percent, poffset)) != -1) {
-				percentIndices.add(index);
-				poffset = index + 1;
-			}
-
-			// Get the indices of all the occurences of the ; character
-			int soffset = 0;
-			while ((index = text.indexOf(semicolon, soffset)) != -1) {
-				semicolonIndices.add(index);
-				soffset = index + 1;
-			}
-
-			// Now use the indices of the % and ; characters to attempt
-			// replacement of references.
-			int strlenDiff = 0;
-			for (int pIndex : percentIndices) {
-				int sIndex = 0;
-				for (int sI : semicolonIndices) {
-					sIndex = sI;
-					if (sIndex > pIndex) {
+		StringBuilder retVal = new StringBuilder(string.length());
+		for (int i = 0; i < string.length(); i++) {
+			if (string.charAt(i) == PERCENT) {
+				for (int j = i + 1; j < string.length(); j++) {
+					if (string.charAt(j) == SEMI_COLON) {
+						String peName = string.subSequence(i + 1, j).toString();
+						if (table.containsKey(peName)) {
+							retVal.append(table.get(peName));
+							i = j;
+						} else {
+							Matcher m = VALID_PE_NAME.matcher(peName);
+							if (m.matches()) {
+								throw new ParameterEntityException(
+									Message.DTDPE_UNDECLARED_PE(peName)
+								);
+							} else {
+								retVal.append(string.charAt(i));
+							}
+						}
 						break;
 					}
 				}
-
-				// Now that the upper and a lower bound for the start and end
-				// index of the potential PERef is known, extract it and see if
-				// it's really a PERef.
-				if (pIndex < sIndex) {
-					// Extract the text of the PERef
-					String peRef = text.substring	(
-														pIndex + strlenDiff,
-														sIndex + strlenDiff + 1
-													);
-
-					// From the text of the PERef get the name of the entity
-					// (PERef minus leading % and trailing ; in other words.
-					String peRefKey = peRef.substring(1, peRef.length() - 1);
-
-					// Now see if this PERef is known about
-					if (table.containsKey(peRefKey)) {
-						// Extract the text before and after the PERef
-						String textBefore = text.substring(
-															0,
-															pIndex + strlenDiff
-														);
-						String textAfter = text.substring(
-															sIndex +
-																1 +
-																strlenDiff,
-															text.length()
-														);
-
-						// Calculate the difference in string length that the
-						// substitution would cause
-						CharSequence rText = table.get(peRefKey);
-						strlenDiff += rText.length() - peRef.length();
-
-						// Actually perform the replacement.
-						text = textBefore + table.get(peRefKey) + textAfter;
-					} else {
-						// If the PERef was valid then an error must be thrown
-						// otherwise it was a false positive and should be
-						// ignored.
-						if (peRefKey.matches(VALID_PE_NAME)) {
-							// The PERef was valid
-							throw new ParameterEntityException(
-								Message.DTDPE_UNDECLARED_PE(
-									peRefKey
-								)
-							);
-						}
-					}
-				}
+			} else {
+				retVal.append(string.charAt(i));
 			}
 		}
-
-		return text;
+		return retVal.toString();
 	}
-    
+
     /** {@inheritDoc} */
     public PEDeclTable getCopy() {
         PEDeclTable copy = new PEDeclTable();

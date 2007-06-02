@@ -29,6 +29,10 @@
 */
 package junit.com.mcdermottroe.exemplar;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import com.mcdermottroe.exemplar.Utils;
 
 /** Test class for {@link com.mcdermottroe.exemplar.Utils}.
@@ -167,5 +171,127 @@ extends UtilityClassTestCase<Utils>
 			"Two populated arrays are equal",
 			Utils.areAllDeeplyEqual(a, b)
 		);
+	}
+
+	/** Test {@link Utils#compare(Comparable, Object)}. */
+	public void testCompare() {
+		List<String> emptyList = new ArrayList<String>(0);
+		List<String> oneElementList = new ArrayList<String>(1);
+		oneElementList.add("one");
+		List<String> twoElementList = new ArrayList<String>(2);
+		twoElementList.add("one");
+		twoElementList.add("two");
+		List<String> threeElementList = new ArrayList<String>(3);
+		threeElementList.add("one");
+		threeElementList.add("two");
+		threeElementList.add("three");
+		Object[][] input = {
+			{null, null},
+			{null, ""},
+			{"", null},
+			{"", ""},
+			{"foo", "foo"},
+			{"foo", "bar"},
+			{"bar", "foo"},
+			{null, emptyList},
+			{emptyList, null},
+			{emptyList, emptyList},
+			{emptyList, oneElementList},
+			{oneElementList, emptyList},
+			{oneElementList, oneElementList},
+			{oneElementList, twoElementList},
+			{twoElementList, oneElementList},
+			{twoElementList, twoElementList},
+			{twoElementList, threeElementList},
+			{threeElementList, twoElementList},
+			{threeElementList, threeElementList},
+		};
+		int[] expected = {
+			0,
+			-1,
+			1,
+			0,
+			0,
+			1,
+			-1,
+			-1,
+			1,
+			0,
+			-1,
+			1,
+			0,
+			-1,
+			1,
+			0,
+			-1,
+			1,
+			0,
+		};
+
+		assertEquals("Broken test data", input.length, expected.length);
+		for (int i = 0; i < input.length; i++) {
+			assertEquals("Broken test data", 2, input[i].length);
+			try {
+				if (input[i][0] instanceof Collection) {
+					assertEquals(
+						"Output did not match expected",
+						expected[i],
+						Integer.signum(
+							Utils.compare(
+								(Collection)input[i][0],
+								(Collection)input[i][1]
+							)
+						)
+					);
+				} else {
+					assertEquals(
+						"Output did not match expected",
+						expected[i],
+						Integer.signum(
+							Utils.compare(
+								(Comparable)input[i][0],
+								input[i][1]
+							)
+						)
+					);
+				}
+			} catch (ClassCastException e) {
+				assertNotNull("ClassCastException was null", e);
+				fail("Broken test data");
+			}
+		}
+	}
+
+	/** Test {@link Utils#genericHashCode(Object[])}. */
+	public void testGenericHashCode() {
+		List<String> list = new ArrayList<String>();
+		list.add("foo");
+		Object[][] input = {
+			{null},
+			{null, null},
+			{null, null, null},
+			{"foo"},
+			{"foo", "foo"},
+			{new ArrayList()},
+			{list},
+		};
+		int[] expected = {
+			0,
+			0,
+			0,
+			2945646,
+			88369380,
+			0,
+			2945646,
+		};
+
+		assertEquals("Broken test data", input.length, expected.length);
+		for (int i = 0; i < input.length; i++) {
+			assertEquals(
+				"Output did not match expected output",
+				expected[i],
+				Utils.genericHashCode(input[i])
+			);
+		}
 	}
 }

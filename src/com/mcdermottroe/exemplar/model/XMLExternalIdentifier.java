@@ -44,16 +44,10 @@ public class XMLExternalIdentifier
 implements Copyable<XMLExternalIdentifier>
 {
 	/** The public ID portion of the external identifier. */
-	private String publicID;
+	private final String publicID;
 
 	/** The system literal portion of the external identifier. */
-	private String systemID;
-
-	/** No-arg constructor for testing purposes. */
-	public XMLExternalIdentifier() {
-		publicID = null;
-		systemID = null;
-	}
+	private final String systemID;
 
 	/** Simple constructor to copy in the values of the external identifier.
 

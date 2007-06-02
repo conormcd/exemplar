@@ -36,6 +36,9 @@ import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
 
 import static com.mcdermottroe.exemplar.Constants.Character.COMMA;
+import static com.mcdermottroe.exemplar.Constants.Character.LEFT_CURLY;
+import static com.mcdermottroe.exemplar.Constants.Character.RIGHT_CURLY;
+import static com.mcdermottroe.exemplar.Constants.INFINITY;
 
 /** An {@link XMLObject} which represents sequences of {@link XMLObject}s.
 
@@ -87,7 +90,9 @@ extends XMLAggregateObject<XMLSequence>
 									XMLSequence} may be repeated.
 	*/
 	public void setMinMaxOccurs(int min, int max) {
-		DBC.REQUIRE(min >= 0 && max >= 0);
+		DBC.REQUIRE(min >= 0);
+		DBC.REQUIRE(min < INFINITY);
+		DBC.REQUIRE(max > 0);
 		DBC.REQUIRE(min <= max);
 
 		maxOccurs = max;
@@ -99,13 +104,9 @@ extends XMLAggregateObject<XMLSequence>
 	throws CopyException
 	{
 		XMLSequence copy = new XMLSequence();
-		if (contents != null) {
-			copy.contents = new ArrayList<XMLObject<?>>(contents.size());
-			for (XMLObject<?> o : contents) {
-				copy.contents.add(o.getCopy());
-			}
-		} else {
-			copy.contents = null;
+		copy.contents = new ArrayList<XMLObject<?>>(contents.size());
+		for (XMLObject<?> o : contents) {
+			copy.contents.add(o.getCopy());
 		}
 		copy.minOccurs = minOccurs;
 		copy.maxOccurs = maxOccurs;
@@ -128,7 +129,13 @@ extends XMLAggregateObject<XMLSequence>
 		}
 
 		XMLSequence other = (XMLSequence)o;
-		return minOccurs == other.minOccurs && maxOccurs == other.maxOccurs;
+		if (minOccurs != other.minOccurs) {
+			return false;
+		}
+		if (maxOccurs != other.maxOccurs) {
+			return false;
+		}
+		return true;
 	}
 
 	/** {@inheritDoc} */
@@ -142,6 +149,14 @@ extends XMLAggregateObject<XMLSequence>
 
 	/** {@inheritDoc} */
 	@Override public String toString() {
-		return toString(getClass().getName(), COMMA);
+		StringBuilder retVal = new StringBuilder(
+			toString(getClass().getName(), COMMA)
+		);
+		retVal.append(LEFT_CURLY);
+		retVal.append(minOccurs);
+		retVal.append(COMMA);
+		retVal.append(maxOccurs);
+		retVal.append(RIGHT_CURLY);
+		return retVal.toString();
 	}
 }

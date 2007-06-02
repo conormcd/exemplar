@@ -29,7 +29,15 @@
 */
 package junit.com.mcdermottroe.exemplar.output.xslt;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.io.File;
+
 import com.mcdermottroe.exemplar.output.xslt.Generator;
+import com.mcdermottroe.exemplar.ui.Options;
+import com.mcdermottroe.exemplar.utils.Strings;
+
+import static com.mcdermottroe.exemplar.Constants.Output.XSLT.FILE_FMT;
 
 import junit.com.mcdermottroe.exemplar.output.XMLParserSourceGeneratorTestCase;
 
@@ -46,5 +54,29 @@ extends XMLParserSourceGeneratorTestCase<Generator>
 		super.setUp();
 
 		addSample(new Generator());
+	}
+
+	/** {@inheritDoc} */
+	@Override public void testDescribeAPI() {
+		for (Generator sample : samples()) {
+			if (sample != null) {
+				assertNull(
+					"describeAPI did not return null",
+					sample.describeAPI()
+				);
+			}
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override public Collection<File> generatedFiles(File outputDir) {
+		Collection<File> retVal = new ArrayList<File>();
+		retVal.add(
+			new File(
+				outputDir,
+				Strings.formatMessage(FILE_FMT, Options.getString("vocabulary"))
+			)
+		);
+		return retVal;
 	}
 }

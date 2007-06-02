@@ -148,7 +148,6 @@
 			<property name="tokens" value="NUM_DOUBLE, NUM_FLOAT" />
 			<property name="ignoreNumbers" value="0.0,1.0,1000.0" />
 		</module>
-		<module name="MissingSwitchDefault" />
 		<module name="MultipleVariableDeclarations" />
 		<module name="PackageDeclaration" />
 		<module name="ParameterAssignment" />

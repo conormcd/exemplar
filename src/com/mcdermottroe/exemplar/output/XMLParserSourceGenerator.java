@@ -32,14 +32,14 @@ package com.mcdermottroe.exemplar.output;
 import java.io.File;
 import java.util.Date;
 import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.util.Map;
 
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.Options;
+import com.mcdermottroe.exemplar.utils.Resources;
 import com.mcdermottroe.exemplar.utils.Strings;
 
 import static com.mcdermottroe.exemplar.Constants.CWD;
@@ -59,7 +59,7 @@ class XMLParserSourceGenerator<T extends XMLParserSourceGenerator<T>>
 extends XMLParserGenerator<T>
 {
 	/** The code fragments that the source generator will use. */
-	protected ResourceBundle codeFragments;
+	protected Map<String, String> codeFragments;
 
 	/** A timestamp string with the date and time the {@link
 		XMLParserSourceGenerator} was created.
@@ -78,20 +78,15 @@ extends XMLParserGenerator<T>
 		super();
 
 		// Get the code fragments
-		try {
-			codeFragments = OutputUtils.getCodeFragments(getClass().getName());
-		} catch (MissingResourceException e) {
+		codeFragments = Resources.get(getClass());
+		if (codeFragments.isEmpty()) {
 			throw new XMLParserGeneratorException(
-				Message.XMLPARSER_LOAD_CODE_FRAGMENT_FAILED(),
-				e
+				Message.XMLPARSER_LOAD_CODE_FRAGMENT_FAILED()
 			);
 		}
 
 		// Format the timestamp
 		timestamp = Strings.formatMessage(TIMESTAMP_FORMAT, new Date());
-
-		DBC.ENSURE(codeFragments != null);
-		DBC.ENSURE(timestamp != null);
 	}
 
 	/** Generates a parser and places the source (if any) in the given
@@ -149,7 +144,6 @@ extends XMLParserGenerator<T>
 			);
 		}
 
-		DBC.ENSURE(sourceDirectory != null);
 		return sourceDirectory;
 	}
 
@@ -231,10 +225,10 @@ extends XMLParserGenerator<T>
 		{@link XMLParserGeneratorException}.
 
 		@param fragmentName					The key for the code fragment in the
-											{@link ResourceBundle}.
+											{@link java.util.ResourceBundle}.
 		@return								The {@link String} referenced by the
 											given key in the {@link
-											ResourceBundle}.
+											java.util.ResourceBundle}.
 		@throws	XMLParserGeneratorException	if the fragment requested does not
 											exist or if an error occurred while
 											fetching it.
@@ -242,20 +236,8 @@ extends XMLParserGenerator<T>
 	protected String loadCodeFragment(String fragmentName)
 	throws XMLParserGeneratorException
 	{
-		if (codeFragments != null) {
-			try {
-				return codeFragments.getString(fragmentName);
-			} catch (ClassCastException e) {
-				throw new XMLParserGeneratorException(
-					Message.XMLPARSER_LOAD_CODE_FRAGMENT_FAILED(),
-					e
-				);
-			} catch (MissingResourceException e) {
-				throw new XMLParserGeneratorException(
-					Message.XMLPARSER_LOAD_CODE_FRAGMENT_FAILED(),
-					e
-				);
-			}
+		if (!codeFragments.isEmpty()) {
+			return codeFragments.get(fragmentName);
 		} else {
 			throw new XMLParserGeneratorException(
 				Message.XMLPARSER_LOAD_CODE_FRAGMENT_FAILED()
@@ -264,19 +246,20 @@ extends XMLParserGenerator<T>
 	}
 
 	/**	Load a code fragment as a {@link String} if a value has been set in an 
-		{@link com.mcdermottroe.exemplar.ui.Options.Enum}.
+		{@link com.mcdermottroe.exemplar.ui.options.Enum}.
 
 		@param	fragmentName				The key for the code fragment in the
-											{@link ResourceBundle}.
+											{@link java.util.ResourceBundle}.
 		@param	enumName					The name of the enumerated option to
 	 										check.
 		@param	enumProperty				The name of the property in the
 											enumerated option to check.
 		@return								The {@link String} referenced by
 											<code>fragmentName</code> in the
-											{@link ResourceBundle}, or the empty
-											{@link String} if the condition in
-											the enumerated option was not met.
+											{@link java.util.ResourceBundle}, or
+											the empty {@link String} if the
+											condition in the enumerated option
+											was not met.
 		@throws	XMLParserGeneratorException	if the fragment requested does not
 											exist or if an error occurred while
 											fetching it.
@@ -292,10 +275,10 @@ extends XMLParserGenerator<T>
 	}
 
 	/** Load a code fragment as a {@link String} if a value has been set in an 
-	 	{@link com.mcdermottroe.exemplar.ui.Options.Enum}.
+	 	{@link com.mcdermottroe.exemplar.ui.options.Enum}.
 
 		@param	fragmentName				The key for the code fragment in the
-											{@link ResourceBundle}.
+											{@link java.util.ResourceBundle}.
 		@param	enumName					The name of the enumerated option to
 											check.
 		@param	enumProperty				The name of the property in the
@@ -304,9 +287,10 @@ extends XMLParserGenerator<T>
 											enumerated property was not set.
 		@return								The {@link String} referenced by
 											<code>fragmentName</code> in the
-											{@link ResourceBundle}, or the empty
-											{@link String} if the condition in 
-											the enumerated option was not met.
+											{@link java.util.ResourceBundle}, or
+											the empty {@link String} if the
+											condition in  the enumerated option
+											was not met.
 		@throws	XMLParserGeneratorException	if the fragment requested does not
 											exist or if an error occurred while
 											fetching it.
@@ -330,15 +314,15 @@ extends XMLParserGenerator<T>
 		set in an enumerated option.
 
 		@param	fragmentName				The key for the code fragment in the
-											{@link ResourceBundle}.
+											{@link java.util.ResourceBundle}.
 		@param	enumName					The name of the enumerated option to
 											check.
 		@param	enumProperty				The name of the property in the
 											enumerated option to check.
 		@return								The {@link String} referenced by
 											<code>fragmentName</code> in the
-											{@link ResourceBundle}, or the
-											empty {@link String} if the
+											{@link java.util.ResourceBundle}, or
+											the empty {@link String} if the
 											condition in the enumerated option
 											was set.
 		@throws	XMLParserGeneratorException	if the fragment requested does not
@@ -364,7 +348,7 @@ extends XMLParserGenerator<T>
 		set in an enumerated option.
 
 		@param	fragmentName				The key for the code fragment in the
-											{@link ResourceBundle}.
+											{@link java.util.ResourceBundle}.
 		@param	enumName					The name of the enumerated option to
 											check.
 		@param	enumProperty				The name of the property in the
@@ -373,7 +357,7 @@ extends XMLParserGenerator<T>
 											was set.
 		@return								The {@link String} referenced by
 											<code>fragmentName</code> in the
-											{@link ResourceBundle}, or
+											{@link java.util.ResourceBundle}, or
 											<code>defaultValue</code> if the
 											condition in the enumerated option
 											was set.

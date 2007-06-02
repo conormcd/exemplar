@@ -33,6 +33,11 @@ import java.io.File;
 
 import com.mcdermottroe.exemplar.Exception;
 
+import static com.mcdermottroe.exemplar.Constants.Character.LEFT_PAREN;
+import static com.mcdermottroe.exemplar.Constants.Character.RIGHT_PAREN;
+import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
+import static com.mcdermottroe.exemplar.Constants.EOL;
+
 /** An exception that can be thrown in response to any error in the output 
 	phase of the program.
 
@@ -156,5 +161,21 @@ extends Exception
 	*/
 	public File getFile() {
 		return file;
+	}
+
+	/** Extend {@link Exception#toString()}. */
+	@Override public String toString() {
+		if (file != null) {
+			StringBuilder fileMessage = new StringBuilder();
+			fileMessage.append(SPACE);
+			fileMessage.append(LEFT_PAREN);
+			fileMessage.append(file.getAbsolutePath());
+			fileMessage.append(RIGHT_PAREN);
+			fileMessage.append(EOL);
+
+			return super.toString().replaceFirst(EOL, fileMessage.toString());
+		} else {
+			return super.toString();
+		}
 	}
 }

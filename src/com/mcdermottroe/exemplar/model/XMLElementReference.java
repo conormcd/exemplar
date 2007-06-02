@@ -38,27 +38,17 @@ package com.mcdermottroe.exemplar.model;
 public class XMLElementReference
 extends XMLNamedObject<XMLElementReference>
 {
-	/** A no-arg constructor to aid in testing. */
-	public XMLElementReference() {
-		super();
-	}
-
 	/** Create a reference to an element or seqence of elements.
 
 		@param	elementName			The name of the element to refer to.
 	*/
 	public XMLElementReference(String elementName) {
-		super();
-		setName(elementName);
+		super(elementName);
 	}
 
 	/** {@inheritDoc} */
 	@Override public XMLElementReference getCopy() {
-		if (name != null) {
-			return new XMLElementReference(name);
-		} else {
-			return new XMLElementReference();
-		}
+		return new XMLElementReference(name);
 	}
 
 	/** {@inheritDoc} */

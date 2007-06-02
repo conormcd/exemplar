@@ -29,20 +29,10 @@
 */
 package com.mcdermottroe.exemplar.ui.ant;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-
 import org.apache.tools.ant.BuildException;
 
 import com.mcdermottroe.exemplar.Copyable;
 import com.mcdermottroe.exemplar.DBC;
-import com.mcdermottroe.exemplar.Exception;
 import com.mcdermottroe.exemplar.input.InputException;
 import com.mcdermottroe.exemplar.input.InputUtils;
 import com.mcdermottroe.exemplar.input.ParserException;
@@ -55,11 +45,8 @@ import com.mcdermottroe.exemplar.ui.MessageException;
 import com.mcdermottroe.exemplar.ui.Options;
 import com.mcdermottroe.exemplar.utils.Strings;
 
-import static com.mcdermottroe.exemplar.Constants.Character.MINUS;
 import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
-import static com.mcdermottroe.exemplar.Constants.Character.UNDERSCORE;
 import static com.mcdermottroe.exemplar.Constants.EOL;
-import static com.mcdermottroe.exemplar.Constants.UI.Ant.SETTER_PREFIX;
 
 /** The Ant task "UI" for Exemplar.
 
@@ -70,108 +57,23 @@ public class Task
 extends org.apache.tools.ant.Task
 implements Copyable<Task>
 {
-	/** Any errors encountered will be added to this list and this list will be
-		flushed periodically.
-	*/
-	private List<String> errors;
-
-	/** Create the task. This constructor may not throw a {@link
-		BuildException}, so in order to catch errors the error message is added
-		to the {@link #errors} private member {@link List} and let the {@link
-		#execute()} method handle the actual throwing of the error.
-	*/
-	public Task() {
-		super();
+	/** The execute method required by the Task. */
+	@Override public void execute() {
+		super.execute();
 
 		// Make a logger which will get picked up by the rest of the program.
-		Log.registerHandler(
-			new Handler() {
-				@Override public void close() {}
-				@Override public void flush() {}
-				@Override public void publish(LogRecord record) {
-					DBC.REQUIRE(record != null);
-					if (record != null) {
-						String message = record.getMessage();
-						DBC.ASSERT(message != null);
-						if (message != null) {
-							log(message);
-						}
-					}
-				}
-			}
-		);
-
-		// Make a new list for the errors
-		errors = new ArrayList<String>(0);
+		Log.registerHandler(new TaskLogHandler(this));
 
 		// Localise the program, if possible.
 		try {
 			Message.localise();
 		} catch (MessageException e) {
-			errors.add(Message.ANT_LOCALISATION_ERROR());
+			Log.error(Message.ANT_LOCALISATION_ERROR());
 			for (String traceElement : e.getBackTrace()) {
-				errors.add(Strings.indent(traceElement));
+				Log.error(Strings.indent(traceElement));
 			}
 			return;
 		}
-
-		// Ensure that all of the options have a method and all of the methods
-		// here correspond to an option. This must be done to ensure that the
-		// options definition file and this Task are in sync. Unfortuantely,
-		// Ant is not smart enough to allow dynamically defined tasks.
-		//
-		// This chunk of code is designed to force the Ant Task and the options
-		// definition to stay in sync and to ensure that the task fails early
-		// if they are not in sync.
-		//
-		// The basic algorithm is as follows:
-		//
-		// 1) Get the Set of options defined in the master options definition.
-		// 2) For each method declared in this class of the form "set*", if the
-		//    method name is in the set, remove it, if not fail on the "extra
-		//    method" failing case.
-		// 3) After 2) has completed, if the set is non-empty, then all of the
-		//    method names in the set correspond to "missing methods"
-		Method[] methods = getClass().getDeclaredMethods();
-		Set<String> defOptions = Options.getAllOptionNames();
-		if (methods != null) {
-			for (Method method : methods) {
-				String methodName = method.getName();
-				if (methodName.startsWith(SETTER_PREFIX)) {
-					String optionName = methodNameToOptionName(methodName);
-					boolean foundMethod = false;
-					for	(
-							Iterator<String> it = defOptions.iterator();
-							it.hasNext();
-						)
-					{
-						String definedOption = it.next();
-						if (definedOption.equals(optionName)) {
-							it.remove();
-							foundMethod = true;
-							break;
-						}
-					}
-					if (!foundMethod) {
-						errors.add(Message.ANT_EXTRA_METHOD(methodName));
-					}
-				}
-			}
-			for (Object defOption : defOptions) {
-				errors.add(
-					Message.ANT_MISSING_METHOD(
-						optionNameToMethodName(defOption.toString())
-					)
-				);
-			}
-		} else {
-			DBC.UNREACHABLE_CODE();
-		}
-	}
-
-	/** The execute method required by the Task. */
-	@Override public void execute() {
-		super.execute();
 
 		// All of the options should be set by now.
 		Options.setUIFinished();
@@ -184,48 +86,41 @@ implements Copyable<Task>
 
 		// Print a header for the build
 		for (String line : Message.COPYRIGHT().split(EOL)) {
-			if ("".equals(line)) {
-				Log.info(blankLine);
-			} else {
-				Log.info(line);
-			}
-		}
-
-		// Fail the build if there were any errors thrown during the setup of
-		// the Task
-		if (!errors.isEmpty()) {
-			for (String error : errors) {
-				Log.error(error);
-			}
-			throw new BuildException("");
+			Log.info(line);
 		}
 
 		// Make sure that the mandatory options have been set
 		if (!Options.allMandatoryOptionsSet()) {
-			die(Message.MANDATORY_OPTIONS_NOT_SET());
+			throw new BuildException(Message.MANDATORY_OPTIONS_NOT_SET());
 		}
 
 		// Get all of the options
 		Log.info(Message.UI_PROGRESS_OPTIONS());
-		String inputType = Options.getString("input-type"); // NON-NLS
+		String inputType = Options.getString("input-type");
 		DBC.ASSERT(inputType != null);
-		String input = Options.getString("input"); // NON-NLS
+		String input = Options.getString("input");
 		DBC.ASSERT(input != null);
-		String outputApi = Options.getString("output-api"); // NON-NLS
-		String outputLanguage = Options.getString("output-language"); // NON-NLS
+		String outputApi = Options.getString("output-api");
+		String outputLanguage = Options.getString("output-language");
 		DBC.ASSERT(outputLanguage != null);
-		String output = Options.getString("output"); // NON-NLS
+		String output = Options.getString("output");
 		DBC.ASSERT(output != null);
 
 		// Parse the input
 		Log.info(Message.UI_PROGRESS_PARSING_INPUT(input));
-		XMLDocumentType doctype = null;
+		XMLDocumentType doctype;
 		try {
 			doctype = InputUtils.parse(input, inputType);
 		} catch (InputException e) {
-			die(Message.UI_PROGRESS_INPUT_PARSE_FAILED(), e);
+			throw new BuildException(
+				Message.UI_PROGRESS_INPUT_PARSE_FAILED(),
+				e
+			);
 		} catch (ParserException e) {
-			die(Message.UI_PROGRESS_INPUT_PARSE_FAILED(), e);
+			throw new BuildException(
+				Message.UI_PROGRESS_INPUT_PARSE_FAILED(),
+				e
+			);
 		}
 
 		// Generate the output
@@ -238,7 +133,10 @@ implements Copyable<Task>
 				outputApi
 			);
 		} catch (OutputException e) {
-			die(Message.UI_PROGRESS_FAILED_TO_CREATE_OUTPUT(), e);
+			throw new BuildException(
+				Message.UI_PROGRESS_FAILED_TO_CREATE_OUTPUT(),
+				e
+			);
 		}
 		Log.info(Message.UI_PROGRESS_DONE());
 
@@ -257,7 +155,15 @@ implements Copyable<Task>
 		@param	debug	Whether or not debugging is turned on.
 	*/
 	public static void setDebug(String debug) {
-		optionSetHelper(debug);
+		Options.set("debug", debug);
+	}
+
+	/** Setter for the debug-level attribute of the task.
+
+		@param	debugLevel	The debug level to set.
+	*/
+	public static void setDebug_level(String debugLevel) {
+		Options.set("debug-level", debugLevel);
 	}
 
 	/** Setter for the exclude attribute of the task.
@@ -265,7 +171,7 @@ implements Copyable<Task>
 		@param	exclude	This is the string value of the exclude attribute.
 	*/
 	public static void setExclude(String exclude) {
-		optionSetHelper(exclude);
+		Options.set("exclude", exclude);
 	}
 
 	/** Setter for the help attribute of the task.
@@ -273,7 +179,7 @@ implements Copyable<Task>
 		@param	help	This is the string value of the help attribute.
 	*/
 	public static void setHelp(String help) {
-		optionSetHelper(help);
+		Options.set("help", help);
 	}
 
 	/** Setter for the include attribute of the task.
@@ -281,7 +187,7 @@ implements Copyable<Task>
 		@param	include	This is the string value of the include attribute.
 	*/
 	public static void setInclude(String include) {
-		optionSetHelper(include);
+		Options.set("include", include);
 	}
 
 	/** Setter for the input attribute of the task.
@@ -289,7 +195,7 @@ implements Copyable<Task>
 		@param	input	This is the string value of the input attribute.
 	*/
 	public static void setInput(String input) {
-		optionSetHelper(input);
+		Options.set("input", input);
 	}
 
 	/** Setter for the input_type attribute of the task.
@@ -298,7 +204,7 @@ implements Copyable<Task>
 							attribute.
 	*/
 	public static void setInput_type(String inputType) {
-		optionSetHelper(inputType);
+		Options.set("input-type", inputType);
 	}
 
 	/** Setter for the output attribute of the task.
@@ -306,7 +212,7 @@ implements Copyable<Task>
 		@param	output	This is the string value of the output attribute.
 	*/
 	public static void setOutput(String output) {
-		optionSetHelper(output);
+		Options.set("output", output);
 	}
 
 	/** Setter for the output_api attribute of the task.
@@ -315,7 +221,7 @@ implements Copyable<Task>
 							attribute.
 	*/
 	public static void setOutput_api(String outputAPI) {
-		optionSetHelper(outputAPI);
+		Options.set("output-api", outputAPI);
 	}
 
 	/** Setter for the output_language attribute of the task.
@@ -324,7 +230,7 @@ implements Copyable<Task>
 								attribute.
 	*/
 	public static void setOutput_language(String outputLanguage) {
-		optionSetHelper(outputLanguage);
+		Options.set("output-language", outputLanguage);
 	}
 
 	/** Setter for the output_package attribute of the task.
@@ -333,7 +239,7 @@ implements Copyable<Task>
 								attribute.
 	*/
 	public static void setOutput_package(String outputPackage) {
-		optionSetHelper(outputPackage);
+		Options.set("output-package", outputPackage);
 	}
 
 	/** Setter for the verbose attribute of the task. This is actually a no-op
@@ -342,7 +248,7 @@ implements Copyable<Task>
 		@param	verbose	Whether or not this {@link Task} should be verbose.
 	*/
 	public static void setVerbose(String verbose) {
-		optionSetHelper(verbose);
+		Options.set("verbose", verbose);
 	}
 
 	/** Setter for the version attribute of the task.
@@ -350,7 +256,7 @@ implements Copyable<Task>
 		@param	version	This is the string value of the version attribute.
 	*/
 	public static void setVersion(String version) {
-		optionSetHelper(version);
+		Options.set("version", version);
 	}
 
 	/** Setter for the vocabulary attribute of the task.
@@ -359,106 +265,12 @@ implements Copyable<Task>
 							attribute.
 	*/
 	public static void setVocabulary(String vocabulary) {
-		optionSetHelper(vocabulary);
-	}
-
-	/** Allow for simpler setting of options. The option to set is taken from
-		the method which calls this method. The calling method name is presumed
-		to begin with "set".
-
-		@param value	The value of the option to set.
-	*/
-	private static void optionSetHelper(String value) {
-		// Get the stack trace for where this has been called from.
-		StackTraceElement[] stackTrace = new BuildException().getStackTrace();
-		DBC.ASSERT(stackTrace != null);
-		if (stackTrace == null) {
-			return;
-		}
-		DBC.ASSERT(stackTrace.length >= 2);
-		if (stackTrace.length < 2) {
-			return;
-		}
-
-		// Find out which option to set.
-		String option = methodNameToOptionName(stackTrace[1].getMethodName());
-
-		// Now set the option.
-		Options.set(option, value);
-	}
-
-	/** Convert an option name into a method name.
-
-		@param	optName	The option name to convert.
-		@return			The name of the method used to set <code>optName</code>
-	*/
-	private static String optionNameToMethodName(String optName) {
-		DBC.REQUIRE(optName != null);
-		if (optName == null) {
-			return null;
-		}
-
-		String methodName =	SETTER_PREFIX +
-							optName.substring(0, 1).toUpperCase(
-								Locale.getDefault()
-							) +
-							optName.substring(1);
-		methodName = methodName.replace(MINUS, UNDERSCORE);
-		return methodName;
-	}
-
-	/** Do the reverse of {@link #optionNameToMethodName(String)}.
-
-		@param	methodName	The name of the method to convert.
-		@return				The name of the option set by
-							<code>methodName</code>.
-		@see 				#optionNameToMethodName(String)
-	*/
-	private static String methodNameToOptionName(String methodName) {
-		DBC.REQUIRE(methodName != null);
-		if (methodName == null) {
-			return null;
-		}
-		DBC.REQUIRE(methodName.startsWith(SETTER_PREFIX));
-
-		String optionName = methodName.substring(SETTER_PREFIX.length());
-		optionName = optionName.toLowerCase(Locale.getDefault());
-		optionName = optionName.replace(UNDERSCORE, MINUS);
-
-		return optionName;
-	}
-
-	/** Abort the build with a diagnostic message.
-
-		@param	message	A descriptive error message which will be displayed
-						when the build fails.
-	*/
-	private static void die(String message) {
-		DBC.REQUIRE(message != null);
-		Log.error(message);
-		throw new BuildException("");
-	}
-
-	/** Abort the build with a diagnostic message, acknowledging the exception
-		which caused the failure.
-
-		@param	message	A descriptive error message which will be displayed
-						when the build fails.
-		@param	e		The {@link Exception} which caused the build to fail.
-	*/
-	private static void die(String message, Exception e) {
-		DBC.REQUIRE(message != null);
-		DBC.REQUIRE(e != null);
-
-		Log.error(message, e);
-		throw new BuildException("");
+		Options.set("vocabulary", vocabulary);
 	}
 
 	/** {@inheritDoc} */
 	public Task getCopy() {
-		Task copy = new Task();
-		copy.errors = new ArrayList<String>(errors);
-		return copy;
+		return new Task();
 	}
 
 	/** See {@link Object#equals(Object)}.
@@ -481,10 +293,8 @@ implements Copyable<Task>
 		@return	A hash code.
 	*/
 	@Override public int hashCode() {
-		if (errors != null) {
-			return errors.hashCode();
-		} else {
-			return 0;
-		}
+		return 0;
 	}
+
+	/** */
 }

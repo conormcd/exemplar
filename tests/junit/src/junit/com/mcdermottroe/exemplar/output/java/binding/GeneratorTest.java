@@ -29,7 +29,14 @@
 */
 package junit.com.mcdermottroe.exemplar.output.java.binding;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.io.File;
+
 import com.mcdermottroe.exemplar.output.java.binding.Generator;
+import com.mcdermottroe.exemplar.ui.Options;
+
+import static com.mcdermottroe.exemplar.Constants.Format.Filenames.JAVA;
 
 import junit.com.mcdermottroe.exemplar.output.XMLParserSourceGeneratorTestCase;
 
@@ -47,6 +54,21 @@ extends XMLParserSourceGeneratorTestCase<Generator>
 	{
 		super.setUp();
 
+		Options.set("output-package", "test.output.package");
+
 		addSample(new Generator());
+	}
+
+	/** {@inheritDoc} */
+	@Override public Collection<File> generatedFiles(File outputDir) {
+		String vocabulary = Options.getString("vocabulary");
+		String rootParserClass =	vocabulary.substring(0, 1).toUpperCase() +
+									vocabulary.substring(1);
+
+		Collection<File> retVal = new ArrayList<File>();
+		retVal.add(new File(outputDir, String.format(JAVA, rootParserClass)));
+		retVal.add(new File(outputDir, "element"));
+		retVal.add(new File(outputDir, "support"));
+		return retVal;
 	}
 }

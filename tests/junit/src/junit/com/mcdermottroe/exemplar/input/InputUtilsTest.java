@@ -29,7 +29,11 @@
 */
 package junit.com.mcdermottroe.exemplar.input;
 
+import java.util.SortedMap;
+
 import com.mcdermottroe.exemplar.input.InputUtils;
+import com.mcdermottroe.exemplar.input.InputException;
+import com.mcdermottroe.exemplar.input.ParserException;
 
 import junit.com.mcdermottroe.exemplar.UtilityClassTestCase;
 
@@ -41,4 +45,41 @@ import junit.com.mcdermottroe.exemplar.UtilityClassTestCase;
 public class InputUtilsTest
 extends UtilityClassTestCase<InputUtils>
 {
+	/** {@link InputUtils#availableInputLanguages()}. */
+	public void testAvailableInputLanguages() {
+		SortedMap<String, String> langs = InputUtils.availableInputLanguages();
+		assertNotNull("availableInputLanguages returned null", langs);
+		assertFalse(
+			"availableInputLanguages returned an empty Map",
+			langs.isEmpty()
+		);
+		for (String key : langs.keySet()) {
+			assertNotNull("Input type name was null", key);
+			assertNotSame(
+				"Input type name was a zero-length String",
+				0,
+				key.length()
+			);
+			String value = langs.get(key);
+			assertNotNull("Input type description was null", value);
+			assertNotSame(
+				"Input type description was a zero-length String",
+				0,
+				value.length()
+			);
+		}
+	}
+
+	/** Test {@link InputUtils#parse(String, String)}. */
+	public void testParse() {
+		try {
+			InputUtils.parse("/dev/null", "dtd");
+		} catch (InputException e) {
+			assertNotNull("InputException was null", e);
+			fail("parse(String, String) threw an InputException");
+		} catch (ParserException e) {
+			assertNotNull("ParserException was null", e);
+			fail("parse(String, String) threw an ParserException");
+		}
+	}
 }

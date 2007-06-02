@@ -44,18 +44,4 @@ extends XMLObjectTestCase<T>
 	@Override public void setUp() throws Exception {
 		super.setUp();
 	}
-
-	/** Test that it is possible to both name and re-name a named object. */
-	public void testNamingWorks() {
-		// Now test the samples
-		for (XMLNamedObject<T> obj : samples()) {
-			if (obj != null) {
-				String originalName = obj.getName();
-				obj.setName("test");
-				assertEquals("Setting name to test", "test", obj.getName());
-				obj.setName(originalName);
-				assertEquals("Resetting old name", originalName, obj.getName());
-			}
-		}
-	}
 }

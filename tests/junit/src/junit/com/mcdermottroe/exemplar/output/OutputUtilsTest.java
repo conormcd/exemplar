@@ -29,7 +29,24 @@
 */
 package junit.com.mcdermottroe.exemplar.output;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
+
+import com.mcdermottroe.exemplar.Constants;
+import com.mcdermottroe.exemplar.model.XMLDocumentType;
+import com.mcdermottroe.exemplar.model.XMLDocumentTypeException;
+import com.mcdermottroe.exemplar.model.XMLMarkupDeclaration;
+import com.mcdermottroe.exemplar.output.LanguageAPIPair;
+import com.mcdermottroe.exemplar.output.OutputException;
 import com.mcdermottroe.exemplar.output.OutputUtils;
+import com.mcdermottroe.exemplar.ui.Options;
+import com.mcdermottroe.exemplar.utils.Strings;
 
 import junit.com.mcdermottroe.exemplar.UtilityClassTestCase;
 
@@ -41,4 +58,399 @@ import junit.com.mcdermottroe.exemplar.UtilityClassTestCase;
 public class OutputUtilsTest
 extends UtilityClassTestCase<OutputUtils>
 {
+	/** A test {@link File} to use. */
+	private File testFile = null;
+
+	/** {@inheritDoc} */
+	@Override public void setUp()
+	throws Exception
+	{
+		super.setUp();
+
+		// Create the temp file
+		testFile = new File(TMP, getClass().getName());
+	}
+
+	/** Test {@link OutputUtils#availableOutputAPIs()}. */
+	public void testAvailableOutputAPIs() {
+		Map<String, String> apis = OutputUtils.availableOutputAPIs();
+		assertNotNull("availableOutputAPIs returns null", apis);
+		assertTrue("availableOutputAPIs returns an empty Map", !apis.isEmpty());
+		for (String api : apis.keySet()) {
+			assertNotNull("An API was null", api);
+			assertTrue("An API was a zero-length String", api.length() > 0);
+
+			String desc = apis.get(api);
+			assertNotNull("An API description was null", desc);
+			assertTrue(
+				"An API description was a zero-length String",
+				desc.length() > 0
+			);
+		}
+	}
+
+	/** Test {@link OutputUtils#availableOutputLanguages()}. */
+	public void testAvailableOutputLanguages() {
+		Map<String, String> languages = OutputUtils.availableOutputLanguages();
+		assertNotNull("availableOutputLanguages returns null", languages);
+		assertTrue(
+			"availableOutputLanguages returns an empty Map",
+			!languages.isEmpty()
+		);
+		for (String language : languages.keySet()) {
+			assertNotNull("A language was null", language);
+			assertTrue(
+				"A language was a zero-length String",
+				language.length() > 0
+			);
+
+			String desc = languages.get(language);
+			assertNotNull("A language description was null", desc);
+			assertTrue(
+				"A language description was a zero-length String",
+				desc.length() > 0
+			);
+		}
+	}
+
+
+	/** Test {@link OutputUtils#availableLanguageAPIPairs()}. */
+	public void testAvailableLanguageAPIPairs() {
+		Set<LanguageAPIPair> languages;
+		languages = OutputUtils.availableLanguageAPIPairs();
+		assertNotNull("availableLanguageAPIPairs returns null", languages);
+		assertTrue(
+			"availableLanguageAPIPairs returns an empty Set",
+			!languages.isEmpty()
+		);
+		for (LanguageAPIPair pair : languages) {
+			assertNotNull("A pair was null", pair);
+		}
+	}
+
+	/** Test {@link OutputUtils#writeStringToFile(String, String)}. */
+	public void testWriteStringToFileStringString() {
+		// Test data string
+		String testData = "foo";
+
+		// Write foo to the test file.
+		try {
+			OutputUtils.writeStringToFile(testData, testFile.getAbsolutePath());
+		} catch (OutputException e) {
+			assertNotNull("OutputException was null", e);
+			fail("writeStringToFile(String, String) threw OutputException");
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+			fail("writeStringToFile(String, String) failed an assertion");
+		}
+		assertTrue("Test file was not created", testFile.exists());
+
+		// Make sure that the test file contains the correct contents
+		BufferedInputStream input = null;
+		try {
+			input = new BufferedInputStream(
+				new FileInputStream(testFile)
+			);
+			assertNotNull("BufferedInputStream was null", input);
+
+			// Now read in the file contents
+			byte[] inputData = new byte[testData.length()];
+			assertEquals(
+				"Input data did not read the correct number of bytes",
+				testData.length(),
+				input.read(inputData, 0, testData.length())
+			);
+
+			// Make sure it matches the test data
+			assertEquals(
+				"Input did not match test data",
+				testData,
+				new String(inputData)
+			);
+
+			// Make sure there's no more data left
+			assertEquals("Trailing data", 0, input.available());
+		} catch (FileNotFoundException e) {
+			assertNotNull("FileNotFoundException was null", e);
+			fail("Could not find the test file");
+		} catch (IOException e) {
+			assertNotNull("IOException was null", e);
+			fail("IOException reading the test file");
+		} finally {
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					assertNotNull("IOException is null", e);
+					fail("Caught IOException in finally block");
+				}
+			} else {
+				fail("input is null");
+			}
+		}
+
+		// Delete the test file
+		testFile.delete();
+		assertFalse("Test file was not deleted", testFile.exists());
+
+		// Now try some bad data
+		boolean fellThrough = false;
+		try {
+			OutputUtils.writeStringToFile(null, testFile.getAbsolutePath());
+			fellThrough = true;
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+		} catch (OutputException e) {
+			assertNotNull("OutputException was null", e);
+			fail("writeStringToFile(null, String) threw OutputException");
+		}
+		assertFalse(
+			"writeStringToFile(null, String) passed an assert",
+			fellThrough
+		);
+	}
+
+	/** Test {@link OutputUtils#writeStringToFile(String, File)}. */
+	public void testWriteStringToFileStringFile() {
+		// Test data string
+		String testData = "foo";
+
+		// Write foo to the test file.
+		try {
+			OutputUtils.writeStringToFile(testData, testFile);
+		} catch (OutputException e) {
+			assertNotNull("OutputException was null", e);
+			fail("writeStringToFile(String, File) threw OutputException");
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+			fail("writeStringToFile(String, File) failed an assertion");
+		}
+		assertTrue("Test file was not created", testFile.exists());
+
+		// Make sure that the test file contains the correct contents
+		BufferedInputStream input = null;
+		try {
+			input = new BufferedInputStream(
+				new FileInputStream(testFile)
+			);
+			assertNotNull("BufferedInputStream was null", input);
+
+			// Now read in the file contents
+			byte[] inputData = new byte[testData.length()];
+			assertEquals(
+				"Input data did not read the correct number of bytes",
+				testData.length(),
+				input.read(inputData, 0, testData.length())
+			);
+
+			// Make sure it matches the test data
+			assertEquals(
+				"Input did not match test data",
+				testData,
+				new String(inputData)
+			);
+
+			// Make sure there's no more data left
+			assertEquals("Trailing data", 0, input.available());
+		} catch (FileNotFoundException e) {
+			assertNotNull("FileNotFoundException was null", e);
+			fail("Could not find the test file");
+		} catch (IOException e) {
+			assertNotNull("IOException was null", e);
+			fail("IOException reading the test file");
+		} finally {
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					assertNotNull("IOException is null", e);
+					fail("Caught IOException in finally block");
+				}
+			} else {
+				fail("input is null");
+			}
+		}
+
+		// Delete the test file
+		testFile.delete();
+		assertFalse("Test file was not deleted", testFile.exists());
+
+		// Now try some bad data
+		boolean fellThrough = false;
+		try {
+			OutputUtils.writeStringToFile(null, testFile);
+			fellThrough = true;
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+		} catch (OutputException e) {
+			assertNotNull("OutputException was null", e);
+			fail("writeStringToFile(null, File) threw OutputException");
+		}
+		assertFalse(
+			"writeStringToFile(null, File) passed an assert",
+			fellThrough
+		);
+
+		try {
+			OutputUtils.writeStringToFile(testData, (File)null);
+			fellThrough = true;
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+		} catch (OutputException e) {
+			assertNotNull("OutputException was null", e);
+			fail("writeStringToFile(String, null) threw OutputException");
+		}
+		assertFalse(
+			"writeStringToFile(String, null) passed an assert",
+			fellThrough
+		);
+	}
+
+	/** Test {@link OutputUtils#writeStringToFile(String, File, String)}. */
+	public void testWriteStringToFileStringFileString() {
+		// Test data string
+		String testData = "foo";
+
+		// Write foo to the test file.
+		try {
+			OutputUtils.writeStringToFile(
+				testData,
+				testFile.getParentFile(),
+				testFile.getName()
+			);
+		} catch (OutputException e) {
+			assertNotNull("OutputException was null", e);
+			fail(
+				"writeStringToFile(String, File, String) threw OutputException"
+			);
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+			fail(
+				"writeStringToFile(String, File, String) failed an assertion"
+			);
+		}
+		assertTrue("Test file was not created", testFile.exists());
+
+		// Make sure that the test file contains the correct contents
+		BufferedInputStream input = null;
+		try {
+			input = new BufferedInputStream(
+				new FileInputStream(testFile)
+			);
+			assertNotNull("BufferedInputStream was null", input);
+
+			// Now read in the file contents
+			byte[] inputData = new byte[testData.length()];
+			assertEquals(
+				"Input data did not read the correct number of bytes",
+				testData.length(),
+				input.read(inputData, 0, testData.length())
+			);
+
+			// Make sure it matches the test data
+			assertEquals(
+				"Input did not match test data",
+				testData,
+				new String(inputData)
+			);
+
+			// Make sure there's no more data left
+			assertEquals("Trailing data", 0, input.available());
+		} catch (FileNotFoundException e) {
+			assertNotNull("FileNotFoundException was null", e);
+			fail("Could not find the test file");
+		} catch (IOException e) {
+			assertNotNull("IOException was null", e);
+			fail("IOException reading the test file");
+		} finally {
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					assertNotNull("IOException is null", e);
+					fail("Caught IOException in finally block");
+				}
+			} else {
+				fail("input is null");
+			}
+		}
+
+		// Delete the test file
+		testFile.delete();
+		assertFalse("Test file was not deleted", testFile.exists());
+	}
+
+	/** Test {@link OutputUtils#generateParser(XMLDocumentType, String, String,
+		String)}.
+	*/
+	public void testGenerateParser() {
+		// Find all of the legal language and API pairs.
+		Set<LanguageAPIPair> testData = OutputUtils.availableLanguageAPIPairs();
+
+		// Make an empty doctype
+		XMLDocumentType doctype = null;
+		try {
+			doctype = new XMLDocumentType(
+				new ArrayList<XMLMarkupDeclaration>()
+			);
+		} catch (XMLDocumentTypeException e) {
+			assertNotNull("XMLDocumentTypeException was null", e);
+			fail("Failed to create a test document type");
+		}
+
+		// Make sure that the options have been set
+		Options.set("output-package", "foo");
+		Options.set("vocabulary", "foo");
+
+		// Make a test destination file/dir
+		File testDir = new File(TMP, getClass().getName());
+
+		// Now try all of the combinations
+		for (LanguageAPIPair pair : testData) {
+			File output = new File(
+				testDir,
+				Strings.join(
+					Constants.Character.FULL_STOP,
+					pair.getLanguage(),
+					pair.getAPI()
+				)
+			);
+			output.mkdirs();
+			assertTrue("Output directory has been created", output.exists());
+			try {
+				OutputUtils.generateParser(
+					doctype,
+					output.getAbsolutePath(),
+					pair.getLanguage(),
+					pair.getAPI()
+				);
+			} catch (OutputException e) {
+				assertNotNull("OutputException was null", e);
+				e.printStackTrace();
+				fail("An OutputException was thrown by generateParser");
+			} catch (AssertionError e) {
+				assertNotNull("AssertionError was null", e);
+				e.printStackTrace();
+				fail("An assertion was thrown by generateParser");
+			}
+
+			// Make sure that something was created in the output directory,
+			// we'll leave it up to the XMLParserSourceGeneratorTestCases to
+			// actually verify the contents further.
+			assertTrue("Output directory was empty", output.list().length > 0);
+
+			// Now remove the test directory and its contents
+			for (String fileName : output.list()) {
+				File toDelete = new File(output, fileName);
+				toDelete.delete();
+				assertFalse("Did not delete file", toDelete.exists());
+			}
+			output.delete();
+			assertFalse("Output directory did not delete", output.exists());
+		}
+
+		// Now clean up the test directory
+		testDir.delete();
+		assertFalse("Test directory did not delete", testDir.exists());
+	}
 }

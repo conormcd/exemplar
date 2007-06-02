@@ -29,6 +29,11 @@
 */
 package junit.com.mcdermottroe.exemplar.ui.cli;
 
+import java.io.File;
+
+import com.mcdermottroe.exemplar.DBC;
+import com.mcdermottroe.exemplar.ui.Options;
+import com.mcdermottroe.exemplar.ui.cli.ExitHandler;
 import com.mcdermottroe.exemplar.ui.cli.Main;
 
 import junit.com.mcdermottroe.exemplar.UtilityClassTestCase;
@@ -41,4 +46,151 @@ import junit.com.mcdermottroe.exemplar.UtilityClassTestCase;
 public class MainTest
 extends UtilityClassTestCase<Main>
 {
+	/** The original {@link ExitHandler} for {@link Main}. */
+	private ExitHandler mainsOriginalHandler;
+
+	/** {@inheritDoc} */
+	@Override public void setUp()
+	throws Exception
+	{
+		super.setUp();
+		mainsOriginalHandler = Main.getExitHandler();
+	}
+
+	/** Test {@link Main#main(String[])}. */
+	public void testMain() {
+		File outputDir = new File(TMP, getClass().getName());
+		String[][] passInputs = {
+			{"--help", },
+			{"--version", },
+			{
+				"--input",
+				"/dev/null",
+				"--output",
+				outputDir.getAbsolutePath(),
+				"--output-language",
+				"dtd",
+			},
+			{
+				"--debug",
+				"--input",
+				"/dev/null",
+				"--output",
+				outputDir.getAbsolutePath(),
+				"--output-language",
+				"dtd",
+			},
+			{
+				"--verbose",
+				"--input",
+				"/dev/null",
+				"--output",
+				outputDir.getAbsolutePath(),
+				"--output-language",
+				"dtd",
+			},
+		};
+		String[][] failInputs = {
+			null,
+			{null, },
+			{"--not-an-option", },
+		};
+
+		// Save the original exit handler and replace it with one that does not
+		// call System.exit(int).
+		setMainExit(false);
+
+		for (String[] args : passInputs) {
+			Options.reset();
+			assertNotNull("Output dir is null", outputDir);
+			outputDir.mkdirs();
+			for (String fileName : outputDir.list()) {
+				new File(outputDir, fileName).delete();
+			}
+			assertTrue("Failed to create output dir", outputDir.exists());
+			try {
+				Main.main(args);
+			} catch (AssertionError e) {
+				assertNotNull("AssertionError was null", e);
+				fail("main() failed an assertion");
+			}
+			for (String fileName : outputDir.list()) {
+				new File(outputDir, fileName).delete();
+			}
+			outputDir.delete();
+			assertFalse("Failed to delete output dir", outputDir.exists());
+		}
+		for (String[] args : failInputs) {
+			Options.reset();
+			boolean fellThrough = false;
+			try {
+				Main.main(args);
+				fellThrough = true;
+			} catch (AssertionError e) {
+				assertNotNull("AssertionError was null", e);
+			}
+			assertFalse("main() passed an assertion error", fellThrough);
+		}
+
+		// Now restore Main's exit handler.
+		setMainExit(true);
+	}
+
+	/** Test {@link Main#getExitHandler()}. */
+	public void testGetExitHandler() {
+		ExitHandler handler = null;
+		try {
+			handler = Main.getExitHandler();
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+			fail("Main.getExitHandler() failed an assertion");
+		}
+		assertNotNull("getExitHandler returned null", handler);
+	}
+
+	/** Test {@link Main#setExitHandler(ExitHandler)}. */
+	public void testSetExitHandler() {
+		// Make a test handler.
+		ExitHandler testExitHandler = new ExitHandler() {
+			public void exit(int exitCode) {
+				// Do nothing.
+			}
+		};
+		assertNotNull("Bad test data", testExitHandler);
+
+		// Try to set the handler
+		try {
+			Main.setExitHandler(testExitHandler);
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+			fail("setExitHandler failed an assertion");
+		}
+		assertEquals(
+			"Exit handler did not stick",
+			testExitHandler,
+			Main.getExitHandler()
+		);
+
+		// Put back the original main handler
+		Main.setExitHandler(mainsOriginalHandler);
+	}
+
+	/** Turn on or off the calling of {@link System#exit(int)} in {@link Main}.
+
+		@param	on	True to make {@link Main} call {@link System#exit(int)},
+					false otherwise.
+	*/
+	private void setMainExit(boolean on) {
+		if (on) {
+			Main.setExitHandler(mainsOriginalHandler);
+		} else {
+			Main.setExitHandler(
+				new ExitHandler() {
+					public void exit(int exitCode) {
+						DBC.ASSERT(exitCode == 0);
+					}
+				}
+			);
+		}
+	}
 }

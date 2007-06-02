@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,10 +48,14 @@ import com.mcdermottroe.exemplar.input.InputModule;
 import com.mcdermottroe.exemplar.input.ParserException;
 import com.mcdermottroe.exemplar.model.XMLAlternative;
 import com.mcdermottroe.exemplar.model.XMLAttribute;
+import com.mcdermottroe.exemplar.model.XMLAttributeContentType;
+import com.mcdermottroe.exemplar.model.XMLAttributeDefaultType;
 import com.mcdermottroe.exemplar.model.XMLAttributeList;
 import com.mcdermottroe.exemplar.model.XMLContent;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.model.XMLElement;
+import com.mcdermottroe.exemplar.model.XMLElementContentModel;
+import com.mcdermottroe.exemplar.model.XMLElementContentType;
 import com.mcdermottroe.exemplar.model.XMLElementReference;
 import com.mcdermottroe.exemplar.model.XMLEntity;
 import com.mcdermottroe.exemplar.model.XMLExternalIdentifier;
@@ -60,11 +65,11 @@ import com.mcdermottroe.exemplar.model.XMLNotation;
 import com.mcdermottroe.exemplar.model.XMLSequence;
 import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
+import com.mcdermottroe.exemplar.ui.Options;
 
 parser code {:
-	/** A {@link Map} for quick and easy entity resolution.
-	*/
-	private static Map<String, XMLEntity> entityMap;
+	/** A {@link Map} from symbol numbers to symbol names for debug messages. */
+	private Map<Integer, String> symbolNames;
 
 	/** Implementation of {@link InputModule#parse(String)}.
 
@@ -78,10 +83,6 @@ parser code {:
 	throws ParserException
 	{
 		DBC.REQUIRE(dtdFile != null);
-		if (dtdFile == null) {
-			return null;
-		}
-
 		if ("-".equals(dtdFile)) {
 			return parse(System.in, new File(Constants.CWD));
 		}
@@ -100,10 +101,6 @@ parser code {:
 	throws ParserException
 	{
 		DBC.REQUIRE(dtdFile != null);
-		if (dtdFile == null) {
-			return null;
-		}
-
 		try {
 			return parse(new FileInputStream(dtdFile), dtdFile.getParentFile());
 		} catch (FileNotFoundException e) {
@@ -126,9 +123,6 @@ parser code {:
 	throws ParserException
 	{
 		DBC.REQUIRE(dtdSource != null);
-		if (dtdSource == null) {
-			return null;
-		}
 		return parse(dtdSource, new File(Constants.CWD));
 	}
 
@@ -148,16 +142,7 @@ parser code {:
 	throws ParserException
 	{
 		DBC.REQUIRE(input != null);
-		if (input == null) {
-			return null;
-		}
 		DBC.REQUIRE(baseDir != null);
-		if (baseDir == null) {
-			return null;
-		}
-
-		// Create the entity map
-		entityMap = new HashMap<String, XMLEntity>();
 
 		// Set the symbol factory
 		symbolFactory = new ComplexSymbolFactory();
@@ -169,40 +154,44 @@ parser code {:
 
 		// Actually go and do the parse.
 		try {
-			return (XMLDocumentType)((Symbol)parse()).value;
+			if (Options.isDebugSet()) {
+				return (XMLDocumentType)((Symbol)debug_parse()).value;
+			} else {
+				return (XMLDocumentType)((Symbol)parse()).value;
+			}
 		} catch (Exception e) {
 			throw new ParserException(Message.DTDPARSER_THREW_EXCEPTION(), e);
 		}
 	}
 
-	/** Register an entity reference for use in later resolution.
+	/** Log a debug message.
 
-		@param	entity	The entity to remember.
+		@param	message	The message to log.
 	*/
-	public static void rememberEntity(XMLEntity entity) {
-		entityMap.put(entity.getName(), entity);
-	}
-
-	/** Resolve an entity reference.
-
-		@param	entityRef		The reference to an entity to resolve.
-		@return					The value of the entity if it is an internal
-								entity, throws an exception otherwise.
-		@throws	ParserException	If the entity is external or could not be
-								found.
-	*/
-	public static String resolveEntityRef(String entityRef)
-	throws ParserException
-	{
-		if (entityMap.containsKey(entityRef)) {
-			XMLEntity entity = entityMap.get(entityRef);
-			if (entity.isInternal()) {
-				return entity.value();
-			} else {
-				throw new ParserException("\"" + entityRef + "\" is not an internal entity");
+	public void debug_message(String message) {
+		if (Options.isDebugSet() && Options.getInteger("debug-level") >= 2) {
+			if (symbolNames == null) {
+				symbolNames = new HashMap<Integer, String>();
+				Field[] fields = ParserSymbols.class.getDeclaredFields();
+				for (Field field : fields) {
+					try {
+						symbolNames.put(field.getInt(null), field.getName());
+					} catch (IllegalAccessException e) {
+						// Do nothing
+					}
+				}
 			}
-		} else {
-			throw new ParserException("Failed to find entity referred to by \"" + entityRef + "\"");
+			if (message != null && message.startsWith("# Current token is #")) {
+				try {
+					int symbolNumber = Integer.parseInt(
+						message.substring(message.lastIndexOf('#') + 1)
+					);
+					message += " (" + symbolNames.get(symbolNumber) + ")";
+				} catch (NumberFormatException e) {
+					message += " (<<<Unknown symbol!>>>)";
+				}
+			}
+			Log.debug(message);
 		}
 	}
 
@@ -312,8 +301,7 @@ parser code {:
 					other.production_table()
 				) &&
 				Utils.areAllDeeplyEqual(action_table(), other.action_table()) &&
-				Utils.areAllDeeplyEqual(reduce_table(), other.reduce_table()) &&
-				Utils.areDeeplyEqual(entityMap, other.entityMap);
+				Utils.areAllDeeplyEqual(reduce_table(), other.reduce_table());
 	}
 
 	/** {@inheritDoc} */
@@ -393,9 +381,9 @@ terminal String	TILDE;
 terminal String	UNDERSCORE;
 
 non terminal XMLAttribute				AttDef;
-non terminal XMLAttributeList			AttDef_STAR;
+non terminal List						AttDef_STAR;
 non terminal XMLAttributeList			AttlistDecl;
-non terminal XMLAttribute				AttType;
+non terminal XMLAttributeContentType	AttType;
 non terminal String						AttValue;
 non terminal String						AttValue_QUOT_STRING;
 non terminal String						AttValue_QUOT_STRING_CHAR;
@@ -409,22 +397,21 @@ non terminal XMLSequence				children;
 non terminal XMLAlternative				choice;
 non terminal XMLAlternative				choice_cpLIST;
 non terminal String						COMMA_SURROUNDED_BY_OPT_S;
-non terminal XMLElement					contentspec;
+non terminal XMLElementContentModel		contentspec;
 non terminal XMLSequence				cp;
 non terminal String						DeclSep;
-non terminal XMLAttribute				DefaultDecl;
+non terminal XMLAttributeDefaultType	DefaultDecl;
 non terminal XMLElement					elementdecl;
 non terminal XMLEntity					EntityDecl;
-non terminal XMLEntity					EntityDef;
 non terminal String						EntityRef;
 non terminal String						EntityValue;
 non terminal String						EntityValue_QUOT_STRING;
 non terminal String						EntityValue_QUOT_STRING_CHAR;
 non terminal String						EntityValue_APOS_STRING;
 non terminal String						EntityValue_APOS_STRING_CHAR;
-non terminal XMLAttribute				Enumeration;
+non terminal XMLAttributeContentType	Enumeration;
 non terminal List						Enumeration_NmtokenLIST;
-non terminal XMLAttribute				EnumeratedType;
+non terminal XMLAttributeContentType	EnumeratedType;
 non terminal XMLExternalIdentifier		ExternalID;
 non terminal XMLDocumentType			extSubset;
 non terminal List						extSubsetDecl;
@@ -441,7 +428,7 @@ non terminal String						NameStartChar;
 non terminal String						NDataDecl;
 non terminal String						Nmtoken;
 non terminal XMLNotation				NotationDecl;
-non terminal XMLAttribute				NotationType;
+non terminal XMLAttributeContentType	NotationType;
 non terminal List						NotationType_NameLIST;
 non terminal String						PIPE_SURROUNDED_WITH_OPT_S;
 non terminal String						PubidLiteral;
@@ -451,50 +438,51 @@ non terminal String						RPAREN_PRECEDED_BY_OPT_S;
 non terminal String						s;
 non terminal XMLSequence				seq;
 non terminal XMLSequence				seq_cpLIST;
-non terminal XMLAttribute				StringType;
+non terminal XMLAttributeContentType	StringType;
 non terminal String						SystemLiteral;
-non terminal XMLAttribute				TokenizedType;
+non terminal XMLAttributeContentType	TokenizedType;
 
 precedence nonassoc BASECHAR, COLON, COMBININGCHAR, DIGIT, DOT, EXTENDER, IDEOGRAPHIC, MINUS, S, UNDERSCORE;
 
 start with extSubset;
 
 // Page 24
-AttDef							::= s Name:name s AttType:attribute s DefaultDecl:defaultDecl
+AttDef							::= s Name:name s AttType:type s DefaultDecl:defaultDecl
 										{:
-											attribute.setName(name);
-											attribute.setDefaultDecl(defaultDecl);
-											RESULT = attribute;
+											RESULT = new XMLAttribute(name, type, defaultDecl);
 											Log.debug("Parsed an attribute: " + RESULT);
 										:};
 // AttDef*
 AttDef_STAR						::= /* ε */
 										{:
-											RESULT = new XMLAttributeList();
+											RESULT = new ArrayList();
 										:} |
-									AttDef_STAR:attlist AttDef:attdef
+									AttDef_STAR:list AttDef:attdef
 										{:
-											attlist.addAttribute(attdef);
-											RESULT = attlist;
+											list.add(attdef);
+											RESULT = list;
 										:};
 // Page 24
-AttlistDecl						::=	ATTLIST_HEAD s Name:name AttDef_STAR:attlist GT_PRECEDED_BY_OPT_S
+AttlistDecl						::=	ATTLIST_HEAD s Name:name AttDef_STAR:atts GT_PRECEDED_BY_OPT_S
 										{:
-											attlist.setName(name);
-											RESULT = attlist;
+											List<XMLAttribute> attributes = new ArrayList<XMLAttribute>(atts.size());
+											for (Object o : atts) {
+												attributes.add(XMLAttribute.class.cast(o));
+											}
+											RESULT = new XMLAttributeList(name, attributes);
 										:};
 // Page 25
-AttType							::=	StringType:attribute
+AttType							::=	StringType:type
 										{:
-											RESULT = attribute;
+											RESULT = type;
 										:} |
-									TokenizedType:attribute
+									TokenizedType:type
 										{:
-											RESULT = attribute;
+											RESULT = type;
 										:} |
-									EnumeratedType:attribute
+									EnumeratedType:type
 										{:
-											RESULT = attribute;
+											RESULT = type;
 										:};
 // Page 9
 AttValue						::= QUOT AttValue_QUOT_STRING:value QUOT
@@ -1599,19 +1587,19 @@ COMMA_SURROUNDED_BY_OPT_S		::= COMMA:value
 // Page 21
 contentspec						::= EMPTY
 										{:
-											RESULT = new XMLElement(XMLElement.ContentType.EMPTY);
+											RESULT = new XMLElementContentModel(XMLElementContentType.EMPTY);
 										:} |
 									ANY
 										{:
-											RESULT = new XMLElement(XMLElement.ContentType.ANY);
+											RESULT = new XMLElementContentModel(XMLElementContentType.ANY);
 										:} |
 									Mixed:mixed
 										{:
-											RESULT = new XMLElement(mixed);
+											RESULT = new XMLElementContentModel(mixed);
 										:} |
 									children:sequence
 										{:
-											RESULT = new XMLElement(sequence);
+											RESULT = new XMLElementContentModel(sequence);
 										:};
 // Page 22
 cp								::= Name:name
@@ -1691,29 +1679,24 @@ DeclSep							::= s;
 // Page 28
 DefaultDecl						::= HASH_REQUIRED
 										{:
-											RESULT = new XMLAttribute();
-											RESULT.setDefaultDecl(XMLAttribute.DefaultType.REQUIRED, null);
+											RESULT = XMLAttributeDefaultType.REQUIRED();
 										:} |
 									HASH_IMPLIED
 										{:
-											RESULT = new XMLAttribute();
-											RESULT.setDefaultDecl(XMLAttribute.DefaultType.IMPLIED, null);
+											RESULT = XMLAttributeDefaultType.IMPLIED();
 										:} |
 									HASH_FIXED s AttValue:value
 										{:
-											RESULT = new XMLAttribute();
-											RESULT.setDefaultDecl(XMLAttribute.DefaultType.FIXED, value);
+											RESULT = XMLAttributeDefaultType.FIXED(value);
 										:} |
 									AttValue:value
 										{:
-											RESULT = new XMLAttribute();
-											RESULT.setDefaultDecl(XMLAttribute.DefaultType.ATTVALUE, value);
+											RESULT = XMLAttributeDefaultType.ATTVALUE(value);
 										:};
 // Page 21
 elementdecl						::= ELEMENT_HEAD s Name:name s contentspec:contents GT_PRECEDED_BY_OPT_S
 										{:
-											RESULT = contents;
-											RESULT.setName(name);
+											RESULT = new XMLElement(name, contents);
 											Log.debug("Parsed an element: " + RESULT);
 										:};
 // Page 35
@@ -1721,20 +1704,6 @@ EntityDecl						::= GEDecl:gedecl
 										{:
 											RESULT = gedecl;
 											Log.debug("Parsed an entity: " + RESULT);
-											Parser.rememberEntity(RESULT);
-										:};
-// Page 35
-EntityDef						::= EntityValue:value
-										{:
-											RESULT = new XMLEntity(value);
-										:} |
-									ExternalID:e
-										{:
-											RESULT = new XMLEntity(e);
-										:} |
-									ExternalID:e NDataDecl:n
-										{:
-											RESULT = new XMLEntity(e, n);
 										:};
 // Page 33
 EntityRef						::= AMP Name:name SEMI
@@ -2260,9 +2229,7 @@ Enumeration						::= LPAREN_FOLLOWED_BY_OPT_S Nmtoken:nmtoken RPAREN_PRECEDED_BY
 											// This Enumeration has only one possible value
 											values.add(nmtoken);
 
-											// Make the new XMLAttribute, set its type and give it the values
-											RESULT = new XMLAttribute();
-											RESULT.setType(XMLAttribute.ContentType.ENUMERATION, values);
+											RESULT = XMLAttributeContentType.ENUMERATION(values);
 										:} |
 									LPAREN_FOLLOWED_BY_OPT_S Nmtoken:nmtoken Enumeration_NmtokenLIST:nmtokens RPAREN_PRECEDED_BY_OPT_S
 										{:
@@ -2277,9 +2244,7 @@ Enumeration						::= LPAREN_FOLLOWED_BY_OPT_S Nmtoken:nmtoken RPAREN_PRECEDED_BY
 												values.add(token.toString());
 											}
 
-											// Make the new XMLAttribute, set its type and give it the values
-											RESULT = new XMLAttribute();
-											RESULT.setType(XMLAttribute.ContentType.ENUMERATION, values);
+											RESULT = XMLAttributeContentType.ENUMERATION(values);
 										:};
 // (S? '|' S? Nmtoken)+
 Enumeration_NmtokenLIST			::= PIPE_SURROUNDED_WITH_OPT_S Nmtoken:nmtoken
@@ -2340,10 +2305,17 @@ extSubsetDecl					::= /* ε */
 											RESULT = eSD;
 										:};
 // Page 35
-GEDecl							::= ENTITY_HEAD s Name:name s EntityDef:value GT_PRECEDED_BY_OPT_S
+GEDecl							::=	ENTITY_HEAD s Name:name s EntityValue:value GT_PRECEDED_BY_OPT_S
 										{:
-											value.setName(name);
-											RESULT = value;
+											RESULT = new XMLEntity(name, value);
+										:} |
+									ENTITY_HEAD s Name:name s ExternalID:extId GT_PRECEDED_BY_OPT_S
+										{:
+											RESULT = new XMLEntity(name, extId);
+										:} |
+									ENTITY_HEAD s Name:name s ExternalID:extId NDataDecl:ndata GT_PRECEDED_BY_OPT_S
+										{:
+											RESULT = new XMLEntity(name, extId, ndata);
 										:};
 // S? '>'
 GT_PRECEDED_BY_OPT_S			::= GT:gt
@@ -2603,9 +2575,7 @@ NotationType					::= NOTATION s LPAREN_FOLLOWED_BY_OPT_S Name:name RPAREN_PRECED
 											// This NotationType has only one possible value
 											values.add(name);
 
-											// Make the new XMLAttribute, set its type and give it the values
-											RESULT = new XMLAttribute();
-											RESULT.setType(XMLAttribute.ContentType.NOTATION, values);
+											RESULT = XMLAttributeContentType.NOTATION(values);
 										:} |
 									NOTATION s LPAREN_FOLLOWED_BY_OPT_S Name:name NotationType_NameLIST:names RPAREN_PRECEDED_BY_OPT_S
 										{:
@@ -2620,9 +2590,7 @@ NotationType					::= NOTATION s LPAREN_FOLLOWED_BY_OPT_S Name:name RPAREN_PRECED
 												values.add(listName.toString());
 											}
 
-											// Make the new XMLAttribute, set its type and give it the values
-											RESULT = new XMLAttribute();
-											RESULT.setType(XMLAttribute.ContentType.NOTATION, values);
+											RESULT = XMLAttributeContentType.NOTATION(values);
 										:};
 // (S? '|' S? Name)+
 NotationType_NameLIST			::= PIPE_SURROUNDED_WITH_OPT_S Name:name
@@ -2679,7 +2647,7 @@ PublicID						::= PUBLIC s PubidLiteral:value
 // Page 33
 Reference						::= EntityRef:entityRefName
 										{:
-											RESULT = Parser.resolveEntityRef(entityRefName);
+											RESULT = entityRefName;
 										:} |
 									CHARREF:value
 										{:
@@ -2729,8 +2697,7 @@ seq_cpLIST						::= COMMA_SURROUNDED_BY_OPT_S cp:cp
 // Page 25
 StringType						::= CDATA
 										{:
-											RESULT = new XMLAttribute();
-											RESULT.setType(XMLAttribute.ContentType.CDATA);
+											RESULT = XMLAttributeContentType.CDATA();
 										:};
 // Page 9
 SystemLiteral					::= QUOT Char_NO_QUOT_STAR:value QUOT
@@ -2744,36 +2711,29 @@ SystemLiteral					::= QUOT Char_NO_QUOT_STAR:value QUOT
 // Page 25
 TokenizedType					::= ID
 										{:
-											RESULT = new XMLAttribute();
-											RESULT.setType(XMLAttribute.ContentType.ID);
+											RESULT = XMLAttributeContentType.ID();
 										:} |
 									IDREF
 										{:
-											RESULT = new XMLAttribute();
-											RESULT.setType(XMLAttribute.ContentType.IDREF);
+											RESULT = XMLAttributeContentType.IDREF();
 										:} |
 									IDREFS
 										{:
-											RESULT = new XMLAttribute();
-											RESULT.setType(XMLAttribute.ContentType.IDREFS);
+											RESULT = XMLAttributeContentType.IDREFS();
 										:} |
 									ENTITY
 										{:
-											RESULT = new XMLAttribute();
-											RESULT.setType(XMLAttribute.ContentType.ENTITY);
+											RESULT = XMLAttributeContentType.ENTITY();
 										:} |
 									ENTITIES
 										{:
-											RESULT = new XMLAttribute();
-											RESULT.setType(XMLAttribute.ContentType.ENTITIES);
+											RESULT = XMLAttributeContentType.ENTITIES();
 										:} |
 									NMTOKEN
 										{:
-											RESULT = new XMLAttribute();
-											RESULT.setType(XMLAttribute.ContentType.NMTOKEN);
+											RESULT = XMLAttributeContentType.NMTOKEN();
 										:} |
 									NMTOKENS
 										{:
-											RESULT = new XMLAttribute();
-											RESULT.setType(XMLAttribute.ContentType.NMTOKENS);
+											RESULT = XMLAttributeContentType.NMTOKENS();
 										:};

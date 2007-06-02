@@ -29,7 +29,23 @@
 */
 package junit.com.mcdermottroe.exemplar;
 
+import java.io.IOException;
+import java.io.File;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.jar.JarFile;
+import java.util.jar.JarEntry;
+
 import com.mcdermottroe.exemplar.Constants;
+
+import static com.mcdermottroe.exemplar.Constants.Character.DOLLAR;
+import static com.mcdermottroe.exemplar.Constants.Character.EXCLAMATION_MARK;
+import static com.mcdermottroe.exemplar.Constants.Character.FULL_STOP;
+import static com.mcdermottroe.exemplar.Constants.Character.SLASH;
+import static com.mcdermottroe.exemplar.Constants.PACKAGE;
+import static com.mcdermottroe.exemplar.Constants.URL_JAR_PREFIX;
 
 /** Test class for com.mcdermottroe.exemplar.Constants.
 
@@ -39,4 +55,73 @@ import com.mcdermottroe.exemplar.Constants;
 public class ConstantsTest
 extends InterfaceTestCase<Constants>
 {
+	public void testAllClassesHaveATestCase() {
+		// Construct the package path
+		String packagePath = PACKAGE.replace(FULL_STOP, SLASH);
+
+		// Find all of the JARs which contain the classes in PACKAGE
+		List<JarFile> jars = new ArrayList<JarFile>();
+		ClassLoader cl = ConstantsTest.class.getClassLoader();
+		Enumeration<URL> urls = null;
+		try {
+			urls = cl.getResources(packagePath);
+		} catch (IOException e) {
+			assertNotNull("IOException was null", e);
+			fail("IOException thrown by getResources()");
+		}
+		assertNotNull("URLs was null", urls);
+		while (urls.hasMoreElements()) {
+			URL u = urls.nextElement();
+			if (u.toString().startsWith(URL_JAR_PREFIX)) {
+				String url = u.toString();
+				url = url.substring(
+					URL_JAR_PREFIX.length(),
+					url.indexOf((int)EXCLAMATION_MARK)
+				);
+
+				File f = new File(url);
+				assertTrue(
+					"File does not exist: " + f.getAbsolutePath(),
+					f.exists()
+				);
+				JarFile jf = null;
+				try {
+					jf = new JarFile(f);
+				} catch (IOException e) {
+					assertNotNull("IOException was null", e);
+					fail("IOException thrown by JarFile(File)");
+				}
+				assertNotNull("JarFile was null", jf);
+				jars.add(jf);
+			}
+		}
+
+		// Now find all the classes in the JARs and check for matching test
+		// classes.
+		for (JarFile jf : jars) {
+			Enumeration<JarEntry> entries = jf.entries();
+			while (entries.hasMoreElements()) {
+				JarEntry je = entries.nextElement();
+				String name = je.getName();
+				if (name.startsWith(packagePath) && name.endsWith(".class")) {
+					if (!name.contains(String.valueOf(DOLLAR))) {
+						StringBuilder className = new StringBuilder(
+							name.substring(
+								0,
+								name.lastIndexOf((int)FULL_STOP)
+							).replace(SLASH, FULL_STOP)
+						);
+						className.insert(0, "junit.");
+						className.append("Test");
+						try {
+							Class.forName(className.toString());
+						} catch (ClassNotFoundException e) {
+							assertNotNull("ClassNotFoundException was null", e);
+							fail("Missing test class: " + className);
+						}
+					}
+				}
+			}
+		}
+	}
 }

@@ -100,8 +100,6 @@ extends ExemplarTestCase<T>
 				return;
 			}
 		}
-
-		assertTrue("No private constructors found", true);
 	}
 
 	/** All fields must be either 'private', 'protected'
@@ -173,11 +171,19 @@ extends ExemplarTestCase<T>
 		for (T a : samples()) {
 			for (T b : samples()) {
 				if (a != null && b != null) {
-					assertEquals(
-						"Two instances are equal but have differed hash codes",
-						a.equals(b),
-						a.hashCode() == b.hashCode()
-					);
+					if (a.equals(b)) {
+						assertEquals(
+							"Objects are equal but have different hash codes",
+							a.hashCode(),
+							b.hashCode()
+						);
+					} else {
+						assertNotSame(
+							"Objects are not equal but have equal hash codes",
+							a.hashCode(),
+							b.hashCode()
+						);
+					}
 				}
 			}
 		}
@@ -378,7 +384,7 @@ extends ExemplarTestCase<T>
 		Integer.signum(a.compareTo(b)) == -Integer.signum(b.compareTo(a))
 		as required by the contract of {@link Comparable#compareTo(Object)}.
 	*/
-	public void testComparableSignsConsistent() {
+	public void testCompareToSignsConsistent() {
 		if (!Comparable.class.isAssignableFrom(testedClass)) {
 			return;
 		}
@@ -421,7 +427,7 @@ extends ExemplarTestCase<T>
 	 	implies
 		a.compareTo(c) op 0.
 	*/
-	public void testComparableTransitive() {
+	public void testCompareToTransitive() {
 		if (!Comparable.class.isAssignableFrom(testedClass)) {
 			return;
 		}
@@ -429,21 +435,48 @@ extends ExemplarTestCase<T>
 			for (T b : samples()) {
 				for (T c : samples()) {
 					if (a != null && b != null) {
-						int ab = Integer.signum(
-							((Comparable<T>)a).compareTo(b)
-						);
-						int bc = Integer.signum(
-							((Comparable<T>)b).compareTo(c)
-						);
-						int ac = Integer.signum(
-							((Comparable<T>)a).compareTo(c)
-						);
-						if (ab == bc) {
-							assertEquals(
-								"comparable(T) not transitive",
-								ab,
-								ac
+						int ab = 0;
+						int bc = 0;
+						int ac = 0;
+						boolean abThrew = false;
+						boolean bcThrew = false;
+						boolean acThrew = false;
+						try {
+							ab = Integer.signum(
+								((Comparable<T>)a).compareTo(b)
 							);
+						} catch (Throwable t) {
+							abThrew = true;
+						}
+						try {
+							bc = Integer.signum(
+								((Comparable<T>)b).compareTo(c)
+							);
+						} catch (Throwable t) {
+							bcThrew = true;
+						}
+						try {
+							ac = Integer.signum(
+								((Comparable<T>)a).compareTo(c)
+							);
+						} catch (Throwable t) {
+							acThrew = true;
+						}
+
+						if (abThrew && bcThrew) {
+							assertTrue("a.compareTo(c) did not throw", acThrew);
+						} else if (abThrew) {
+							// Only one threw, we don't care
+						} else if (bcThrew) {
+							// Only one threw, we don't care
+						} else {
+							if (ab == bc) {
+								assertEquals(
+									"comparable(T) not transitive",
+									ab,
+									ac
+								);
+							}
 						}
 					}
 				}
@@ -451,14 +484,31 @@ extends ExemplarTestCase<T>
 		}
 	}
 
+	/** Test that {@link Comparable#compareTo(Object)} throws a {@link
+		NullPointerException} when given null as its parameter.
+	*/
+	public void testCompareToNullThrowsNPE() {
+		if (!Comparable.class.isAssignableFrom(testedClass)) {
+			return;
+		}
+		for (T a : samples()) {
+			try {
+				((Comparable<T>)a).compareTo(null);
+				fail("compareTo(null) did not throw an NPE");
+			} catch (NullPointerException e) {
+				assertNotNull("NullPointerException was null", e);
+			}
+		}
+	}
+
 	/** Test to ensure that a.compareTo(b) == 0 implies a.equals(b). */
-	public void testComparableConsistentWithEquals() {
+	public void testCompareToConsistentWithEquals() {
 		if (!Comparable.class.isAssignableFrom(testedClass)) {
 			return;
 		}
 		for (T a : samples()) {
 			for (T b : samples()) {
-				if (a != null) {
+				if (a != null && b != null) {
 					if (((Comparable<T>)a).compareTo(b) == 0) {
 						assertEquals(
 							"compareTo not consistent with equals",

@@ -33,15 +33,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.utils.Strings;
 
 import static com.mcdermottroe.exemplar.Constants.HASHCODE_MAGIC_NUMBER;
 
-/** An {@link com.mcdermottroe.exemplar.model.XMLObject} which represents
-	alternative lists or sequences of {@link
-	com.mcdermottroe.exemplar.model.XMLObject}s.
+/** An {@link XMLObject} which represents alternative lists or sequences of
+	{@link XMLObject}s.
 
 	@author		Conor McDermottroe
 	@since		0.1
@@ -57,16 +55,7 @@ implements Iterable<XMLObject<?>>
 	/** Simple constructor. */
 	protected XMLAggregateObject() {
 		super();
-		contents = new ArrayList<XMLObject<?>>(0);
-	}
-
-	/** Return the number of elements in the object.
-
-		@return	The number of elements in this object.
-	*/
-	public int numElements() {
-		DBC.ASSERT(contents != null);
-		return contents.size();
+		contents = new ArrayList<XMLObject<?>>();
 	}
 
 	/** An {@link Iterator} over the contents contained in the object.
@@ -74,7 +63,6 @@ implements Iterable<XMLObject<?>>
 		@return An {@link Iterator} over the contents in the object.
 	*/
 	public Iterator<XMLObject<?>> iterator() {
-		DBC.ASSERT(contents != null);
 		return contents.iterator();
 	}
 
@@ -84,36 +72,14 @@ implements Iterable<XMLObject<?>>
 					add to the calculation.
 	*/
 	public void addObject(XMLObject<?> xo) {
-		DBC.REQUIRE(xo != null);
-		DBC.REQUIRE(contents != null);
-		if (xo == null || contents == null) {
-			return;
-		}
-
 		contents.add(xo);
-
-		DBC.ENSURE(contents != null);
 	}
 
-	/** Append an {@link com.mcdermottroe.exemplar.model.XMLElementReference}
-		to this object.
+	/** Append another {@link XMLAggregateObject} to this one.
 
-		@param	elementRef	The {@link
-							com.mcdermottroe.exemplar.model.XMLElementReference}
-							to add.
-	*/
-	public void append(XMLElementReference elementRef) {
-		addObject(elementRef);
-	}
-
-	/** Append another {@link
-		com.mcdermottroe.exemplar.model.XMLAggregateObject} to this one.
-
-		@param	other	The other {@link
-						com.mcdermottroe.exemplar.model.XMLAggregateObject}.
+		@param	other	The other {@link XMLAggregateObject}.
 	*/
 	public void append(XMLAggregateObject<?> other) {
-		DBC.REQUIRE(other != null);
 		if (other == null) {
 			return;
 		}
@@ -151,12 +117,9 @@ implements Iterable<XMLObject<?>>
 
 	/** {@inheritDoc} */
 	@Override public int hashCode() {
-		int hashCode = super.hashCode();
-
-		hashCode *= HASHCODE_MAGIC_NUMBER;
-		hashCode += contents.hashCode();
-
-		return hashCode;
+		return	super.hashCode() *
+				HASHCODE_MAGIC_NUMBER +
+				Utils.genericHashCode(contents);
 	}
 
 	/** Helper for doing most of the work of making {@link Object#toString()}

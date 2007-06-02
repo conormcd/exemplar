@@ -31,7 +31,6 @@ package com.mcdermottroe.exemplar.model;
 
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
-import com.mcdermottroe.exemplar.ui.Message;
 
 import static com.mcdermottroe.exemplar.Constants.Character.COMMA;
 import static com.mcdermottroe.exemplar.Constants.Character.LEFT_PAREN;
@@ -48,70 +47,40 @@ public class XMLEntity
 extends XMLNamedObject<XMLEntity>
 implements XMLMarkupDeclaration
 {
-	/** The valid entity types. */
-	public enum EntityType {
-		/** The entity type has yet to be decided. */
-		UNINITIALISED,
-		/** The entity is an internal entity (has an immediate value). */
-		INTERNAL,
-		/** The entity is an external entity (value must be fetched from an
-			external resource and then parsed).
-		*/
-		EXTERNAL_PARSED,
-		/** The entity is an external entity (value must be fetched from an
-			external resource and then included verbatim).
-		 */
-		EXTERNAL_UNPARSED
-	}
-
 	/** The type of entity this is. */
-	private EntityType entityType;
+	private final XMLEntityType entityType;
 
 	/** The immediate value of this entity. This is only set for internal
 		entities (entities with an {@link #entityType} of {@link
-		EntityType#INTERNAL}).
+		XMLEntityType#INTERNAL}).
 	*/
-	private String value;
+	private final String value;
 
 	/**	The external identifier of this entity. This is only set for external
 		entities (entities with an {@link #entityType} of {@link
-		EntityType#EXTERNAL_PARSED}).
+		XMLEntityType#EXTERNAL_PARSED}).
 	*/
-	private XMLExternalIdentifier extID;
+	private final XMLExternalIdentifier extID;
 
 	/** The notation associated with this entity. This will only be set if the
 		entity is an external unparsed entity (entities with an {@link
-		#entityType} of {@link EntityType#EXTERNAL_UNPARSED}).
+		#entityType} of {@link XMLEntityType#EXTERNAL_UNPARSED}).
 	*/
-	private String notation;
-
-	/** Overload the default constructor from {@link XMLObject}. */
-	public XMLEntity() {
-		// Do the basic initialisation.
-		super();
-
-		// Mark this entity as uninitialised.
-		entityType = EntityType.UNINITIALISED;
-
-		// It doesn't have a value
-		value = null;
-		extID = null;
-		notation = null;
-	}
+	private final String notation;
 
 	/** Constructor for internal entities ({@link #entityType} == {@link
-		EntityType#INTERNAL}).
+		XMLEntityType#INTERNAL}).
 
+		@param	entityName	The name of this entity.
 		@param	entityValue	The replacement text for this entity.
 	*/
-	public XMLEntity(String entityValue) {
+	public XMLEntity(String entityName, String entityValue) {
 		// Do the basic initialisation
-		super();
-
+		super(entityName);
 		DBC.REQUIRE(entityValue != null);
 
 		// Mark this entity as internal.
-		entityType = EntityType.INTERNAL;
+		entityType = XMLEntityType.INTERNAL;
 
 		// Copy in the parameters.
 		value = entityValue;
@@ -122,18 +91,19 @@ implements XMLMarkupDeclaration
 	}
 
 	/** Constructor for external parsed entities ({@link #entityType} == {@link
-		EntityType#EXTERNAL_PARSED}).
+		XMLEntityType#EXTERNAL_PARSED}).
 
-		@param externalID	The URI + PublicID of where the content is.
+		@param	entityName	The name of this entity.
+		@param	externalID	The URI + PublicID of where the content is.
 	*/
-	public XMLEntity(XMLExternalIdentifier externalID) {
+	public XMLEntity(String entityName, XMLExternalIdentifier externalID) {
 		// Do the basic initialisation
-		super();
+		super(entityName);
 
 		DBC.REQUIRE(externalID != null);
 
 		// Mark this entity as an external parsed one
-		entityType = EntityType.EXTERNAL_PARSED;
+		entityType = XMLEntityType.EXTERNAL_PARSED;
 
 		// Copy in the parameters
 		extID = externalID;
@@ -144,20 +114,26 @@ implements XMLMarkupDeclaration
 	}
 
 	/** Constructor for external unparsed entities ({@link #entityType} ==
-		{@link EntityType#EXTERNAL_UNPARSED}).
+		{@link XMLEntityType#EXTERNAL_UNPARSED}).
 
-		@param externalID	The URI + PublicID  of where the content is.
-		@param not			The notation associated with this entity
+		@param	entityName	The name of this entity.
+		@param	externalID	The URI + PublicID  of where the content is.
+		@param	not			The notation associated with this entity
 	*/
-	public XMLEntity(XMLExternalIdentifier externalID, String not) {
+	public XMLEntity(
+						String entityName,
+						XMLExternalIdentifier externalID,
+						String not
+					)
+	{
 		// Do the basic initialisation
-		super();
+		super(entityName);
 
 		DBC.REQUIRE(externalID != null);
 		DBC.REQUIRE(not != null);
 
 		// Mark this entity as an external unparsed one
-		entityType = EntityType.EXTERNAL_UNPARSED;
+		entityType = XMLEntityType.EXTERNAL_UNPARSED;
 
 		// Copy in the parameters
 		extID = externalID;
@@ -171,7 +147,7 @@ implements XMLMarkupDeclaration
 
 		@return The type of this entity.
 	*/
-	public EntityType type() {
+	public XMLEntityType type() {
 		return entityType;
 	}
 
@@ -207,23 +183,20 @@ implements XMLMarkupDeclaration
 		@return	True if the entity is internal, false otherwise.
 	*/
 	public boolean isInternal() {
-		DBC.ENSURE(!entityType.equals(EntityType.UNINITIALISED));
-		return entityType.equals(EntityType.INTERNAL);
+		return entityType.equals(XMLEntityType.INTERNAL);
 	}
 
 	/** {@inheritDoc} */
 	@Override public XMLEntity getCopy() {
-		XMLEntity copy = new XMLEntity();
-		copy.entityType = entityType;
-		if (extID != null) {
-			copy.extID = extID.getCopy();
-		} else {
-			copy.extID = null;
+		switch (entityType) {
+			case INTERNAL:
+				return new XMLEntity(name, value);
+			case EXTERNAL_PARSED:
+				return new XMLEntity(name, extID.getCopy());
+			case EXTERNAL_UNPARSED:
+				return new XMLEntity(name, extID.getCopy(), notation);
 		}
-		copy.name = name;
-		copy.notation = notation;
-		copy.value = value;
-		return copy;
+		return null; // This is actually unreachable, due to the enum
 	}
 
 	/** {@inheritDoc} */
@@ -269,6 +242,9 @@ implements XMLMarkupDeclaration
 		desc.append(name);
 		desc.append(COMMA);
 		desc.append(SPACE);
+		desc.append(entityType);
+		desc.append(COMMA);
+		desc.append(SPACE);
 		switch (entityType) {
 			case INTERNAL:
 				desc.append(value());
@@ -278,10 +254,6 @@ implements XMLMarkupDeclaration
 				desc.append(LEFT_PAREN);
 				desc.append(externalID().toString());
 				desc.append(RIGHT_PAREN);
-				break;
-			case UNINITIALISED:
-			default:
-				desc.append(Message.XMLOBJECT_NOT_CONFIGURED());
 				break;
 		}
 

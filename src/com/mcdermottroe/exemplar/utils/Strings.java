@@ -32,6 +32,8 @@ package com.mcdermottroe.exemplar.utils;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import com.mcdermottroe.exemplar.DBC;
@@ -112,7 +114,7 @@ public final class Strings {
 		}
 
 		// Return the string
-		return trimTrailingSpace(returnValue);
+		return returnValue.toString();
 	}
 
 	/** Convert a {@link CharSequence} to a sequence of Java Unicode escapes so
@@ -137,20 +139,25 @@ public final class Strings {
 		return returnValue.toString();
 	}
 
-	/** Provide a method akin to Perl's join() function. This takes an {@link
-		Iterable}, interprets every returned element as a {@link String} and
+	/** Provide a method akin to Perl's join() function. This takes a number of
+		{@link Object}s, interprets every one of them as a {@link String} and
 		joins them with the given separator {@link String}.
 
 	 	@param	separator	Separator to join the elements with.
-		@param	collection	Iterable collection to join.
+		@param	objects		The set of {@link Object}s to join.
 		@return				All of the elements String-joined using the
 							separator.
 	*/
-	public static String join(
-		CharSequence separator,
-		Iterable<? extends Object> collection
-	)
-	{
+	public static String join(CharSequence separator, Object... objects) {
+		// Figure out what we're going to iterate through.
+		Collection<Object> collection;
+		if (objects.length == 1 && objects[0] instanceof Collection) {
+			collection = (Collection<Object>)objects[0];
+		} else {
+			collection = new ArrayList<Object>();
+			Collections.addAll(collection, objects);
+		}
+
 		StringBuilder joinedString = new StringBuilder();
 		for (Object o : collection) {
 			if (joinedString.length() > 0) {
@@ -161,20 +168,16 @@ public final class Strings {
 		return joinedString.toString();
 	}
 
-	/** An alias for {@link #join(CharSequence, Iterable)} which allows
+	/** An alias for {@link #join(CharSequence, Object...)} which allows
 		the use of a character as the separator.
 
 		@param	separator	Separator to join the elements with.
-		@param	collection	Iterable collection to join.
+		@param	objects		The set of {@link Object}s to join.
 		@return				All of the elements String-joined using the
 							separator.
 	*/
-	public static String join(
-		char separator,
-		Iterable<? extends Object> collection
-	)
-	{
-		return join(String.valueOf(separator), collection);
+	public static String join(char separator, Object... objects) {
+		return join(String.valueOf(separator), objects);
 	}
 
 	/** A shim to work around the fact that {@link
@@ -299,7 +302,9 @@ public final class Strings {
 		DBC.REQUIRE(width > 0);
 		DBC.REQUIRE(indent >= 0);
 		DBC.REQUIRE(width > indent);
-		if (string == null || width <= 0 || indent < 0 || indent >= width) {
+
+		// Pass through null
+		if (string == null) {
 			return null;
 		}
 

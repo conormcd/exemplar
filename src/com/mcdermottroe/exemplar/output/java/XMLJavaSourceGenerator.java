@@ -36,6 +36,7 @@ import java.util.Map;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.model.XMLEntity;
+import com.mcdermottroe.exemplar.model.XMLEntityType;
 import com.mcdermottroe.exemplar.model.XMLExternalIdentifier;
 import com.mcdermottroe.exemplar.model.XMLMarkupDeclaration;
 import com.mcdermottroe.exemplar.output.OutputException;
@@ -55,7 +56,6 @@ import static com.mcdermottroe.exemplar.Constants.Format.Filenames.JAVA_PARSER;
 import static com.mcdermottroe.exemplar.Constants.Format.Filenames.JFLEX;
 import static com.mcdermottroe.exemplar.Constants.NULL_STRING;
 import static com.mcdermottroe.exemplar.Constants.Output.Java.BUFFER_SIZE;
-import static com.mcdermottroe.exemplar.Constants.Output.Java.BUILD_FILE;
 import static com.mcdermottroe.exemplar.Constants.Output.Java.ENTITIES_FILE;
 import static com.mcdermottroe.exemplar.Constants.PROGRAM_NAME;
 
@@ -98,9 +98,7 @@ extends XMLParserSourceGenerator<T>
 	throws XMLParserGeneratorException
 	{
 		DBC.REQUIRE(doctype != null);
-		if (doctype == null) {
-			return;
-		}
+		DBC.REQUIRE(targetDirectory != null);
 
 		// Resolve the targetDirectory parameter into an absolute path that
 		// exists.
@@ -112,7 +110,6 @@ extends XMLParserSourceGenerator<T>
 		DBC.ASSERT(vocabulary != null);
 
 		// The Files to write to.
-		File buildFile = new File(sourceDirectory, BUILD_FILE);
 		File classFile = new File(
 			sourceDirectory,
 			String.format(JAVA_PARSER, vocabulary)
@@ -131,7 +128,6 @@ extends XMLParserSourceGenerator<T>
 			doctype.entities(),
 			parseFile
 		);
-		generateBuildFile(vocabulary, buildFile);
 		generateEntitiesFile(doctype.entities(), entitiesFile);
 	}
 
@@ -290,7 +286,6 @@ extends XMLParserSourceGenerator<T>
 								// These are not handled by SAX, and virtually
 								// nobody uses them either.
 								break;
-							case UNINITIALISED:
 							default:
 								// We shouldn't get here ever.
 								DBC.UNREACHABLE_CODE();
@@ -358,49 +353,6 @@ extends XMLParserSourceGenerator<T>
 		}
 	}
 
-
-	/** Generate the build file which will build the output code.
-
-		@param	vocabulary					The name of the XML vocabulary that
-											the parser will parse.
-		@param	outputFile					The {@link File} to write out to
-		@throws XMLParserGeneratorException	if the output file could not be
-											written to.
-	*/
-	private void generateBuildFile(String vocabulary, File outputFile)
-	throws XMLParserGeneratorException
-	{
-		DBC.REQUIRE(vocabulary != null);
-		DBC.REQUIRE(outputFile != null);
-		if (vocabulary == null || outputFile == null) {
-			return;
-		}
-
-		// Get the template
-		String messageFormatTemplate = loadCodeFragment("BUILD_MAIN_TEMPLATE");
-		DBC.ASSERT(messageFormatTemplate != null);
-
-		// Make the contents of the output file
-		String outputFileContents = Strings.formatMessage(
-			messageFormatTemplate,
-			PROGRAM_NAME,
-			timestamp,
-			vocabulary
-		);
-
-		// Write out the file
-		try {
-			OutputUtils.writeStringToFile(outputFileContents, outputFile);
-		} catch (OutputException e) {
-			throw new XMLParserGeneratorException(
-				Message.FILE_WRITE_FAILED(
-					outputFile.getAbsolutePath()
-				),
-				e
-			);
-		}
-	}
-
 	/** Generate the resource file containing all of the entities. If entities
 		are not included, then no file is created.
 
@@ -434,7 +386,7 @@ extends XMLParserSourceGenerator<T>
 			StringBuilder entityProperties = new StringBuilder();
 			for (String entityName : entities.keySet()) {
 				XMLEntity entity = (XMLEntity)entities.get(entityName);
-				if (entity.type().equals(XMLEntity.EntityType.INTERNAL)) {
+				if (entity.type().equals(XMLEntityType.INTERNAL)) {
 					entityProperties.append(entityName);
 					entityProperties.append(SPACE);
 					entityProperties.append(EQUALS);

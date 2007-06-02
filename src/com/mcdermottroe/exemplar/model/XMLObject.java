@@ -64,7 +64,7 @@ implements Copyable<T>
 		if (o == null) {
 			return false;
 		}
-		return o instanceof XMLObject;
+		return o.getClass().equals(getClass());
 	}
 
 	/** See {@link Object#hashCode()}.

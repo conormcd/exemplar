@@ -71,9 +71,6 @@ public final class InputUtils {
 	throws ClassNotFoundException
 	{
 		DBC.REQUIRE(name != null);
-		if (name == null) {
-			return null;
-		}
 
 		StringBuilder parserClassName = new StringBuilder();
 		parserClassName.append(PACKAGE);
@@ -111,9 +108,6 @@ public final class InputUtils {
 		Log.debug(Message.ATTEMPTING_TO_PARSE(inputFile, inputType));
 		DBC.REQUIRE(inputFile != null);
 		DBC.REQUIRE(inputType != null);
-		if (inputFile == null || inputType == null) {
-			return null;
-		}
 
 		try {
 			Object inputMod = parserClass(inputType).newInstance();

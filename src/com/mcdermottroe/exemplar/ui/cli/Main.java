@@ -31,12 +31,9 @@ package com.mcdermottroe.exemplar.ui.cli;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.TreeMap;
 import java.util.logging.ConsoleHandler;
-import java.util.logging.Formatter;
 import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.input.InputException;
@@ -46,14 +43,15 @@ import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.output.OutputException;
 import com.mcdermottroe.exemplar.output.OutputUtils;
 import com.mcdermottroe.exemplar.ui.Log;
+import com.mcdermottroe.exemplar.ui.LogLevel;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.MessageException;
 import com.mcdermottroe.exemplar.ui.Options;
+import com.mcdermottroe.exemplar.utils.Resources;
 import com.mcdermottroe.exemplar.utils.Strings;
 
 import static com.mcdermottroe.exemplar.Constants.Character.MINUS;
 import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
-import static com.mcdermottroe.exemplar.Constants.Character.TAB;
 import static com.mcdermottroe.exemplar.Constants.EOL;
 import static com.mcdermottroe.exemplar.Constants.Format.UI.OPTION;
 import static com.mcdermottroe.exemplar.Constants.PROGRAM_NAME;
@@ -83,6 +81,14 @@ public final class Main {
 	/** The time that {@link #main(String[])} was called. */
 	private static long startTime = 0L;
 
+	/** The exit handler. */
+	private static ExitHandler exitHandler = new ExitHandler() {
+		/** {@inheritDoc} */
+		public void exit(int exitCode) {
+			System.exit(exitCode);
+		}
+	};
+
 	/** Private constructor to prevent instantiation of this class. */
 	private Main() {
 		DBC.UNREACHABLE_CODE();
@@ -102,7 +108,7 @@ public final class Main {
 		consoleHandler.setFormatter(new ConsoleFormatter());
 		Log.registerHandler(consoleHandler);
 		// CLI apps should be quiet unless something goes wrong.
-		Log.setLevel(Log.LogLevel.WARNING);
+		Log.setLevel(LogLevel.WARNING);
 
 		// Print a copyright header
 		for (String line : Message.COPYRIGHT().split(EOL)) {
@@ -115,20 +121,25 @@ public final class Main {
 			Message.localise();
 		} catch (MessageException e) {
 			abort(ExitStatus.getExitCode(EXIT_FAIL_L10N), e);
+			return;
 		}
 
 		// Process the arguments
 		Log.debug(Message.UI_PROGRESS_OPTIONS());
+		DBC.ASSERT(args != null);
 		for (int i = 0; i < args.length; i++) {
 			String helpOption = String.format(OPTION, HELP_OPTION_NAME);
 			String verboseOption = String.format(OPTION, VERBOSE_OPTION_NAME);
 			String versionOption = String.format(OPTION, VERSION_OPTION_NAME);
+			DBC.ASSERT(args[i] != null);
 			if (args[i].equals(helpOption)) {
 				cleanExit(usageMessage());
+				return;
 			} else if (args[i].equals(verboseOption)) {
-				Log.setLevel(Log.LogLevel.INFO);
+				Log.setLevel(LogLevel.INFO);
 			} else if (args[i].equals(versionOption)) {
 				cleanExit(versionMessage());
+				return;
 			} else if (args[i].startsWith(OPTION_PREFIX)) {
 				String argName = args[i].substring(OPTION_PREFIX.length());
 
@@ -137,6 +148,7 @@ public final class Main {
 						ExitStatus.getExitCode(EXIT_FAIL_ARGS),
 						Message.OPTIONS_NO_SUCH_OPTION(args[i])
 					);
+					return;
 				}
 
 				if (Options.isSwitch(argName)) {
@@ -150,6 +162,7 @@ public final class Main {
 						ExitStatus.getExitCode(EXIT_FAIL_ARGS),
 						Message.OPTIONS_NO_SUCH_OPTION(args[i])
 				);
+				return;
 			}
 		}
 		Log.debug(Message.UI_PROGRESS_DONE());
@@ -161,10 +174,11 @@ public final class Main {
 					ExitStatus.getExitCode(EXIT_FAIL_ARGS),
 					Message.MANDATORY_OPTIONS_NOT_SET()
 			);
+			return;
 		}
 
 		// The internal description of the XML document type
-		XMLDocumentType doctype = null;
+		XMLDocumentType doctype;
 
 		// Parse the input
 		try {
@@ -179,8 +193,10 @@ public final class Main {
 						);
 		} catch (InputException e) {
 			abort(ExitStatus.getExitCode(EXIT_FAIL_INPUT), e);
+			return;
 		} catch (ParserException e) {
 			abort(ExitStatus.getExitCode(EXIT_FAIL_INPUT), e);
+			return;
 		}
 
 		// Create the output
@@ -194,6 +210,7 @@ public final class Main {
 			);
 		} catch (OutputException e) {
 			abort(ExitStatus.getExitCode(EXIT_FAIL_CODE_GEN), e);
+			return;
 		}
 
 		// Indicate success
@@ -223,33 +240,16 @@ public final class Main {
 	*/
 	private static String usageMessage(String why) {
 		DBC.REQUIRE(why != null);
-		if (why == null) {
-			return null;
-		}
 
-		// Get the ResourceBundle containing all of the MessageFormats for
+		// Get the resources containing all of the MessageFormats for
 		// constructing the useage message.
-		ResourceBundle usageBits;
-		usageBits = ResourceBundle.getBundle(Main.class.getName());
+		Map<String, String> usageBits = Resources.get(Main.class);
 
 		// Get all of the usageBits.
-		String argArg = usageBits.getString(ARG_ARG);
-		String enumArg = usageBits.getString(ENUM_ARG);
-		String optionsLine = usageBits.getString(OPTIONS_LINE);
-		String usageLineMessageFormat = usageBits.getString(USAGE_LINE_MSG_FMT);
-		DBC.ASSERT(argArg != null);
-		DBC.ASSERT(enumArg != null);
-		DBC.ASSERT(optionsLine != null);
-		DBC.ASSERT(usageLineMessageFormat != null);
-		if	(
-				argArg == null ||
-				enumArg == null ||
-				optionsLine == null ||
-				usageLineMessageFormat == null
-			)
-		{
-			return null;
-		}
+		String argArg = usageBits.get(ARG_ARG);
+		String enumArg = usageBits.get(ENUM_ARG);
+		String optionsLine = usageBits.get(OPTIONS_LINE);
+		String usageLineMessageFormat = usageBits.get(USAGE_LINE_MSG_FMT);
 
 		// The usage message to construct
 		StringBuilder usage = new StringBuilder();
@@ -443,6 +443,22 @@ public final class Main {
 		return usage.toString();
 	}
 
+	/** Get the current {@link ExitHandler}.
+
+		@return	The current {@link ExitHandler}.
+	*/
+	public static ExitHandler getExitHandler() {
+		return exitHandler;
+	}
+
+	/** Set a new {@link ExitHandler}.
+
+		@param	handler	The new {@link ExitHandler}.
+	*/
+	public static void setExitHandler(ExitHandler handler) {
+		exitHandler = handler;
+	}
+
 	/** Shorthand for a clean exit. The program will exit with the exit code
 		corresponding to {@link
 		com.mcdermottroe.exemplar.Constants.UI.CLI#EXIT_SUCCESS}.
@@ -455,8 +471,8 @@ public final class Main {
 			Options.setUIFinished();
 		}
 		if (message != null) {
-			Log.LogLevel oldLevel = Log.getLevel();
-			Log.setLevel(Log.LogLevel.INFO);
+			LogLevel oldLevel = Log.getLevel();
+			Log.setLevel(LogLevel.INFO);
 			Log.info(message);
 			Log.setLevel(oldLevel);
 		}
@@ -465,12 +481,12 @@ public final class Main {
 				(double)(System.currentTimeMillis() - startTime) / 1000.0
 			)
 		);
-		System.exit(ExitStatus.getExitCode(EXIT_SUCCESS));
+		exitHandler.exit(ExitStatus.getExitCode(EXIT_SUCCESS));
 	}
 
 	/** Shorthand for an unclean exit.
 
-		@param	code	The value to pass to {@link System#exit(int)}.
+		@param	code	The value to pass to {@link ExitHandler#exit(int)}.
 		@param	message	An optional message to log (only logged if non-null).
 	*/
 	private static void abort(int code, Object message) {
@@ -486,61 +502,6 @@ public final class Main {
 				(double)(System.currentTimeMillis() - startTime) / 1000.0
 			)
 		);
-		System.exit(code);
-	}
-
-	/** A {@link Formatter} for messages which are output to the console. 
-
-		@author Conor McDermottroe
-		@since	0.2
-	*/
-	private static class ConsoleFormatter
-	extends Formatter
-	{
-		/** Format a log record so that it can be sent to the console.
-
-			@param	record	The {@link LogRecord} to format for the console.
-			@return			A {@link String} suitable for the console.
-		*/
-		@Override public String format(LogRecord record) {
-			if (record == null) {
-				return "";
-			}
-
-			// Create the buffer for the message with the raw message itself.
-			StringBuilder message = new StringBuilder(
-				String.valueOf(record.getMessage())
-			);
-
-			// If debugging is turned on, add some extra info
-			if (Options.isDebugSet()) {
-				message.insert(0, SPACE);
-				message.insert(
-					0,
-					Message.DEBUG_CLASS_AND_METHOD(
-						record.getSourceClassName(),
-						record.getSourceMethodName()
-					)
-				);
-			}
-
-			// Now add the exception, if any
-			Throwable cause = record.getThrown();
-			if (cause != null) {
-				message.append(EOL);
-				message.append(TAB);
-				message.append("Exception: ");
-				message.append(cause);
-			}
-
-			String messageAsString = Strings.trimTrailingSpace(message);
-			if (!messageAsString.endsWith(EOL)) {
-				message = new StringBuilder(messageAsString);
-				message.append(EOL);
-				return message.toString();
-			} else {
-				return messageAsString;
-			}
-		}
+		exitHandler.exit(code);
 	}
 }

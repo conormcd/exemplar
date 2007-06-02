@@ -35,9 +35,11 @@ import java.util.Map;
 import com.mcdermottroe.exemplar.CopyException;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.model.XMLAttribute;
+import com.mcdermottroe.exemplar.model.XMLAttributeDefaultType;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.model.XMLElement;
 import com.mcdermottroe.exemplar.model.XMLMarkupDeclaration;
+import com.mcdermottroe.exemplar.model.XMLAttributeList;
 import com.mcdermottroe.exemplar.output.OutputException;
 import com.mcdermottroe.exemplar.output.OutputUtils;
 import com.mcdermottroe.exemplar.output.XMLParserGeneratorException;
@@ -298,28 +300,23 @@ extends XMLParserSourceGenerator<Generator>
 			constructorCode.append("\", new Attribute(\"");
 			constructorCode.append(attributeName);
 			constructorCode.append("\", ");
-			switch (attribute.getDefaultDeclType()) {
-				case ATTVALUE:
-					constructorCode.append("Attribute.DEFAULT, \"");
-					constructorCode.append(attribute.getDefaultValue());
-					constructorCode.append("\"));");
-					break;
-				case FIXED:
-					constructorCode.append("Attribute.FIXED, \"");
-					constructorCode.append(attribute.getDefaultValue());
-					constructorCode.append("\"));");
-					fixedValue = attribute.getDefaultValue();
-					break;
-				case IMPLIED:
-					constructorCode.append("Attribute.IMPLIED, null));");
-					break;
-				case REQUIRED:
-					constructorCode.append("Attribute.REQUIRED, null));");
-					break;
-				case INVALID:
-				default:
-					DBC.UNREACHABLE_CODE();
-					return;
+
+			XMLAttributeDefaultType type = attribute.getDefaultDeclType();
+			if (XMLAttributeDefaultType.ATTVALUE("foo").sameType(type)) {
+				constructorCode.append("Attribute.DEFAULT, \"");
+				constructorCode.append(type.getValue());
+				constructorCode.append("\"));");
+			} else if (XMLAttributeDefaultType.FIXED("foo").sameType(type)) {
+				constructorCode.append("Attribute.FIXED, \"");
+				constructorCode.append(type.getValue());
+				constructorCode.append("\"));");
+				fixedValue = type.getValue();
+			} else if (XMLAttributeDefaultType.IMPLIED().sameType(type)) {
+				constructorCode.append("Attribute.IMPLIED, null));");
+			} else if (XMLAttributeDefaultType.REQUIRED().sameType(type)) {
+				constructorCode.append("Attribute.REQUIRED, null));");
+			} else {
+				DBC.UNREACHABLE_CODE();
 			}
 			constructorCode.append(EOL);
 

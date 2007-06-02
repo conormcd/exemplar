@@ -86,7 +86,6 @@ extends ExemplarTestCase<T>
 				return;
 			}
 		}
-		assertTrue("All fields are static", true);
 	}
 
 	/** All of the methods in a utility class must be declared static. */
@@ -101,6 +100,5 @@ extends ExemplarTestCase<T>
 				return;
 			}
 		}
-		assertTrue("All methods are static", true);
 	}
 }

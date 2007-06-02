@@ -65,7 +65,6 @@ import com.mcdermottroe.exemplar.utils.XML;
 
 import static com.mcdermottroe.exemplar.Constants.Character.COMMA;
 import static com.mcdermottroe.exemplar.Constants.Character.DOUBLE_QUOTE;
-import static com.mcdermottroe.exemplar.Constants.Character.HASH;
 import static com.mcdermottroe.exemplar.Constants.Character.LEFT_PAREN;
 import static com.mcdermottroe.exemplar.Constants.Character.PIPE;
 import static com.mcdermottroe.exemplar.Constants.Character.PLUS;
@@ -190,52 +189,12 @@ extends XMLParserSourceGenerator<Generator>
 					declTail.append(SPACE);
 
 					// The attribute type
-					XMLAttribute.ContentType attType = att.getType();
-					if	(
-							attType.equals(XMLAttribute.ContentType.NOTATION) ||
-							attType.equals(XMLAttribute.ContentType.ENUMERATION)
-						)
-					{
-						if (attType.equals(XMLAttribute.ContentType.NOTATION)) {
-							declTail.append(XMLAttribute.ContentType.NOTATION);
-							declTail.append(SPACE);
-						}
+					declTail.append(att.getType());
 
-						declTail.append(LEFT_PAREN);
-						declTail.append(Strings.join(PIPE, att.getValues()));
-						declTail.append(RIGHT_PAREN);
-						declTail.append(SPACE);
-					} else {
-						declTail.append(attType);
-						declTail.append(SPACE);
-					}
+					declTail.append(SPACE);
 
 					// The DefaultDecl portion of the AttDef
-					XMLAttribute.DefaultType defaultDeclType;
-					defaultDeclType = att.getDefaultDeclType();
-					switch (defaultDeclType) {
-						case FIXED:
-							declTail.append(HASH);
-							declTail.append(XMLAttribute.DefaultType.FIXED);
-							declTail.append(SPACE);
-							declTail.append(DOUBLE_QUOTE);
-							declTail.append(att.getDefaultValue());
-							declTail.append(DOUBLE_QUOTE);
-							break;
-						case ATTVALUE:
-							declTail.append(DOUBLE_QUOTE);
-							declTail.append(att.getDefaultValue());
-							declTail.append(DOUBLE_QUOTE);
-							break;
-						case IMPLIED:
-						case REQUIRED:
-							declTail.append(HASH);
-							declTail.append(defaultDeclType);
-							break;
-						case INVALID:
-						default:
-							DBC.IGNORED_ERROR();
-					}
+					declTail.append(att.getDefaultDeclType());
 				}
 				declTail.append(EOL);
 
@@ -295,14 +254,13 @@ extends XMLParserSourceGenerator<Generator>
 						entityDeclTail.append(SPACE);
 						entityDeclTail.append(entity.getNotation());
 						break;
-					case UNINITIALISED:
 					default:
 						DBC.UNREACHABLE_CODE();
 						break;
 				}
 			}
 
-			Log.debug("Creating entity declaration for " + entityName);
+			Log.debug("Creating entity declaration for " + entity);
 			entityDecls.append(
 				Strings.formatMessage(
 					entityDecl,
@@ -384,7 +342,6 @@ extends XMLParserSourceGenerator<Generator>
 
 	/** {@inheritDoc} */
 	@Override public String describeAPI() {
-		DBC.UNREACHABLE_CODE();
 		return null;
 	}
 

@@ -173,7 +173,6 @@ extends XMLParserSourceGenerator<Generator>
 
 	/** {@inheritDoc} */
 	@Override public String describeAPI() {
-		DBC.UNREACHABLE_CODE();
 		return null;
 	}
 

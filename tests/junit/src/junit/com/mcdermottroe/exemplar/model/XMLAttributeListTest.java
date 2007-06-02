@@ -29,7 +29,12 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mcdermottroe.exemplar.model.XMLAttribute;
+import com.mcdermottroe.exemplar.model.XMLAttributeContentType;
+import com.mcdermottroe.exemplar.model.XMLAttributeDefaultType;
 import com.mcdermottroe.exemplar.model.XMLAttributeList;
 
 /** Test class for {@link XMLAttributeList}.
@@ -46,11 +51,56 @@ extends XMLNamedObjectTestCase<XMLAttributeList>
 	{
 		super.setUp();
 
-		XMLAttribute attribute = new XMLAttribute();
-		XMLAttributeList attlist = new XMLAttributeList();
-		attlist.addAttribute(attribute);
+		XMLAttribute att1 = new XMLAttribute(
+			"foo",
+			XMLAttributeContentType.CDATA(),
+			XMLAttributeDefaultType.IMPLIED()
+		);
+		XMLAttribute att2 = new XMLAttribute(
+			"bar",
+			XMLAttributeContentType.CDATA(),
+			XMLAttributeDefaultType.REQUIRED()
+		);
 
-		addSample(new XMLAttributeList());
-		addSample(attlist);
+		List<XMLAttribute> atts1 = new ArrayList<XMLAttribute>();
+		atts1.add(att1);
+
+		List<XMLAttribute> atts2 = new ArrayList<XMLAttribute>();
+		atts2.add(att1);
+		atts2.add(att2);
+
+		addSample(new XMLAttributeList("baz", atts1));
+		addSample(new XMLAttributeList("quux", atts2));
+	}
+
+	/** Test {@link XMLAttributeList#iterator()}. */
+	public void testIterator() {
+		for (XMLAttributeList sample : samples()) {
+			if (sample != null) {
+				List<XMLAttribute> expected = sample.getAttributes();
+				assertNotNull("List of attributes returned was null", expected);
+				List<XMLAttribute> received = new ArrayList<XMLAttribute>();
+				for (XMLAttribute xa : sample) {
+					received.add(xa);
+				}
+				assertEquals(
+					"iterator did not return the expected contents",
+					expected,
+					received
+				);
+			}
+		}
+	}
+
+	/** Test {@link XMLAttributeList#getAttributes()}. */
+	public void testGetAttributes() {
+		for (XMLAttributeList sample : samples()) {
+			if (sample != null) {
+				assertNotNull(
+					"getAttributes returned null",
+					sample.getAttributes()
+				);
+			}
+		}
 	}
 }

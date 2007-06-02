@@ -29,7 +29,10 @@
 */
 package junit.com.mcdermottroe.exemplar.utils;
 
+import java.util.List;
+
 import com.mcdermottroe.exemplar.utils.Packages;
+import static com.mcdermottroe.exemplar.Constants.PACKAGE;
 
 import junit.com.mcdermottroe.exemplar.UtilityClassTestCase;
 
@@ -41,4 +44,16 @@ import junit.com.mcdermottroe.exemplar.UtilityClassTestCase;
 public class PackagesTest
 extends UtilityClassTestCase<Packages>
 {
+	/** {@link Packages#findSubPackages(String)}. */
+	public void testFindSubPackages() {
+		List<String> packages = Packages.findSubPackages(PACKAGE);
+		assertNotNull("Packages.findSubPackages returned null", packages);
+		assertTrue(
+			"Packages.findSubPackages returned an empty List",
+			!packages.isEmpty()
+		);
+		for (String pkg : packages) {
+			assertTrue("Package was not a subpackage", pkg.startsWith(PACKAGE));
+		}
+	}
 }

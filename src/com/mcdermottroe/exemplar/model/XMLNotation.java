@@ -31,7 +31,6 @@ package com.mcdermottroe.exemplar.model;
 
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
-import com.mcdermottroe.exemplar.ui.Message;
 
 import static com.mcdermottroe.exemplar.Constants.Character.COMMA;
 import static com.mcdermottroe.exemplar.Constants.Character.LEFT_PAREN;
@@ -49,14 +48,7 @@ extends XMLNamedObject<XMLNotation>
 implements XMLMarkupDeclaration
 {
 	/** The ExternalID or PublicID of the {@link XMLNotation}. */
-	private XMLExternalIdentifier extID;
-
-	/** No-arg constructor to aid testing. */
-	public XMLNotation() {
-		super();
-		name = null;
-		extID = new XMLExternalIdentifier();
-	}
+	private final XMLExternalIdentifier extID;
 
 	/** Basic constructor.
 
@@ -65,13 +57,11 @@ implements XMLMarkupDeclaration
 	*/
 	public XMLNotation(String notName, XMLExternalIdentifier externalID) {
 		// Do the basic initialisation
-		super();
-
+		super(notName);
 		DBC.REQUIRE(notName != null);
 		DBC.REQUIRE(externalID != null);
 
 		// Copy in the parameters
-		name = notName;
 		extID = externalID;
 	}
 
@@ -80,17 +70,12 @@ implements XMLMarkupDeclaration
 		@return The external identifier for this notation.
 	*/
 	public XMLExternalIdentifier getExtID() {
-		DBC.REQUIRE(extID != null);
-
 		return extID;
 	}
 
 	/** {@inheritDoc} */
 	@Override public XMLNotation getCopy() {
-		XMLNotation copy = new XMLNotation();
-		copy.extID = extID.getCopy();
-		copy.name = name;
-		return copy;
+		return new XMLNotation(name, extID.getCopy());
 	}
 
 	/** {@inheritDoc} */
@@ -131,11 +116,7 @@ implements XMLMarkupDeclaration
 		desc.append(COMMA);
 		desc.append(SPACE);
 		desc.append(LEFT_PAREN);
-		if (extID != null) {
-			desc.append(extID.toString());
-		} else {
-			desc.append(Message.XMLOBJECT_NOT_CONFIGURED());
-		}
+		desc.append(extID.toString());
 		desc.append(RIGHT_PAREN);
 
 		return XMLObject.toStringHelper(getClass().getName(), desc.toString());

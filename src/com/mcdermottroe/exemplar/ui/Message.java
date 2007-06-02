@@ -30,12 +30,10 @@
 package com.mcdermottroe.exemplar.ui;
 
 import java.lang.reflect.Field;
-import java.util.Enumeration;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.util.Map;
 
 import com.mcdermottroe.exemplar.DBC;
+import com.mcdermottroe.exemplar.utils.Resources;
 import com.mcdermottroe.exemplar.utils.Strings;
 
 import static com.mcdermottroe.exemplar.Constants.COPYRIGHT_MESSAGE;
@@ -219,7 +217,7 @@ public final class Message {
 	private static String OPTION_DEFAULT_MESSAGE_FORMAT = DEFAULT_MESSAGE;
 
 	/** The {@link String} printed before the legal options for an {@link
-		com.mcdermottroe.exemplar.ui.Options.Enum} are enumerated for the user.
+		com.mcdermottroe.exemplar.ui.options.Enum} are enumerated for the user.
 	*/
 	private static String OPTION_ENUM_ARGS_HEADER = DEFAULT_MESSAGE;
 
@@ -235,6 +233,11 @@ public final class Message {
 		particular language.
 	*/
 	private static String OPTION_LANGUAGE_REQUIRES_API = DEFAULT_MESSAGE;
+
+	/** A progress message saying that we're initialising the {@link Options}
+		store.
+	*/
+	private static String OPTIONS_INITIALISING = DEFAULT_MESSAGE;
 
 	/** {@link java.text.MessageFormat} string for {@link
 		#OPTIONS_NO_SUCH_OPTION(String)}.
@@ -335,10 +338,6 @@ public final class Message {
 							{@link #ANT_EXTRA_METHOD_MESSAGE_FORMAT}.
 	*/
 	public static String ANT_EXTRA_METHOD(String methodName) {
-		DBC.REQUIRE(methodName != null);
-		if (methodName == null) {
-			return null;
-		}
 		return Strings.formatMessage(
 			ANT_EXTRA_METHOD_MESSAGE_FORMAT,
 			methodName
@@ -361,10 +360,6 @@ public final class Message {
 							{@link #ANT_MISSING_METHOD_MESSAGE_FORMAT}.
 	*/
 	public static String ANT_MISSING_METHOD(String methodName) {
-		DBC.REQUIRE(methodName != null);
-		if (methodName == null) {
-			return null;
-		}
 		return Strings.formatMessage(
 			ANT_MISSING_METHOD_MESSAGE_FORMAT,
 			methodName
@@ -380,11 +375,6 @@ public final class Message {
 						#ASSERTION_MESSAGE_MESSAGE_FORMAT}.
 	*/
 	public static String ASSERTION_MESSAGE(String reason, String caller) {
-		DBC.REQUIRE(reason != null);
-		DBC.REQUIRE(caller != null);
-		if (reason == null || caller == null) {
-			return null;
-		}
 		return Strings.formatMessage(
 			ASSERTION_MESSAGE_MESSAGE_FORMAT,
 			reason,
@@ -399,8 +389,6 @@ public final class Message {
 		@return			A status message.
 	*/
 	public static String ATTEMPTING_TO_PARSE(String file, String type) {
-		DBC.REQUIRE(file != null);
-		DBC.REQUIRE(type != null);
 		return Strings.formatMessage(
 			ATTEMPTING_TO_PARSE_MESSAGE_FORMAT,
 			file,
@@ -432,11 +420,6 @@ public final class Message {
 							#DEBUG_CLASS_AND_METHOD_MESSAGE_FORMAT}.
 	*/
 	public static String DEBUG_CLASS_AND_METHOD(String className, String methodName) {
-		DBC.REQUIRE(className != null);
-		DBC.REQUIRE(methodName != null);
-		if (className == null || methodName == null) {
-			return null;
-		}
 		return Strings.formatMessage(
 			DEBUG_CLASS_AND_METHOD_MESSAGE_FORMAT,
 			className,
@@ -461,10 +444,6 @@ public final class Message {
 						#DTDLEXER_INPUT_NOT_FOUND_MESSAGE_FORMAT}.
 	*/
 	public static String DTDLEXER_INPUT_NOT_FOUND(String fileName) {
-		DBC.REQUIRE(fileName != null);
-		if (fileName == null) {
-			return null;
-		}
 		return Strings.formatMessage(
 			DTDLEXER_INPUT_NOT_FOUND_MESSAGE_FORMAT,
 			fileName
@@ -532,11 +511,6 @@ public final class Message {
 						#DTDPEEXCEPTION_MESSAGE_FORMAT}.
 	*/
 	public static String DTDPEEXCEPTION(String s, String context) {
-		DBC.REQUIRE(s != null);
-		DBC.REQUIRE(context != null);
-		if (s == null || context == null) {
-			return null;
-		}
 		return Strings.formatMessage(DTDPEEXCEPTION_MESSAGE_FORMAT, s, context);
 	}
 
@@ -580,10 +554,6 @@ public final class Message {
 						#DTDPE_UNDECLARED_PE_MESSAGE_FORMAT}.
 	*/
 	public static String DTDPE_UNDECLARED_PE(String peName) {
-		DBC.REQUIRE(peName != null);
-		if (peName == null) {
-			return null;
-		}
 		return Strings.formatMessage(DTDPE_UNDECLARED_PE_MESSAGE_FORMAT, peName);
 	}
 
@@ -611,10 +581,6 @@ public final class Message {
 							#FILE_WRITE_FAILED_MESSAGE_FORMAT}.
 	*/
 	public static String FILE_WRITE_FAILED(String filename) {
-		DBC.REQUIRE(filename != null);
-		if (filename == null) {
-			return null;
-		}
 		return Strings.formatMessage(FILE_WRITE_FAILED_MESSAGE_FORMAT, filename);
 	}
 
@@ -626,10 +592,6 @@ public final class Message {
 							{@link #FILE_WRITE_IO_EXCEPTION_MESSAGE_FORMAT}.
 	*/
 	public static String FILE_WRITE_IO_EXCEPTION(String filename) {
-		DBC.REQUIRE(filename != null);
-		if (filename == null) {
-			return null;
-		}
 		return Strings.formatMessage(
 			FILE_WRITE_IO_EXCEPTION_MESSAGE_FORMAT,
 			filename
@@ -643,10 +605,6 @@ public final class Message {
 							#GEN_NO_SUCH_DIRECTORY_MESSAGE_FORMAT}.
 	*/
 	public static String GEN_NO_SUCH_DIRECTORY(String directory) {
-		DBC.REQUIRE(directory != null);
-		if (directory == null) {
-			return null;
-		}
 		return Strings.formatMessage(
 			GEN_NO_SUCH_DIRECTORY_MESSAGE_FORMAT,
 			directory
@@ -662,11 +620,6 @@ public final class Message {
 								#GENERIC_SECURITY_EXCEPTION_MESSAGE_FORMAT}.
 	*/
 	public static String GENERIC_SECURITY_EXCEPTION(String fieldOrMethod, String className) {
-		DBC.REQUIRE(fieldOrMethod != null);
-		DBC.REQUIRE(className != null);
-		if (fieldOrMethod == null || className == null) {
-			return null;
-		}
 		return Strings.formatMessage(
 			GENERIC_SECURITY_EXCEPTION_MESSAGE_FORMAT,
 			fieldOrMethod,
@@ -724,11 +677,6 @@ public final class Message {
 						com.mcdermottroe.exemplar.input.LexerException}
 	*/
 	public static String LEXEREXCEPTION(String s, String context) {
-		DBC.REQUIRE(s != null);
-		DBC.REQUIRE(context != null);
-		if (s == null || context == null) {
-			return null;
-		}
 		return Strings.formatMessage(LEXEREXCEPTION_MESSAGE_FORMAT, s, context);
 	}
 
@@ -738,10 +686,6 @@ public final class Message {
 		@return		A formatted message describing the localisation error
 	*/
 	public static String LOCALISATION_ERROR(String s) {
-		DBC.REQUIRE(s != null);
-		if (s == null) {
-			return null;
-		}
 		return Strings.formatMessage(LOCALISATION_ERROR_MESSAGE_FORMAT, s);
 	}
 
@@ -752,10 +696,6 @@ public final class Message {
 									malformed reference.
 	*/
 	public static String MALFORMED_CHAR_REF(CharSequence malformedReference) {
-		DBC.REQUIRE(malformedReference != null);
-		if (malformedReference == null) {
-			return null;
-		}
 		return Strings.formatMessage(
 			MALFORMED_CHAR_REF_MESSAGE_FORMAT,
 			malformedReference
@@ -780,12 +720,6 @@ public final class Message {
 							{@link #MESSAGE_EXTRA_BUNDLE_ENTRY_MESSAGE_FORMAT}.
 	*/
 	public static String MESSAGE_EXTRA_BUNDLE_ENTRY(String entryName, String thisClass) {
-		DBC.REQUIRE(entryName != null);
-		DBC.REQUIRE(thisClass != null);
-		if (entryName == null || thisClass == null) {
-			return null;
-		}
-
 		return Strings.formatMessage(
 			MESSAGE_EXTRA_BUNDLE_ENTRY_MESSAGE_FORMAT,
 			entryName,
@@ -800,10 +734,6 @@ public final class Message {
 					#MESSAGE_MISSING_MESSAGE_FORMAT}.
 	*/
 	public static String MESSAGE_MISSING(String s) {
-		DBC.REQUIRE(s != null);
-		if (s == null) {
-			return null;
-		}
 		return Strings.formatMessage(MESSAGE_MISSING_MESSAGE_FORMAT, s);
 	}
 
@@ -814,10 +744,6 @@ public final class Message {
 							#MISSING_MANDATORY_OPTION_MESSAGE_FORMAT}.
 	*/
 	public static String MISSING_MANDATORY_OPTION(String optionName) {
-		DBC.REQUIRE(optionName != null);
-		if (optionName == null) {
-			return null;
-		}
 		return Strings.formatMessage(
 			MISSING_MANDATORY_OPTION_MESSAGE_FORMAT,
 			optionName
@@ -831,15 +757,11 @@ public final class Message {
 								#OPTION_DEFAULT_MESSAGE_FORMAT}.
 	*/
 	public static String OPTION_DEFAULT(String defaultValue) {
-		DBC.REQUIRE(defaultValue != null);
-		if (defaultValue == null) {
-			return null;
-		}
 		return Strings.formatMessage(OPTION_DEFAULT_MESSAGE_FORMAT, defaultValue);
 	}
 
 	/** The {@link String} printed before the legal options for an {@link
-		com.mcdermottroe.exemplar.ui.Options.Enum} are enumerated for the user.
+		com.mcdermottroe.exemplar.ui.options.Enum} are enumerated for the user.
 
 		@return The message.
 	*/
@@ -862,10 +784,6 @@ public final class Message {
 							#OPTION_LANGUAGE_OF_API_MESSAGE_FORMAT}.
 	*/
 	public static String OPTION_LANGUAGE_OF_API(String language) {
-		DBC.REQUIRE(language != null);
-		if (language == null) {
-			return null;
-		}
 		return Strings.formatMessage(
 			OPTION_LANGUAGE_OF_API_MESSAGE_FORMAT,
 			language
@@ -881,6 +799,14 @@ public final class Message {
 		return OPTION_LANGUAGE_REQUIRES_API;
 	}
 
+	/** Initialising options...
+
+		@return The message.
+	*/
+	public static String OPTIONS_INITIALISING() {
+		return OPTIONS_INITIALISING;
+	}
+
 	/** The user attempted to use an option which doesn't exist.
 
 		@param optionName	The name of the ficticious option the user
@@ -889,10 +815,6 @@ public final class Message {
 							#OPTIONS_NO_SUCH_OPTION_MESSAGE_FORMAT}.
 	*/
 	public static String OPTIONS_NO_SUCH_OPTION(String optionName) {
-		DBC.REQUIRE(optionName != null);
-		if (optionName != null) {
-			return null;
-		}
 		return Strings.formatMessage(
 			OPTIONS_NO_SUCH_OPTION_MESSAGE_FORMAT,
 			optionName
@@ -954,7 +876,6 @@ public final class Message {
 						#UI_PROGRESS_FINISHED_TIME_MESSAGE_FORMAT}.
 	*/
 	public static String UI_PROGRESS_FINISHED_TIME(double time) {
-		DBC.REQUIRE(time >= 0.0);
 		return Strings.formatMessage(
 			UI_PROGRESS_FINISHED_TIME_MESSAGE_FORMAT,
 			time
@@ -996,10 +917,6 @@ public final class Message {
 								#UI_PROGRESS_PARSING_INPUT_MESSAGE_FORMAT}
 	*/
 	public static String UI_PROGRESS_PARSING_INPUT(String inputFileName) {
-		DBC.REQUIRE(inputFileName != null);
-		if (inputFileName == null) {
-			return null;
-		}
 		return Strings.formatMessage(
 			UI_PROGRESS_PARSING_INPUT_MESSAGE_FORMAT,
 			inputFileName
@@ -1037,10 +954,6 @@ public final class Message {
 						#XMLDOCTYPE_ORPHAN_ATTLIST_MESSAGE_FORMAT}.
 	*/
 	public static String XMLDOCTYPE_ORPHAN_ATTLIST(String attlist) {
-		DBC.REQUIRE(attlist == null);
-		if (attlist == null) {
-			return null;
-		}
 		return Strings.formatMessage(XMLDOCTYPE_ORPHAN_ATTLIST_MESSAGE_FORMAT, attlist);
 	}
 
@@ -1061,10 +974,6 @@ public final class Message {
 							#XMLDOCTYPE_XMLOBJECT_IN_MARKUPDECLS_MESSAGE_FORMAT}.
 	*/
 	public static String XMLDOCTYPE_XMLOBJECT_IN_MARKUPDECLS(String xmlObject) {
-		DBC.REQUIRE(xmlObject != null);
-		if (xmlObject == null) {
-			return null;
-		}
 		return Strings.formatMessage(XMLDOCTYPE_XMLOBJECT_IN_MARKUPDECLS_MESSAGE_FORMAT, xmlObject);
 	}
 
@@ -1092,28 +1001,19 @@ public final class Message {
 		@throws MessageException	if anything goes wrong while loading the
 									messages from the backing store.
 	*/
-	public static void localise() throws MessageException {
+	public static void localise()
+	throws MessageException
+	{
 		// Load the resource bundle with all the messages in it.
-		ResourceBundle messages = ResourceBundle.getBundle(
-			Message.class.getName(),
-			Locale.getDefault()
-		);
+		Map<String, String> messages = Resources.get(Message.class);
 
 		// Get the "static" messages
-		try {
-			MESSAGE_MISSING_MESSAGE_FORMAT = messages.getString("MESSAGE_MISSING_MESSAGE_FORMAT");
-		} catch (MissingResourceException e) {
-			throw new MessageException(COULD_NOT_LOAD_MESSAGE_MISSING, e);
-		}
+		MESSAGE_MISSING_MESSAGE_FORMAT = messages.get("MESSAGE_MISSING_MESSAGE_FORMAT");
 		if (MESSAGE_MISSING_MESSAGE_FORMAT == null) {
 			throw new MessageException(COULD_NOT_LOAD_MESSAGE_MISSING);
 		}
 		String localisationErrorMessageFormat = "LOCALISATION_ERROR_MESSAGE_FORMAT";
-		try {
-			LOCALISATION_ERROR_MESSAGE_FORMAT = messages.getString(localisationErrorMessageFormat);
-		} catch (MissingResourceException e) {
-			throw new MessageException(MESSAGE_MISSING(localisationErrorMessageFormat), e);
-		}
+			LOCALISATION_ERROR_MESSAGE_FORMAT = messages.get(localisationErrorMessageFormat);
 		if (LOCALISATION_ERROR_MESSAGE_FORMAT == null) {
 			throw new MessageException(MESSAGE_MISSING(localisationErrorMessageFormat));
 		}
@@ -1130,12 +1030,7 @@ public final class Message {
 				String fieldName = field.getName();
 
 				// Get the message for this field
-				String message;
-				try {
-					message = messages.getString(fieldName);
-				} catch (MissingResourceException e) {
-					throw new MessageException(MESSAGE_MISSING(fieldName), e);
-				}
+				String message = messages.get(fieldName);
 
 				// Set the value of the field
 				if (message != null) {
@@ -1153,9 +1048,7 @@ public final class Message {
 
 		// Check that all of the messages in the resource bundle
 		// have a corresponding member in this class
-		for (Enumeration<String> entries = messages.getKeys(); entries.hasMoreElements(); ) {
-			DBC.ASSERT(entries != null);
-			String entry = entries.nextElement();
+		for (String entry : messages.keySet()) {
 			try {
 				Message.class.getDeclaredField(entry);
 			} catch (NoSuchFieldException e) {
