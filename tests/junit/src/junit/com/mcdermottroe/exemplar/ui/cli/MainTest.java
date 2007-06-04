@@ -111,6 +111,7 @@ extends UtilityClassTestCase<Main>
 			try {
 				Main.main(args);
 			} catch (AssertionError e) {
+				e.printStackTrace();
 				assertNotNull("AssertionError was null", e);
 				fail("main() failed an assertion");
 			}

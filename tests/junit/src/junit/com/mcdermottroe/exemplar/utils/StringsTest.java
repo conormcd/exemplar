@@ -429,4 +429,30 @@ extends UtilityClassTestCase<Strings>
 			);
 		}
 	}
+
+	/** Test {@link Strings#upperCaseFirst(CharSequence)}. */
+	public void testUpperCaseFirst() {
+		String[] input = {
+			null,
+			"",
+			"foo",
+			"FOO",
+			"!",
+		};
+		String[] expected = {
+			null,
+			"",
+			"Foo",
+			"FOO",
+			"!",
+		};
+		assertEquals("Broken test data", input.length, expected.length);
+		for (int i = 0; i < input.length; i++) {
+			assertEquals(
+				"Input does not match expected output",
+				expected[i],
+				Strings.upperCaseFirst(input[i])
+			);
+		}
+	}
 }

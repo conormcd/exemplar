@@ -431,9 +431,10 @@
 			description="Run all of the JUnit tests."
 	>
 		<mkdir dir="tests/junit/results" />
-		<junit failureproperty="junit-failed" fork="yes" forkmode="once">
+		<junit failureproperty="junit-failed" fork="yes" forkmode="once" dir="${basedir}">
 			<classpath>
 				<path refid="build-classpath" />
+				<path refid="jar-classpath" />
 			</classpath>
 			<jvmarg value="-ea" />
 			<formatter type="xml" />

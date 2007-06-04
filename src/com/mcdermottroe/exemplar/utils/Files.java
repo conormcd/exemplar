@@ -30,12 +30,12 @@
 package com.mcdermottroe.exemplar.utils;
 
 import java.io.File;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.Comparator;
 
 import com.mcdermottroe.exemplar.DBC;
 
@@ -70,6 +70,11 @@ public final class Files {
 		DBC.ENSURE(!directory.exists());
 	}
 
+	/** Find all files under a directory.
+
+		@param	directory	The directory to search.
+		@return 			The {@link File}s found under the directory.
+	*/
 	public static Collection<File> findFiles(File directory) {
 		DBC.REQUIRE(directory != null);
 		DBC.REQUIRE(directory.exists());
@@ -86,6 +91,13 @@ public final class Files {
 		return retVal;
 	}
 
+	/** Find all the subdirectories of a directory.
+
+		@param	directory	The directory to search.
+		@return 			The {@link File}s found under the directory which
+							are directories. <code>directory</code> is included
+							in the returned {@link Collection}.
+	*/
 	public static Collection<File> findDirectories(File directory) {
 		DBC.REQUIRE(directory != null);
 		DBC.REQUIRE(directory.exists());

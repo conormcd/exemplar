@@ -29,13 +29,18 @@
 */
 package junit.com.mcdermottroe.exemplar.input;
 
+import java.io.File;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.SortedMap;
 
-import com.mcdermottroe.exemplar.input.InputUtils;
 import com.mcdermottroe.exemplar.input.InputException;
+import com.mcdermottroe.exemplar.input.InputUtils;
 import com.mcdermottroe.exemplar.input.ParserException;
 
 import junit.com.mcdermottroe.exemplar.UtilityClassTestCase;
+import junit.com.mcdermottroe.exemplar.input.dtd.ParserTest;
 
 /** Test class for {@link com.mcdermottroe.exemplar.input.InputUtils}.
 
@@ -45,6 +50,18 @@ import junit.com.mcdermottroe.exemplar.UtilityClassTestCase;
 public class InputUtilsTest
 extends UtilityClassTestCase<InputUtils>
 {
+	/** Get a collection of input languages and sample files in those languages
+		for testing the parsing.
+
+		@return	Some sample input languages and files.
+	*/
+	public static Map<String, Collection<File>> getSampleData() {
+		Map<String, Collection<File>> retVal;
+		retVal = new HashMap<String, Collection<File>>();
+		retVal.put("dtd", ParserTest.getSampleDTDs());
+		return retVal;
+	}
+
 	/** {@link InputUtils#availableInputLanguages()}. */
 	public void testAvailableInputLanguages() {
 		SortedMap<String, String> langs = InputUtils.availableInputLanguages();
@@ -72,14 +89,20 @@ extends UtilityClassTestCase<InputUtils>
 
 	/** Test {@link InputUtils#parse(String, String)}. */
 	public void testParse() {
-		try {
-			InputUtils.parse("/dev/null", "dtd");
-		} catch (InputException e) {
-			assertNotNull("InputException was null", e);
-			fail("parse(String, String) threw an InputException");
-		} catch (ParserException e) {
-			assertNotNull("ParserException was null", e);
-			fail("parse(String, String) threw an ParserException");
+		Map<String, Collection<File>> sampleData = getSampleData();
+		for (String lang : sampleData.keySet()) {
+			Collection<File> sampleFiles = sampleData.get(lang);
+			for (File f : sampleFiles) {
+				try {
+					InputUtils.parse(f.getAbsolutePath(), lang);
+				} catch (InputException e) {
+					assertNotNull("InputException was null", e);
+					fail("parse(String, String) threw an InputException");
+				} catch (ParserException e) {
+					assertNotNull("ParserException was null", e);
+					fail("parse(String, String) threw an ParserException");
+				}
+			}
 		}
 	}
 }

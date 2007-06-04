@@ -154,7 +154,7 @@ parser code {:
 
 		// Actually go and do the parse.
 		try {
-			if (Options.isDebugSet()) {
+			if (Options.isDebugSet() && Options.getInteger("debug-level") > 1) {
 				return (XMLDocumentType)((Symbol)debug_parse()).value;
 			} else {
 				return (XMLDocumentType)((Symbol)parse()).value;

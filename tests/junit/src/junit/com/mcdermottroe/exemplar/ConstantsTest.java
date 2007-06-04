@@ -29,14 +29,14 @@
 */
 package junit.com.mcdermottroe.exemplar;
 
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.jar.JarFile;
 import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import com.mcdermottroe.exemplar.Constants;
 
@@ -55,6 +55,7 @@ import static com.mcdermottroe.exemplar.Constants.URL_JAR_PREFIX;
 public class ConstantsTest
 extends InterfaceTestCase<Constants>
 {
+	/** A test to ensure that all classes in the output JAR have a test case. */
 	public void testAllClassesHaveATestCase() {
 		// Construct the package path
 		String packagePath = PACKAGE.replace(FULL_STOP, SLASH);

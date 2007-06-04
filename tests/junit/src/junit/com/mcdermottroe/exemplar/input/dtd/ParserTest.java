@@ -29,10 +29,14 @@
 */
 package junit.com.mcdermottroe.exemplar.input.dtd;
 
-import com.mcdermottroe.exemplar.input.dtd.Parser;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+
 import com.mcdermottroe.exemplar.input.ParserException;
-import com.mcdermottroe.exemplar.ui.Options;
+import com.mcdermottroe.exemplar.input.dtd.Parser;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
+import com.mcdermottroe.exemplar.ui.Options;
 
 import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
 
@@ -53,18 +57,32 @@ extends NormalClassTestCase<Parser>
 		ignoreHashCodeTests = true;
 	}
 
-	/** Test {@link Parser#parse(String)} */
+	/** Get a sample of DTDs to parse.
+
+		@return	A sample collection of DTDs for using as test input.
+	*/
+	public static Collection<File> getSampleDTDs() {
+		Collection<File> sampleDtds = new ArrayList<File>();
+		sampleDtds.add(new File("dtds/docbook-xml-42/docbookx.dtd"));
+		sampleDtds.add(new File("dtds/docbook-xml-44/docbookx.dtd"));
+		sampleDtds.add(new File("dtds/w3cschema/XMLSchema.dtd"));
+		return sampleDtds;
+	}
+
+	/** Test {@link Parser#parse(String)}. */
 	public void testParseString() {
 		for (Parser sample : samples()) {
 			if (sample != null) {
-				XMLDocumentType doctype = null;
-				try {
-					doctype = sample.parse("/dev/null");
-				} catch (ParserException e) {
-					assertNotNull("ParserException was null", e);
-					fail("parse(String) threw a ParserException");
+				for (File sampleFile : getSampleDTDs()) {
+					XMLDocumentType doctype = null;
+					try {
+						doctype = sample.parse(sampleFile);
+					} catch (ParserException e) {
+						assertNotNull("ParserException was null", e);
+						fail("parse(String) threw a ParserException");
+					}
+					assertNotNull("parse(String) returned null", doctype);
 				}
-				assertNotNull("parse(String) returned null", doctype);
 			}
 		}
 	}

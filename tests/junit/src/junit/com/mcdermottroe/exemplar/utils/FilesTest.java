@@ -58,6 +58,7 @@ extends UtilityClassTestCase<Files>
 		testDirectory = new File(TMP, getClass().getName());
 	}
 
+	/** Test {@link Files#findDirectories(File)}. */
 	public void testFindDirectories() {
 		// Give a clean test directory
 		removeTestTree();
@@ -82,6 +83,7 @@ extends UtilityClassTestCase<Files>
 		removeTestTree();
 	}
 
+	/** Test {@link Files#findFiles(File)}. */
 	public void testFindFiles() {
 		// Give a clean test directory
 		removeTestTree();
@@ -107,6 +109,7 @@ extends UtilityClassTestCase<Files>
 		removeTestTree();
 	}
 
+	/** Test {@link Files#removeTree(File)}. */
 	public void testRemoveTree() {
 		removeTestTree();
 		createTestTree();
@@ -114,6 +117,7 @@ extends UtilityClassTestCase<Files>
 		assertFalse("Test directory still exists", testDirectory.exists());
 	}
 
+	/** Create a test tree of files and directories. */
 	private void createTestTree() {
 		File fooDir = new File(testDirectory, "foo");
 		File barDir = new File(fooDir, "bar");
@@ -139,6 +143,7 @@ extends UtilityClassTestCase<Files>
 		}
 	}
 
+	/** Remove the test tree created by {@link #createTestTree()}. */
 	private void removeTestTree() {
 		File fooDir = new File(testDirectory, "foo");
 		File barDir = new File(fooDir, "bar");
@@ -150,7 +155,7 @@ extends UtilityClassTestCase<Files>
 			bazFile,
 			barDir,
 			fooDir,
-			testDirectory
+			testDirectory,
 		};
 		for (File f : filesToDelete) {
 			if (f.exists()) {

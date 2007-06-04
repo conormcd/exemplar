@@ -31,8 +31,8 @@ package junit.com.mcdermottroe.exemplar.model;
 
 import com.mcdermottroe.exemplar.model.XMLElementContentModel;
 import com.mcdermottroe.exemplar.model.XMLElementContentType;
-import com.mcdermottroe.exemplar.model.XMLSequence;
 import com.mcdermottroe.exemplar.model.XMLMixedContent;
+import com.mcdermottroe.exemplar.model.XMLSequence;
 
 import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
 

@@ -163,7 +163,10 @@ extends Exception
 		return file;
 	}
 
-	/** Extend {@link Exception#toString()}. */
+	/** Extend {@link Exception#toString()}.
+
+		@return	A {@link String} representation of this {@link OutputException}.
+	*/
 	@Override public String toString() {
 		if (file != null) {
 			StringBuilder fileMessage = new StringBuilder();

@@ -35,13 +35,10 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
-import java.util.SortedSet;
 import java.util.TreeSet;
 
 import com.mcdermottroe.exemplar.DBC;
@@ -346,24 +343,11 @@ public final class Options {
 		return options != null && !options.isEmpty() && uiFinished;
 	}
 
-	/** Get an iterator over the list of names of options.
-
-		@return	An Iterator over the collection of names of defined options.
-	*/
-	public static Iterator<String> optionNameIterator() {
-		// Ensure that the options stash is created
-		init();
-
-		// Put the Set of keys in a TreeSet to sort it.
-		SortedSet<String> keySet = new TreeSet<String>(options.keySet());
-		return keySet.iterator();
-	}
-
 	/** Get the names of all the options.
 
 		@return A Set of String representaions of the option names
 	*/
-	public static Set<String> getAllOptionNames() {
+	public static Set<String> getOptionNames() {
 		// Ensure that the options stash is created
 		init();
 
@@ -415,7 +399,7 @@ public final class Options {
 					if (optionToSet.isCaseSensitive()) {
 						rawValue = rawV;
 					} else {
-						rawValue = rawV.toLowerCase(Locale.getDefault());
+						rawValue = rawV.toLowerCase();
 					}
 					Map<String, String> enumValueMap;
 					enumValueMap = Enum.class.cast(optionToSet).getEnumValues();
@@ -431,7 +415,7 @@ public final class Options {
 				if (optionToSet.isCaseSensitive()) {
 					vals.add(optionValue);
 				} else {
-					vals.add(optionValue.toLowerCase(Locale.getDefault()));
+					vals.add(optionValue.toLowerCase());
 				}
 			}
 
@@ -458,21 +442,15 @@ public final class Options {
 		// Ensure that the options stash is created
 		init();
 
-		for (String legalOptionName : options.keySet()) {
-			if (optionName.equals(legalOptionName)) {
-				return true;
-			}
-		}
-		return false;
+		return options.keySet().contains(optionName);
 	}
 
 	/** Convenience routine for finding out if an {@link Option} is mandatory or
 		not.
 
 		@param	optionName	The name of the option to check.
-		@return				True if the {@link
-							com.mcdermottroe.exemplar.ui.options.Option} is
-							mandatory, false otherwise.
+		@return				True if the {@link Option} is mandatory, false
+							otherwise.
 	*/
 	public static boolean isMandatory(String optionName) {
 		// Ensure that the options stash is created
@@ -557,11 +535,7 @@ public final class Options {
 		if (isArgument(optionName)) {
 			returnValue = getString(optionName);
 		} else if (isSwitch(optionName)) {
-			Boolean bool = getBoolean(optionName);
-			DBC.ASSERT(bool != null);
-			if (bool != null) {
-				returnValue = bool.toString();
-			}
+			returnValue = String.valueOf(getBoolean(optionName));
 		} else if (isEnum(optionName)) {
 			Option<?> opt = get(optionName);
 			if	(
@@ -610,7 +584,6 @@ public final class Options {
 				}
 			} else if (isEnum(optionName)) {
 				if (!opt.isMultiValue()) {
-					DBC.ASSERT(opt.getValue().size() <= 1);
 					if (opt.getValue().size() == 1) {
 						Object obj = opt.getValue().get(0);
 						if (obj != null && obj instanceof String) {

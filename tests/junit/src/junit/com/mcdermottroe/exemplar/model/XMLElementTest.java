@@ -35,10 +35,10 @@ import com.mcdermottroe.exemplar.model.XMLAggregateObject;
 import com.mcdermottroe.exemplar.model.XMLAttribute;
 import com.mcdermottroe.exemplar.model.XMLAttributeList;
 import com.mcdermottroe.exemplar.model.XMLElement;
+import com.mcdermottroe.exemplar.model.XMLElementContentModel;
 import com.mcdermottroe.exemplar.model.XMLElementContentType;
 import com.mcdermottroe.exemplar.model.XMLMixedContent;
 import com.mcdermottroe.exemplar.model.XMLSequence;
-import com.mcdermottroe.exemplar.model.XMLElementContentModel;
 
 /** Test class for {@link XMLElement}.
 

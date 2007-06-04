@@ -139,8 +139,7 @@ extends TestCase
 				continue;
 			}
 			String testMethodName =	"test" +
-									methodName.substring(0, 1).toUpperCase() +
-									methodName.substring(1);
+									Strings.upperCaseFirst(methodName);
 
 			boolean found = false;
 			Method[] testMethods = getClass().getMethods();

@@ -31,7 +31,6 @@ package com.mcdermottroe.exemplar.output;
 
 import java.io.File;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Map;
 
 import com.mcdermottroe.exemplar.DBC;
@@ -178,12 +177,10 @@ extends XMLParserGenerator<T>
 			StringBuilder generatorClassName = new StringBuilder();
 			generatorClassName.append(PACKAGE);
 			generatorClassName.append(FULL_STOP);
-			generatorClassName.append(
-				lang.toLowerCase(Locale.getDefault())
-			);
+			generatorClassName.append(lang.toLowerCase());
 			if (api != null) {
 				generatorClassName.append(FULL_STOP);
-				generatorClassName.append(api.toLowerCase(Locale.getDefault()));
+				generatorClassName.append(api.toLowerCase());
 			}
 			generatorClassName.append(FULL_STOP);
 			generatorClassName.append(CLASS);

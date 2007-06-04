@@ -106,7 +106,7 @@ extends XMLParserSourceGenerator<T>
 		DBC.ASSERT(sourceDirectory != null);
 
 		// Get the vocabulary name
-		String vocabulary = Options.getString("vocabulary"); // NON-NLS
+		String vocabulary = Options.getString("vocabulary");
 		DBC.ASSERT(vocabulary != null);
 
 		// The Files to write to.
@@ -155,7 +155,7 @@ extends XMLParserSourceGenerator<T>
 
 		// Figure out the package
 		String packageStatement = "";
-		String pkg = Options.getString("output-package"); // NON-NLS
+		String pkg = Options.getString("output-package");
 		if (pkg != null) {
 			packageStatement = String.format(PACKAGE, pkg);
 		}
@@ -209,14 +209,6 @@ extends XMLParserSourceGenerator<T>
 		DBC.REQUIRE(vocabulary != null);
 		DBC.REQUIRE(outputFile != null);
 		DBC.REQUIRE(codeFragments != null);
-		if	(
-				vocabulary == null ||
-				outputFile == null ||
-				codeFragments == null
-			)
-		{
-			return;
-		}
 
 		// Get the template strings
 		String messageFormatTemplate = loadCodeFragment("JFLEX_MAIN_TEMPLATE");
@@ -315,7 +307,7 @@ extends XMLParserSourceGenerator<T>
 
 		// Figure out the package
 		String packageStatement = "";
-		String pkg = Options.getString("output-package"); // NON-NLS
+		String pkg = Options.getString("output-package");
 		if (pkg != null) {
 			packageStatement = String.format(PACKAGE, pkg);
 		}

@@ -30,18 +30,9 @@
 package junit.com.mcdermottroe.exemplar.output;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
-import com.mcdermottroe.exemplar.model.XMLAttribute;
-import com.mcdermottroe.exemplar.model.XMLAttributeList;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
-import com.mcdermottroe.exemplar.model.XMLDocumentTypeException;
-import com.mcdermottroe.exemplar.model.XMLElement;
-import com.mcdermottroe.exemplar.model.XMLElementContentType;
-import com.mcdermottroe.exemplar.model.XMLMarkupDeclaration;
-import com.mcdermottroe.exemplar.model.XMLElementContentModel;
 import com.mcdermottroe.exemplar.output.XMLParserGeneratorException;
 import com.mcdermottroe.exemplar.output.XMLParserSourceGenerator;
 import com.mcdermottroe.exemplar.utils.Files;
@@ -90,73 +81,60 @@ extends XMLParserGeneratorTestCase<T>
 	public void testGenerateParser() {
 		for (T sample : samples()) {
 			if (sample != null) {
-				// Create an XMLDocumentType
-				XMLDocumentType docType = null;
-				try {
-					List<XMLMarkupDeclaration> markup;
-					markup = new ArrayList<XMLMarkupDeclaration>();
-
-					XMLElement element = new XMLElement(
-						"element",
-						new XMLElementContentModel(XMLElementContentType.ANY)
+				for (XMLDocumentType docType : getSampleDocTypes()) {
+					// Create the output directory
+					File tmpDir = new File(
+						System.getProperty("java.io.tmpdir")
 					);
-					markup.add(element);
-					XMLAttributeList attlist = new XMLAttributeList(
-						"element",
-						new ArrayList<XMLAttribute>()
-					);
-					markup.add(attlist);
-
-					docType = new XMLDocumentType(markup);
-				} catch (XMLDocumentTypeException e) {
-					assertNotNull("XMLDocumentTypeException was null", e);
-					fail(
-						"Creating a doctype threw an XMLDocumentTypeException."
-					);
-				} catch (AssertionError e) {
-					assertNotNull("AssertionError was null", e);
-					fail("Creating a doctype threw an assertion.");
-				}
-
-				// Create the output directory
-				File tmpDir = new File(System.getProperty("java.io.tmpdir"));
-				File outputDir = new File(tmpDir, getClass().getName());
-				outputDir.mkdirs();
-				assertTrue(
-					"Failed to create output directory",
-					outputDir.exists()
-				);
-
-				// Generate the parser.
-				try {
-					sample.generateParser(docType, outputDir);
-				} catch (XMLParserGeneratorException e) {
-					e.printStackTrace();
-					assertNotNull("XMLParserGeneratorException was null", e);
-					fail("generateParser threw an XMLParserGeneratorException");
-				} catch (AssertionError e) {
-					assertNotNull("AssertionError was null", e);
-					fail("generateParser threw an assertion");
-				}
-
-				// Now make sure that the generated files exist.
-				Collection<File> generatedFiles = generatedFiles(outputDir);
-				for (File f : generatedFiles) {
+					File outputDir = new File(tmpDir, getClass().getName());
+					outputDir.mkdirs();
 					assertTrue(
-						"Generated file did not exist: " + f.getAbsolutePath(),
-						f.exists()
+						"Failed to create output directory",
+						outputDir.exists()
 					);
-				}
-				for (File f : Files.findFiles(outputDir)) {
-					assertTrue(
-						"Extraneous file found: " + f.getAbsolutePath(),
-						generatedFiles.contains(f)
-					);
-				}
 
-				// Finally, clean up.
-				Files.removeTree(outputDir);
-				assertFalse("Faild to delete output dir", outputDir.exists());
+					// Generate the parser.
+					try {
+						sample.generateParser(docType, outputDir);
+					} catch (XMLParserGeneratorException e) {
+						e.printStackTrace();
+						assertNotNull(
+							"XMLParserGeneratorException was null",
+							e
+						);
+						fail(
+							"generateParser threw XMLParserGeneratorException"
+						);
+					} catch (AssertionError e) {
+						assertNotNull("AssertionError was null", e);
+						fail("generateParser threw an assertion");
+					}
+
+					// Now make sure that the generated files exist.
+					Collection<File> generatedFiles = generatedFiles(
+						outputDir,
+						docType
+					);
+					for (File f : generatedFiles) {
+						assertTrue(
+							"Generated file did not exist: " + f.getPath(),
+							f.exists()
+						);
+					}
+					for (File f : Files.findFiles(outputDir)) {
+						assertTrue(
+							"Extraneous file found: " + f.getAbsolutePath(),
+							generatedFiles.contains(f)
+						);
+					}
+
+					// Finally, clean up.
+					Files.removeTree(outputDir);
+					assertFalse(
+						"Faild to delete output dir",
+						outputDir.exists()
+					);
+				}
 			}
 		}
 	}
@@ -165,8 +143,13 @@ extends XMLParserGeneratorTestCase<T>
 		XMLParserSourceGenerator#generateParser(XMLDocumentType, File)}.
 
 		@param	outputDir	The directory in which the files were constructed.
+		@param	docType		The {@link XMLDocumentType} for which we are
+							generating a parser.
 		@return				A {@link Collection} of {@link File}s which should
 							have been generated by the output module.
 	*/
-	public abstract Collection<File> generatedFiles(File outputDir);
+	public abstract Collection<File> generatedFiles(
+		File outputDir,
+		XMLDocumentType docType
+	);
 }

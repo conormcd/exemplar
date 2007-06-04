@@ -29,10 +29,11 @@
 */
 package junit.com.mcdermottroe.exemplar.output.java;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.io.File;
 
+import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.output.java.XMLJavaSourceGenerator;
 import com.mcdermottroe.exemplar.ui.Options;
 
@@ -53,7 +54,11 @@ XMLJavaSourceGeneratorTestCase<T extends XMLJavaSourceGenerator<T>>
 extends XMLParserSourceGeneratorTestCase<T>
 {
 	/** {@inheritDoc} */
-	@Override public Collection<File> generatedFiles(File outputDir) {
+	@Override public Collection<File> generatedFiles(
+		File outputDir,
+		XMLDocumentType docType
+	)
+	{
 		String vocabulary = Options.getString("vocabulary");
 		Collection<File> retVal = new ArrayList<File>();
 		retVal.add(new File(outputDir, String.format(JAVA_PARSER, vocabulary)));

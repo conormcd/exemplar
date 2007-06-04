@@ -37,6 +37,7 @@
 	<allow pkg="java.io" />
 	<allow pkg="java.lang" />
 	<allow pkg="java.math" />
+	<allow pkg="java.net" />
 	<allow pkg="java.text" />
 	<allow pkg="java.util" />
 

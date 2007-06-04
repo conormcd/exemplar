@@ -39,7 +39,6 @@ import com.mcdermottroe.exemplar.model.XMLAttributeDefaultType;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.model.XMLElement;
 import com.mcdermottroe.exemplar.model.XMLMarkupDeclaration;
-import com.mcdermottroe.exemplar.model.XMLAttributeList;
 import com.mcdermottroe.exemplar.output.OutputException;
 import com.mcdermottroe.exemplar.output.OutputUtils;
 import com.mcdermottroe.exemplar.output.XMLParserGeneratorException;
@@ -86,7 +85,7 @@ extends XMLParserSourceGenerator<Generator>
 	throws XMLParserGeneratorException
 	{
 		// Set some of the common stuff
-		basePackage = Options.getString("output-package"); // NON-NLS
+		basePackage = Options.getString("output-package");
 		if (basePackage == null) {
 			throw new XMLParserGeneratorException(
 				Message.MANDATORY_OPTIONS_NOT_SET()
@@ -99,19 +98,19 @@ extends XMLParserSourceGenerator<Generator>
 		// Only create code if there are some elements
 		if (elements != null && !elements.isEmpty()) {
 			// Create the root parser class
-			Log.debug("Creating root parser class"); // NON-NLS
+			Log.debug("Creating root parser class");
 			createRootParserClass(directory);
 
 			// Create the support classes
-			Log.debug("Creating support classes"); // NON-NLS
-			File supportDir = new File(directory, "support"); // NON-NLS
+			Log.debug("Creating support classes");
+			File supportDir = new File(directory, "support");
 			createXMLComponentClass(supportDir);
 			createXMLContentClass(supportDir);
 			createAbstractElementClass(supportDir);
 
 			// Create one class per element
-			Log.debug("Creating element classes"); // NON-NLS
-			File elementsDir = new File(directory, "element"); // NON-NLS
+			Log.debug("Creating element classes");
+			File elementsDir = new File(directory, "element");
 			for (String elementName : elements.keySet()) {
 				XMLMarkupDeclaration markupDecl = elements.get(elementName);
 				if (markupDecl instanceof XMLElement) {
@@ -143,7 +142,7 @@ extends XMLParserSourceGenerator<Generator>
 	protected void createRootParserClass(File dir)
 	throws XMLParserGeneratorException
 	{
-		Log.debug("Creating root parser class"); // NON-NLS
+		Log.debug("Creating root parser class");
 		DBC.REQUIRE(dir != null);
 		if (dir == null) {
 			return;
@@ -155,19 +154,12 @@ extends XMLParserSourceGenerator<Generator>
 		}
 
 		// Get the template
-		String messageFormatTemplate = loadCodeFragment(
-			"ROOT_PARSER_CLASS" // NON-NLS
-		);
+		String messageFormatTemplate = loadCodeFragment("ROOT_PARSER_CLASS");
 		DBC.ASSERT(messageFormatTemplate != null);
 
 		// Make the root parser class name
-		String vocabularyName = Options.getString("vocabulary"); // NON-NLS
-		StringBuilder rootParserClassName  = new StringBuilder(vocabularyName);
-		rootParserClassName.replace(
-			0,
-			1,
-			vocabularyName.substring(0, 1).toUpperCase()
-		);
+		String vocabularyName = Options.getString("vocabulary");
+		String rootParserClassName = Strings.upperCaseFirst(vocabularyName);
 
 		// Make the contents of the output file
 		String outputFileContents = Strings.formatMessage(
@@ -206,7 +198,7 @@ extends XMLParserSourceGenerator<Generator>
 	protected void createAbstractElementClass(File dir)
 	throws XMLParserGeneratorException
 	{
-		Log.debug("Creating abstract element class"); // NON-NLS
+		Log.debug("Creating abstract element class");
 		DBC.REQUIRE(dir != null);
 		if (dir == null) {
 			return;
@@ -219,7 +211,7 @@ extends XMLParserSourceGenerator<Generator>
 
 		// Get the template
 		String messageFormatTemplate = loadCodeFragment(
-			"ABSTRACT_ELEMENT_CLASS" // NON-NLS
+			"ABSTRACT_ELEMENT_CLASS"
 		);
 		DBC.ASSERT(messageFormatTemplate != null);
 
@@ -274,14 +266,11 @@ extends XMLParserSourceGenerator<Generator>
 		String className;
 		int indexOfColon = elementName.indexOf((int)COLON);
 		if (indexOfColon > 0) {
-			className = elementName.substring(
-							indexOfColon + 1,
-							indexOfColon + 2
-						).toUpperCase() +
-						elementName.substring(indexOfColon + 2);
+			className = Strings.upperCaseFirst(
+				elementName.substring(indexOfColon + 1)
+			);
 		} else {
-			className = elementName.substring(0, 1).toUpperCase() +
-						elementName.substring(1);
+			className = Strings.upperCaseFirst(elementName);
 		}
 		className = className.replaceAll("\\W", "_");
 
@@ -340,10 +329,7 @@ extends XMLParserSourceGenerator<Generator>
 			accessMethods.append(TAB);
 			accessMethods.append("public String get");
 			accessMethods.append(
-				(
-					attributeName.substring(0, 1).toUpperCase() +
-					attributeName.substring(1)
-				).replaceAll("\\W+", "_")
+				Strings.upperCaseFirst(attributeName).replaceAll("\\W+", "_")
 			);
 			accessMethods.append("() {");
 			accessMethods.append(EOL);
@@ -384,10 +370,10 @@ extends XMLParserSourceGenerator<Generator>
 				accessMethods.append(TAB);
 				accessMethods.append("public void set");
 				accessMethods.append(
-					(
-						attributeName.substring(0, 1).toUpperCase() +
-						attributeName.substring(1)
-					).replaceAll("\\W+", "_")
+					Strings.upperCaseFirst(attributeName).replaceAll(
+						"\\W+",
+						"_"
+					)
 				);
 				accessMethods.append("(String value) {");
 				accessMethods.append(EOL);

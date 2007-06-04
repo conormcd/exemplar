@@ -30,7 +30,6 @@
 package com.mcdermottroe.exemplar.input;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -75,7 +74,7 @@ public final class InputUtils {
 		StringBuilder parserClassName = new StringBuilder();
 		parserClassName.append(PACKAGE);
 		parserClassName.append(FULL_STOP);
-		parserClassName.append(name.toLowerCase(Locale.getDefault()));
+		parserClassName.append(name.toLowerCase());
 		parserClassName.append(FULL_STOP);
 		parserClassName.append(CLASS);
 		Class<?> parserClass = Class.forName(parserClassName.toString());

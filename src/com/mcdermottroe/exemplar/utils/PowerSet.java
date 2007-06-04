@@ -115,7 +115,7 @@ implements Copyable<PowerSet<T>>
 
 		@param	o	An {@link Object} which may be contained in this {@link
 					PowerSet}.
-		@return		True if <code>o</code> is a {@link Set&lt;T&gt;} which is
+		@return		True if <code>o</code> is a {@link Set} which is
 					contained within this {@link PowerSet}.
 	*/
 	@Override public boolean contains(Object o) {

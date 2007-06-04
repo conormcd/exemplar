@@ -29,7 +29,6 @@
 */
 package com.mcdermottroe.exemplar.ui.cli;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.ConsoleHandler;
@@ -184,12 +183,12 @@ public final class Main {
 		try {
 			Log.info(
 				Message.UI_PROGRESS_PARSING_INPUT(
-					Options.getString("input") // NON-NLS
+					Options.getString("input")
 				)
 			);
 			doctype =	InputUtils.parse(
-							Options.getString("input"),		// NON-NLS
-							Options.getString("input-type")	// NON-NLS
+							Options.getString("input"),
+							Options.getString("input-type")
 						);
 		} catch (InputException e) {
 			abort(ExitStatus.getExitCode(EXIT_FAIL_INPUT), e);
@@ -272,7 +271,7 @@ public final class Main {
 
 		// Find the column that option descriptions start in.
 		int optionDescColumn = 0;
-		for (String optionName : Options.getAllOptionNames()) {
+		for (String optionName : Options.getOptionNames()) {
 			int length =	INDENT.length() +
 							OPTION_PREFIX.length() +
 							optionName.length();
@@ -293,13 +292,7 @@ public final class Main {
 
 		// Enumerate the options
 		usage.append(optionsLine);
-		for	(
-				Iterator<String> optionNames = Options.optionNameIterator();
-				optionNames.hasNext();
-			)
-		{
-			String optionName = optionNames.next();
-
+		for (String optionName : Options.getOptionNames()) {
 			// Print the option and any arguments it may take.
 			usage.append(Strings.indent(String.format(OPTION, optionName)));
 			if (Options.isArgument(optionName)) {

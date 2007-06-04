@@ -35,17 +35,22 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
 import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.model.XMLDocumentTypeException;
+import com.mcdermottroe.exemplar.model.XMLElement;
+import com.mcdermottroe.exemplar.model.XMLElementContentModel;
+import com.mcdermottroe.exemplar.model.XMLElementContentType;
 import com.mcdermottroe.exemplar.model.XMLMarkupDeclaration;
 import com.mcdermottroe.exemplar.output.LanguageAPIPair;
 import com.mcdermottroe.exemplar.output.OutputException;
 import com.mcdermottroe.exemplar.output.OutputUtils;
 import com.mcdermottroe.exemplar.ui.Options;
+import com.mcdermottroe.exemplar.utils.Files;
 import com.mcdermottroe.exemplar.utils.Strings;
 
 import junit.com.mcdermottroe.exemplar.UtilityClassTestCase;
@@ -390,9 +395,15 @@ extends UtilityClassTestCase<OutputUtils>
 		// Make an empty doctype
 		XMLDocumentType doctype = null;
 		try {
-			doctype = new XMLDocumentType(
-				new ArrayList<XMLMarkupDeclaration>()
+			Collection<XMLMarkupDeclaration> markup;
+			markup = new ArrayList<XMLMarkupDeclaration>();
+			markup.add(
+				new XMLElement(
+					"element",
+					new XMLElementContentModel(XMLElementContentType.ANY)
+				)
 			);
+			doctype = new XMLDocumentType(markup);
 		} catch (XMLDocumentTypeException e) {
 			assertNotNull("XMLDocumentTypeException was null", e);
 			fail("Failed to create a test document type");
@@ -437,15 +448,13 @@ extends UtilityClassTestCase<OutputUtils>
 			// Make sure that something was created in the output directory,
 			// we'll leave it up to the XMLParserSourceGeneratorTestCases to
 			// actually verify the contents further.
+			if (output.list().length <= 0) {
+				System.err.println(output.getAbsolutePath() + " was empty");
+			}
 			assertTrue("Output directory was empty", output.list().length > 0);
 
 			// Now remove the test directory and its contents
-			for (String fileName : output.list()) {
-				File toDelete = new File(output, fileName);
-				toDelete.delete();
-				assertFalse("Did not delete file", toDelete.exists());
-			}
-			output.delete();
+			Files.removeTree(output);
 			assertFalse("Output directory did not delete", output.exists());
 		}
 

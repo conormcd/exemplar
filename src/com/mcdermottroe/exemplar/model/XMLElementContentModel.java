@@ -29,8 +29,8 @@
 */
 package com.mcdermottroe.exemplar.model;
 
-import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Copyable;
+import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
 
 /** The content model for an {@link XMLElement}.

@@ -29,8 +29,8 @@
 */
 package com.mcdermottroe.exemplar.model;
 
-import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.DBC;
+import com.mcdermottroe.exemplar.Utils;
 
 import static com.mcdermottroe.exemplar.Constants.HASHCODE_MAGIC_NUMBER;
 

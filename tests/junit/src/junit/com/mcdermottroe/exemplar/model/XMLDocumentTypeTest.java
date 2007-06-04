@@ -39,12 +39,12 @@ import com.mcdermottroe.exemplar.model.XMLAttributeList;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.model.XMLDocumentTypeException;
 import com.mcdermottroe.exemplar.model.XMLElement;
+import com.mcdermottroe.exemplar.model.XMLElementContentModel;
 import com.mcdermottroe.exemplar.model.XMLElementContentType;
 import com.mcdermottroe.exemplar.model.XMLEntity;
 import com.mcdermottroe.exemplar.model.XMLExternalIdentifier;
 import com.mcdermottroe.exemplar.model.XMLMarkupDeclaration;
 import com.mcdermottroe.exemplar.model.XMLNotation;
-import com.mcdermottroe.exemplar.model.XMLElementContentModel;
 import com.mcdermottroe.exemplar.utils.PowerSet;
 
 import junit.com.mcdermottroe.exemplar.NormalClassTestCase;

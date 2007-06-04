@@ -29,12 +29,14 @@
 */
 package junit.com.mcdermottroe.exemplar.output.java.binding;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.io.File;
 
+import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.output.java.binding.Generator;
 import com.mcdermottroe.exemplar.ui.Options;
+import com.mcdermottroe.exemplar.utils.Strings;
 
 import static com.mcdermottroe.exemplar.Constants.Format.Filenames.JAVA;
 
@@ -60,15 +62,42 @@ extends XMLParserSourceGeneratorTestCase<Generator>
 	}
 
 	/** {@inheritDoc} */
-	@Override public Collection<File> generatedFiles(File outputDir) {
+	@Override public Collection<File> generatedFiles(
+		File outputDir,
+		XMLDocumentType docType
+	)
+	{
 		String vocabulary = Options.getString("vocabulary");
-		String rootParserClass =	vocabulary.substring(0, 1).toUpperCase() +
-									vocabulary.substring(1);
+		String rootParserClass = Strings.upperCaseFirst(vocabulary);
+
+		File elementDir = new File(outputDir, "element");
+		File supportDir = new File(outputDir, "support");
 
 		Collection<File> retVal = new ArrayList<File>();
 		retVal.add(new File(outputDir, String.format(JAVA, rootParserClass)));
-		retVal.add(new File(outputDir, "element"));
-		retVal.add(new File(outputDir, "support"));
+		retVal.add(elementDir);
+		for (String elementName : docType.elements().keySet()) {
+			String className;
+			if (elementName.contains(":")) {
+				className = Strings.upperCaseFirst(
+					elementName.substring(elementName.indexOf((int)':') + 1)
+				);
+			} else {
+				className = Strings.upperCaseFirst(elementName);
+			}
+			retVal.add(
+				new File(
+					elementDir,
+					String.format(JAVA, className)
+				)
+			);
+		}
+		retVal.add(supportDir);
+		retVal.add(new File(supportDir, String.format(JAVA, "XMLComponent")));
+		retVal.add(new File(supportDir, String.format(JAVA, "XMLContent")));
+		retVal.add(
+			new File(supportDir, String.format(JAVA, "exemplarElement"))
+		);
 		return retVal;
 	}
 }

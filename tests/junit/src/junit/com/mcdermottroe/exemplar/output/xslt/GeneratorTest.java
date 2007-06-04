@@ -29,10 +29,11 @@
 */
 package junit.com.mcdermottroe.exemplar.output.xslt;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.io.File;
 
+import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.output.xslt.Generator;
 import com.mcdermottroe.exemplar.ui.Options;
 import com.mcdermottroe.exemplar.utils.Strings;
@@ -69,7 +70,11 @@ extends XMLParserSourceGeneratorTestCase<Generator>
 	}
 
 	/** {@inheritDoc} */
-	@Override public Collection<File> generatedFiles(File outputDir) {
+	@Override public Collection<File> generatedFiles(
+		File outputDir,
+		XMLDocumentType docType
+	)
+	{
 		Collection<File> retVal = new ArrayList<File>();
 		retVal.add(
 			new File(

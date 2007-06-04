@@ -196,12 +196,7 @@ public class CreateManual {
 		ret.append(PROGRAM_NAME);
 		ret.append("</command>");
 		ret.append(EOL);
-		for	(
-				Iterator<String> optionNames = Options.optionNameIterator();
-				optionNames.hasNext();
-			)
-		{
-			String optionName = optionNames.next();
+		for (String optionName : Options.getOptionNames()) {
 			if (Options.isMandatory(optionName)) {
 				ret.append("\t\t\t\t\t<arg choice=\"plain\">");
 			} else {
@@ -259,12 +254,7 @@ public class CreateManual {
 	{
 		StringBuilder ret = new StringBuilder();
 		ret.append("\t\t\t<xsl:when test=\"@id='optionsdescription'\">").append(EOL);
-		for	(
-				Iterator<String> it = Options.optionNameIterator();
-				it.hasNext();
-			)
-		{
-			String optionName = it.next();
+		for (String optionName : Options.getOptionNames()) {
 
 			ret.append("\t\t\t\t<refsect2");
 			ret.append(" id=\"option.");

@@ -376,4 +376,22 @@ public final class Strings {
 	public static String wrap(CharSequence string, int width) {
 		return wrap(string, width, 0);
 	}
+
+	/** Return the input with the first character upper-cased.
+
+		@param	string	The {@link CharSequence} to transform.
+		@return			The input {@link CharSequence} with the first character
+						upper-cased.
+	*/
+	public static String upperCaseFirst(CharSequence string) {
+		if (string == null) {
+			return null;
+		}
+		if (string.length() < 1) {
+			return string.toString();
+		}
+		StringBuilder retVal = new StringBuilder(string);
+		retVal.replace(0, 1, string.subSequence(0, 1).toString().toUpperCase());
+		return retVal.toString();
+	}
 }

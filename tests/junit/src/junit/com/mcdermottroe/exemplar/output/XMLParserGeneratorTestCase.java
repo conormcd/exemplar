@@ -29,9 +29,21 @@
 */
 package junit.com.mcdermottroe.exemplar.output;
 
+import java.io.File;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import com.mcdermottroe.exemplar.input.InputException;
+import com.mcdermottroe.exemplar.input.InputUtils;
+import com.mcdermottroe.exemplar.input.ParserException;
+import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.output.XMLParserGenerator;
+import com.mcdermottroe.exemplar.ui.Options;
 
 import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
+import junit.com.mcdermottroe.exemplar.input.InputUtilsTest;
 
 /** Test class for children of {@link XMLParserGenerator}.
 
@@ -43,4 +55,45 @@ public abstract
 class XMLParserGeneratorTestCase<T extends XMLParserGenerator<T>>
 extends NormalClassTestCase<T>
 {
+	/** A {@link Set} of {@link XMLDocumentType}s which the subclasses of this
+		class can use for testing.
+	*/
+	private static Set<XMLDocumentType> sampleDocTypes =
+		new HashSet<XMLDocumentType>();
+
+	/** Access (and if necessary, create) {@link #sampleDocTypes}.
+
+		@return	A collection of sample {@link XMLDocumentType}s.
+	*/
+	protected static Set<XMLDocumentType> getSampleDocTypes() {
+		if (sampleDocTypes.isEmpty()) {
+			Map<String, Collection<File>> samples;
+			samples = InputUtilsTest.getSampleData();
+
+			for (String lang : samples.keySet()) {
+				Collection<File> files = samples.get(lang);
+				for (File f : files) {
+					try {
+						sampleDocTypes.add(
+							InputUtils.parse(f.getAbsolutePath(), lang)
+						);
+					} catch (InputException e) {
+						// Ignore
+					} catch (ParserException e) {
+						// Ignore
+					}
+				}
+			}
+		}
+		return new HashSet<XMLDocumentType>(sampleDocTypes);
+	}
+
+	/** {@inheritDoc} */
+	@Override public void setUp()
+	throws Exception
+	{
+		super.setUp();
+		Options.reset();
+		Options.set("include", "entities");
+	}
 }

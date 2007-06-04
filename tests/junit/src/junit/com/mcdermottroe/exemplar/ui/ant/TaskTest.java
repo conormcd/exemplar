@@ -39,6 +39,7 @@ import org.apache.tools.ant.BuildException;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.Options;
 import com.mcdermottroe.exemplar.ui.ant.Task;
+import com.mcdermottroe.exemplar.utils.Strings;
 
 import static com.mcdermottroe.exemplar.Constants.Character.MINUS;
 import static com.mcdermottroe.exemplar.Constants.Character.UNDERSCORE;
@@ -86,7 +87,7 @@ extends NormalClassTestCase<Task>
 	*/
 	public void testAntInSyncWithOptions() {
 		Method[] methods = testedClass.getDeclaredMethods();
-		Set<String> defOptions = Options.getAllOptionNames();
+		Set<String> defOptions = Options.getOptionNames();
 		for (Method method : methods) {
 			String methodName = method.getName();
 			if (methodName.startsWith(SETTER_PREFIX)) {
@@ -107,8 +108,7 @@ extends NormalClassTestCase<Task>
 		}
 		for (String defOption : defOptions) {
 			String methodName =	SETTER_PREFIX +
-									defOption.substring(0, 1).toUpperCase() +
-									defOption.substring(1);
+								Strings.upperCaseFirst(defOption);
 			methodName = methodName.replace(MINUS, UNDERSCORE);
 			fail(Message.ANT_MISSING_METHOD(methodName));
 		}
