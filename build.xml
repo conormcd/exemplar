@@ -237,7 +237,7 @@
 			Testing targets
 	-->
 	<target	name="test"
-			depends="test-junit,test-ui-ant,test-checkstyle"
+			depends="test-junit,test-checkstyle"
 			description="Run all available tests on the codebase."
 	/>
 	<target name="build-tests" depends="jar,set-up-classpaths">
@@ -426,9 +426,6 @@
 			</or>
 		</condition>
 		<fail if="checkstyle.failed" message="CheckStyle failed" />
-	</target>
-	<target name="test-ui-ant" depends="jar">
-		<ant dir="tests/antui" inheritAll="false" />
 	</target>
 	<target	name="test-junit"
 			depends="clean-tests-junit-results,build-tests,set-up-classpaths"
@@ -725,15 +722,12 @@
 		</delete>
 	</target>
 	<target	name="clean-tests"
-			depends="clean-tests-junit-results,clean-tests-ant-ui"
+		depends="clean-tests-junit-results"
 	/>
 	<target name="clean-tests-junit-results">
 		<delete includeEmptyDirs="true" quiet="true">
 			<fileset dir="tests/junit/results" />
 		</delete>
-	</target>
-	<target name="clean-tests-ant-ui">
-		<ant dir="tests/antui" target="clean" inheritAll="false" />
 	</target>
 
 	<!--
@@ -759,5 +753,13 @@
 	<target name="version-display" depends="version">
 		<echo message="Version: ---${version}---" />
 	</target>
-	<target name="nightly" depends="dist,doc,test" />
+	<target name="nightly"
+			description="Run the nightly build, you must define exemplar.web.root for this to work."
+			if="exemplar.web.root"
+	>
+		<ant target="clean" />
+		<ant target="dist" />
+		<ant target="doc" />
+		<ant target="test" />
+	</target>
 </project>
