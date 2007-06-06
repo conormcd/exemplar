@@ -53,11 +53,10 @@
 					adapter="org.apache.tools.ant.TaskAdapter"
 					adaptto="org.apache.tools.ant.Task"
 					classpathref="build-classpath"
-		/>			
+		/>
 	</target>
 	<target name="set-up-classpaths">
 		<path id="build-classpath">
-			<pathelement location="${ant-jar}" />
 			<pathelement location="${classes}" />
 			<pathelement location="${checkstyle-jar}" />
 			<pathelement location="${cup-jar}" />
@@ -67,6 +66,11 @@
 		</path>
 		<path id="jar-classpath">
 			<pathelement location="${dist}/Exemplar.jar" />
+		</path>
+		<path id="fop-classpath">
+			<fileset dir="lib/fop">
+				<include name="**/*.jar" />
+			</fileset>
 		</path>
 	</target>
 	<target name="xmlcatalog">
@@ -479,7 +483,11 @@
 			<link href="${url-api-cup}" />
 			<link href="${url-api-java}" />
 			<link href="${url-api-junit}" />
-			<fileset dir="." />
+			<fileset dir=".">
+				<include name="src/**/*.java" />
+				<include name="tests/**/*.java" />
+				<include name="tools/**/*.java" />
+			</fileset>
 		</javadoc>
 	</target>
 	<target name="doc-manual" depends="doc-manual-man,doc-manual-html" />
@@ -538,7 +546,6 @@
 	</target>
 	<target	name="doc-manual-man"
 			depends="doc-manual-man-xslt,doc-manual-man-move"
-			description="Create the man(1) version of the user manual."
 	/>
 	<target	name="doc-manual-man-xslt"
 			depends="doc-create-manual,xmlcatalog"
@@ -557,7 +564,6 @@
 		/>
 	</target>
 	<target	name="doc-manual-man-move"
-			description="Create the man(1) version of the user manual."
 			if="manpage_must_be_moved"
 	>
 		<move	file="${basedir}/exemplar.1"
@@ -631,14 +637,14 @@
 		<delete file="${doc}/src/handbook/handbook.html" quiet="true" />
 	</target>
 	<target name="doc-handbook-pdf"
-			depends="xmlcatalog"
+			depends="xmlcatalog,set-up-classpaths"
 			description="Create the PDF version of the developer's handbook."
 	>
 		<typedef	name="fop"
 					classname="${fop-ant-task}"
 					adapter="org.apache.tools.ant.TaskAdapter"
 					adaptto="org.apache.tools.ant.Task"
-					classpathref="build-classpath"
+					classpathref="fop-classpath"
 		/>			
 		<xslt	style="${docbook-xslfo-xsl}"
 				in="${doc}/src/handbook/handbook.xml"
@@ -753,4 +759,5 @@
 	<target name="version-display" depends="version">
 		<echo message="Version: ---${version}---" />
 	</target>
+	<target name="nightly" depends="dist,doc,test" />
 </project>

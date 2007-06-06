@@ -1,0 +1,26 @@
+License details for the files in this directory and its subdirectories can be
+found in the following locations:
+
+checkstyle-all-4.3.jar:
+  This JAR contains software licensed under the following licenses:
+    LGPL:					Checkstyle itself
+	Public Domain:			ANTLR
+	Apache License v1.1:	Jakarta Regex, Jakarta Commons CLI, Jakarta Commons
+							Collections
+	Apache License v2.0:	Jakarta Commons Logging, Jakarta Commons Beanutils.
+
+docbook-xsl/*:
+  See the file docbook-xsl/COPYING.
+
+fop/*:
+  Apache License v1.1. See http://www.opensource.org/licenses/apachepl.php
+
+java-cup-11a.jar:
+  Standard ML of New Jersey license. See
+  http://www2.cs.tum.edu/projects/cup/licence.html
+
+JFlex.jar:
+  GPL. See http://www.jflex.de/copying.html
+
+junit-4.2.jar:
+  Common Public License v1.0. See http://www.opensource.org/licenses/cpl1.0.php

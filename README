@@ -98,6 +98,10 @@ Licensing
 The license for Exemplar is found in the LICENSE file and in every source file.
 
 The following are NOT covered by the license for Exemplar:
+ * Everything under lib/
+
+   Details of the licensing of these files may be found in lib/LICENSING
+
  * All files under dtds/docbook-xml-42
 
    The license for these files can be found in the
