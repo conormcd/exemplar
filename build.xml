@@ -32,7 +32,7 @@
 -->
 <project name="exemplar" default="jar" basedir=".">
 	<!-- Load external properties files. -->
-	<property file="build/conf/local.properties" />
+	<property file="build/conf/nightly.properties" />
 	<property file="build/conf/build.properties" />
 
 	<!--
@@ -754,12 +754,119 @@
 		<echo message="Version: ---${version}---" />
 	</target>
 	<target name="nightly"
-			description="Run the nightly build, you must define exemplar.web.root for this to work."
-			if="exemplar.web.root"
+			description="Run the nightly build, you must define web.root for this to work."
+			depends="version"
+			if="web.root"
 	>
-		<ant target="clean" />
-		<ant target="dist" />
-		<ant target="doc" />
-		<ant target="test" />
+		<!-- Clean up everything first to make sure we're starting from a clean slate. -->
+		<antcall target="clean" />
+
+		<!-- Do a Subversion update and find the revision we've ended up on. -->
+		<tempfile property="svn.output" destdir="${java.io.tmpdir}" prefix="${project}.svn.output" />
+		<exec executable="svn" output="${svn.output}">
+			<arg value="update" />
+		</exec>
+		<loadfile property="svn.output.last.line" srcFile="${svn.output}">
+			<filterchain>
+				<tailfilter lines="1" />			
+			</filterchain>
+		</loadfile>
+		<delete file="${svn.output}" quiet="yes" />
+
+		<!-- Fetch the current revision from the website. -->
+		<tempfile property="current.revision" destdir="${java.io.tmpdir}" prefix="${project}.current.revision" />
+		<get src="http://exemplar.mcdermottroe.com/download/rev" dest="${current.revision}" />
+		<loadfile property="current.revision.value" srcFile="${current.revision}" />
+		<delete file="${current.revision}" quiet="yes" />
+
+		<!-- Decide whether or not we should do the build -->
+		<condition property="do.nightly.build">
+			<equals arg1="${svn.output.last.line}" arg2="${current.revision}" trim="yes" />
+		</condition>
+		<property name="do.nightly.build" value="true" />
+
+		<antcall target="nightly-build" />
+	</target>
+	<target name="nightly-build" if="do.nightly.build">
+		<!-- Clean up everything first to make sure we're starting from a clean slate. -->
+		<antcall target="clean" />
+
+		<!-- Create a temporary web root to contain the results of the build -->
+		<tempfile property="tmp.web.root" destdir="${java.io.tmpdir}" prefix="${project}.web.root" />
+		<mkdir dir="${tmp.web.root}" />
+
+		<!-- Run the tests -->
+		<antcall target="test" />
+
+		<!-- Copy the tests into the temporary web root. -->
+		<mkdir dir="${tmp.web.root}/tests" />
+		<mkdir dir="${tmp.web.root}/tests/junit" />
+		<copy todir="${tmp.web.root}/tests/junit">
+			<fileset dir="tests/junit/results/html"/>
+		</copy>
+
+		<!-- Run the documentation tasks -->
+		<antcall target="doc" />
+
+		<!-- Copy the documentation into the temporary web root. -->
+		<mkdir dir="${tmp.web.root}/doc" />
+		<mkdir dir="${tmp.web.root}/doc/api" />
+		<mkdir dir="${tmp.web.root}/doc/handbook" />
+		<copy todir="${tmp.web.root}/doc/api">
+			<fileset dir="doc/api"/>
+		</copy>
+		<copy todir="${tmp.web.root}/doc/handbook">
+			<fileset dir="doc/handbook"/>
+		</copy>
+
+		<!-- Run the distribution tasks -->
+		<antcall target="dist" />
+
+		<!-- Copy the distribution packages into the temporary web root. -->
+		<mkdir dir="${tmp.web.root}/download" />
+		<copy	file="dist/Exemplar.jar"
+				tofile="${tmp.web.root}/download/exemplar-${version}.jar"
+		/>
+		<copy todir="${tmp.web.root}/download">
+			<fileset dir="dist">
+				<include name="*.bz2" />
+				<include name="*.gz" />
+				<include name="*.zip" />
+			</fileset>
+		</copy>
+
+		<!-- Put the revision marker in the correct file -->
+		<echo message="${svn.output.last.line}" file="${tmp.web.root}/download/rev" />
+
+		<!-- Now copy the stuff into the real root -->
+		<mkdir dir="${web.root}/download" />
+		<copy todir="${web.root}/download">
+			<fileset dir="${tmp.web.root}/download" />
+		</copy>
+		<delete dir="${web.root}/doc" quiet="yes" />
+		<mkdir dir="${web.root}/doc" />
+		<copy todir="${web.root}/doc">
+			<fileset dir="${tmp.web.root}/doc" />
+		</copy>
+		<delete dir="${web.root}/tests/junit" quiet="yes" />
+		<mkdir dir="${web.root}/tests/junit" />
+		<copy todir="${web.root}/tests/junit">
+			<fileset dir="${tmp.web.root}/tests/junit" />
+		</copy>
+		<chmod perm="${web.dir.perm}" type="dir">
+			<fileset dir="${web.root}" />
+		</chmod>
+		<chmod perm="${web.file.perm}" type="file">
+			<fileset dir="${web.root}" />
+		</chmod>
+		<chown owner="${web.user}">
+			<fileset dir="${web.root}" />
+		</chown>
+		<chgrp group="${web.group}">
+			<fileset dir="${web.root}" />
+		</chgrp>
+
+		<!-- Clean up -->
+		<delete dir="${tmp.web.root}" quiet="true" />
 	</target>
 </project>
