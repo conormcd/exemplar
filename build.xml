@@ -31,6 +31,9 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <project name="exemplar" default="jar" basedir=".">
+	<!-- Load the environment properties -->
+	<property environment="ENV" />
+
 	<!-- Load external properties files. -->
 	<property file="build/conf/nightly.properties" />
 	<property file="build/conf/build.properties" />
@@ -39,15 +42,9 @@
 			Configuration targets
 	-->
 	<target	name="build-configure"
-			depends="task-definitions,set-up-classpaths,xmlcatalog"
+			depends="task-definitions,set-up-classpaths,xmlcatalog,find-tmpdir,has-xsltproc"
 	/>
 	<target	name="task-definitions" depends="set-up-classpaths">
-		<typedef	name="cup"
-					classname="${cup-ant-task}"
-					adapter="org.apache.tools.ant.TaskAdapter"
-					adaptto="org.apache.tools.ant.Task"
-					classpathref="build-classpath"
-		/>			
 		<typedef	name="jflex"
 					classname="${jflex-ant-task}"
 					adapter="org.apache.tools.ant.TaskAdapter"
@@ -83,6 +80,16 @@
 			/>
 		</xmlcatalog>
 	</target>
+	<target name="find-tmpdir">
+		<condition property="tmpdir" value="${ENV.TMPDIR}" else="${java.io.tmpdir}">
+			<not>
+				<equals arg1="${ENV.TMPDIR}" arg2="$${ENV.TMPDIR}" />
+			</not>
+		</condition>
+	</target>
+	<target name="has-xsltproc">
+		<available property="has.xsltproc" file="xsltproc" filepath="${ENV.PATH}" />
+	</target>
 
 	<!--
 			Build targets.
@@ -104,15 +111,18 @@
 	<target	name="build-parser"
 			depends="build-configure,build-lexer"
 	>
-		<cup	package="${package}.input.dtd"
-				srcfile="${src}/${namespace}/input/dtd/Parser.cup"
-				destdir="${src}/${namespace}/input/dtd"
-				parser="${parser-name}"
-				symbols="${parser-symbols}"
-				nopositions="true"
-				compact_red="true"
-				interface="true"
-		/>
+		<java jar="${cup-jar}" fork="yes" classpathref="build-classpath" dir="${src}/${namespace}/input/dtd">
+			<arg value="-package" />
+			<arg value="${package}.input.dtd" />
+			<arg value="-parser" />
+			<arg value="${parser-name}" />
+			<arg value="-symbols" />
+			<arg value="${parser-symbols}" />
+			<arg value="-compact_red" />
+			<arg value="-nopositions" />
+			<arg value="-interface" />
+			<arg value="Parser.cup" />
+		</java>
 		<replace	file="${src}/${namespace}/input/dtd/${parser-file}"
 					token="extends java_cup.runtime.lr_parser implements Copyable&lt;Parser&gt;, InputModule"
 					value="extends java_cup.runtime.lr_parser"
@@ -530,8 +540,19 @@
 			</fileset>
 		</delete>
 	</target>
+	<target name="doc-manual-html-xsltproc"
+			if="has.xsltproc"
+	>
+		<exec executable="xsltproc">
+			<arg value="--output" />
+			<arg value="${doc}/manual/html/manual.html" />
+			<arg value="--novalid" />
+			<arg value="${docbook-xhtml-single-xsl}" />
+			<arg value="${doc}/src/manual/manual-processed.xml" />
+		</exec>
+	</target>
 	<target	name="doc-manual-html"
-			depends="doc-create-manual,xmlcatalog"
+			depends="doc-create-manual,doc-manual-html-xsltproc,xmlcatalog"
 			description="Create the HTML version of the user manual."
 	>
 		<xslt	style="${docbook-xhtml-single-xsl}" 
@@ -544,8 +565,19 @@
 	<target	name="doc-manual-man"
 			depends="doc-manual-man-xslt,doc-manual-man-move"
 	/>
+	<target name="doc-manual-man-xslt-xsltproc"
+			if="has.xsltproc"
+	>
+		<exec executable="xsltproc">
+			<arg value="--output" />
+			<arg value="${doc}/manual/manpage/exemplar.1" />
+			<arg value="--novalid" />
+			<arg value="${docbook-man-xsl}" />
+			<arg value="${doc}/src/manual/manual-processed.xml" />
+		</exec>
+	</target>
 	<target	name="doc-manual-man-xslt"
-			depends="doc-create-manual,xmlcatalog"
+			depends="doc-create-manual,doc-manual-man-xslt-xsltproc,xmlcatalog"
 			description="Create the man(1) version of the user manual."
 	>
 		<xslt	style="${docbook-man-xsl}" 
@@ -633,8 +665,29 @@
 		<!-- Clean up -->
 		<delete file="${doc}/src/handbook/handbook.html" quiet="true" />
 	</target>
+	<target name="doc-handbook-pdf-xsltproc" if="has.xsltproc">
+		<exec executable="xsltproc">
+			<arg value="--stringparam" />
+			<arg value="draft.mode" />
+			<arg value="no" />
+			<arg value="--stringparam" />
+			<arg value="fop.extensions" />
+			<arg value="1" />
+			<arg value="--stringparam" />
+			<arg value="img.src.path" />
+			<arg value="${doc}/src/handbook/" />
+			<arg value="--stringparam" />
+			<arg value="use.extensions" />
+			<arg value="1" />
+			<arg value="--output" />
+			<arg value="${doc}/src/handbook/handbook.fo" />
+			<arg value="--novalid" />
+			<arg value="${docbook-xslfo-xsl}" />
+			<arg value="${doc}/src/handbook/handbook.xml" />
+		</exec>
+	</target>
 	<target name="doc-handbook-pdf"
-			depends="xmlcatalog,set-up-classpaths"
+			depends="xmlcatalog,set-up-classpaths,doc-handbook-pdf-xsltproc"
 			description="Create the PDF version of the developer's handbook."
 	>
 		<typedef	name="fop"
@@ -735,7 +788,7 @@
 	-->
 	<target name="version" depends="version-get-version,clean" />
 	<target name="version-get-version" depends="jar">
-		<tempfile property="version.temp.file" destDir="${basedir}" />
+		<tempfile property="version.temp.file" destDir="${tmpdir}" />
 		<java	jar="${dist}/Exemplar.jar"
 				fork="true"
 				failonerror="true"
@@ -762,7 +815,7 @@
 		<antcall target="clean" />
 
 		<!-- Do a Subversion update and find the revision we've ended up on. -->
-		<tempfile property="svn.output" destdir="${java.io.tmpdir}" prefix="${project}.svn.output" />
+		<tempfile property="svn.output" destdir="${tmpdir}" prefix="${project}.svn.output" />
 		<exec executable="svn" output="${svn.output}">
 			<arg value="update" />
 		</exec>
@@ -774,7 +827,7 @@
 		<delete file="${svn.output}" quiet="yes" />
 
 		<!-- Fetch the current revision from the website. -->
-		<tempfile property="current.revision" destdir="${java.io.tmpdir}" prefix="${project}.current.revision" />
+		<tempfile property="current.revision" destdir="${tmpdir}" prefix="${project}.current.revision" />
 		<get src="http://exemplar.mcdermottroe.com/download/rev" dest="${current.revision}" />
 		<loadfile property="current.revision.value" srcFile="${current.revision}" />
 		<delete file="${current.revision}" quiet="yes" />
@@ -792,7 +845,7 @@
 		<antcall target="clean" />
 
 		<!-- Create a temporary web root to contain the results of the build -->
-		<tempfile property="tmp.web.root" destdir="${java.io.tmpdir}" prefix="${project}.web.root" />
+		<tempfile property="tmp.web.root" destdir="${tmpdir}" prefix="${project}.web.root" />
 		<mkdir dir="${tmp.web.root}" />
 
 		<!-- Run the tests -->
