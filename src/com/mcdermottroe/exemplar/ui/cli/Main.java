@@ -137,7 +137,7 @@ public final class Main {
 			} else if (args[i].equals(verboseOption)) {
 				Log.setLevel(LogLevel.INFO);
 			} else if (args[i].equals(versionOption)) {
-				cleanExit(versionMessage());
+				cleanExit(PROGRAM_VERSION);
 				return;
 			} else if (args[i].startsWith(OPTION_PREFIX)) {
 				String argName = args[i].substring(OPTION_PREFIX.length());
@@ -214,14 +214,6 @@ public final class Main {
 
 		// Indicate success
 		cleanExit(null);
-	}
-
-	/** Display a version message.
-
-		@return	The version of the program, unadorned.
-	*/
-	private static String versionMessage() {
-		return PROGRAM_VERSION;
 	}
 
 	/** Format a usage message.

@@ -126,7 +126,7 @@ implements Copyable<PowerSet<T>>
 			return false;
 		}
 
-		return baseSet.containsAll((Collection)o);
+		return baseSet.containsAll(Collection.class.cast(o));
 	}
 
 	/** Check if this {@link PowerSet} contains all of the elements in the given
@@ -182,7 +182,7 @@ implements Copyable<PowerSet<T>>
 		}
 
 		if (o instanceof PowerSet) {
-			PowerSet<?> other = (PowerSet)o;
+			PowerSet<?> other = PowerSet.class.cast(o);
 			return other.getBaseSet().equals(getBaseSet());
 		} else {
 			return super.equals(o);

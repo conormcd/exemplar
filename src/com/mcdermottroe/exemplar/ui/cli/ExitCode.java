@@ -41,13 +41,13 @@ public class ExitCode
 implements Copyable<ExitCode>
 {
 	/** The numeric form to be passed to {@link System#exit(int)}. */
-	private int numericForm;
+	private final int numericForm;
 
 	/** The short name for the exit code. */
-	private String mnemonic;
+	private final String mnemonic;
 
 	/** A description of the exit code and what it's used for. */
-	private String description;
+	private final String description;
 
 	/** Simple constructor, just sets the members.
 

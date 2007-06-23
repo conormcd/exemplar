@@ -52,11 +52,7 @@ public final class DBC {
 
 	/** An assertion mechanism which does more than the <code>assert</code>
 		keyword found in Java version 1.4 and later. This assertion mechanism
-		includes information on where the assertion was thrown from. These
-		assertions only run if the "debug" option is set. The correct way to
-		test for this condition is with {@link
-		com.mcdermottroe.exemplar.ui.Options#isDebugSet()}, otherwise the call
-		to this method could become recursive.
+		includes information on where the assertion was thrown from.
 
 		@param	assertion		The boolean expression which should be true.
 		@see 	com.mcdermottroe.exemplar.ui.Options#isDebugSet()

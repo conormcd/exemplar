@@ -281,6 +281,13 @@ extends XMLParserSourceGenerator<Generator>
 		for (XMLAttribute attribute : element.getAttlist()) {
 			String attributeName = attribute.getName();
 
+			String attributeMethodName = Strings.upperCaseFirst(
+				attributeName.replaceAll("\\W+", "_")
+			);
+			if ("Class".equals(attributeMethodName)) {
+				attributeMethodName += "Attribute";
+			}
+
 			String fixedValue = null;
 			constructorCode.append(TAB);
 			constructorCode.append(TAB);
@@ -328,9 +335,7 @@ extends XMLParserSourceGenerator<Generator>
 			accessMethods.append(EOL);
 			accessMethods.append(TAB);
 			accessMethods.append("public String get");
-			accessMethods.append(
-				Strings.upperCaseFirst(attributeName).replaceAll("\\W+", "_")
-			);
+			accessMethods.append(attributeMethodName);
 			accessMethods.append("() {");
 			accessMethods.append(EOL);
 			accessMethods.append(TAB);
@@ -369,12 +374,7 @@ extends XMLParserSourceGenerator<Generator>
 				accessMethods.append(EOL);
 				accessMethods.append(TAB);
 				accessMethods.append("public void set");
-				accessMethods.append(
-					Strings.upperCaseFirst(attributeName).replaceAll(
-						"\\W+",
-						"_"
-					)
-				);
+				accessMethods.append(attributeMethodName);
 				accessMethods.append("(String value) {");
 				accessMethods.append(EOL);
 				accessMethods.append(TAB);
@@ -395,7 +395,7 @@ extends XMLParserSourceGenerator<Generator>
 				accessMethods.append("\", att);");
 				accessMethods.append(EOL);
 				accessMethods.append(TAB);
-				accessMethods.append("}");
+				accessMethods.append(RIGHT_CURLY);
 				accessMethods.append(EOL);
 			}
 		}

@@ -70,7 +70,7 @@ public final class Strings {
 		@param	format	The {@link MessageFormat} format string to process.
 		@param	args	The array of {@link Object}s to interpolate.
 		@return			The message correctly formatted.
-		@see	java.text.MessageFormat
+		@see	MessageFormat
 	*/
 	public static String formatMessage(String format, Object... args) {
 		if (format == null) {

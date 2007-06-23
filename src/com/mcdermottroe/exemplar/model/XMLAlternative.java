@@ -35,9 +35,9 @@ import com.mcdermottroe.exemplar.CopyException;
 
 import static com.mcdermottroe.exemplar.Constants.Character.PIPE;
 
-/** An {@link com.mcdermottroe.exemplar.model.XMLObject} which represents
-	alternative lists of {@link com.mcdermottroe.exemplar.model.XMLObject}s.
-	This roughly corresponds to the <code>(A|B)</code> structure found in DTDs.
+/** An {@link XMLObject} which represents alternative lists of {@link
+	XMLObject}s. This roughly corresponds to the <code>(A|B)</code> structure
+	found in DTDs.
 
 	@author	Conor McDermottroe
 	@since	0.1

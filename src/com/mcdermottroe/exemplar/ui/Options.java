@@ -229,7 +229,9 @@ public final class Options {
 							// Now call the method
 							try {
 								SortedMap<?, ?> dynValues;
-								dynValues = (SortedMap)dMMethod.invoke(null);
+								dynValues = SortedMap.class.cast(
+									dMMethod.invoke(null)
+								);
 								for (Object key : dynValues.keySet()) {
 									allowedValues.put(
 										key.toString(),

@@ -173,7 +173,7 @@ public final class Utils {
 		for (Object o : objects) {
 			if (o != null) {
 				if (o instanceof Collection) {
-					Collection<?> c = (Collection)o;
+					Collection<?> c = Collection.class.cast(o);
 					for (Object co : c) {
 						hashCode += co.hashCode();
 					}

@@ -345,15 +345,13 @@ extends XMLParserSourceGenerator<Generator>
 		return null;
 	}
 
-	/** Convert either an {@link com.mcdermottroe.exemplar.model.XMLSequence}
-		or {@link XMLAlternative} to a contentspec portion of an element
-		declaration.
+	/** Convert either an {@link XMLSequence} or {@link XMLAlternative} to a
+		contentspec portion of an element declaration.
 
 		@param o	An {@link XMLObject} or {@link String} which is part of a 
 					contentspec declaration. If the object is a {@link String}
 					it must be an element name, otherwise it should be an
-					{@link XMLAlternative} or an {@link
-					com.mcdermottroe.exemplar.model.XMLSequence}.
+					{@link XMLAlternative} or an {@link XMLSequence}.
 		@return		A {@link String} representation of the contentspec.
 	*/
 	private static String objectTreeToContentSpec(Object o) {
@@ -423,7 +421,7 @@ extends XMLParserSourceGenerator<Generator>
 		} else if (o instanceof XMLContent) {
 			ret.append("#PCDATA");
 		} else if (o instanceof XMLNamedObject) {
-			ret.append(((XMLNamedObject)o).getName());
+			ret.append(XMLNamedObject.class.cast(o).getName());
 		} else {
 			DBC.UNREACHABLE_CODE();
 		}

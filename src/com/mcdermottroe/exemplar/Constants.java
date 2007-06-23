@@ -268,37 +268,37 @@ public interface Constants {
 		String SWITCH = "Switch";
 
 		/** The label for the 'type' property of an option in the
-			{@link java.util.PropertyResourceBundle} which declares the options.
+			PropertyResourceBundle which declares the options.
 		*/
 		String TYPE_PROPERTY = "type";
 
 		/** The label for the 'description' property of an option in the
-			{@link java.util.PropertyResourceBundle} which declares the options.
+			PropertyResourceBundle which declares the options.
 		*/
 		String DESCRIPTION_PROPERTY = "description";
 
 		/** The label for the 'value' property of an option in the
-			{@link java.util.PropertyResourceBundle} which declares the options.
+			PropertyResourceBundle which declares the options.
 		*/
 		String VALUE_PROPERTY = "value";
 
 		/** The label for the 'default' property of an option in the
-			{@link java.util.PropertyResourceBundle} which declares the options.
+			PropertyResourceBundle which declares the options.
 		*/
 		String DEFAULT_PROPERTY = "default";
 
 		/** The label for the 'mandatory' property of an option in the
-			{@link java.util.PropertyResourceBundle} which declares the options.
+			PropertyResourceBundle which declares the options.
 		*/
 		String MANDATORY_PROPERTY = "mandatory";
 
 		/** The label for the 'multivalue' property of an option in the
-			{@link java.util.PropertyResourceBundle} which declares the options.
+			PropertyResourceBundle which declares the options.
 		*/
 		String MULTIVALUE_PROPERTY = "multivalue";
 
 		/** The label for the 'casesensitive' property of an option in the
-			{@link java.util.PropertyResourceBundle} which declares the options.
+			PropertyResourceBundle which declares the options.
 		*/
 		String CASESENSITIVE_PROPERTY = "casesensitive";
 	}
@@ -306,8 +306,8 @@ public interface Constants {
 	/** Output module constants. */
 	interface Output {
 		/** The name of the code-generating class in an output module. The
-			class must implement
-		 	{@link com.mcdermottroe.exemplar.output.XMLParserGenerator}.
+			class must implement {@link
+			com.mcdermottroe.exemplar.output.XMLParserGenerator}.
 		*/
 		String CLASS = "Generator";
 
@@ -330,8 +330,8 @@ public interface Constants {
 			/** The name of the Java (Ant) build file. */
 			String BUILD_FILE = "build.xml";
 
-			/** The name of the {@link java.util.PropertyResourceBundle} file
-				which contains the entity definitions.
+			/** The name of the PropertyResourceBundle file which contains the
+				entity definitions.
 			*/
 			String ENTITIES_FILE = "entities.properties";
 
@@ -347,7 +347,7 @@ public interface Constants {
 	}
 
 	/** Regular expression constants. The dialect of regular expressions used is
-		the one described in {@link java.util.regex.Pattern}.
+		the one described in {@link Pattern}.
 	*/
 	interface Regex {
 		/** A regex that matches nothing but 1 or more digits. */
@@ -393,37 +393,37 @@ public interface Constants {
 			*/
 			int DEFAULT_TERMINAL_WIDTH = 80;
 
-			/** The mnemonic for use with
-				{@link com.mcdermottroe.exemplar.ui.cli.ExitStatus} to indicate
-				that the program has terminated without encountering any error.
+			/** The mnemonic for use with {@link
+				com.mcdermottroe.exemplar.ui.cli.ExitStatus} to indicate that
+				the program has terminated without encountering any error.
 			*/
 			String EXIT_SUCCESS = "EXIT_SUCCESS";
 
-			/** The mnemonic for use with
-				{@link com.mcdermottroe.exemplar.ui.cli.ExitStatus} to indicate
-				that the program has terminated due to an error in the
-				localisation (L10N) phase.
+			/** The mnemonic for use with {@link
+				com.mcdermottroe.exemplar.ui.cli.ExitStatus} to indicate that
+				the program has terminated due to an error in the localisation
+				(L10N) phase.
 			*/
 			String EXIT_FAIL_L10N = "EXIT_FAIL_L10N";
 
-			/** The mnemonic for use with
-				{@link com.mcdermottroe.exemplar.ui.cli.ExitStatus} to indicate
-				that the program has terminated due to an error encountered
-				while processing the command line arguments.
+			/** The mnemonic for use with {@link
+				com.mcdermottroe.exemplar.ui.cli.ExitStatus} to indicate that
+				the program has terminated due to an error encountered while
+				processing the command line arguments.
 			*/
 			String EXIT_FAIL_ARGS = "EXIT_FAIL_ARGS";
 
-			/** The mnemonic for use with
-				{@link com.mcdermottroe.exemplar.ui.cli.ExitStatus} to indicate
-				that the program has terminated due to an error encountered
-				while processing the input.
+			/** The mnemonic for use with {@link
+				com.mcdermottroe.exemplar.ui.cli.ExitStatus} to indicate that
+				the program has terminated due to an error encountered while
+				processing the input.
 			*/
 			String EXIT_FAIL_INPUT = "EXIT_FAIL_INPUT";
 
-			/** The mnemonic for use with
-				{@link com.mcdermottroe.exemplar.ui.cli.ExitStatus} to indicate
-				that the program has terminated due to an error encountered
-				while generating the output.
+			/** The mnemonic for use with {@link
+				com.mcdermottroe.exemplar.ui.cli.ExitStatus} to indicate that
+				the program has terminated due to an error encountered while
+				generating the output.
 			 */
 			String EXIT_FAIL_CODE_GEN = "EXIT_FAIL_CODE_GEN";
 

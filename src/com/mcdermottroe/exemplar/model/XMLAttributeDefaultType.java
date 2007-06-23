@@ -62,21 +62,25 @@ implements	Comparable<XMLAttributeDefaultType>,
 
 	/** A pool of {@link Type#ATTVALUE} {@link XMLAttributeDefaultType} objects.
 	*/
-	private static Map<String, XMLAttributeDefaultType> poolATTVALUE = null;
+	private static Map<String, XMLAttributeDefaultType> poolATTVALUE =
+		new HashMap<String, XMLAttributeDefaultType>();
 
 	/** A pool of {@link Type#FIXED} {@link XMLAttributeDefaultType} objects.
 	*/
-	private static Map<String, XMLAttributeDefaultType> poolFIXED = null;
+	private static Map<String, XMLAttributeDefaultType> poolFIXED =
+		new HashMap<String, XMLAttributeDefaultType>();
 
 	/** A singleton instance of an {@link Type#IMPLIED} {@link
 		XMLAttributeDefaultType}.
 	*/
-	private static XMLAttributeDefaultType poolIMPLIED = null;
+	private static XMLAttributeDefaultType poolIMPLIED =
+		new XMLAttributeDefaultType(Type.IMPLIED);
 
 	/** A singleton instance of an {@link Type#REQUIRED} {@link
 		XMLAttributeDefaultType}.
 	*/
-	private static XMLAttributeDefaultType poolREQUIRED = null;
+	private static XMLAttributeDefaultType poolREQUIRED =
+		new XMLAttributeDefaultType(Type.REQUIRED);
 
 	/** The type of this default decl. */
 	private final Type type;
@@ -108,10 +112,7 @@ implements	Comparable<XMLAttributeDefaultType>,
 
 		@return The {@link XMLAttributeDefaultType} for a #REQUIRED attribute.
 	*/
-	public static synchronized XMLAttributeDefaultType REQUIRED() {
-		if (poolREQUIRED == null) {
-			poolREQUIRED = new XMLAttributeDefaultType(Type.REQUIRED);
-		}
+	public static XMLAttributeDefaultType REQUIRED() {
 		return poolREQUIRED;
 	}
 
@@ -119,10 +120,7 @@ implements	Comparable<XMLAttributeDefaultType>,
 
 		@return The {@link XMLAttributeDefaultType} for a #IMPLIED attribute.
 	*/
-	public static synchronized XMLAttributeDefaultType IMPLIED() {
-		if (poolIMPLIED == null) {
-			poolIMPLIED = new XMLAttributeDefaultType(Type.IMPLIED);
-		}
+	public static XMLAttributeDefaultType IMPLIED() {
 		return poolIMPLIED;
 	}
 
@@ -132,10 +130,7 @@ implements	Comparable<XMLAttributeDefaultType>,
 		@return			The {@link XMLAttributeDefaultType} for a #FIXED
 						attribute.
 	*/
-	public static synchronized XMLAttributeDefaultType FIXED(String defVal) {
-		if (poolFIXED == null) {
-			poolFIXED = new HashMap<String, XMLAttributeDefaultType>();
-		}
+	public static XMLAttributeDefaultType FIXED(String defVal) {
 		if (!poolFIXED.containsKey(defVal)) {
 			poolFIXED.put(
 				defVal,
@@ -151,10 +146,7 @@ implements	Comparable<XMLAttributeDefaultType>,
 		@return			The {@link XMLAttributeDefaultType} for an attribute
 						with just a value.
 	*/
-	public static synchronized XMLAttributeDefaultType ATTVALUE(String defVal) {
-		if (poolATTVALUE == null) {
-			poolATTVALUE = new HashMap<String, XMLAttributeDefaultType>();
-		}
+	public static XMLAttributeDefaultType ATTVALUE(String defVal) {
 		if (!poolATTVALUE.containsKey(defVal)) {
 			poolATTVALUE.put(
 				defVal,

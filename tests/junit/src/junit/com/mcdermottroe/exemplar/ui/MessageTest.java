@@ -53,23 +53,9 @@ extends UtilityClassTestCase<Message>
 		}
 	}
 
-	/** Test {@link Message#ANT_EXTRA_METHOD(String)}. */
-	public void testANT_EXTRA_METHOD() {
-		String message = Message.ANT_EXTRA_METHOD("foo");
-		assertNotNull("Message was null", message);
-		assertNotSame("Message was a zero-length String", 0,  message.length());
-	}
-
 	/** Test {@link Message#ANT_LOCALISATION_ERROR()}. */
 	public void testANT_LOCALISATION_ERROR() {
 		String message = Message.ANT_LOCALISATION_ERROR();
-		assertNotNull("Message was null", message);
-		assertNotSame("Message was a zero-length String", 0,  message.length());
-	}
-
-	/** Test {@link Message#ANT_MISSING_METHOD(String)}. */
-	public void testANT_MISSING_METHOD() {
-		String message = Message.ANT_MISSING_METHOD("foo");
 		assertNotNull("Message was null", message);
 		assertNotSame("Message was a zero-length String", 0,  message.length());
 	}

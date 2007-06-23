@@ -44,10 +44,8 @@ import com.mcdermottroe.exemplar.DBC;
 */
 public final class Resources {
 	/** A cache of resources which have already been read from the disk. */
-	private static Map<Class<?>, Map<String, String>> cache;
-	static {
-		cache = new HashMap<Class<?>, Map<String, String>>();
-	}
+	private static final Map<Class<?>, Map<String, String>> cache =
+		new HashMap<Class<?>, Map<String, String>>();
 
 	/** Private constructor to prevent instantiation of this class. */
 	private Resources() {

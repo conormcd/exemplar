@@ -36,7 +36,6 @@ import java.util.Set;
 
 import org.apache.tools.ant.BuildException;
 
-import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.Options;
 import com.mcdermottroe.exemplar.ui.ant.Task;
 import com.mcdermottroe.exemplar.utils.Strings;
@@ -102,7 +101,7 @@ extends NormalClassTestCase<Task>
 				if (defOptions.contains(optionName)) {
 					defOptions.remove(optionName);
 				} else {
-					fail(Message.ANT_EXTRA_METHOD(methodName));
+					fail("Extra method found: " + methodName);
 				}
 			}
 		}
@@ -110,7 +109,7 @@ extends NormalClassTestCase<Task>
 			String methodName =	SETTER_PREFIX +
 								Strings.upperCaseFirst(defOption);
 			methodName = methodName.replace(MINUS, UNDERSCORE);
-			fail(Message.ANT_MISSING_METHOD(methodName));
+			fail("Missing method: " + methodName);
 		}
 	}
 

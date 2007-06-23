@@ -5,17 +5,15 @@
     <output url="file://$MODULE_DIR$/../../classes" />
     <exclude-output />
     <output-test url="file://$MODULE_DIR$/../../classes" />
-    <content url="file://$MODULE_DIR$/../../src">
+    <content url="file://$MODULE_DIR$/../..">
       <sourceFolder url="file://$MODULE_DIR$/../../src" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../tests/junit/src">
       <sourceFolder url="file://$MODULE_DIR$/../../tests/junit/src" isTestSource="true" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../tools">
       <sourceFolder url="file://$MODULE_DIR$/../../tools" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="ant" level="application" />
+    <orderEntry type="library" name="junit-4.2" level="application" />
     <orderEntryProperties />
   </component>
 </module>

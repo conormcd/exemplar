@@ -190,12 +190,16 @@ extends XMLParserGenerator<T>
 			generatorClass = Class.forName(generatorClassName.toString());
 
 			// Make sure that the class is of the approved type
-			Class<? extends XMLParserGenerator> correctClass;
-			correctClass = XMLParserSourceGenerator.class;
-			if (correctClass.isAssignableFrom(generatorClass)) {
+			if	(
+					XMLParserSourceGenerator.class.isAssignableFrom(
+						generatorClass
+					)
+				)
+			{
 				// Instantiate the class
-				Object newObject = generatorClass.newInstance();
-				generator = (XMLParserSourceGenerator)newObject;
+				generator = XMLParserSourceGenerator.class.cast(
+					generatorClass.newInstance()
+				);
 			}
 		} catch (ClassNotFoundException e) {
 			DBC.IGNORED_EXCEPTION(e);

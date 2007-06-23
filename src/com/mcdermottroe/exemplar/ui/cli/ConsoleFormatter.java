@@ -41,8 +41,7 @@ import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
 import static com.mcdermottroe.exemplar.Constants.Character.TAB;
 import static com.mcdermottroe.exemplar.Constants.EOL;
 
-/** A {@link java.util.logging.Formatter} for messages which are output to the
-	console.
+/** A {@link Formatter} for messages which are output to the console.
 
 	@author Conor McDermottroe
 	@since	0.2

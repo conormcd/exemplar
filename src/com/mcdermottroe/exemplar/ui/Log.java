@@ -68,19 +68,19 @@ Log.warning("The foo subsystem is almost out of memory!");
 			</tr>
 			<tr>
 				<td>{@link Log#error(Object)}</td>
-				<td>{@link java.util.logging.Level#SEVERE}</td>
+				<td>{@link Level#SEVERE}</td>
 			</tr>
 			<tr>
 				<td>{@link Log#warning(Object)}</td>
-				<td>{@link java.util.logging.Level#WARNING}</td>
+				<td>{@link Level#WARNING}</td>
 			</tr>
 			<tr>
 				<td>{@link Log#info(Object)}</td>
-				<td>{@link java.util.logging.Level#INFO}</td>
+				<td>{@link Level#INFO}</td>
 			</tr>
 			<tr>
 				<td>{@link Log#debug(Object)}</td>
-				<td>{@link java.util.logging.Level#FINE}</td>
+				<td>{@link Level#FINE}</td>
 			</tr>
 		</table>
 	</p>
@@ -93,7 +93,7 @@ public final class Log {
 	private static final Log logInst = new Log();
 
 	/** The underlying {@link Logger} through which all logging will flow. */
-	private Logger logger;
+	private final Logger logger;
 
 	/** Constructor for the singleton object. */
 	private Log() {

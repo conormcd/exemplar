@@ -82,11 +82,10 @@ implements Copyable<T>
 			return false;
 		}
 
-		Class<? extends XMLParserGenerator> thisClass = getClass();
 		Class<? extends Object> otherClass = o.getClass();
 		if	(
-				thisClass == null && otherClass == null ||
-				thisClass != null && thisClass.equals(otherClass)
+				getClass() == null && otherClass == null ||
+				getClass() != null && getClass().equals(otherClass)
 			)
 		{
 			return true;

@@ -51,7 +51,7 @@ extends XMLNamedObject<XMLElement>
 implements XMLMarkupDeclaration
 {
 	/** The content model for the element. */
-	private XMLElementContentModel contentModel;
+	private final XMLElementContentModel contentModel;
 
 	/** A reference to the attribute list, if any that this element has. */
 	private XMLAttributeList attlist;

@@ -51,22 +51,22 @@ public abstract class Option<T extends Option<T>>
 implements Copyable<T>
 {
 	/** The name of the option. */
-	protected String name;
+	protected final String name;
 
 	/** The current value(s) of the option. */
 	protected List<Object> value;
 
 	/** A textual description of the option. */
-	protected String description;
+	protected final String description;
 
 	/** Whether the option must be present or not. */
-	protected boolean mandatory;
+	protected final boolean mandatory;
 
 	/** Whether or not the option takes multiple values. */
-	protected boolean multiValue;
+	protected final boolean multiValue;
 
 	/** Whether or not the option is case sensitive. */
-	protected boolean caseSensitive;
+	protected final boolean caseSensitive;
 
 	/** Simple constructor which initialises all of the member variables
 		with given values.

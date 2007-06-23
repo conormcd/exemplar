@@ -53,16 +53,16 @@ public class XMLDocumentType
 implements Copyable<XMLDocumentType>
 {
 	/** A map of all the elements in this DTD/Schema. */
-	private Map<String, XMLMarkupDeclaration> elements;
+	private final Map<String, XMLMarkupDeclaration> elements;
 
 	/** A map of all the attribute lists in this DTD/Schema. */
-	private Map<String, XMLMarkupDeclaration> attlists;
+	private final Map<String, XMLMarkupDeclaration> attlists;
 
 	/** A map of all the entities in this DTD/Schema. */
-	private Map<String, XMLMarkupDeclaration> entities;
+	private final Map<String, XMLMarkupDeclaration> entities;
 
 	/** A map of all the notations in this DTD/Schema. */
-	private Map<String, XMLMarkupDeclaration> notations;
+	private final Map<String, XMLMarkupDeclaration> notations;
 
 	/** Make an {@link XMLDocumentType} out of a {@link Collection} of markup
 		declarations.

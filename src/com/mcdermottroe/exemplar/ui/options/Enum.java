@@ -46,7 +46,7 @@ public class Enum
 extends Option<Enum>
 {
 	/** The allowed values. */
-	protected Map<String, String> enumValues;
+	protected final Map<String, String> enumValues;
 
 	/** Constructor that just initializes the member variables.
 

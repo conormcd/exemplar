@@ -52,18 +52,8 @@ import static com.mcdermottroe.exemplar.Constants.UI.DENIED_ACCESS_TO_MESSAGE_CL
 	@since	0.1
 */
 public final class Message {
-	/** {@link java.text.MessageFormat} string for {@link
-		#ANT_EXTRA_METHOD(String)}.
-	*/
-	private static String ANT_EXTRA_METHOD_MESSAGE_FORMAT = DEFAULT_MESSAGE;
-
 	/** Ant localisation error message. */
 	private static String ANT_LOCALISATION_ERROR = DEFAULT_MESSAGE;
-
-	/** {@link java.text.MessageFormat} string for {@link
-		#ANT_MISSING_METHOD(String)}.
-	*/
-	private static String ANT_MISSING_METHOD_MESSAGE_FORMAT = DEFAULT_MESSAGE;
 
 	/** {@link java.text.MessageFormat} string for {@link
 		#ASSERTION_MESSAGE(String, String)}.
@@ -216,8 +206,8 @@ public final class Message {
 	*/
 	private static String OPTION_DEFAULT_MESSAGE_FORMAT = DEFAULT_MESSAGE;
 
-	/** The {@link String} printed before the legal options for an {@link
-		com.mcdermottroe.exemplar.ui.options.Enum} are enumerated for the user.
+	/** The {@link String} printed before the legal options for an {@link Enum}
+		are enumerated for the user.
 	*/
 	private static String OPTION_ENUM_ARGS_HEADER = DEFAULT_MESSAGE;
 
@@ -246,16 +236,16 @@ public final class Message {
 
 	/** Someone passed a null doctype to {@link
 		com.mcdermottroe.exemplar.output.OutputUtils#generateParser(
-		com.mcdermottroe.exemplar.model.XMLDocumentType,
-		String, String, String)}.
-	 */
+		com.mcdermottroe.exemplar.model.XMLDocumentType, String, String,
+		String)}.
+	*/
 	private static String SOURCE_GENERATOR_DOCTYPE_NULL = DEFAULT_MESSAGE;
 
 	/** Someone passed a null language to {@link
 		com.mcdermottroe.exemplar.output.OutputUtils#generateParser(
-		com.mcdermottroe.exemplar.model.XMLDocumentType,
-		String, String, String)}.
-	 */
+		com.mcdermottroe.exemplar.model.XMLDocumentType, String, String,
+		String)}.
+	*/
 	private static String SOURCE_GENERATOR_LANGUAGE_NULL = DEFAULT_MESSAGE;
 
 	/** A parser generator threw an exception. */
@@ -311,16 +301,16 @@ public final class Message {
 	/** Unsupported feature. */
 	private static String XMLDOCTYPE_UNSUPPORTED_FEATURE = DEFAULT_MESSAGE;
 
-	/** {@link java.text.MessageFormat} string
-		{@link #XMLDOCTYPE_XMLOBJECT_IN_MARKUPDECLS(String)}.
+	/** {@link java.text.MessageFormat} string for {@link
+		#XMLDOCTYPE_XMLOBJECT_IN_MARKUPDECLS(String)}.
 	*/
 	private static String XMLDOCTYPE_XMLOBJECT_IN_MARKUPDECLS_MESSAGE_FORMAT = DEFAULT_MESSAGE;
 
 	/** {@link com.mcdermottroe.exemplar.model.XMLObject} not configured. */
 	private static String XMLOBJECT_NOT_CONFIGURED = DEFAULT_MESSAGE;
 
-	/** {@link com.mcdermottroe.exemplar.output.XMLParserSourceGenerator}
-		failed to load a code fragment.
+	/** {@link com.mcdermottroe.exemplar.output.XMLParserSourceGenerator} failed
+		to load a code fragment.
 	*/
 	private static String XMLPARSER_LOAD_CODE_FRAGMENT_FAILED = DEFAULT_MESSAGE;
 
@@ -329,41 +319,12 @@ public final class Message {
 		DBC.UNREACHABLE_CODE();
 	}
 
-	/** Complain that a method exists in the {@link
-		com.mcdermottroe.exemplar.ui.ant.Task Ant Task UI} which does not
-		correspond to a defined UI option.
-
-		@param	methodName	The name of the extra method.
-		@return				An error formatted according to
-							{@link #ANT_EXTRA_METHOD_MESSAGE_FORMAT}.
-	*/
-	public static String ANT_EXTRA_METHOD(String methodName) {
-		return Strings.formatMessage(
-			ANT_EXTRA_METHOD_MESSAGE_FORMAT,
-			methodName
-		);
-	}
-
 	/** Ant localisation error message.
 
 		@return The error message.
 	*/
 	public static String ANT_LOCALISATION_ERROR() {
 		return ANT_LOCALISATION_ERROR;
-	}
-
-	/** Complain that a method implementing a UI option is not implemented in
-		the {@link com.mcdermottroe.exemplar.ui.ant.Task Ant Task UI}.
-
-		@param methodName	The name of the missing method.
-		@return				An error formatted according to
-							{@link #ANT_MISSING_METHOD_MESSAGE_FORMAT}.
-	*/
-	public static String ANT_MISSING_METHOD(String methodName) {
-		return Strings.formatMessage(
-			ANT_MISSING_METHOD_MESSAGE_FORMAT,
-			methodName
-		);
 	}
 
 	/** The message portion of an assertion thrown from {@link

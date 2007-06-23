@@ -36,9 +36,9 @@ import com.mcdermottroe.exemplar.CopyException;
 import static com.mcdermottroe.exemplar.Constants.Character.PIPE;
 import static com.mcdermottroe.exemplar.Constants.Character.STAR;
 
-/** An {@link com.mcdermottroe.exemplar.model.XMLObject} which represents the
-	concept of mixed content in XML.  This roughly corresponds to the
-	<code>(#PCDATA|A|B)*</code> structure found in DTDs.
+/** An {@link XMLObject} which represents the concept of mixed content in XML.
+	This roughly corresponds to the <code>(#PCDATA|A|B)*</code> structure found
+	in DTDs.
 
 	@author	Conor McDermottroe
 	@since	0.1

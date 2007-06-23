@@ -116,8 +116,8 @@ implements Comparable<LanguageAPIPair>, Copyable<LanguageAPIPair>
 		return Strings.deepToString(language, api);
 	}
 
-	/** Implement {@link Comparable} so that {@link LanguageAPIPair}
-		objects can be contained in a sorted {@link java.util.Collection}.
+	/** Implement {@link Comparable} so that {@link LanguageAPIPair} objects can
+		be contained in a sorted {@link java.util.Collection}.
 
 		@param	other	The object to compare this one to.
 		@return			-1, 0 or 1 if this object is less-than, equal to,

@@ -68,8 +68,7 @@ implements Iterable<XMLObject<?>>
 
 	/** Add an object to the internal contents.
 
-		@param	xo	The {@link com.mcdermottroe.exemplar.model.XMLObject} to
-					add to the calculation.
+		@param	xo	The {@link XMLObject} to add to the calculation.
 	*/
 	public void addObject(XMLObject<?> xo) {
 		contents.add(xo);
