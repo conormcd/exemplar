@@ -166,22 +166,22 @@ implements Copyable<T>
 		}
 
 		T other = (T)o;
-		if (!Utils.areDeeplyEqual(getName(), other.getName())) {
+		if (!Utils.areDeeplyEqual(name, other.getName())) {
 			return false;
 		}
-		if (!Utils.areDeeplyEqual(getDescription(), other.getDescription())) {
+		if (!Utils.areDeeplyEqual(description, other.getDescription())) {
 			return false;
 		}
-		if (!Utils.areDeeplyEqual(isMandatory(), other.isMandatory())) {
+		if (!Utils.areDeeplyEqual(mandatory, other.isMandatory())) {
 			return false;
 		}
-		if (!Utils.areDeeplyEqual(isMultiValue(), other.isMultiValue())) {
+		if (!Utils.areDeeplyEqual(multiValue, other.isMultiValue())) {
 			return false;
 		}
-		if (!Utils.areDeeplyEqual(isCaseSensitive(), other.isCaseSensitive())) {
+		if (!Utils.areDeeplyEqual(caseSensitive, other.isCaseSensitive())) {
 			return false;
 		}
-		if (!Utils.areDeeplyEqual(getValue(), other.getValue())) {
+		if (!Utils.areDeeplyEqual(value, other.getValue())) {
 			return false;
 		}
 		return true;

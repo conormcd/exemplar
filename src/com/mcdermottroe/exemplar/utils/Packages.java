@@ -44,6 +44,7 @@ import com.mcdermottroe.exemplar.DBC;
 import static com.mcdermottroe.exemplar.Constants.Character.EXCLAMATION_MARK;
 import static com.mcdermottroe.exemplar.Constants.Character.FULL_STOP;
 import static com.mcdermottroe.exemplar.Constants.Character.SLASH;
+import static com.mcdermottroe.exemplar.Constants.FILE_JAR_PREFIX;
 import static com.mcdermottroe.exemplar.Constants.JAR_METAINF_DIR;
 import static com.mcdermottroe.exemplar.Constants.PACKAGE;
 import static com.mcdermottroe.exemplar.Constants.URL_JAR_PREFIX;
@@ -119,6 +120,8 @@ public final class Packages {
 				URL url = e.nextElement();
 				if (url.toString().startsWith(URL_JAR_PREFIX)) {
 					packages.addAll(readPackagesFromJar(url));
+				} else if (url.toString().startsWith(FILE_JAR_PREFIX)) {
+					packages.addAll(readPackagesFromDir(url, packagePath));
 				}
 			}
 		} catch (IOException e) {
@@ -137,11 +140,8 @@ public final class Packages {
 		@return		A {@link List} of packages contained within the JAR file.
 	*/
 	private static List<String> readPackagesFromJar(URL url) {
-		List<String> packages;
-
 		if (!url.toString().startsWith(URL_JAR_PREFIX)) {
-			packages = new ArrayList<String>(0);
-			return packages;
+			return Collections.emptyList();
 		}
 
 		String jarFilePath = url.toString();
@@ -158,7 +158,7 @@ public final class Packages {
 
 		if (jar != null) {
 			List<JarEntry> jarEntries = Collections.list(jar.entries());
-			packages = new ArrayList<String>(jarEntries.size());
+			List<String> packages = new ArrayList<String>(jarEntries.size());
 			for (JarEntry jarEntry : jarEntries) {
 				String entry = jarEntry.toString();
 				char lastChar = entry.charAt(entry.length() - 1);
@@ -170,10 +170,34 @@ public final class Packages {
 					}
 				}
 			}
+			return packages;
 		} else {
-			packages = new ArrayList<String>(0);
+			return Collections.emptyList();
+		}
+	}
+
+	/** Find the packages in a directory in a classpath.
+
+		@param	url	A {@link URL} pointing to the directory.
+		@param	pkg	The root package to find from.
+		@return		A {@link List} of packages found in the given directory.
+	*/
+	private static List<String> readPackagesFromDir(URL url, String pkg) {
+		if (url == null) {
+			return Collections.emptyList();
+		}
+		String dir = url.toString().substring(FILE_JAR_PREFIX.length());
+
+		if (dir.endsWith(pkg)) {
+			String prefix = dir.substring(0, dir.length() - pkg.length());
+			List<String> packages = new ArrayList<String>();
+			for (File f : Files.findDirectories(new File(dir))) {
+				String subPkg = f.getAbsolutePath().substring(prefix.length());
+				packages.add(subPkg.replace(SLASH, FULL_STOP));
+			}
+			return packages;
 		}
 
-		return packages;
+		return Collections.emptyList();
 	}
 }

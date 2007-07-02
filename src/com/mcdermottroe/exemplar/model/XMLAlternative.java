@@ -29,7 +29,7 @@
 */
 package com.mcdermottroe.exemplar.model;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mcdermottroe.exemplar.CopyException;
 
@@ -45,16 +45,27 @@ import static com.mcdermottroe.exemplar.Constants.Character.PIPE;
 public class XMLAlternative
 extends XMLAggregateObject<XMLAlternative>
 {
+	/** Create a new, empty {@link XMLAlternative}. */
+	public XMLAlternative() {
+		super();
+	}
+
+	/** A copy constructor.
+
+		@param	containedObjects	The {@link #contents} to copy.
+		@throws	CopyException		if the {@link #contents} cannot be copied.
+	*/
+	protected XMLAlternative(List<XMLObject<?>> containedObjects)
+	throws CopyException
+	{
+		super(containedObjects);
+	}
+
 	/** {@inheritDoc} */
 	@Override public XMLAlternative getCopy()
 	throws CopyException
 	{
-		XMLAlternative copy = new XMLAlternative();
-		copy.contents = new ArrayList<XMLObject<?>>(contents.size());
-		for (XMLObject<?> o : contents) {
-			copy.contents.add(o.getCopy());
-		}
-		return copy;
+		return new XMLAlternative(contents);
 	}
 
 	/** {@inheritDoc} */

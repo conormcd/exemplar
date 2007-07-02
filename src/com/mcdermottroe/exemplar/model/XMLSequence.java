@@ -29,7 +29,7 @@
 */
 package com.mcdermottroe.exemplar.model;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mcdermottroe.exemplar.CopyException;
 import com.mcdermottroe.exemplar.DBC;
@@ -54,11 +54,27 @@ extends XMLAggregateObject<XMLSequence>
 	/** The minimum number of times this {@link XMLSequence} must occur. */
 	private int minOccurs;
 
-	/** Constructor which just initialises the private fields. */
+	/** Create a new, empty {@link XMLSequence}. */
 	public XMLSequence() {
 		super();
 		maxOccurs = 1;
 		minOccurs = 1;
+	}
+
+	/** A copy constructor.
+
+		@param	containedObjects	The {@link #contents} to copy.
+		@param	min					The value for {@link #minOccurs}.
+		@param	max					The value for {@link #maxOccurs}.
+		@throws	CopyException		if the {@link #contents} could not be
+									copied.
+	*/
+	protected XMLSequence(List<XMLObject<?>> containedObjects, int min, int max)
+	throws CopyException
+	{
+		super(containedObjects);
+		maxOccurs = max;
+		minOccurs = min;
 	}
 
 	/** Get the maximum number of times the {@link XMLSequence} may be
@@ -103,14 +119,7 @@ extends XMLAggregateObject<XMLSequence>
 	@Override public XMLSequence getCopy()
 	throws CopyException
 	{
-		XMLSequence copy = new XMLSequence();
-		copy.contents = new ArrayList<XMLObject<?>>(contents.size());
-		for (XMLObject<?> o : contents) {
-			copy.contents.add(o.getCopy());
-		}
-		copy.minOccurs = minOccurs;
-		copy.maxOccurs = maxOccurs;
-		return copy;
+		return new XMLSequence(contents, minOccurs, maxOccurs);
 	}
 
 	/** {@inheritDoc} */
@@ -129,10 +138,10 @@ extends XMLAggregateObject<XMLSequence>
 		}
 
 		XMLSequence other = (XMLSequence)o;
-		if (minOccurs != other.minOccurs) {
+		if (minOccurs != other.getMinOccurs()) {
 			return false;
 		}
-		if (maxOccurs != other.maxOccurs) {
+		if (maxOccurs != other.getMaxOccurs()) {
 			return false;
 		}
 		return true;

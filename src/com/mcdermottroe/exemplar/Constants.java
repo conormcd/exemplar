@@ -107,6 +107,9 @@ public interface Constants {
 	/** The base for the hexadecimal number system. */
 	int BASE_HEXADECIMAL = 16;
 
+	/** The prefix to a URL that is pointing to a file. */
+	String FILE_JAR_PREFIX = "file:";
+
 	/** The prefix to a URL that is pointing to a JAR file. */
 	String URL_JAR_PREFIX = "jar:file:";
 

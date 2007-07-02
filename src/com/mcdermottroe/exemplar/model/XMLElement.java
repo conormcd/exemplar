@@ -86,6 +86,7 @@ implements XMLMarkupDeclaration
 	*/
 	public XMLAggregateObject<?> getContentSpec() {
 		DBC.REQUIRE(contentModel != null);
+		assert contentModel != null;
 		return contentModel.getContentSpec();
 	}
 
@@ -96,6 +97,7 @@ implements XMLMarkupDeclaration
 	*/
 	public XMLElementContentType getContentType() {
 		DBC.REQUIRE(contentModel != null);
+		assert contentModel != null;
 		return contentModel.getContentType();
 	}
 

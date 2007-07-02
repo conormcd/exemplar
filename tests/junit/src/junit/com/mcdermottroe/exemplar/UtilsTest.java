@@ -30,7 +30,6 @@
 package junit.com.mcdermottroe.exemplar;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import com.mcdermottroe.exemplar.Utils;
@@ -175,6 +174,43 @@ extends UtilityClassTestCase<Utils>
 
 	/** Test {@link Utils#compare(Comparable, Object)}. */
 	public void testCompare() {
+		String[][] inputStrings = {
+			{null, null, },
+			{null, "", },
+			{"", null, },
+			{"", "", },
+			{null, "foo", },
+			{"foo", null, },
+			{"foo", "foo", },
+			{"foo", "bar", },
+			{"bar", "foo", },
+		};
+		int[] expectedStrings = {
+			0,
+			-1,
+			1,
+			0,
+			-1,
+			1,
+			0,
+			1,
+			-1,
+		};
+		assertEquals(
+			"Broken test data",
+			inputStrings.length,
+			expectedStrings.length
+		);
+		for (int i = 0; i < inputStrings.length; i++) {
+			assertEquals(
+				"Output did not match expected",
+				expectedStrings[i],
+				Integer.signum(
+					Utils.compare(inputStrings[i][0], inputStrings[i][1])
+				)
+			);
+		}
+
 		List<String> emptyList = new ArrayList<String>(0);
 		List<String> oneElementList = new ArrayList<String>(1);
 		oneElementList.add("one");
@@ -185,79 +221,38 @@ extends UtilityClassTestCase<Utils>
 		threeElementList.add("one");
 		threeElementList.add("two");
 		threeElementList.add("three");
-		Object[][] input = {
-			{null, null},
-			{null, ""},
-			{"", null},
-			{"", ""},
-			{"foo", "foo"},
-			{"foo", "bar"},
-			{"bar", "foo"},
-			{null, emptyList},
-			{emptyList, null},
-			{emptyList, emptyList},
-			{emptyList, oneElementList},
-			{oneElementList, emptyList},
-			{oneElementList, oneElementList},
-			{oneElementList, twoElementList},
-			{twoElementList, oneElementList},
-			{twoElementList, twoElementList},
-			{twoElementList, threeElementList},
-			{threeElementList, twoElementList},
-			{threeElementList, threeElementList},
-		};
-		int[] expected = {
+		List<List<String>> inputList = new ArrayList<List<String>>();
+		inputList.add(emptyList);
+		inputList.add(oneElementList);
+		inputList.add(twoElementList);
+		inputList.add(threeElementList);
+		int[] expectedList = {
 			0,
 			-1,
-			1,
-			0,
-			0,
-			1,
 			-1,
 			-1,
 			1,
 			0,
 			-1,
+			-1,
+			1,
 			1,
 			0,
 			-1,
 			1,
-			0,
-			-1,
+			1,
 			1,
 			0,
 		};
-
-		assertEquals("Broken test data", input.length, expected.length);
-		for (int i = 0; i < input.length; i++) {
-			assertEquals("Broken test data", 2, input[i].length);
-			try {
-				if (input[i][0] instanceof Collection) {
-					assertEquals(
-						"Output did not match expected",
-						expected[i],
-						Integer.signum(
-							Utils.compare(
-								(Collection)input[i][0],
-								(Collection)input[i][1]
-							)
-						)
-					);
-				} else {
-					assertEquals(
-						"Output did not match expected",
-						expected[i],
-						Integer.signum(
-							Utils.compare(
-								(Comparable)input[i][0],
-								input[i][1]
-							)
-						)
-					);
-				}
-			} catch (ClassCastException e) {
-				assertNotNull("ClassCastException was null", e);
-				fail("Broken test data");
+		int i = 0;
+		for (List<String> listA : inputList) {
+			for (List<String> listB : inputList) {
+				assertEquals(
+					"Output did not match expected",
+					expectedList[i],
+					Integer.signum(Utils.compare(listA, listB))
+				);
+				i++;
 			}
 		}
 	}

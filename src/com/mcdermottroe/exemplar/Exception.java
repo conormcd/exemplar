@@ -153,16 +153,18 @@ implements Copyable<Exception>
 		@return		True if the two {@link Throwable}s are equal.
 	*/
 	private static boolean throwablesEqual(Throwable a, Throwable b) {
-		if (a == b) {
+		if (a != null && b != null) {
+			return	throwablesEqual(a.getCause(), b.getCause()) &&
+					Utils.areDeeplyEqual(a.getMessage(), b.getMessage()) &&
+					Utils.areAllDeeplyEqual(
+						a.getStackTrace(),
+						b.getStackTrace()
+					);
+		} else if (a != null || b != null) {
+			return false;
+		} else {
 			return true;
 		}
-		if ((a == null) != (b == null)) {
-			return false;
-		}
-
-		return	throwablesEqual(a.getCause(), b.getCause()) &&
-				Utils.areDeeplyEqual(a.getMessage(), b.getMessage()) &&
-				Utils.areAllDeeplyEqual(a.getStackTrace(), b.getStackTrace());
 	}
 
 	/** Implement {@link Object#hashCode()} in a way which will be consistent

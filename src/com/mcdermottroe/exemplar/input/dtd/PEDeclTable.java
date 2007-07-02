@@ -62,15 +62,26 @@ implements Copyable<PEDeclTable>
 	/**	A table of parameter entities that have immediate values not URI
 		references.
 	*/
-	private Map<String, String> table;
+	private final Map<String, String> table;
 
 	/** A table of parameter entities that have URI references. */
-	private Map<String, String> fileTable;
+	private final Map<String, String> fileTable;
 
 	/** Simple constructor, just initialises storage. */
 	public PEDeclTable() {
 		table = new HashMap<String, String>();
 		fileTable = new HashMap<String, String>();
+	}
+
+	/** Create a new {@link PEDeclTable} with a given set of values.
+
+		@param	tbl		A table of parameter entities which have immediate
+						values.
+		@param	files	A table of parameter entities which have URI references.
+	*/
+	protected PEDeclTable(Map<String, String> tbl, Map<String, String> files) {
+		table = new HashMap<String, String>(tbl);
+		fileTable = new HashMap<String, String>(files);
 	}
 
 	/** Getter for the table member.
@@ -260,12 +271,9 @@ implements Copyable<PEDeclTable>
 		return retVal.toString();
 	}
 
-    /** {@inheritDoc} */
+	/** {@inheritDoc} */
     public PEDeclTable getCopy() {
-        PEDeclTable copy = new PEDeclTable();
-        copy.table = new HashMap<String, String>(table);
-        copy.fileTable = new HashMap<String, String>(fileTable);
-        return copy;
+		return new PEDeclTable(table, fileTable);
     }
 
     /** See {@link Object#toString()}.

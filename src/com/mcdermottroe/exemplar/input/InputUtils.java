@@ -70,6 +70,7 @@ public final class InputUtils {
 	throws ClassNotFoundException
 	{
 		DBC.REQUIRE(name != null);
+		assert name != null;
 
 		StringBuilder parserClassName = new StringBuilder();
 		parserClassName.append(PACKAGE);

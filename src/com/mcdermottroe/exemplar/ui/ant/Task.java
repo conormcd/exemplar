@@ -296,5 +296,11 @@ implements Copyable<Task>
 		return 0;
 	}
 
-	/** */
+	/** See {@link Object#toString()}.
+
+		@return	A descriptive {@link String} for this {@link Task}.
+	*/
+	@Override public String toString() {
+		return getClass().getName();
+	}
 }

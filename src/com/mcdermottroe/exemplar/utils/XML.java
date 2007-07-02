@@ -32,6 +32,7 @@ package com.mcdermottroe.exemplar.utils;
 import java.text.ParseException;
 
 import com.mcdermottroe.exemplar.DBC;
+import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
 
 import static com.mcdermottroe.exemplar.Constants.BASE_HEXADECIMAL;
@@ -160,6 +161,7 @@ public final class XML {
 								BASE_HEXADECIMAL
 							);
 						} catch (NumberFormatException e) {
+							Log.debug(e);
 							throw new ParseException(
 								Message.MALFORMED_CHAR_REF(refBuffer),
 								i
@@ -172,6 +174,7 @@ public final class XML {
 								refBuffer.substring(2, refBuffer.length() - 1)
 							);
 						} catch (NumberFormatException e) {
+							Log.debug(e);
 							throw new ParseException(
 								Message.MALFORMED_CHAR_REF(refBuffer),
 								i

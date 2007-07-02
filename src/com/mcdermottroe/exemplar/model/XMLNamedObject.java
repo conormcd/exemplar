@@ -70,6 +70,9 @@ extends XMLObject<T>
 		if (!super.equals(o)) {
 			return false;
 		}
+		if (!(o instanceof XMLNamedObject)) {
+			return false;
+		}
 
 		XMLNamedObject<?> other = (XMLNamedObject<?>)o;
 		return Utils.areDeeplyEqual(name, other.getName());

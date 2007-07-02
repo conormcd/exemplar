@@ -62,24 +62,24 @@ implements	Comparable<XMLAttributeDefaultType>,
 
 	/** A pool of {@link Type#ATTVALUE} {@link XMLAttributeDefaultType} objects.
 	*/
-	private static Map<String, XMLAttributeDefaultType> poolATTVALUE =
+	private static final Map<String, XMLAttributeDefaultType> poolATTVALUE =
 		new HashMap<String, XMLAttributeDefaultType>();
 
 	/** A pool of {@link Type#FIXED} {@link XMLAttributeDefaultType} objects.
 	*/
-	private static Map<String, XMLAttributeDefaultType> poolFIXED =
+	private static final Map<String, XMLAttributeDefaultType> poolFIXED =
 		new HashMap<String, XMLAttributeDefaultType>();
 
 	/** A singleton instance of an {@link Type#IMPLIED} {@link
 		XMLAttributeDefaultType}.
 	*/
-	private static XMLAttributeDefaultType poolIMPLIED =
+	private static final XMLAttributeDefaultType poolIMPLIED =
 		new XMLAttributeDefaultType(Type.IMPLIED);
 
 	/** A singleton instance of an {@link Type#REQUIRED} {@link
 		XMLAttributeDefaultType}.
 	*/
-	private static XMLAttributeDefaultType poolREQUIRED =
+	private static final XMLAttributeDefaultType poolREQUIRED =
 		new XMLAttributeDefaultType(Type.REQUIRED);
 
 	/** The type of this default decl. */
@@ -164,6 +164,14 @@ implements	Comparable<XMLAttributeDefaultType>,
 		return value;
 	}
 
+	/** Accessor for {@link #type}.
+
+		@return	{@link #type}.
+	*/
+	private Type getType() {
+		return type;
+	}
+
 	/** Whether this is the same type as another {@link
 		XMLAttributeDefaultType}.
 
@@ -172,7 +180,7 @@ implements	Comparable<XMLAttributeDefaultType>,
 						<code>other</code>.
 	*/
 	public boolean sameType(XMLAttributeDefaultType other) {
-		return type == other.type;
+		return type == other.getType();
 	}
 
 	/** Compare this {@link XMLAttributeDefaultType} to another.
@@ -187,7 +195,7 @@ implements	Comparable<XMLAttributeDefaultType>,
 			throw new NullPointerException();
 		}
 
-		int cmp = Utils.compare(type, other.type);
+		int cmp = Utils.compare(type, other.getType());
 		if (cmp != 0) {
 			return cmp;
 		}

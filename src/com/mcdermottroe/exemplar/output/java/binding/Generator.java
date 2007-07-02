@@ -80,8 +80,24 @@ extends XMLParserSourceGenerator<Generator>
 		basePackage = null;
 	}
 
+	/** Copy constructor, see {@link
+		XMLParserSourceGenerator#XMLParserSourceGenerator(Map, String)} for
+		details.
+
+		@param	code	The code fragments.
+		@param	time	The timestamp.
+		@param	pkg		The {@link #basePackage}.
+	*/
+	protected Generator(Map<String, String> code, String time, String pkg) {
+		super(code, time);
+		basePackage = pkg;
+	}
+
 	/** {@inheritDoc} */
-	@Override public void generateParser(XMLDocumentType model, File directory)
+	@Override public void generateParser(
+		XMLDocumentType doctype,
+		File targetDirectory
+	)
 	throws XMLParserGeneratorException
 	{
 		// Set some of the common stuff
@@ -93,24 +109,24 @@ extends XMLParserSourceGenerator<Generator>
 		}
 
 		// Get the elements
-		Map<String, XMLMarkupDeclaration> elements = model.elements();
+		Map<String, XMLMarkupDeclaration> elements = doctype.elements();
 
 		// Only create code if there are some elements
 		if (elements != null && !elements.isEmpty()) {
 			// Create the root parser class
 			Log.debug("Creating root parser class");
-			createRootParserClass(directory);
+			createRootParserClass(targetDirectory);
 
 			// Create the support classes
 			Log.debug("Creating support classes");
-			File supportDir = new File(directory, "support");
+			File supportDir = new File(targetDirectory, "support");
 			createXMLComponentClass(supportDir);
 			createXMLContentClass(supportDir);
 			createAbstractElementClass(supportDir);
 
 			// Create one class per element
 			Log.debug("Creating element classes");
-			File elementsDir = new File(directory, "element");
+			File elementsDir = new File(targetDirectory, "element");
 			for (String elementName : elements.keySet()) {
 				XMLMarkupDeclaration markupDecl = elements.get(elementName);
 				if (markupDecl instanceof XMLElement) {
@@ -532,15 +548,6 @@ extends XMLParserSourceGenerator<Generator>
 	public Generator getCopy()
 	throws CopyException
 	{
-		Generator copy;
-		try {
-			copy = new Generator();
-		} catch (XMLParserGeneratorException e) {
-			throw new CopyException(e);
-		}
-		copy.basePackage = basePackage;
-		copy.codeFragments = codeFragments;
-		copy.timestamp = timestamp;
-		return copy;
+		return new Generator(codeFragments, timestamp, basePackage);
 	}
 }

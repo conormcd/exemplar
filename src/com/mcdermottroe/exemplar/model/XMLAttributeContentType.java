@@ -209,12 +209,12 @@ implements	Comparable<XMLAttributeContentType>,
 			throw new NullPointerException();
 		}
 
-		int cmp = Utils.compare(type, other.type);
+		int cmp = Utils.compare(type, other.getType());
 		if (cmp != 0) {
 			return cmp;
 		}
 
-		return Utils.compare(values, other.values);
+		return Utils.compare(values, other.getValues());
 	}
 
 	/** Access the values for an enumerated type.
@@ -227,6 +227,14 @@ implements	Comparable<XMLAttributeContentType>,
 		} else {
 			return null;
 		}
+	}
+
+	/** Accessor for {@link #type}.
+
+		@return	{@link #type}.
+	*/
+	private Type getType() {
+		return type;
 	}
 
 	/** {@inheritDoc} */

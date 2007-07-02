@@ -60,7 +60,7 @@ implements Copyable<PowerSet<T>>
 	/** A copy of the original {@link Set} which we were given, as a {@link
 		List} to give us a guaranteed stable ordering.
 	*/
-	private List<T> baseSet;
+	private final List<T> baseSet;
 
 	/** Create an empty power set. */
 	public PowerSet() {
@@ -73,6 +73,16 @@ implements Copyable<PowerSet<T>>
 		@param	objects	The original {@link Set} to create the power set from.
 	*/
 	public PowerSet(Set<T> objects) {
+		super();
+		baseSet = new ArrayList<T>(objects);
+	}
+
+	/** A copy constructor.
+
+		@param	objects	A {@link List} for the base set, to preserve ordering
+						when copying.
+	*/
+	protected PowerSet(List<T> objects) {
 		super();
 		baseSet = new ArrayList<T>(objects);
 	}
@@ -159,12 +169,7 @@ implements Copyable<PowerSet<T>>
 	public PowerSet<T> getCopy()
 	throws CopyException
 	{
-		PowerSet<T> copy = new PowerSet<T>();
-		copy.baseSet = new ArrayList<T>(baseSet.size());
-		for (T element : baseSet) {
-			copy.baseSet.add(element);
-		}
-		return copy;
+		return new PowerSet<T>(baseSet);
 	}
 
 	/** Test equality against another {@link Object}.
@@ -181,9 +186,14 @@ implements Copyable<PowerSet<T>>
 			return false;
 		}
 
-		if (o instanceof PowerSet) {
+		if (PowerSet.class.isAssignableFrom(o.getClass())) {
 			PowerSet<?> other = PowerSet.class.cast(o);
-			return other.getBaseSet().equals(getBaseSet());
+			Set<?> otherBaseSet = other.getBaseSet();
+			if (baseSet.size() == otherBaseSet.size()) {
+				return otherBaseSet.containsAll(baseSet);
+			} else {
+				return false;
+			}
 		} else {
 			return super.equals(o);
 		}

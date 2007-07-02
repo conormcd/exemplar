@@ -109,7 +109,7 @@ extends ExemplarTestCase<T>
 	public void testAllFieldsPrivateOrProtectedOrPublicStaticFinal() {
 		assertNotNull("Tested class is null", testedClass);
 
-		boolean overlyPublicFieldFound = false;
+		String overlyPublicFieldName = null;
 		for (Field field : testedClass.getDeclaredFields()) {
 			int modifiers = field.getModifiers();
 			if	(
@@ -128,12 +128,19 @@ extends ExemplarTestCase<T>
 						)
 					)
 				{
-					overlyPublicFieldFound = true;
-					break;
+					overlyPublicFieldName = field.getName();
+					if (overlyPublicFieldName.startsWith("$")) {
+						overlyPublicFieldName = null;
+					} else {
+						break;
+					}
 				}
 			}
 		}
-		assertFalse("Overly public field found", overlyPublicFieldFound);
+		assertNull(
+			"Overly public field found: " + overlyPublicFieldName,
+			overlyPublicFieldName
+		);
 	}
 
 	/** This ensures that the result of {@link Object#hashCode()} does not

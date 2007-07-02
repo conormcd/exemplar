@@ -98,6 +98,10 @@ public final class Main {
 		@param	args	The arguments passed to the program
 	*/
 	public static void main(String[] args) {
+		// Silly, but useful
+		DBC.ASSERT(args != null);
+		assert args != null;
+
 		// Record the start time, so we can report on how long the entire
 		// process took.
 		startTime = System.currentTimeMillis();
@@ -125,7 +129,6 @@ public final class Main {
 
 		// Process the arguments
 		Log.debug(Message.UI_PROGRESS_OPTIONS());
-		DBC.ASSERT(args != null);
 		for (int i = 0; i < args.length; i++) {
 			String helpOption = String.format(OPTION, HELP_OPTION_NAME);
 			String verboseOption = String.format(OPTION, VERBOSE_OPTION_NAME);
@@ -231,6 +234,7 @@ public final class Main {
 	*/
 	private static String usageMessage(String why) {
 		DBC.REQUIRE(why != null);
+		assert why != null;
 
 		// Get the resources containing all of the MessageFormats for
 		// constructing the useage message.

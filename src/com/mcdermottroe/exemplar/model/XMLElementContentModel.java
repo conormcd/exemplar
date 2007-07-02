@@ -117,8 +117,8 @@ implements Copyable<XMLElementContentModel>
 		}
 
 		XMLElementContentModel other = (XMLElementContentModel)o;
-		return	Utils.areDeeplyEqual(type, other.type) &&
-				Utils.areDeeplyEqual(contentSpec, other.contentSpec);
+		return	Utils.areDeeplyEqual(type, other.getContentType()) &&
+				Utils.areDeeplyEqual(contentSpec, other.getContentSpec());
 	}
 
 	/** Implement {@link Object#hashCode()}.

@@ -31,6 +31,7 @@ package com.mcdermottroe.exemplar.output;
 
 import java.io.File;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.mcdermottroe.exemplar.DBC;
@@ -58,12 +59,12 @@ class XMLParserSourceGenerator<T extends XMLParserSourceGenerator<T>>
 extends XMLParserGenerator<T>
 {
 	/** The code fragments that the source generator will use. */
-	protected Map<String, String> codeFragments;
+	protected final Map<String, String> codeFragments;
 
 	/** A timestamp string with the date and time the {@link
 		XMLParserSourceGenerator} was created.
 	*/
-	protected String timestamp;
+	protected final String timestamp;
 
 	/** Creates a new {@link XMLParserSourceGenerator}. Protected because only
 		subclasses should call this. One should never instantiate this class.
@@ -86,6 +87,20 @@ extends XMLParserGenerator<T>
 
 		// Format the timestamp
 		timestamp = Strings.formatMessage(TIMESTAMP_FORMAT, new Date());
+	}
+
+	/** A copy constructor.
+
+		@param	code						The code fragments.
+		@param	time						The timestamp.
+	*/
+	protected XMLParserSourceGenerator(Map<String, String> code, String time) {
+		super();
+		codeFragments = new HashMap<String, String>(code.size());
+		for (String key : code.keySet()) {
+			codeFragments.put(key, code.get(key));
+		}
+		timestamp = time;
 	}
 
 	/** Generates a parser and places the source (if any) in the given

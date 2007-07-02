@@ -152,6 +152,7 @@ public final class OutputUtils {
 	{
 		DBC.REQUIRE(s != null);
 		DBC.REQUIRE(file != null);
+		assert file != null;
 
 		BufferedWriter output = null;
 		boolean outputOpen = false;

@@ -107,19 +107,28 @@ public final class Log {
 		logger.setLevel(Level.INFO);
 	}
 
+	/** Get the underlying {@link Logger}.
+
+		@return	The underlying {@link Logger}.
+	*/
+	private Logger getLogger() {
+		return logger;
+	}
+
 	/** Register a {@link Handler} as the destination for all log messages.
 
 		@param	handler	The {@link Handler} which all log messages should be
 						passed to.
 	*/
 	public static void registerHandler(Handler handler) {
-		logInst.logger.addHandler(handler);
+		logInst.getLogger().addHandler(handler);
 	}
 
 	/** Clear all {@link Handler}s from the underlying logger. */
 	public static void clearHandlers() {
-		for (Handler h : logInst.logger.getHandlers()) {
-			logInst.logger.removeHandler(h);
+		Logger l = logInst.getLogger();
+		for (Handler h : l.getHandlers()) {
+			l.removeHandler(h);
 		}
 	}
 
@@ -128,7 +137,7 @@ public final class Log {
 		@return	THe current {@link LogLevel}.
 	*/
 	public static LogLevel getLevel() {
-		int level = logInst.logger.getLevel().intValue();
+		int level = logInst.getLogger().getLevel().intValue();
 
 		int severe = Level.SEVERE.intValue();
 		int warning = Level.WARNING.intValue();
@@ -154,19 +163,20 @@ public final class Log {
 						logged.
 	*/
 	public static void setLevel(LogLevel level) {
+		Logger l = logInst.getLogger();
 		switch (level) {
 			case ERROR:
-				logInst.logger.setLevel(Level.SEVERE);
+				l.setLevel(Level.SEVERE);
 				break;
 			case WARNING:
-				logInst.logger.setLevel(Level.WARNING);
+				l.setLevel(Level.WARNING);
 				break;
 			case INFO:
-				logInst.logger.setLevel(Level.INFO);
+				l.setLevel(Level.INFO);
 				break;
 			case DEBUG:
 			default:
-				logInst.logger.setLevel(Level.FINE);
+				l.setLevel(Level.FINE);
 				break;
 		}
 	}
@@ -275,9 +285,13 @@ public final class Log {
 	*/
 	private static void doLog(LogRecord logRecord) {
 		DBC.REQUIRE(logRecord != null);
+		assert logRecord != null;
+
+		// Get the underlying logger
+		Logger l = logInst.getLogger();
 
 		// Don't bother logging if there are no handlers.
-		Handler[] handlers = logInst.logger.getHandlers();
+		Handler[] handlers = l.getHandlers();
 		if (handlers.length <= 0) {
 			return;
 		}
@@ -293,7 +307,7 @@ public final class Log {
 		logRecord.setLevel(level);
 
 		// Now do the logging
-		logInst.logger.log(logRecord);
+		l.log(logRecord);
 	}
 
 	/** Find the method and class from where the "outer" method of this class

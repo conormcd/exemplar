@@ -83,6 +83,17 @@ extends XMLParserSourceGenerator<T>
 		super();
 	}
 
+	/** Copy constructor, see {@link
+		XMLParserSourceGenerator#XMLParserSourceGenerator(Map, String)} for
+		details.
+
+		@param	code	The code fragments.
+		@param	time	The timestamp.
+	*/
+	protected XMLJavaSourceGenerator(Map<String, String> code, String time) {
+		super(code, time);
+	}
+
 	/** Generates the Java source for a SAX parser and places the source in the
 		given directory.
 
@@ -99,6 +110,7 @@ extends XMLParserSourceGenerator<T>
 	{
 		DBC.REQUIRE(doctype != null);
 		DBC.REQUIRE(targetDirectory != null);
+		assert doctype != null;
 
 		// Resolve the targetDirectory parameter into an absolute path that
 		// exists.

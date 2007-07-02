@@ -99,6 +99,17 @@ extends XMLParserSourceGenerator<Generator>
 		super();
 	}
 
+	/** Copy constructor, see {@link
+		XMLParserSourceGenerator#XMLParserSourceGenerator(Map, String)} for
+		details.
+
+		@param	code	The code fragments.
+		@param	time	The timestamp.
+	*/
+	protected Generator(Map<String, String> code, String time) {
+		super(code, time);
+	}
+
 	/** Generates the DTD and places it in the given file.
 
 		@param	doctype						The description of the vocabulary
@@ -357,7 +368,7 @@ extends XMLParserSourceGenerator<Generator>
 	private static String objectTreeToContentSpec(Object o) {
 		StringBuilder ret = new StringBuilder();
 
-		if (o instanceof XMLSequence) {
+		if (XMLSequence.class.isAssignableFrom(o.getClass())) {
 			XMLSequence seq = (XMLSequence)o;
 
 			// Create the sequence
@@ -386,7 +397,7 @@ extends XMLParserSourceGenerator<Generator>
 					ret.append(PLUS);
 				}
 			}
-		} else if (o instanceof XMLAlternative) {
+		} else if (XMLAlternative.class.isAssignableFrom(o.getClass())) {
 			XMLAlternative alt = (XMLAlternative)o;
 
 			// Create the alternative list
@@ -398,7 +409,7 @@ extends XMLParserSourceGenerator<Generator>
 			ret.append(LEFT_PAREN);
 			ret.append(Strings.join(sep, contentSpecs));
 			ret.append(RIGHT_PAREN);
-		} else if (o instanceof XMLMixedContent) {
+		} else if (XMLMixedContent.class.isAssignableFrom(o.getClass())) {
 			XMLMixedContent mixed = (XMLMixedContent)o;
 
 			// Create the alternative list
@@ -418,9 +429,9 @@ extends XMLParserSourceGenerator<Generator>
 			} else {
 				ret.append(RIGHT_PAREN);
 			}
-		} else if (o instanceof XMLContent) {
+		} else if (XMLContent.class.isAssignableFrom(o.getClass())) {
 			ret.append("#PCDATA");
-		} else if (o instanceof XMLNamedObject) {
+		} else if (XMLNamedObject.class.isAssignableFrom(o.getClass())) {
 			ret.append(XMLNamedObject.class.cast(o).getName());
 		} else {
 			DBC.UNREACHABLE_CODE();
@@ -433,14 +444,6 @@ extends XMLParserSourceGenerator<Generator>
 	public Generator getCopy()
 	throws CopyException
 	{
-		Generator copy;
-		try {
-			copy = new Generator();
-		} catch (XMLParserGeneratorException e) {
-			throw new CopyException(e);
-		}
-		copy.codeFragments = codeFragments;
-		copy.timestamp = timestamp;
-		return copy;
+		return new Generator(codeFragments, timestamp);
 	}
 }

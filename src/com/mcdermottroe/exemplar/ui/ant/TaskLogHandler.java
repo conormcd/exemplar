@@ -64,6 +64,17 @@ implements Copyable<TaskLogHandler>
 		closed = false;
 	}
 
+	/** A copy constructor.
+
+		@param	taskToLogFor	The {@link Task} we'll be logging for.
+		@param	finished		if this log handler is closed.
+	*/
+	protected TaskLogHandler(Task taskToLogFor, boolean finished) {
+		super();
+		task = taskToLogFor;
+		closed = finished;
+	}
+
 	/** Publish a {@link LogRecord}.
 
 		@param	record	The {@link LogRecord} to publish.
@@ -91,16 +102,29 @@ implements Copyable<TaskLogHandler>
 
 	/** {@inheritDoc} */
 	public TaskLogHandler getCopy() {
-		TaskLogHandler copy;
+		Task taskCopy;
 		if (task != null) {
-			copy = new TaskLogHandler(task.getCopy());
+			taskCopy = task.getCopy();
 		} else {
-			copy = new TaskLogHandler(null);
+			taskCopy = null;
 		}
-		if (closed) {
-			copy.close();
-		}
-		return copy;
+		return new TaskLogHandler(taskCopy, closed);
+	}
+
+	/** Get the {@link Task} we're logging for.
+
+		@return	The task we're logging for.
+	*/
+	private Task getTask() {
+		return task;
+	}
+
+	/** Is the logger closed.
+
+		@return	Whether or not this log handler is closed.
+	*/
+	private boolean isClosed() {
+		return closed;
 	}
 
 	/** Implement {@link Object#equals(Object)}.
@@ -120,8 +144,8 @@ implements Copyable<TaskLogHandler>
 		}
 
 		TaskLogHandler other = (TaskLogHandler)o;
-		return	Utils.areDeeplyEqual(task, other.task) &&
-				Utils.areDeeplyEqual(closed, other.closed);
+		return	Utils.areDeeplyEqual(task, other.getTask()) &&
+				Utils.areDeeplyEqual(closed, other.isClosed());
 	}
 
 	/** Implement {@link Object#hashCode()}.

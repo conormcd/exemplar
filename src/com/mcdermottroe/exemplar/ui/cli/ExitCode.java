@@ -90,7 +90,7 @@ implements Copyable<ExitCode>
 		@return The value of the {@link #mnemonic} member.
 	*/
 	@Override public String toString() {
-		return getMnemonic();
+		return mnemonic;
 	}
 
 	/** Implement {@link Object#equals(Object)}.

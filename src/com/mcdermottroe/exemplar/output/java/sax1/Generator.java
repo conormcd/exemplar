@@ -29,6 +29,8 @@
 */
 package com.mcdermottroe.exemplar.output.java.sax1;
 
+import java.util.Map;
+
 import com.mcdermottroe.exemplar.CopyException;
 import com.mcdermottroe.exemplar.output.XMLParserGeneratorException;
 import com.mcdermottroe.exemplar.output.java.XMLJavaSourceGenerator;
@@ -55,6 +57,16 @@ extends XMLJavaSourceGenerator<Generator>
 		super();
 	}
 
+	/** Copy constructor, see {@link #XMLParserSourceGenerator(Map, String)} for
+		details.
+
+		@param	code	The code fragments.
+		@param	time	The timestamp.
+	*/
+	protected Generator(Map<String, String> code, String time) {
+		super(code, time);
+	}
+
 	/** {@inheritDoc} */
 	@Override public String describeAPI() {
 		return "The SAX1 API";
@@ -64,14 +76,6 @@ extends XMLJavaSourceGenerator<Generator>
 	public Generator getCopy()
 	throws CopyException
 	{
-		Generator copy;
-		try {
-			copy = new Generator();
-		} catch (XMLParserGeneratorException e) {
-			throw new CopyException(e);
-		}
-		copy.codeFragments = codeFragments;
-		copy.timestamp = timestamp;
-		return copy;
+		return new Generator(codeFragments, timestamp);
 	}
 }

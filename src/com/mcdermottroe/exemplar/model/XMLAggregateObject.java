@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.mcdermottroe.exemplar.CopyException;
 import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.utils.Strings;
 
@@ -50,12 +51,27 @@ extends XMLObject<T>
 implements Iterable<XMLObject<?>>
 {
 	/** The contents of the collection. */
-	protected List<XMLObject<?>> contents;
+	protected final List<XMLObject<?>> contents;
 
 	/** Simple constructor. */
 	protected XMLAggregateObject() {
 		super();
 		contents = new ArrayList<XMLObject<?>>();
+	}
+
+	/** A copy constructor.
+
+		@param	containedObjects	The contents for the new object.
+		@throws CopyException		if the contents cannot be copied in.
+	*/
+	protected XMLAggregateObject(List<XMLObject<?>> containedObjects)
+	throws CopyException
+	{
+		super();
+		contents = new ArrayList<XMLObject<?>>(containedObjects.size());
+		for (XMLObject<?> xo : containedObjects) {
+			contents.add(xo.getCopy());
+		}
 	}
 
 	/** An {@link Iterator} over the contents contained in the object.

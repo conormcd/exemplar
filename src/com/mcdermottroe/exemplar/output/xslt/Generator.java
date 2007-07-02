@@ -69,6 +69,17 @@ extends XMLParserSourceGenerator<Generator>
 		super();
 	}
 
+	/** Copy constructor, see {@link
+		XMLParserSourceGenerator#XMLParserSourceGenerator(Map, String)} for
+		details.
+
+		@param	code	The code fragments.
+		@param	time	The timestamp.
+	*/
+	protected Generator(Map<String, String> code, String time) {
+		super(code, time);
+	}
+
 	/** Generates the XSLT and places it in the given file.
 
 		@param	doctype						The description of the vocabulary
@@ -181,14 +192,6 @@ extends XMLParserSourceGenerator<Generator>
 	public Generator getCopy()
 	throws CopyException
 	{
-		Generator copy;
-		try {
-			copy = new Generator();
-		} catch (XMLParserGeneratorException e) {
-			throw new CopyException(e);
-		}
-		copy.codeFragments = codeFragments;
-		copy.timestamp = timestamp;
-		return copy;
+		return new Generator(codeFragments, timestamp);
 	}
 }

@@ -56,6 +56,7 @@ public final class Files {
 	*/
 	public static void removeTree(File directory) {
 		DBC.REQUIRE(directory != null);
+		assert directory != null;
 		if (directory.exists()) {
 			// First delete all of the files under the tree
 			for (File f : findFiles(directory)) {
@@ -77,6 +78,7 @@ public final class Files {
 	*/
 	public static Collection<File> findFiles(File directory) {
 		DBC.REQUIRE(directory != null);
+		assert directory != null;
 		DBC.REQUIRE(directory.exists());
 
 		List<File> retVal = new ArrayList<File>();
@@ -100,6 +102,7 @@ public final class Files {
 	*/
 	public static Collection<File> findDirectories(File directory) {
 		DBC.REQUIRE(directory != null);
+		assert directory != null;
 		DBC.REQUIRE(directory.exists());
 
 		SortedSet<File> retVal = new TreeSet<File>(
