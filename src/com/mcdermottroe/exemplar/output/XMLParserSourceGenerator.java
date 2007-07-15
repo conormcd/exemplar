@@ -172,12 +172,12 @@ extends XMLParserGenerator<T>
 	*/
 	public static XMLParserSourceGenerator<?> create(String lang, String api) {
 		Log.debug(
-			"Attempting to create an instance of " +	// NON-NLS
-			XMLParserSourceGenerator.class +
-			" for language \"" +						// NON-NLS
-			lang +
-			"\" and API \"" +							// NON-NLS
-			api +
+			"Attempting to create an instance of ",
+			XMLParserSourceGenerator.class.getName(),
+			" for language \"",
+			lang,
+			"\" and API \"",
+			api,
 			"\"."
 		);
 		DBC.REQUIRE(lang != null);
@@ -227,10 +227,7 @@ extends XMLParserGenerator<T>
 		}
 
 		if (generator != null) {
-			Log.debug(
-				"Created an instance of " +
-				generator.getClass().getName()
-			);
+			Log.debug("Created a ", generator.getClass().getName());
 		} else {
 			Log.debug("Failed to find a suitable generator.");
 		}

@@ -55,6 +55,7 @@
 	<target name="set-up-classpaths">
 		<path id="build-classpath">
 			<pathelement location="${classes}" />
+			<pathelement location="${ant.library.dir}/ant.jar" />
 			<pathelement location="${checkstyle-jar}" />
 			<pathelement location="${cup-jar}" />
 			<pathelement location="${fop-jar}" />

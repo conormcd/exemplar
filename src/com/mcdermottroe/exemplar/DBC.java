@@ -141,6 +141,6 @@ public final class DBC {
 		@param	t	The exception to be ignored.
 	*/
 	public static void IGNORED_EXCEPTION(Throwable t) {
-		Log.debug(Message.IGNORING_EXCEPTION(), t);
+		Log.debug(t, Message.IGNORING_EXCEPTION());
 	}
 }

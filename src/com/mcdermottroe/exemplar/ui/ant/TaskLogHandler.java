@@ -45,9 +45,9 @@ extends Handler
 implements Copyable<TaskLogHandler>
 {
 	/** The {@link Task} we are logging for. Ideally I'd prefer this to be a
-		function pointer of some sorts to allow us to point to the {@link
-		Task#log(String)} method itself but unfortunately Java doesn't have
-		those yet.
+		function pointer of some sorts to allow us to point to the
+		<code>log(String)</code> method in {@link Task} itself but unfortunately
+		Java doesn't have those yet.
 	*/
 	private final Task task;
 

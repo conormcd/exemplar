@@ -270,7 +270,7 @@ extends XMLParserSourceGenerator<Generator>
 		if (element == null || dir == null) {
 			return;
 		}
-		Log.debug("Creating the Element class for " + element.getName());
+		Log.debug("Creating the Element class for ", element.getName());
 
 		// Ensure that the directory exists
 		if (!dir.exists()) {
@@ -297,11 +297,11 @@ extends XMLParserSourceGenerator<Generator>
 		for (XMLAttribute attribute : element.getAttlist()) {
 			String attributeName = attribute.getName();
 
-			String attributeMethodName = Strings.upperCaseFirst(
-				attributeName.replaceAll("\\W+", "_")
+			StringBuilder attributeMethodName = new StringBuilder(
+				Strings.upperCaseFirst(attributeName.replaceAll("\\W+", "_"))
 			);
-			if ("Class".equals(attributeMethodName)) {
-				attributeMethodName += "Attribute";
+			if ("Class".equals(attributeMethodName.toString())) {
+				attributeMethodName.append("Attribute");
 			}
 
 			String fixedValue = null;

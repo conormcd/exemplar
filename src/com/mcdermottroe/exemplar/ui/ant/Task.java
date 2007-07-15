@@ -43,7 +43,7 @@ import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.MessageException;
 import com.mcdermottroe.exemplar.ui.Options;
-import com.mcdermottroe.exemplar.utils.Strings;
+import com.mcdermottroe.exemplar.utils.Timer;
 
 import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
 import static com.mcdermottroe.exemplar.Constants.EOL;
@@ -68,18 +68,15 @@ implements Copyable<Task>
 		try {
 			Message.localise();
 		} catch (MessageException e) {
-			Log.error(Message.ANT_LOCALISATION_ERROR());
-			for (String traceElement : e.getBackTrace()) {
-				Log.error(Strings.indent(traceElement));
-			}
+			Log.error(e, Message.ANT_LOCALISATION_ERROR());
 			return;
 		}
 
 		// All of the options should be set by now.
 		Options.setUIFinished();
 
-		// Record the start time
-		long startTime = System.currentTimeMillis();
+		// Make a timer for the task
+		Timer taskTimer = new Timer();
 
 		// Ant needs a non-empty String to make a blank line - lame.
 		String blankLine = Character.toString(SPACE);
@@ -140,14 +137,11 @@ implements Copyable<Task>
 		}
 		Log.info(Message.UI_PROGRESS_DONE());
 
-		// Record the end time and generate the String number of seconds this
-		// task took.
-		long endTime = System.currentTimeMillis();
-		double elapsedTime = (double)(endTime - startTime) / 1000.0;
-
 		// Say that it's finished
 		Log.info(blankLine);
-		Log.info(Message.UI_PROGRESS_FINISHED_TIME(elapsedTime));
+		Log.info(
+			Message.UI_PROGRESS_FINISHED_TIME(taskTimer.getElapsedSeconds())
+		);
 	}
 
 	/** Setter for the debug attribute of the task.

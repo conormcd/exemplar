@@ -48,6 +48,7 @@ import com.mcdermottroe.exemplar.ui.MessageException;
 import com.mcdermottroe.exemplar.ui.Options;
 import com.mcdermottroe.exemplar.utils.Resources;
 import com.mcdermottroe.exemplar.utils.Strings;
+import com.mcdermottroe.exemplar.utils.Timer;
 
 import static com.mcdermottroe.exemplar.Constants.Character.MINUS;
 import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
@@ -77,8 +78,8 @@ import static com.mcdermottroe.exemplar.Constants.UI.INDENT;
 	@since	0.1
 */
 public final class Main {
-	/** The time that {@link #main(String[])} was called. */
-	private static long startTime = 0L;
+	/** A timer for the application. */
+	private static Timer timer = null;
 
 	/** The exit handler. */
 	private static ExitHandler exitHandler = new ExitHandler() {
@@ -102,9 +103,8 @@ public final class Main {
 		DBC.ASSERT(args != null);
 		assert args != null;
 
-		// Record the start time, so we can report on how long the entire
-		// process took.
-		startTime = System.currentTimeMillis();
+		// Start the timer
+		timer = new Timer();
 
 		// Make a log handler to handle error and status output
 		Handler consoleHandler = new ConsoleHandler();
@@ -123,7 +123,7 @@ public final class Main {
 		try {
 			Message.localise();
 		} catch (MessageException e) {
-			abort(ExitStatus.getExitCode(EXIT_FAIL_L10N), e);
+			abort(ExitStatus.getExitCode(EXIT_FAIL_L10N), e.toString());
 			return;
 		}
 
@@ -194,10 +194,10 @@ public final class Main {
 							Options.getString("input-type")
 						);
 		} catch (InputException e) {
-			abort(ExitStatus.getExitCode(EXIT_FAIL_INPUT), e);
+			abort(ExitStatus.getExitCode(EXIT_FAIL_INPUT), e.toString());
 			return;
 		} catch (ParserException e) {
-			abort(ExitStatus.getExitCode(EXIT_FAIL_INPUT), e);
+			abort(ExitStatus.getExitCode(EXIT_FAIL_INPUT), e.toString());
 			return;
 		}
 
@@ -206,12 +206,12 @@ public final class Main {
 			Log.info(Message.UI_PROGRESS_GENERATING_PARSER());
 			OutputUtils.generateParser(
 				doctype,
-				Options.getString("output"),			// NON-NLS
-				Options.getString("output-language"),	// NON-NLS
-				Options.getString("output-api")			// NON-NLS
+				Options.getString("output"),
+				Options.getString("output-language"),
+				Options.getString("output-api")
 			);
 		} catch (OutputException e) {
-			abort(ExitStatus.getExitCode(EXIT_FAIL_CODE_GEN), e);
+			abort(ExitStatus.getExitCode(EXIT_FAIL_CODE_GEN), e.toString());
 			return;
 		}
 
@@ -224,18 +224,6 @@ public final class Main {
 		@return		A String containing the usage message.
 	*/
 	private static String usageMessage() {
-		return usageMessage("");
-	}
-
-	/** Format a usage message, optionally displaying why the use is seeing it.
-
-		@param why	The reason why the user is getting a usage message.
-		@return		A String containing the usage message.
-	*/
-	private static String usageMessage(String why) {
-		DBC.REQUIRE(why != null);
-		assert why != null;
-
 		// Get the resources containing all of the MessageFormats for
 		// constructing the useage message.
 		Map<String, String> usageBits = Resources.get(Main.class);
@@ -248,13 +236,6 @@ public final class Main {
 
 		// The usage message to construct
 		StringBuilder usage = new StringBuilder();
-
-		// Output any diagnostic message before doing anything else.
-		if (why.length() > 0) {
-			usage.append(why.trim());
-			usage.append(EOL);
-			usage.append(EOL);
-		}
 
 		// Output the name of the program and the copyright message
 		usage.append(Message.COPYRIGHT());
@@ -455,7 +436,7 @@ public final class Main {
 		@param	message	A message to send to the user. If this is null, nothing
 						is sent.
 	*/
-	private static void cleanExit(Object message) {
+	private static void cleanExit(CharSequence message) {
 		if (!Options.isInitialised()) {
 			Options.setUIFinished();
 		}
@@ -465,11 +446,7 @@ public final class Main {
 			Log.info(message);
 			Log.setLevel(oldLevel);
 		}
-		Log.info(
-			Message.UI_PROGRESS_FINISHED_TIME(
-				(double)(System.currentTimeMillis() - startTime) / 1000.0
-			)
-		);
+		Log.info(Message.UI_PROGRESS_FINISHED_TIME(timer.getElapsedSeconds()));
 		exitHandler.exit(ExitStatus.getExitCode(EXIT_SUCCESS));
 	}
 
@@ -478,19 +455,15 @@ public final class Main {
 		@param	code	The value to pass to {@link ExitHandler#exit(int)}.
 		@param	message	An optional message to log (only logged if non-null).
 	*/
-	private static void abort(int code, Object message) {
+	private static void abort(int code, CharSequence message) {
 		if (!Options.isInitialised()) {
 			Options.setUIFinished();
 		}
 		if (message != null) {
 			Log.error(message);
 		}
-		Log.debug("Aborting, code " + code);
-		Log.info(
-			Message.UI_PROGRESS_FINISHED_TIME(
-				(double)(System.currentTimeMillis() - startTime) / 1000.0
-			)
-		);
+		Log.debug("Aborting, code ", String.valueOf(code));
+		Log.info(Message.UI_PROGRESS_FINISHED_TIME(timer.getElapsedSeconds()));
 		exitHandler.exit(code);
 	}
 }

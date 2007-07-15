@@ -119,6 +119,9 @@ public interface Constants {
 	/** The {@link String} representation of null. */
 	String NULL_STRING = String.valueOf((Object)null);
 
+	/** The number of milliseconds in a second. */
+	double MILLISECONDS_IN_A_SECOND = 1000.0;
+
 	/** Character literal constants. */
 	interface Character {
 		/** The ampersand character '&', '\u0026'. */

@@ -35,7 +35,9 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import com.mcdermottroe.exemplar.DBC;
+import com.mcdermottroe.exemplar.utils.Strings;
 
+import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
 import static com.mcdermottroe.exemplar.Constants.PACKAGE;
 
 /** A single point of entry for all logging within the program.
@@ -67,19 +69,19 @@ Log.warning("The foo subsystem is almost out of memory!");
 				<th>Log {@link Level} produced</th>
 			</tr>
 			<tr>
-				<td>{@link Log#error(Object)}</td>
+				<td>{@link Log#error(CharSequence...)}</td>
 				<td>{@link Level#SEVERE}</td>
 			</tr>
 			<tr>
-				<td>{@link Log#warning(Object)}</td>
+				<td>{@link Log#warning(CharSequence...)}</td>
 				<td>{@link Level#WARNING}</td>
 			</tr>
 			<tr>
-				<td>{@link Log#info(Object)}</td>
+				<td>{@link Log#info(CharSequence...)}</td>
 				<td>{@link Level#INFO}</td>
 			</tr>
 			<tr>
-				<td>{@link Log#debug(Object)}</td>
+				<td>{@link Log#debug(CharSequence...)}</td>
 				<td>{@link Level#FINE}</td>
 			</tr>
 		</table>
@@ -184,77 +186,68 @@ public final class Log {
 	/** Log an error message. These are typically un-ignorable or fatal
 		messages.
 
-		@param	message	The error message to log.
+		@param	messages	The error message to log.
 	*/
-	public static void error(Object message) {
-		error(message, null);
+	public static void error(CharSequence... messages) {
+		error(null, messages);
 	}
 
 	/** Log an error message with the exception that caused the error. These
 		are typically un-ignorable or fatal messages.
 
-		@param	message	The error message to log.
-		@param	cause	The {@link Exception} that caused the error condition.
+		@param	messages	The error message to log.
+		@param	cause		The {@link Exception} that caused the error
+							condition.
 	*/
-	public static void error(Object message, Throwable cause) {
-		doLog(message, cause, Level.SEVERE);
+	public static void error(Throwable cause, CharSequence... messages) {
+		doLog(messages, cause, Level.SEVERE);
 	}
 
 	/** Log a warning message. These are typically important but non-fatal
 		messages about exceptional circumstances.
 
-		@param	message	The warning message to log.
+		@param	messages	The warning message to log.
 	*/
-	public static void warning(Object message) {
-		warning(message, null);
+	public static void warning(CharSequence... messages) {
+		warning(null, messages);
 	}
 
 	/** Log a warning message with the exception that caused the problem. These
 		are typically important but non-fatal messages about exceptional
 		circumstances.
 
-		@param	message	The warning message to log.
-		@param	cause	The {@link Exception} that caused the problem.
+		@param	messages	The warning message to log.
+		@param	cause		The {@link Exception} that caused the problem.
 	*/
-	public static void warning(Object message, Throwable cause) {
-		doLog(message, cause, Level.WARNING);
-	}
-
-	/** Log an informational message. Informational messages do not describe
-		error conditions, they merely serve to inform the user of progress.
-
-		@param	message	The informational message to log.
-	*/
-	public static void info(Object message) {
-		info(message, null);
+	public static void warning(Throwable cause, CharSequence... messages) {
+		doLog(messages, cause, Level.WARNING);
 	}
 
 	/** Log an informational message about an exception which occurred and has
 		been either successfully dealt with or ignored.
 
-		@param	message	The informational message to log.
-		@param	cause	The {@link Exception} ignored or safely handled.
+		@param	messages	The informational message to log.
 	*/
-	public static void info(Object message, Throwable cause) {
-		doLog(message, cause, Level.INFO);
+	public static void info(CharSequence... messages) {
+		doLog(messages, null, Level.INFO);
 	}
 
 	/** Log a debugging message. Debug messages can be used for anything, but
 		will no be visible unless debugging is turned on.
 
-		@param	message	The debug message to log.
+		@param	messages	The debug message to log.
 	*/
-	public static void debug(Object message) {
-		debug(message, null);
+	public static void debug(CharSequence... messages) {
+		debug(null, messages);
 	}
 
 	/** Log a debug message about an exception.
 
-		@param	message	The debug message to log.
-		@param	cause	The {@link Exception} which caused the problem.
+		@param	messages	The debug message to log.
+		@param	cause		The {@link Exception} which caused the problem.
 	*/
-	public static void debug(Object message, Throwable cause) {
-		doLog(message, cause, Level.FINE);
+	public static void debug(Throwable cause, CharSequence... messages) {
+		doLog(messages, cause, Level.FINE);
 	}
 
 	/** Convenient form for {@link #doLog(LogRecord)}.
@@ -264,10 +257,10 @@ public final class Log {
 					Exception}, then the exception may be passed here.
 		@param 	l	The {@link Level} at which the message is to be logged.
 	*/
-	private static void doLog(Object m, Throwable t, Level l) {
+	private static void doLog(CharSequence[] m, Throwable t, Level l) {
 		String message = "";
 		if (m != null) {
-			message = m.toString();
+			message = Strings.join(SPACE, (Object[])m);
 		}
 		LogRecord logRecord = new LogRecord(l, message);
 		if (t != null) {

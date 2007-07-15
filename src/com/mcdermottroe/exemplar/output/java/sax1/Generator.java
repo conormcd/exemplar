@@ -57,8 +57,8 @@ extends XMLJavaSourceGenerator<Generator>
 		super();
 	}
 
-	/** Copy constructor, see {@link #XMLParserSourceGenerator(Map, String)} for
-		details.
+	/** Copy constructor, see <code>XMLParserSourceGenerator(Map, String)</code>
+		for details.
 
 		@param	code	The code fragments.
 		@param	time	The timestamp.

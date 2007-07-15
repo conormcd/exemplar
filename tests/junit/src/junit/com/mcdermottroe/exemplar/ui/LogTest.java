@@ -170,7 +170,7 @@ extends SingletonClassTestCase<Log>
 		}
 	}
 
-	/** Test {@link Log#debug(Object)}. */
+	/** Test {@link Log#debug(CharSequence...)}. */
 	public void testDebugOneArg() {
 		Options.reset();
 		Options.set("debug", "true");
@@ -190,13 +190,13 @@ extends SingletonClassTestCase<Log>
 		Options.reset();
 	}
 
-	/** Test {@link Log#debug(Object, Throwable)}. */
+	/** Test {@link Log#debug(Throwable, CharSequence...)}. */
 	public void testDebugTwoArgs() {
 		Options.reset();
 		Options.set("debug", "true");
 		Exception testException = new Exception();
 		try {
-			Log.debug("foo", testException);
+			Log.debug(testException, "foo");
 		} catch (AssertionError e) {
 			assertNotNull("AssertionError was null", e);
 			fail("Log.debug(Object, Throwable) failed an assertion");
@@ -209,14 +209,14 @@ extends SingletonClassTestCase<Log>
 			logRecord.getMessage()
 		);
 		assertEquals(
-			"logRecord.getMessage() != \"foo\"",
+			"logRecord.getThrown() != testException",
 			testException,
 			logRecord.getThrown()
 		);
 		Options.reset();
 	}
 
-	/** Test {@link Log#error(Object)}. */
+	/** Test {@link Log#error(CharSequence...)}. */
 	public void testErrorOneArg() {
 		try {
 			Log.error("foo");
@@ -233,11 +233,11 @@ extends SingletonClassTestCase<Log>
 		);
 	}
 
-	/** Test {@link Log#error(Object, Throwable)}. */
+	/** Test {@link Log#error(Throwable, CharSequence...)}. */
 	public void testErrorTwoArgs() {
 		Exception testException = new Exception();
 		try {
-			Log.error("foo", testException);
+			Log.error(testException, "foo");
 		} catch (AssertionError e) {
 			assertNotNull("AssertionError was null", e);
 			fail("Log.debug(Object, Throwable) failed an assertion");
@@ -250,13 +250,13 @@ extends SingletonClassTestCase<Log>
 			logRecord.getMessage()
 		);
 		assertEquals(
-			"logRecord.getMessage() != \"foo\"",
+			"logRecord.getThrown() != testException",
 			testException,
 			logRecord.getThrown()
 		);
 	}
 
-	/** Test {@link Log#info(Object)}. */
+	/** Test {@link Log#info(CharSequence...)}. */
 	public void testInfoOneArg() {
 		try {
 			Log.info("foo");
@@ -273,30 +273,7 @@ extends SingletonClassTestCase<Log>
 		);
 	}
 
-	/** Test {@link Log#info(Object, Throwable)}. */
-	public void testInfoTwoArgs() {
-		Exception testException = new Exception();
-		try {
-			Log.info("foo", testException);
-		} catch (AssertionError e) {
-			assertNotNull("AssertionError was null", e);
-			fail("Log.info(Object, Throwable) failed an assertion");
-		}
-		LogRecord logRecord = testHandler.getLastRecord();
-		assertNotNull("testHandler.getLastRecord() == null", logRecord);
-		assertEquals(
-			"logRecord.getMessage() != \"foo\"",
-			"foo",
-			logRecord.getMessage()
-		);
-		assertEquals(
-			"logRecord.getMessage() != \"foo\"",
-			testException,
-			logRecord.getThrown()
-		);
-	}
-
-	/** Test {@link Log#warning(Object)}. */
+	/** Test {@link Log#warning(CharSequence...)}. */
 	public void testWarningOneArg() {
 		try {
 			Log.warning("foo");
@@ -313,11 +290,11 @@ extends SingletonClassTestCase<Log>
 		);
 	}
 
-	/** Test {@link Log#warning(Object, Throwable)}. */
+	/** Test {@link Log#warning(Throwable, CharSequence...)}. */
 	public void testWarningTwoArgs() {
 		Exception testException = new Exception();
 		try {
-			Log.warning("foo", testException);
+			Log.warning(testException, "foo");
 		} catch (AssertionError e) {
 			assertNotNull("AssertionError was null", e);
 			fail("Log.warning(Object, Throwable) failed an assertion");
@@ -330,7 +307,7 @@ extends SingletonClassTestCase<Log>
 			logRecord.getMessage()
 		);
 		assertEquals(
-			"logRecord.getMessage() != \"foo\"",
+			"logRecord.getThrown() != testException",
 			testException,
 			logRecord.getThrown()
 		);

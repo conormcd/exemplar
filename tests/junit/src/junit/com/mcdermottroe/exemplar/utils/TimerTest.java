@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2004-2007
+	Copyright (c) 2007
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -27,55 +27,38 @@
 	NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package com.mcdermottroe.exemplar.output.java.sax2;
+package junit.com.mcdermottroe.exemplar.utils;
 
-import java.util.Map;
+import com.mcdermottroe.exemplar.utils.Timer;
 
-import com.mcdermottroe.exemplar.CopyException;
-import com.mcdermottroe.exemplar.output.XMLParserGeneratorException;
-import com.mcdermottroe.exemplar.output.java.XMLJavaSourceGenerator;
+import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
 
-/** A class which generates Java parsers that implement the SAX 2 XML parser
-	API.
+/** Test class for {@link Timer}.
 
 	@author	Conor McDermottroe
-	@since	0.1
+	@since	0.2
 */
-public class Generator
-extends XMLJavaSourceGenerator<Generator>
+public class TimerTest
+extends NormalClassTestCase<Timer>
 {
-	/**	Creates a source generator which produces parsers in the Java language
-		which implement the SAX version 2 API.
-
-		@throws XMLParserGeneratorException	if the super-class constructor
-											throws one.
-	*/
-	public Generator()
-	throws XMLParserGeneratorException
-	{
-		// The parent does all the work.
-		super();
-	}
-
-	/** Copy constructor, see <code>XMLParserSourceGenerator(Map, String)</code>
-		for details.
-
-		@param	code	The code fragments.
-		@param	time	The timestamp.
-	*/
-	protected Generator(Map<String, String> code, String time) {
-		super(code, time);
-	}
-
 	/** {@inheritDoc} */
-	@Override public String describeAPI() {
-		return "The SAX2 API";
+	@Override public void setUp() throws Exception {
+		super.setUp();
+
+		addSample(new Timer());
+		addSample(new Timer());
 	}
 
-	/** {@inheritDoc} */
-	public Generator getCopy()
-	throws CopyException
-	{
-		return new Generator(codeFragments, timestamp);
+	/** Test {@link Timer#getElapsedSeconds()}. */
+	public void testGetElapsedSeconds() {
+		for (Timer t : samples()) {
+			if (t != null) {
+				assertNotSame(
+					"Timer.getElapsedSeconds()",
+					0.0,
+					t.getElapsedSeconds()
+				);
+			}
+		}
 	}
 }

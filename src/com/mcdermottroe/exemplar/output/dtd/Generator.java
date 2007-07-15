@@ -177,7 +177,7 @@ extends XMLParserSourceGenerator<Generator>
 			}
 
 			// Output the element declaration
-			Log.debug("Creating element declaration for " + elementName);
+			Log.debug("Creating element declaration for ", elementName);
 			elementDecls.append(
 				Strings.formatMessage(
 					elementDecl,
@@ -210,8 +210,8 @@ extends XMLParserSourceGenerator<Generator>
 				declTail.append(EOL);
 
 				Log.debug(
-							"Creating attribute list declaration for " + 
-							elementName
+					"Creating attribute list declaration for ",
+					elementName
 				);
 				elementDecls.append(
 					Strings.formatMessage(
@@ -271,7 +271,7 @@ extends XMLParserSourceGenerator<Generator>
 				}
 			}
 
-			Log.debug("Creating entity declaration for " + entity);
+			Log.debug("Creating entity declaration for ", entity.getName());
 			entityDecls.append(
 				Strings.formatMessage(
 					entityDecl,
@@ -310,7 +310,7 @@ extends XMLParserSourceGenerator<Generator>
 			}
 			notationDeclTail.append(DOUBLE_QUOTE);
 
-			Log.debug("Creating notation declaration for " + notationName);
+			Log.debug("Creating notation declaration for ", notationName);
 			notationDecls.append(
 				Strings.formatMessage(
 					notationDecl,
@@ -323,7 +323,7 @@ extends XMLParserSourceGenerator<Generator>
 
 		// Try to write out the code
 		try {
-			Log.debug("Writing built DTD to " + outputFile);
+			Log.debug("Writing built DTD to ", outputFile.getAbsolutePath());
 			OutputUtils.writeStringToFile(
 				Strings.formatMessage(
 					dtdFile,
