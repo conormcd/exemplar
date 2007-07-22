@@ -49,13 +49,27 @@ extends NormalClassTestCase<XMLAttribute>
 	{
 		super.setUp();
 
-		XMLAttribute sampleA = new XMLAttribute(
-			"foo",
-			XMLAttributeContentType.CDATA(),
-			XMLAttributeDefaultType.FIXED("foo")
+		addSample(
+			new XMLAttribute(
+				"foo",
+				XMLAttributeContentType.CDATA(),
+				XMLAttributeDefaultType.FIXED("foo")
+			)
 		);
-
-		addSample(sampleA);
+		addSample(
+			new XMLAttribute(
+				"foo",
+				XMLAttributeContentType.ID(),
+				XMLAttributeDefaultType.FIXED("foo")
+			)
+		);
+		addSample(
+			new XMLAttribute(
+				"bar",
+				XMLAttributeContentType.CDATA(),
+				XMLAttributeDefaultType.FIXED("foo")
+			)
+		);
 	}
 
 	/** Test {@link XMLAttribute#getDefaultDeclType()}. */

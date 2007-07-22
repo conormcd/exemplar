@@ -102,7 +102,12 @@ parser code {:
 	{
 		DBC.REQUIRE(dtdFile != null);
 		try {
-			return parse(new FileInputStream(dtdFile), dtdFile.getParentFile());
+			File dir = dtdFile.getParentFile();
+			if (dir != null) {
+				return parse(new FileInputStream(dtdFile), dir);
+			} else {
+				return parse(new FileInputStream(dtdFile));
+			}
 		} catch (FileNotFoundException e) {
 			throw new ParserException(
 				Message.DTDLEXER_INPUT_NOT_FOUND(dtdFile.getAbsolutePath()),

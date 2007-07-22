@@ -67,6 +67,15 @@ implements Copyable<Timer>
 		startTime = start;
 	}
 
+	/** Get the time (in millisecond epoch time) that this {@link Timer} was
+		started at.
+
+		@return	The {@link Timer} start time.
+	*/
+	public long getStartTime() {
+		return startTime;
+	}
+
 	/** Get the number of seconds elapsed since the timer was started.
 
 		@return	The number of seconds since the timer was started.
@@ -96,7 +105,7 @@ implements Copyable<Timer>
 		}
 
 		Timer other = (Timer)o;
-		return startTime == other.startTime;
+		return startTime == other.getStartTime();
 	}
 
 	/** Implement {@link Object#hashCode()}.

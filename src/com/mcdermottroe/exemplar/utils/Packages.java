@@ -140,10 +140,6 @@ public final class Packages {
 		@return		A {@link List} of packages contained within the JAR file.
 	*/
 	private static List<String> readPackagesFromJar(URL url) {
-		if (!url.toString().startsWith(URL_JAR_PREFIX)) {
-			return Collections.emptyList();
-		}
-
 		String jarFilePath = url.toString();
 		jarFilePath = jarFilePath.substring(
 			URL_JAR_PREFIX.length(),
@@ -183,9 +179,6 @@ public final class Packages {
 		@return		A {@link List} of packages found in the given directory.
 	*/
 	private static List<String> readPackagesFromDir(URL url, String pkg) {
-		if (url == null) {
-			return Collections.emptyList();
-		}
 		String dir = url.toString().substring(FILE_JAR_PREFIX.length());
 
 		if (dir.endsWith(pkg)) {

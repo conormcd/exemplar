@@ -123,6 +123,7 @@ extends XMLParserSourceGenerator<Generator>
 			createXMLComponentClass(supportDir);
 			createXMLContentClass(supportDir);
 			createAbstractElementClass(supportDir);
+			createProcessingInstructionClass(supportDir);
 
 			// Create one class per element
 			Log.debug("Creating element classes");
@@ -532,6 +533,55 @@ extends XMLParserSourceGenerator<Generator>
 
 		// Write out the file
 		File file = new File(dir, String.format(JAVA, "XMLComponent"));
+		try {
+			OutputUtils.writeStringToFile(outputFileContents, file);
+		} catch (OutputException e) {
+			throw new XMLParserGeneratorException(
+				Message.FILE_WRITE_FAILED(
+					file.getAbsolutePath()
+				),
+				e
+			);
+		}
+	}
+
+	/** Create the ProcessingInstruction class.
+
+		@param	dir							The directory in which to create
+											the class.
+		@throws	XMLParserGeneratorException	if the ProcessingInstruction class
+											cannot be generated.
+	*/
+	protected void createProcessingInstructionClass(File dir)
+	throws XMLParserGeneratorException
+	{
+		Log.debug("Creating the ProcessingInstruction class");
+		DBC.REQUIRE(dir != null);
+		if (dir == null) {
+			return;
+		}
+
+		// Ensure that the directory exists
+		if (!dir.exists()) {
+			dir.mkdirs();
+		}
+
+		// Get the template
+		String messageFormatTemplate = loadCodeFragment(
+			"PI_CLASS"
+		);
+		DBC.ASSERT(messageFormatTemplate != null);
+
+		// Make the contents of the output file
+		String outputFileContents = Strings.formatMessage(
+			messageFormatTemplate,
+			PROGRAM_NAME,
+			timestamp,
+			basePackage
+		);
+
+		// Write out the file
+		File file = new File(dir, String.format(JAVA, "ProcessingInstruction"));
 		try {
 			OutputUtils.writeStringToFile(outputFileContents, file);
 		} catch (OutputException e) {

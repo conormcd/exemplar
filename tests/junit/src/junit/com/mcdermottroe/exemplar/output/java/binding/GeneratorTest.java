@@ -93,6 +93,9 @@ extends XMLParserSourceGeneratorTestCase<Generator>
 			);
 		}
 		retVal.add(supportDir);
+		retVal.add(
+			new File(supportDir, String.format(JAVA, "ProcessingInstruction"))
+		);
 		retVal.add(new File(supportDir, String.format(JAVA, "XMLComponent")));
 		retVal.add(new File(supportDir, String.format(JAVA, "XMLContent")));
 		retVal.add(

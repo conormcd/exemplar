@@ -61,4 +61,18 @@ extends NormalClassTestCase<Timer>
 			}
 		}
 	}
+
+	/** Test {@link Timer#getStartTime()}. */
+	public void testGetStartTime() {
+		for (Timer t : samples()) {
+			if (t != null) {
+				long startTime = t.getStartTime();
+				assertNotSame("Time.getStartTime() == 0", 0L, startTime);
+				assertTrue(
+					"Time.getStartTime() returned a time after now",
+					startTime <= System.currentTimeMillis()
+				);
+			}
+		}
+	}
 }
