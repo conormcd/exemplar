@@ -866,12 +866,14 @@
 		<mkdir dir="${tmp.web.root}/doc" />
 		<mkdir dir="${tmp.web.root}/doc/api" />
 		<mkdir dir="${tmp.web.root}/doc/handbook" />
+		<mkdir dir="${tmp.web.root}/doc/manual" />
 		<copy todir="${tmp.web.root}/doc/api">
 			<fileset dir="doc/api"/>
 		</copy>
 		<copy todir="${tmp.web.root}/doc/handbook">
 			<fileset dir="doc/handbook"/>
 		</copy>
+		<copy file="doc/manual/html/manual.html" tofile="${tmp.web.root}/doc/manual/index.html" />
 
 		<!-- Run the distribution tasks -->
 		<antcall target="dist" />
@@ -907,18 +909,18 @@
 		<copy todir="${web.root}/tests/junit">
 			<fileset dir="${tmp.web.root}/tests/junit" />
 		</copy>
-		<chmod perm="${web.dir.perm}" type="dir">
-			<fileset dir="${web.root}" />
-		</chmod>
-		<chmod perm="${web.file.perm}" type="file">
-			<fileset dir="${web.root}" />
-		</chmod>
 		<chown owner="${web.user}">
 			<fileset dir="${web.root}" />
 		</chown>
 		<chgrp group="${web.group}">
 			<fileset dir="${web.root}" />
 		</chgrp>
+		<chmod perm="${web.dir.perm}" type="dir">
+			<fileset dir="${web.root}" />
+		</chmod>
+		<chmod perm="${web.file.perm}" type="file">
+			<fileset dir="${web.root}" />
+		</chmod>
 
 		<!-- Clean up -->
 		<delete dir="${tmp.web.root}" quiet="true" />
