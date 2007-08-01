@@ -79,27 +79,8 @@ extends TestCase
 	@Override public void setUp() throws Exception {
 		super.setUp();
 
-		testedClass = null;
-		String className = getClass().getName();
-		if (className.startsWith("junit.")) {
-			className = className.substring(6);
-		}
-		if (className.endsWith("Test")) {
-			className = className.substring(0, className.length() - 4);
-		}
-		try {
-			testedClass = Class.forName(className);
-		} catch (ClassNotFoundException e) {
-			fail(
-				"Failed to find class " +
-				className +
-				SPACE +
-				LEFT_PAREN +
-				e.toString() +
-				RIGHT_PAREN
-			);
-			return;
-		}
+		testedClass = getTestedClass();
+		assertNotNull("Failed to calculate the class to test", testedClass);
 
 		assertNotNull("TMP is null", TMP);
 		assertTrue("TMP dir does not exist", TMP.exists());
@@ -109,7 +90,36 @@ extends TestCase
 		Log.clearHandlers();
 	}
 
-	/** When this method is inherited by every test it will make sure that all 
+	/** Calculate the class to be tested. The default version of this method
+		should be sufficient for almost all cases.
+
+		@return	The {@link Class} of the class to test.
+	*/
+	protected Class<?> getTestedClass() {
+		Class<?> c = null;
+		String className = getClass().getName();
+		if (className.startsWith("junit.")) {
+			className = className.substring(6);
+		}
+		if (className.endsWith("Test")) {
+			className = className.substring(0, className.length() - 4);
+		}
+		try {
+			c = Class.forName(className);
+		} catch (ClassNotFoundException e) {
+			fail(
+				"Failed to find class " +
+				className +
+				SPACE +
+				LEFT_PAREN +
+				e.toString() +
+				RIGHT_PAREN
+			);
+		}
+		return c;
+	}
+
+	/** When this method is inherited by every test it will make sure that all
 		of the tested classes are in the same package as {@link
 		com.mcdermottroe.exemplar.Constants} which is in the root package.
 

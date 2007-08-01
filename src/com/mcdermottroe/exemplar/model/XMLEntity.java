@@ -99,7 +99,6 @@ implements XMLMarkupDeclaration
 	public XMLEntity(String entityName, XMLExternalIdentifier externalID) {
 		// Do the basic initialisation
 		super(entityName);
-
 		DBC.REQUIRE(externalID != null);
 
 		// Mark this entity as an external parsed one
@@ -128,7 +127,6 @@ implements XMLMarkupDeclaration
 	{
 		// Do the basic initialisation
 		super(entityName);
-
 		DBC.REQUIRE(externalID != null);
 		DBC.REQUIRE(not != null);
 
@@ -188,15 +186,13 @@ implements XMLMarkupDeclaration
 
 	/** {@inheritDoc} */
 	@Override public XMLEntity getCopy() {
-		switch (entityType) {
-			case INTERNAL:
-				return new XMLEntity(name, value);
-			case EXTERNAL_PARSED:
-				return new XMLEntity(name, extID.getCopy());
-			case EXTERNAL_UNPARSED:
-				return new XMLEntity(name, extID.getCopy(), notation);
+		if (notation != null) {
+			return new XMLEntity(name, extID.getCopy(), notation);
+		} else if (extID != null) {
+			return new XMLEntity(name, extID.getCopy());
+		} else {
+			return new XMLEntity(name, value);
 		}
-		return null; // This is actually unreachable, due to the enum
 	}
 
 	/** {@inheritDoc} */

@@ -51,7 +51,7 @@ implements	Comparable<XMLAttributeContentType>,
 			Copyable<XMLAttributeContentType>
 {
 	/** The actual type for this. */
-	private enum Type {
+	public enum Type {
 		/** CDATA. */
 		CDATA,
 		/** ID. */

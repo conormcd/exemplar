@@ -2284,6 +2284,35 @@ extSubset						::= extSubsetDecl:eSD
 										{:
 											List<XMLMarkupDeclaration> newExtSubSet = new ArrayList<XMLMarkupDeclaration>();
 
+											// Ensure that there is an element
+											// declaration for every attribute
+											// list declaration.
+											for (Object attlist : eSD) {
+												if (attlist != null) {
+													if (XMLAttributeList.class.isAssignableFrom(attlist.getClass())) {
+														String attlistName = ((XMLAttributeList)attlist).getName();
+														boolean foundAssociatedElement = false;
+														for (Object element : eSD) {
+															if (element != null) {
+																if (XMLElement.class.isAssignableFrom(element.getClass())) {
+																	String elementName = ((XMLElement)element).getName();
+																	if (elementName.equals(attlistName)) {
+																		foundAssociatedElement = true;
+																		break;
+																	}
+																}
+															}
+														}
+														if (!foundAssociatedElement) {
+															throw new ParserException(
+																Message.XMLDOCTYPE_ORPHAN_ATTLIST(attlistName)
+															);
+														}
+													}
+												}
+											}
+
+											// Now re-wrap and cast the markup declarations.
 											for (Object markupDecl : eSD) {
 												newExtSubSet.add((XMLMarkupDeclaration)markupDecl);
 											}

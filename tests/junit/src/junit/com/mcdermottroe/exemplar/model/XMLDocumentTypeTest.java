@@ -37,7 +37,6 @@ import java.util.Set;
 import com.mcdermottroe.exemplar.model.XMLAttribute;
 import com.mcdermottroe.exemplar.model.XMLAttributeList;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
-import com.mcdermottroe.exemplar.model.XMLDocumentTypeException;
 import com.mcdermottroe.exemplar.model.XMLElement;
 import com.mcdermottroe.exemplar.model.XMLElementContentModel;
 import com.mcdermottroe.exemplar.model.XMLElementContentType;
@@ -100,13 +99,11 @@ extends NormalClassTestCase<XMLDocumentType>
 		try {
 			xdt = new XMLDocumentType(null);
 			fellThrough = true;
-		} catch (XMLDocumentTypeException e) {
-			assertNotNull("XMLDocumentTypeException was null", e);
-			fail("An unexpected error occurred");
 		} catch (AssertionError e) {
 			assertNotNull("AssertionError was null", e);
 		}
 		assertFalse("XMLDocumentType(null) did not assert false", fellThrough);
+		assertNull("XMLDocumentType(null) != null", xdt);
 	}
 
 	/** Test {@link XMLDocumentType#attlists()}. */

@@ -55,6 +55,24 @@ import static com.mcdermottroe.exemplar.Constants.URL_JAR_PREFIX;
 public class ConstantsTest
 extends InterfaceTestCase<Constants>
 {
+	/** Test a selection of constants. */
+	public void testConstants() {
+		assertNotNull("COPYRIGHT_MESSAGE == null", Constants.COPYRIGHT_MESSAGE);
+		for (String line : Constants.COPYRIGHT_MESSAGE) {
+			assertNotNull("COPYRIGHT_MESSAGE line == null", line);
+		}
+		assertNotNull("CWD == null", Constants.CWD);
+		assertNotNull("EOL == null", Constants.EOL);
+		assertNotNull("Input.PACKAGE == null", Constants.Input.PACKAGE);
+		assertNotNull("NULL_STRING == null", Constants.NULL_STRING);
+		assertNotNull("Output.PACKAGE == null", Constants.Output.PACKAGE);
+		assertNotNull("PACKAGE == null", Constants.PACKAGE);
+		assertNotNull(
+			"Regex.VALID_PE_NAME == null",
+			Constants.Regex.VALID_PE_NAME
+		);
+	}
+
 	/** A test to ensure that all classes in the output JAR have a test case. */
 	public void testAllClassesHaveATestCase() {
 		// Construct the package path

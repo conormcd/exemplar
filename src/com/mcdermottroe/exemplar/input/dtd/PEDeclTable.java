@@ -118,18 +118,9 @@ implements Copyable<PEDeclTable>
 	throws ParameterEntityException
 	{
 		DBC.REQUIRE(name != null);
+		DBC.REQUIRE(name.length() > 0);
 		DBC.REQUIRE(contents != null);
-		DBC.REQUIRE(
-			type.equals(ParameterEntityType.VALUE) ||
-			type.equals(ParameterEntityType.URI)
-		);
-		if	(
-				name == null || name.length() == 0 ||
-				contents == null || contents.length() < 0
-			)
-		{
-			throw new ParameterEntityException(Message.DTDPE_INVALID_PEDECL());
-		}
+		DBC.REQUIRE(contents.length() >= 0);
 
 		switch (type) {
 			case VALUE:

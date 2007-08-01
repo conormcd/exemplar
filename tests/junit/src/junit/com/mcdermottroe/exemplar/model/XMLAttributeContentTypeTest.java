@@ -270,4 +270,6 @@ extends NormalClassTestCase<XMLAttributeContentType>
 			}
 		}
 	}
+
+	/** Test {@link XMLAttributeContentType.Type}. */
 }

@@ -29,32 +29,32 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
-import com.mcdermottroe.exemplar.model.XMLNamedObject;
+import com.mcdermottroe.exemplar.model.XMLAttributeContentType.Type;
 
-/** Parent class to all subclasses of {@link XMLNamedObject}.
+import junit.com.mcdermottroe.exemplar.EnumClassTestCase;
 
-	@author		Conor McDermottroe
-	@since		0.2
-	@param	<T>	The type of {@link XMLNamedObject} being tested.
+/** Test class for {@link Type}.
+
+	@author	Conor McDermottroe
+	@since	0.2
 */
-public abstract class XMLNamedObjectTestCase<T extends XMLNamedObject<T>>
-extends XMLObjectTestCase<T>
+public class XMLAttributeContentTypeTypeTest
+extends EnumClassTestCase<Type>
 {
-	/** {@inheritDoc} */
-	@Override public void setUp() throws Exception {
+	/** {@inheritDoc}. */
+	@Override public void setUp()
+	throws Exception
+	{
 		super.setUp();
+		types = Type.values();
 	}
 
-	/** Test that the equals method returns false for non-{@link
-		XMLNamedObject}s. */
-	public void testEqualsNotXMLNamedObject() {
-		for (T sample : samples()) {
-			if (sample != null) {
-				assertFalse(
-					"sample.equals(new Object()) returned true",
-					sample.equals(new Object())
-				);
-			}
-		}
+	/** The default class detection routine doesn't work for nested classes, so
+		we override it here.
+
+		@return	The {@link Class} that we're testing.
+	*/
+	@Override protected Class<?> getTestedClass() {
+		return Type.class;
 	}
 }

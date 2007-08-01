@@ -49,7 +49,7 @@ implements	Comparable<XMLAttributeDefaultType>,
 			Copyable<XMLAttributeDefaultType>
 {
 	/** The actual internal type. */
-	private enum Type {
+	public enum Type {
 		/** Required default type. */
 		REQUIRED,
 		/** Implied default type. */

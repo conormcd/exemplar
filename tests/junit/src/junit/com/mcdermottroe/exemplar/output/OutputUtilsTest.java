@@ -41,7 +41,6 @@ import java.util.Set;
 
 import com.mcdermottroe.exemplar.Constants;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
-import com.mcdermottroe.exemplar.model.XMLDocumentTypeException;
 import com.mcdermottroe.exemplar.model.XMLElement;
 import com.mcdermottroe.exemplar.model.XMLElementContentModel;
 import com.mcdermottroe.exemplar.model.XMLElementContentType;
@@ -393,21 +392,15 @@ extends UtilityClassTestCase<OutputUtils>
 		Set<LanguageAPIPair> testData = OutputUtils.availableLanguageAPIPairs();
 
 		// Make an empty doctype
-		XMLDocumentType doctype = null;
-		try {
-			Collection<XMLMarkupDeclaration> markup;
-			markup = new ArrayList<XMLMarkupDeclaration>();
-			markup.add(
-				new XMLElement(
-					"element",
-					new XMLElementContentModel(XMLElementContentType.ANY)
-				)
-			);
-			doctype = new XMLDocumentType(markup);
-		} catch (XMLDocumentTypeException e) {
-			assertNotNull("XMLDocumentTypeException was null", e);
-			fail("Failed to create a test document type");
-		}
+		Collection<XMLMarkupDeclaration> markup;
+		markup = new ArrayList<XMLMarkupDeclaration>();
+		markup.add(
+			new XMLElement(
+				"element",
+				new XMLElementContentModel(XMLElementContentType.ANY)
+			)
+		);
+		XMLDocumentType doctype = new XMLDocumentType(markup);
 
 		// Make sure that the options have been set
 		Options.set("output-package", "foo");

@@ -29,6 +29,7 @@
 */
 package junit.com.mcdermottroe.exemplar.output;
 
+import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.output.XMLParserObjectGenerator;
 
 import junit.com.mcdermottroe.exemplar.AbstractClassTestCase;
@@ -42,4 +43,42 @@ import junit.com.mcdermottroe.exemplar.AbstractClassTestCase;
 public class XMLParserObjectGeneratorTest<T extends XMLParserObjectGenerator<T>>
 extends AbstractClassTestCase<T>
 {
+	/** Test a {@link TrivialXMLParserObjectGenerator} to test the {@link
+		XMLParserObjectGenerator}.
+	*/
+	public void testTrivialExtension() {
+		TrivialXMLParserObjectGenerator gen =
+			new TrivialXMLParserObjectGenerator();
+		assertNotNull("Failed to create an XMLParserObjectGenerator", gen);
+		assertNull("generateParser failed", gen.generateParser(null));
+	}
+
+	/** A trivial stub of {@link XMLParserObjectGenerator} for testing purposes.
+
+		@author Conor McDermottroe
+		@since	0.2
+	*/
+	private class TrivialXMLParserObjectGenerator
+	extends XMLParserObjectGenerator<TrivialXMLParserObjectGenerator>
+	{
+		/** {@inheritDoc} */
+		@Override public Object generateParser(XMLDocumentType doctype) {
+			return null;
+		}
+
+		/** {@inheritDoc} */
+		@Override public String describeLanguage() {
+			return "Trivial";
+		}
+
+		/** {@inheritDoc} */
+		@Override public String describeAPI() {
+			return null;
+		}
+
+		/** {@inheritDoc} */
+		public TrivialXMLParserObjectGenerator getCopy() {
+			return new TrivialXMLParserObjectGenerator();
+		}
+	}
 }

@@ -38,7 +38,6 @@ import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
-import com.mcdermottroe.exemplar.ui.Options;
 import com.mcdermottroe.exemplar.utils.Resources;
 import com.mcdermottroe.exemplar.utils.Strings;
 
@@ -181,9 +180,6 @@ extends XMLParserGenerator<T>
 			"\"."
 		);
 		DBC.REQUIRE(lang != null);
-		if (lang == null) {
-			return null;
-		}
 
 		XMLParserSourceGenerator<?> generator = null;
 		try {
@@ -242,154 +238,12 @@ extends XMLParserGenerator<T>
 		@return								The {@link String} referenced by the
 											given key in the {@link
 											java.util.ResourceBundle}.
-		@throws	XMLParserGeneratorException	if the fragment requested does not
-											exist or if an error occurred while
-											fetching it.
 	*/
-	protected String loadCodeFragment(String fragmentName)
-	throws XMLParserGeneratorException
-	{
-		if (!codeFragments.isEmpty()) {
+	protected String loadCodeFragment(String fragmentName) {
+		if (codeFragments.containsKey(fragmentName)) {
 			return codeFragments.get(fragmentName);
 		} else {
-			throw new XMLParserGeneratorException(
-				Message.XMLPARSER_LOAD_CODE_FRAGMENT_FAILED()
-			);
-		}
-	}
-
-	/**	Load a code fragment as a {@link String} if a value has been set in an 
-		{@link com.mcdermottroe.exemplar.ui.options.Enum}.
-
-		@param	fragmentName				The key for the code fragment in the
-											{@link java.util.ResourceBundle}.
-		@param	enumName					The name of the enumerated option to
-	 										check.
-		@param	enumProperty				The name of the property in the
-											enumerated option to check.
-		@return								The {@link String} referenced by
-											<code>fragmentName</code> in the
-											{@link java.util.ResourceBundle}, or
-											the empty {@link String} if the
-											condition in the enumerated option
-											was not met.
-		@throws	XMLParserGeneratorException	if the fragment requested does not
-											exist or if an error occurred while
-											fetching it.
-	*/
-	protected String loadCodeFragmentIfSet	(
-												String fragmentName,
-												String enumName,
-												String enumProperty
-											)
-	throws XMLParserGeneratorException
-	{
-		return loadCodeFragmentIfSet(fragmentName, enumName, enumProperty, "");
-	}
-
-	/** Load a code fragment as a {@link String} if a value has been set in an 
-	 	{@link com.mcdermottroe.exemplar.ui.options.Enum}.
-
-		@param	fragmentName				The key for the code fragment in the
-											{@link java.util.ResourceBundle}.
-		@param	enumName					The name of the enumerated option to
-											check.
-		@param	enumProperty				The name of the property in the
-											enumerated option to check.
-		@param	defaultValue				The default value to return if the
-											enumerated property was not set.
-		@return								The {@link String} referenced by
-											<code>fragmentName</code> in the
-											{@link java.util.ResourceBundle}, or
-											the empty {@link String} if the
-											condition in  the enumerated option
-											was not met.
-		@throws	XMLParserGeneratorException	if the fragment requested does not
-											exist or if an error occurred while
-											fetching it.
-	*/
-	protected String loadCodeFragmentIfSet	(
-												String fragmentName,
-												String enumName,
-												String enumProperty,
-												String defaultValue
-											)
-	throws XMLParserGeneratorException
-	{
-		if (Options.isSet(enumName, enumProperty)) {
-			return loadCodeFragment(fragmentName);
-		} else {
-			return defaultValue;
-		}
-	}
-
-	/**	Load a code fragment as a {@link String} if a value has <i>not</i> been
-		set in an enumerated option.
-
-		@param	fragmentName				The key for the code fragment in the
-											{@link java.util.ResourceBundle}.
-		@param	enumName					The name of the enumerated option to
-											check.
-		@param	enumProperty				The name of the property in the
-											enumerated option to check.
-		@return								The {@link String} referenced by
-											<code>fragmentName</code> in the
-											{@link java.util.ResourceBundle}, or
-											the empty {@link String} if the
-											condition in the enumerated option
-											was set.
-		@throws	XMLParserGeneratorException	if the fragment requested does not
-	 										exist or if an error occurred while
-	 										fetching it.
-	*/
-	protected String loadCodeFragmentUnlessSet	(
-													String fragmentName,
-													String enumName,
-													String enumProperty
-												)
-	throws XMLParserGeneratorException
-	{
-		return loadCodeFragmentUnlessSet(
-											fragmentName,
-											enumName,
-											enumProperty,
-											""
-										);
-	}
-
-	/** Load a code fragment as a {@link String} if a value has <i>not</i> been
-		set in an enumerated option.
-
-		@param	fragmentName				The key for the code fragment in the
-											{@link java.util.ResourceBundle}.
-		@param	enumName					The name of the enumerated option to
-											check.
-		@param	enumProperty				The name of the property in the
-											enumerated option to check.
-		@param	defaultValue				The value to return if the option
-											was set.
-		@return								The {@link String} referenced by
-											<code>fragmentName</code> in the
-											{@link java.util.ResourceBundle}, or
-											<code>defaultValue</code> if the
-											condition in the enumerated option
-											was set.
-		@throws	XMLParserGeneratorException	if the fragment requested does not
-											exist or if an error occurred while
-											fetching it.
-	*/
-	protected String loadCodeFragmentUnlessSet	(
-													String fragmentName,
-													String enumName,
-													String enumProperty,
-													String defaultValue
-												)
-	throws XMLParserGeneratorException
-	{
-		if (Options.isSet(enumName, enumProperty)) {
-			return defaultValue;
-		} else {
-			return loadCodeFragment(fragmentName);
+			return "";
 		}
 	}
 }

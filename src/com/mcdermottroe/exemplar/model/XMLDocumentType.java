@@ -35,11 +35,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mcdermottroe.exemplar.CopyException;
 import com.mcdermottroe.exemplar.Copyable;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
-import com.mcdermottroe.exemplar.ui.Message;
 
 import static com.mcdermottroe.exemplar.Constants.Character.LEFT_PAREN;
 import static com.mcdermottroe.exemplar.Constants.Character.RIGHT_PAREN;
@@ -69,13 +67,8 @@ implements Copyable<XMLDocumentType>
 
 		@param	markup						A {@link Collection} of markup
 											declarations.
-		@throws	XMLDocumentTypeException	if any of the initialising methods
-											called from here throw an {@link
-											XMLDocumentTypeException}.
 	*/
-	public XMLDocumentType(Collection<XMLMarkupDeclaration> markup)
-	throws XMLDocumentTypeException
-	{
+	public XMLDocumentType(Collection<XMLMarkupDeclaration> markup) {
 		DBC.REQUIRE(markup != null);
 
 		// Allocate storage for the various hashes
@@ -118,10 +111,6 @@ implements Copyable<XMLDocumentType>
 			if (element != null) {
 				element.setAttlist(attlist);
 				elements.put(name, element);
-			} else {
-				throw new XMLDocumentTypeException(
-					Message.XMLDOCTYPE_ORPHAN_ATTLIST(name)
-				);
 			}
 		}
 	}
@@ -173,20 +162,14 @@ implements Copyable<XMLDocumentType>
 	}
 
     /** {@inheritDoc} */
-    public XMLDocumentType getCopy()
-	throws CopyException
-	{
-		try {
-			List<XMLMarkupDeclaration> all;
-			all = new ArrayList<XMLMarkupDeclaration>();
-			all.addAll(attlists.values());
-			all.addAll(elements.values());
-			all.addAll(entities.values());
-			all.addAll(notations.values());
-			return new XMLDocumentType(all);
-		} catch (XMLDocumentTypeException e) {
-			throw new CopyException(e);
-		}
+    public XMLDocumentType getCopy() {
+		List<XMLMarkupDeclaration> all;
+		all = new ArrayList<XMLMarkupDeclaration>();
+		all.addAll(attlists.values());
+		all.addAll(elements.values());
+		all.addAll(entities.values());
+		all.addAll(notations.values());
+		return new XMLDocumentType(all);
 	}
 
 	/** See {@link Object#equals(Object)}.

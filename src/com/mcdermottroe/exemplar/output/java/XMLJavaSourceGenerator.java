@@ -224,27 +224,24 @@ extends XMLParserSourceGenerator<T>
 
 		// Get the template strings
 		String messageFormatTemplate = loadCodeFragment("JFLEX_MAIN_TEMPLATE");
-		String processingInstructionProcessor = loadCodeFragmentUnlessSet(
-			"PROCESSING_INSTRUCTION_PROCESSOR",
-			"exclude",
-			"PI",
-			EOL
-		);
-		String commentProcessor = loadCodeFragmentUnlessSet(
-			"COMMENT_PROCESSOR",
-			"exclude",
-			"Comment"
-		);
-		String doctypeDeclProcessor = loadCodeFragmentUnlessSet(
-			"DOCTYPEDECL_PROCESSOR",
-			"exclude",
-			"doctypedecl"
-		);
-		String cdSectProcessor = loadCodeFragmentUnlessSet(
-			"CDSECT_PROCESSOR",
-			"exclude",
-			"CDSect"
-		);
+		String processingInstructionProcessor = EOL;
+		if (!Options.isSet("exclude", "PI")) {
+			processingInstructionProcessor = loadCodeFragment(
+				"PROCESSING_INSTRUCTION_PROCESSOR"
+			);
+		}
+		String commentProcessor = "";
+		if (!Options.isSet("exclude", "Comment")) {
+			commentProcessor = loadCodeFragment("COMMENT_PROCESSOR");
+		}
+		String doctypeDeclProcessor = "";
+		if (!Options.isSet("exclude", "doctypedecl")) {
+			doctypeDeclProcessor = loadCodeFragment("DOCTYPEDECL_PROCESSOR");
+		}
+		String cdSectProcessor = "";
+		if (!Options.isSet("exclude", "CDSect")) {
+			cdSectProcessor = loadCodeFragment("CDSECT_PROCESSOR");
+		}
 		String predefinedEntities = "";
 		String externalEntityRules = "";
 		String intEntResolver = "";
@@ -300,11 +297,10 @@ extends XMLParserSourceGenerator<T>
 				}
 			}
 		}
-		String charRefResolver = loadCodeFragmentUnlessSet(
-			"CHAR_REF_RESOLVER",
-			"exclude",
-			"CharRef"
-		);
+		String charRefResolver = "";
+		if (!Options.isSet("exclude", "CharRef")) {
+			charRefResolver = loadCodeFragment("CHAR_REF_RESOLVER");
+		}
 
 		// Element rules
 		String emptyElementRule;

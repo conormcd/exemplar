@@ -44,7 +44,7 @@ extends XMLNamedObjectTestCase<XMLEntity>
 	@Override public void setUp() throws Exception {
 		super.setUp();
 
-		XMLEntity[] samples = new XMLEntity[3];
+		XMLEntity[] samples = new XMLEntity[6];
 
 		samples[0] =	new XMLEntity("name", "value");
 		samples[1] =	new XMLEntity(
@@ -56,6 +56,16 @@ extends XMLNamedObjectTestCase<XMLEntity>
 							new XMLExternalIdentifier("foo", "bar"),
 							"notation"
 						);
+		samples[3] =	new XMLEntity("name2", "value");
+		samples[4] =	new XMLEntity(
+			"name2",
+			new XMLExternalIdentifier("foo", "bar")
+		);
+		samples[5] =	new XMLEntity(
+			"name2",
+			new XMLExternalIdentifier("foo", "bar"),
+			"notation"
+		);
 
 		for (XMLEntity sample : samples) {
 			addSample(sample);
@@ -73,11 +83,29 @@ extends XMLNamedObjectTestCase<XMLEntity>
 		} catch (AssertionError e) {
 			assertNotNull("AssertionError was null", e);
 		}
-		assertFalse("new XMLEntity((String)null)", fellThrough);
+		assertFalse("new XMLEntity(null, (String)null)", fellThrough);
+		assertNull("XMLEntity was not null", xe);
+
+		try {
+			xe = new XMLEntity("foo", (String)null);
+			fellThrough = true;
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+		}
+		assertFalse("new XMLEntity(\"foo\", (String)null)", fellThrough);
 		assertNull("XMLEntity was not null", xe);
 
 		try {
 			xe = new XMLEntity(null, (XMLExternalIdentifier)null);
+			fellThrough = true;
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+		}
+		assertFalse("new XMLEntity((XMLExternalIdentifier)null)", fellThrough);
+		assertNull("XMLEntity was not null", xe);
+
+		try {
+			xe = new XMLEntity("foo", (XMLExternalIdentifier)null);
 			fellThrough = true;
 		} catch (AssertionError e) {
 			assertNotNull("AssertionError was null", e);
@@ -109,6 +137,37 @@ extends XMLNamedObjectTestCase<XMLEntity>
 
 		try {
 			xe = new XMLEntity(null, null, "notation");
+			fellThrough = true;
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+		}
+		assertFalse("new XMLEntity(null, null, \"notation\")", fellThrough);
+		assertNull("XMLEntity was not null", xe);
+
+		try {
+			xe = new XMLEntity("foo", null, null);
+			fellThrough = true;
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+		}
+		assertFalse("new XMLEntity(null, null, null)", fellThrough);
+		assertNull("XMLEntity was not null", xe);
+
+		try {
+			xe = new XMLEntity(
+				"foo",
+				new XMLExternalIdentifier("foo", "bar"),
+				null
+			);
+			fellThrough = true;
+		} catch (AssertionError e) {
+			assertNotNull("AssertionError was null", e);
+		}
+		assertFalse("new XMLEntity(null, XEI(foo, bar), null)", fellThrough);
+		assertNull("XMLEntity was not null", xe);
+
+		try {
+			xe = new XMLEntity("foo", null, "notation");
 			fellThrough = true;
 		} catch (AssertionError e) {
 			assertNotNull("AssertionError was null", e);
