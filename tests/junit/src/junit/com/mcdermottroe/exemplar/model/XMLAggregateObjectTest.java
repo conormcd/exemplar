@@ -30,6 +30,9 @@
 package junit.com.mcdermottroe.exemplar.model;
 
 import com.mcdermottroe.exemplar.model.XMLAggregateObject;
+import com.mcdermottroe.exemplar.model.XMLAlternative;
+import com.mcdermottroe.exemplar.model.XMLMixedContent;
+import com.mcdermottroe.exemplar.model.XMLSequence;
 
 import junit.com.mcdermottroe.exemplar.AbstractClassTestCase;
 
@@ -39,7 +42,57 @@ import junit.com.mcdermottroe.exemplar.AbstractClassTestCase;
 	@since		0.1
 	@param	<T>	The type of {@link XMLAggregateObject} to test.
 */
-public class XMLAggregateObjectTest<T extends XMLAggregateObject<T>>
-extends AbstractClassTestCase<XMLAggregateObject<T>>
+public class XMLAggregateObjectTest<T extends XMLAggregateObject>
+extends AbstractClassTestCase<XMLAggregateObject>
 {
+	/** Do a basic set of tests comparing some {@link XMLAggregateObject}s with
+		each other.
+	*/
+	public void testAggregateObjectsBasic() {
+		XMLAlternative alt = new XMLAlternative();
+		XMLMixedContent mix = new XMLMixedContent();
+		XMLSequence seq = new XMLSequence();
+
+		assertSame("XMLAlternative != XMLAlternative", alt, alt);
+		assertSame("XMLMixedContent != XMLMixedContent", mix, mix);
+		assertSame("XMLSequence != XMLSequence", seq, seq);
+
+		assertNotSame("XMLAlternative == XMLMixedContent", alt, mix);
+		assertNotSame("XMLAlternative == XMLSequence", alt, seq);
+		assertNotSame("XMLMixedContent == XMLAlternative", mix, alt);
+		assertNotSame("XMLMixedContent == XMLSequence", mix, seq);
+		assertNotSame("XMLSequence == XMLAlternative", seq, alt);
+		assertNotSame("XMLSequence == XMLMixedContenet", seq, mix);
+
+		assertNotSame(
+			"XMLAlternative cmp XMLMixedContent == 0",
+			0,
+			alt.compareTo(mix)
+		);
+		assertNotSame(
+			"XMLAlternative cmp XMLSequence == 0",
+			0,
+			alt.compareTo(seq)
+		);
+		assertNotSame(
+			"XMLMixedContent cmp XMLAlternative == 0",
+			0,
+			mix.compareTo(alt)
+		);
+		assertNotSame(
+			"XMLMixedContent cmp XMLSequence == 0",
+			0,
+			mix.compareTo(seq)
+		);
+		assertNotSame(
+			"XMLSequence cmp XMLAlternative == 0",
+			0,
+			seq.compareTo(alt)
+		);
+		assertNotSame(
+			"XMLSequence cmp XMLMixedContenet == 0",
+			0,
+			seq.compareTo(mix)
+		);
+	}
 }

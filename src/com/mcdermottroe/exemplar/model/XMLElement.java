@@ -48,7 +48,6 @@ import static com.mcdermottroe.exemplar.Constants.HASHCODE_MAGIC_NUMBER;
 */
 public class XMLElement
 extends XMLNamedObject<XMLElement>
-implements XMLMarkupDeclaration
 {
 	/** The content model for the element. */
 	private final XMLElementContentModel contentModel;
@@ -84,7 +83,7 @@ implements XMLMarkupDeclaration
 
 		@return	The content spec for this {@link XMLElement}
 	*/
-	public XMLAggregateObject<?> getContentSpec() {
+	public XMLAggregateObject getContentSpec() {
 		DBC.REQUIRE(contentModel != null);
 		assert contentModel != null;
 		return contentModel.getContentSpec();

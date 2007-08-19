@@ -57,7 +57,7 @@ import static com.mcdermottroe.exemplar.Constants.Regex.VALID_PE_NAME;
 	@since	0.1
 */
 public class PEDeclTable
-implements Copyable<PEDeclTable>
+implements Comparable<PEDeclTable>, Copyable<PEDeclTable>
 {
 	/**	A table of parameter entities that have immediate values not URI
 		references.
@@ -118,8 +118,10 @@ implements Copyable<PEDeclTable>
 	throws ParameterEntityException
 	{
 		DBC.REQUIRE(name != null);
+		assert name != null;
 		DBC.REQUIRE(name.length() > 0);
 		DBC.REQUIRE(contents != null);
+		assert contents != null;
 		DBC.REQUIRE(contents.length() >= 0);
 
 		switch (type) {
@@ -260,6 +262,20 @@ implements Copyable<PEDeclTable>
 			}
 		}
 		return retVal.toString();
+	}
+
+	/** Implement {@link Comparable#compareTo(Object)}.
+		
+		@param	other	The {@link PEDeclTable} to compare with.
+		@return			A result as defined by {@link
+						Comparable#compareTo(Object)}.
+	*/
+	public int compareTo(PEDeclTable other) {
+		int tableCmp = Utils.compare(table, other.getTable());
+		if (tableCmp != 0) {
+			return tableCmp;
+		}
+		return Utils.compare(fileTable, other.getFileTable());
 	}
 
 	/** {@inheritDoc} */

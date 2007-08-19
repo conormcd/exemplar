@@ -45,7 +45,6 @@ import static com.mcdermottroe.exemplar.Constants.HASHCODE_MAGIC_NUMBER;
 */
 public class XMLEntity
 extends XMLNamedObject<XMLEntity>
-implements XMLMarkupDeclaration
 {
 	/** The type of entity this is. */
 	private final XMLEntityType entityType;
@@ -182,6 +181,27 @@ implements XMLMarkupDeclaration
 	*/
 	public boolean isInternal() {
 		return entityType.equals(XMLEntityType.INTERNAL);
+	}
+
+	/** {@inheritDoc} */
+	@Override public int compareTo(XMLEntity other) {
+		int superCmp = super.compareTo(other);
+		if (superCmp != 0) {
+			return superCmp;
+		}
+		int typeCmp = Utils.compare(entityType, other.type());
+		if (typeCmp != 0) {
+			return typeCmp;
+		}
+		int valueCmp = Utils.compare(value, other.value());
+		if (valueCmp != 0) {
+			return valueCmp;
+		}
+		int extIdCmp = Utils.compare(extID, other.externalID());
+		if (extIdCmp != 0) {
+			return extIdCmp;
+		}
+		return Utils.compare(notation, other.getNotation());
 	}
 
 	/** {@inheritDoc} */

@@ -38,7 +38,6 @@ import com.mcdermottroe.exemplar.model.XMLAttribute;
 import com.mcdermottroe.exemplar.model.XMLAttributeDefaultType;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.model.XMLElement;
-import com.mcdermottroe.exemplar.model.XMLMarkupDeclaration;
 import com.mcdermottroe.exemplar.output.OutputException;
 import com.mcdermottroe.exemplar.output.OutputUtils;
 import com.mcdermottroe.exemplar.output.XMLParserGeneratorException;
@@ -109,7 +108,7 @@ extends XMLParserSourceGenerator<Generator>
 		}
 
 		// Get the elements
-		Map<String, XMLMarkupDeclaration> elements = doctype.elements();
+		Map<String, XMLElement> elements = doctype.elements();
 
 		// Only create code if there are some elements
 		if (elements != null && !elements.isEmpty()) {
@@ -129,12 +128,7 @@ extends XMLParserSourceGenerator<Generator>
 			Log.debug("Creating element classes");
 			File elementsDir = new File(targetDirectory, "element");
 			for (String elementName : elements.keySet()) {
-				XMLMarkupDeclaration markupDecl = elements.get(elementName);
-				if (markupDecl instanceof XMLElement) {
-					createElementClass((XMLElement)markupDecl, elementsDir);
-				} else {
-					DBC.UNREACHABLE_CODE();
-				}
+				createElementClass(elements.get(elementName), elementsDir);
 			}
 		}
 	}

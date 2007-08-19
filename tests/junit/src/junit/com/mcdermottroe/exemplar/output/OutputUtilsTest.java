@@ -44,7 +44,7 @@ import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.model.XMLElement;
 import com.mcdermottroe.exemplar.model.XMLElementContentModel;
 import com.mcdermottroe.exemplar.model.XMLElementContentType;
-import com.mcdermottroe.exemplar.model.XMLMarkupDeclaration;
+import com.mcdermottroe.exemplar.model.XMLNamedObject;
 import com.mcdermottroe.exemplar.output.LanguageAPIPair;
 import com.mcdermottroe.exemplar.output.OutputException;
 import com.mcdermottroe.exemplar.output.OutputUtils;
@@ -392,8 +392,8 @@ extends UtilityClassTestCase<OutputUtils>
 		Set<LanguageAPIPair> testData = OutputUtils.availableLanguageAPIPairs();
 
 		// Make an empty doctype
-		Collection<XMLMarkupDeclaration> markup;
-		markup = new ArrayList<XMLMarkupDeclaration>();
+		Collection<XMLNamedObject<?>> markup;
+		markup = new ArrayList<XMLNamedObject<?>>();
 		markup.add(
 			new XMLElement(
 				"element",

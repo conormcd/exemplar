@@ -38,6 +38,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import com.mcdermottroe.exemplar.CopyException;
 import com.mcdermottroe.exemplar.Copyable;
@@ -55,7 +57,7 @@ import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
 */
 public class PowerSet<T>
 extends AbstractSet<Set<T>>
-implements Copyable<PowerSet<T>>
+implements Comparable<PowerSet<T>>, Copyable<PowerSet<T>>
 {
 	/** A copy of the original {@link Set} which we were given, as a {@link
 		List} to give us a guaranteed stable ordering.
@@ -113,6 +115,37 @@ implements Copyable<PowerSet<T>>
 	*/
 	@Override public void clear() {
 		throw new UnsupportedOperationException();
+	}
+
+	/** Implement {@link Comparable#compareTo(Object)}.
+		
+		@param	other	The {@link PowerSet} to compare with.
+		@return			A result as defined by {@link
+						Comparable#compareTo(Object)}.
+	*/
+	public int compareTo(PowerSet<T> other) {
+		SortedSet<T> thisBaseSet = new TreeSet<T>(baseSet);
+		SortedSet<T> otherBaseset = new TreeSet<T>(other.getBaseSet());
+		Iterator<T> thisIter = thisBaseSet.iterator();
+		Iterator<T> otherIter = otherBaseset.iterator();
+		while (thisIter.hasNext() && otherIter.hasNext()) {
+			T a = thisIter.next();
+			T b = otherIter.next();
+			if (Comparable.class.isAssignableFrom(a.getClass())) {
+				Comparable<T> ac = (Comparable<T>)a;
+				int cmp = ac.compareTo(b);
+				if (cmp != 0) {
+					return cmp;
+				}
+			}
+		}
+		if (thisIter.hasNext()) {
+			return 1;
+		}
+		if (otherIter.hasNext()) {
+			return -1;
+		}
+		return 0;
 	}
 
 	/** Check if this {@link PowerSet} contains a given {@link Object}. Since

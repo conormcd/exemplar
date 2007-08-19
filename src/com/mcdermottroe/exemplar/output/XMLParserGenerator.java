@@ -38,7 +38,7 @@ import com.mcdermottroe.exemplar.Copyable;
 	@param	<T>	The type of {@link XMLParserGenerator}
 */
 public abstract class XMLParserGenerator<T extends XMLParserGenerator<T>>
-implements Copyable<T>
+implements Comparable<T>, Copyable<T>
 {
 	/** Protect the constructor. */
 	protected XMLParserGenerator() {

@@ -45,7 +45,7 @@ import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
 	@param	<T>	The type of {@link XMLObject}
 */
 public abstract class XMLObject<T extends XMLObject<T>>
-implements Copyable<T>
+implements Comparable<T>, Copyable<T>
 {
 	/** Protect the constructor. */
 	protected XMLObject() {

@@ -53,7 +53,7 @@ import com.mcdermottroe.exemplar.Copyable;
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public abstract class NormalClassTestCase<T extends Copyable<T>>
+public abstract class NormalClassTestCase<T extends Copyable<T> & Comparable<T>>
 extends ExemplarTestCase<T>
 {
 	/** Flag to set if we allow 'public static final' members in the tested
@@ -367,21 +367,25 @@ extends ExemplarTestCase<T>
 					copy = sample.getCopy();
 				} catch (CopyException e) {
 					e.printStackTrace();
-					fail("getCopy() threw a CopyException"); // NON-NLS
+					fail("getCopy() threw a CopyException");
 					return;
 				}
 
 				// Fail if the copy is the same object
-				if (sample == copy) {
-					fail("The copy is the same object"); // NON-NLS
-					return;
-				}
+				assertFalse("The copy is the same object", sample == copy);
 
 				// Fail if the original and copy are not equal
 				assertEquals(
 					"The copy is not equal to the original",
 					sample,
 					copy
+				);
+
+				// Ensure that the hashcodes are the same
+				assertEquals(
+					"The copy has a different hashcode to the original",
+					sample.hashCode(),
+					copy.hashCode()
 				);
 			}
 		}
@@ -392,9 +396,6 @@ extends ExemplarTestCase<T>
 		as required by the contract of {@link Comparable#compareTo(Object)}.
 	*/
 	public void testCompareToSignsConsistent() {
-		if (!Comparable.class.isAssignableFrom(testedClass)) {
-			return;
-		}
 		for (T a : samples()) {
 			for (T b : samples()) {
 				if (a != null && b != null) {
@@ -403,13 +404,13 @@ extends ExemplarTestCase<T>
 					int ba = 0;
 					boolean baThrew = false;
 					try {
-						ab = Integer.signum(((Comparable<T>)a).compareTo(b));
+						ab = Integer.signum(a.compareTo(b));
 					} catch (Throwable t) {
 						t.printStackTrace();
 						abThrew = true;
 					}
 					try {
-						ba = Integer.signum(((Comparable<T>)b).compareTo(a));
+						ba = Integer.signum(b.compareTo(a));
 					} catch (Throwable t) {
 						t.printStackTrace();
 						baThrew = true;
@@ -435,9 +436,6 @@ extends ExemplarTestCase<T>
 		a.compareTo(c) op 0.
 	*/
 	public void testCompareToTransitive() {
-		if (!Comparable.class.isAssignableFrom(testedClass)) {
-			return;
-		}
 		for (T a : samples()) {
 			for (T b : samples()) {
 				for (T c : samples()) {
@@ -449,23 +447,17 @@ extends ExemplarTestCase<T>
 						boolean bcThrew = false;
 						boolean acThrew = false;
 						try {
-							ab = Integer.signum(
-								((Comparable<T>)a).compareTo(b)
-							);
+							ab = Integer.signum(a.compareTo(b));
 						} catch (Throwable t) {
 							abThrew = true;
 						}
 						try {
-							bc = Integer.signum(
-								((Comparable<T>)b).compareTo(c)
-							);
+							bc = Integer.signum(b.compareTo(c));
 						} catch (Throwable t) {
 							bcThrew = true;
 						}
 						try {
-							ac = Integer.signum(
-								((Comparable<T>)a).compareTo(c)
-							);
+							ac = Integer.signum(a.compareTo(c));
 						} catch (Throwable t) {
 							acThrew = true;
 						}
@@ -495,12 +487,9 @@ extends ExemplarTestCase<T>
 		NullPointerException} when given null as its parameter.
 	*/
 	public void testCompareToNullThrowsNPE() {
-		if (!Comparable.class.isAssignableFrom(testedClass)) {
-			return;
-		}
 		for (T a : samples()) {
 			try {
-				((Comparable<T>)a).compareTo(null);
+				a.compareTo(null);
 				fail("compareTo(null) did not throw an NPE");
 			} catch (NullPointerException e) {
 				assertNotNull("NullPointerException was null", e);
@@ -510,17 +499,24 @@ extends ExemplarTestCase<T>
 
 	/** Test to ensure that a.compareTo(b) == 0 implies a.equals(b). */
 	public void testCompareToConsistentWithEquals() {
-		if (!Comparable.class.isAssignableFrom(testedClass)) {
-			return;
-		}
 		for (T a : samples()) {
 			for (T b : samples()) {
 				if (a != null && b != null) {
-					if (((Comparable<T>)a).compareTo(b) == 0) {
+					// Test forward
+					if (a.compareTo(b) == 0) {
 						assertEquals(
 							"compareTo not consistent with equals",
 							a,
 							b
+						);
+					}
+
+					// Test reverse
+					if (a.equals(b)) {
+						assertEquals(
+							"equals not consistent with compareTo",
+							0,
+							a.compareTo(b)
 						);
 					}
 				}

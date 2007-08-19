@@ -55,7 +55,7 @@ import static com.mcdermottroe.exemplar.Constants.EOL;
 */
 public class Task
 extends org.apache.tools.ant.Task
-implements Copyable<Task>
+implements Comparable<Task>, Copyable<Task>
 {
 	/** The execute method required by the Task. */
 	@Override public void execute() {
@@ -260,6 +260,19 @@ implements Copyable<Task>
 	*/
 	public static void setVocabulary(String vocabulary) {
 		Options.set("vocabulary", vocabulary);
+	}
+
+	/** Implement {@link Comparable#compareTo(Object)}.
+		
+		@param	other	The {@link Task} to compare with.
+		@return			A result as defined by {@link
+						Comparable#compareTo(Object)}.
+	*/
+	public int compareTo(Task other) {
+		if (other == null) {
+			throw new NullPointerException();
+		}
+		return 0;
 	}
 
 	/** {@inheritDoc} */

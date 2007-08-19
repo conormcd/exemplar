@@ -38,6 +38,14 @@ public class XMLContent
 extends XMLObject<XMLContent>
 {
 	/** {@inheritDoc} */
+	public int compareTo(XMLContent other) {
+		if (other == null) {
+			throw new NullPointerException();
+		}
+		return 0;
+	}
+
+	/** {@inheritDoc} */
 	@Override public XMLContent getCopy() {
 		return new XMLContent();
 	}

@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.mcdermottroe.exemplar.DBC;
+import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
@@ -245,5 +246,38 @@ extends XMLParserGenerator<T>
 		} else {
 			return "";
 		}
+	}
+
+	/** Accessor for the {@link #codeFragments}.
+
+		@return	A copy of {@link #codeFragments}.
+	*/
+	protected Map<String, String> getCodeFragments() {
+		return new HashMap<String, String>(codeFragments);
+	}
+
+	/** Accessor for the {@link #timestamp}.
+
+		@return The {@link #timestamp}.
+	*/
+	protected String getTimestamp() {
+		return timestamp;
+	}
+
+	/** Implement {@link Comparable#compareTo(Object)}.
+		
+		@param	other	The {@link XMLParserSourceGenerator} to compare with.
+		@return			A result as defined by {@link
+						Comparable#compareTo(Object)}.
+	*/
+	public int compareTo(T other) {
+		int codeFragmentsCmp = Utils.compare(
+			codeFragments,
+			other.getCodeFragments()
+		);
+		if (codeFragmentsCmp != 0) {
+			return codeFragmentsCmp;
+		}
+		return Utils.compare(timestamp, other.getTimestamp());
 	}
 }

@@ -45,7 +45,6 @@ import static com.mcdermottroe.exemplar.Constants.HASHCODE_MAGIC_NUMBER;
 */
 public class XMLNotation
 extends XMLNamedObject<XMLNotation>
-implements XMLMarkupDeclaration
 {
 	/** The ExternalID or PublicID of the {@link XMLNotation}. */
 	private final XMLExternalIdentifier extID;
@@ -71,6 +70,15 @@ implements XMLMarkupDeclaration
 	*/
 	public XMLExternalIdentifier getExtID() {
 		return extID;
+	}
+
+	/** {@inheritDoc} */
+	@Override public int compareTo(XMLNotation other) {
+		int superCmp = super.compareTo(other);
+		if (superCmp != 0) {
+			return superCmp;
+		}
+		return Utils.compare(extID, other.getExtID());
 	}
 
 	/** {@inheritDoc} */

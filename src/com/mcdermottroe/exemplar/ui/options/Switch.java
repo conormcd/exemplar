@@ -54,16 +54,16 @@ extends Option<Switch>
 					)
 	{
 		super(switchName, switchDesc, false, false, false);
-		value = new ArrayList<Object>(1);
+		value = new ArrayList<String>(1);
 		if (aDefaultValue) {
-			value.add(Boolean.TRUE);
+			value.add(String.valueOf(Boolean.TRUE));
 		} else {
-			value.add(Boolean.FALSE);
+			value.add(String.valueOf(Boolean.FALSE));
 		}
 	}
 
 	/** {@inheritDoc} */
 	public Switch getCopy() {
-		return new Switch(name, description, (Boolean)value.get(0));
+		return new Switch(name, description, Boolean.valueOf(value.get(0)));
 	}
 }

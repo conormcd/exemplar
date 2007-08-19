@@ -125,12 +125,12 @@
 			<arg value="Parser.cup" />
 		</java>
 		<replace	file="${src}/${namespace}/input/dtd/${parser-file}"
-					token="extends java_cup.runtime.lr_parser implements Copyable&lt;Parser&gt;, InputModule"
+					token="extends java_cup.runtime.lr_parser implements Comparable&lt;Parser&gt;, Copyable&lt;Parser&gt;, InputModule"
 					value="extends java_cup.runtime.lr_parser"
 		/> 
 		<replace	file="${src}/${namespace}/input/dtd/${parser-file}"
 					token="extends java_cup.runtime.lr_parser"
-					value="extends java_cup.runtime.lr_parser implements Copyable&lt;Parser&gt;, InputModule"
+					value="extends java_cup.runtime.lr_parser implements Comparable&lt;Parser&gt;, Copyable&lt;Parser&gt;, InputModule"
 		/> 
 	</target>
 	<target	name="build"

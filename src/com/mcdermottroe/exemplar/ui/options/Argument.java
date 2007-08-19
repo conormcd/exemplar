@@ -57,7 +57,7 @@ extends Option<Argument>
 						)
 	{
 		super(argName, argDesc, isMandatory, false, isCaseSensitive);
-		value = new ArrayList<Object>(1);
+		value = new ArrayList<String>(1);
 		if (aDefaultValue != null) {
 			value.add(aDefaultValue);
 		}
@@ -70,7 +70,7 @@ extends Option<Argument>
 			description,
 			mandatory,
 			caseSensitive,
-			value.get(0).toString()
+			value.get(0)
 		);
 	}
 }

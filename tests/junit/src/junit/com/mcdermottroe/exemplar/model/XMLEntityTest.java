@@ -44,32 +44,32 @@ extends XMLNamedObjectTestCase<XMLEntity>
 	@Override public void setUp() throws Exception {
 		super.setUp();
 
-		XMLEntity[] samples = new XMLEntity[6];
-
-		samples[0] =	new XMLEntity("name", "value");
-		samples[1] =	new XMLEntity(
-							"name",
-							new XMLExternalIdentifier("foo", "bar")
-						);
-		samples[2] =	new XMLEntity(
-							"name",
-							new XMLExternalIdentifier("foo", "bar"),
-							"notation"
-						);
-		samples[3] =	new XMLEntity("name2", "value");
-		samples[4] =	new XMLEntity(
-			"name2",
-			new XMLExternalIdentifier("foo", "bar")
+		addSample(new XMLEntity("name", "value"));
+		addSample(
+			new XMLEntity("name", new XMLExternalIdentifier("foo", "bar"))
 		);
-		samples[5] =	new XMLEntity(
-			"name2",
-			new XMLExternalIdentifier("foo", "bar"),
-			"notation"
+		addSample(
+			new XMLEntity(
+				"name",
+				new XMLExternalIdentifier("foo", "bar"),
+				"notation"
+			)
 		);
-
-		for (XMLEntity sample : samples) {
-			addSample(sample);
-		}
+		addSample(new XMLEntity("name2", "value"));
+		addSample(
+			new XMLEntity("name2", new XMLExternalIdentifier("foo", "bar"))
+		);
+		addSample(
+			new XMLEntity(
+				"name2",
+				new XMLExternalIdentifier("foo", "bar"),
+				"notation"
+			)
+		);
+		addSample(new XMLEntity("name", "value2"));
+		addSample(
+			new XMLEntity("name", new XMLExternalIdentifier("foo", "baz"))
+		);
 	}
 
 	/** Test the constructor for {@link XMLEntity}. */

@@ -46,7 +46,7 @@ import static com.mcdermottroe.exemplar.Constants.INFINITY;
 	@since	0.1
 */
 public class XMLSequence
-extends XMLAggregateObject<XMLSequence>
+extends XMLAggregateObject
 {
 	/** The maximum number of times this {@link XMLSequence} may occur. */
 	private int maxOccurs;
@@ -113,6 +113,27 @@ extends XMLAggregateObject<XMLSequence>
 
 		maxOccurs = max;
 		minOccurs = min;
+	}
+
+
+	/** Implement {@link Comparable#compareTo(Object)}.
+		
+		@param	other	The {@link XMLAggregateObject} to compare with.
+		@return			A result as defined by {@link
+						Comparable#compareTo(Object)}.
+	*/
+	@Override public int compareTo(XMLAggregateObject other) {
+		int superCmp = super.compareTo(other);
+		if (superCmp != 0) {
+			return superCmp;
+		}
+
+		XMLSequence xs = XMLSequence.class.cast(other);
+		int minCmp = Utils.compare(minOccurs, xs.getMinOccurs());
+		if (minCmp != 0) {
+			return minCmp;
+		}
+		return Utils.compare(maxOccurs, xs.getMaxOccurs());
 	}
 
 	/** {@inheritDoc} */

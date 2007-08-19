@@ -39,7 +39,7 @@ import com.mcdermottroe.exemplar.model.XMLMixedContent;
 	@since	0.1
 */
 public class XMLMixedContentTest
-extends XMLAggregateObjectTestCase<XMLMixedContent>
+extends XMLAggregateObjectTestCase
 {
 	/** {@inheritDoc} */
 	@Override public void setUp()

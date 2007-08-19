@@ -42,7 +42,7 @@ import com.mcdermottroe.exemplar.Utils;
 */
 public class TaskLogHandler
 extends Handler
-implements Copyable<TaskLogHandler>
+implements Comparable<TaskLogHandler>, Copyable<TaskLogHandler>
 {
 	/** The {@link Task} we are logging for. Ideally I'd prefer this to be a
 		function pointer of some sorts to allow us to point to the
@@ -98,6 +98,20 @@ implements Copyable<TaskLogHandler>
 	/** Flush any cached log records that we might be logging. */
 	@Override public void flush() {
 		// This handler does not cache.
+	}
+
+	/** Implement {@link Comparable#compareTo(Object)}.
+		
+		@param	other	The {@link TaskLogHandler} to compare with.
+		@return			A result as defined by {@link
+						Comparable#compareTo(Object)}.
+	*/
+	public int compareTo(TaskLogHandler other) {
+		int taskCmp = Utils.compare(task, other.getTask());
+		if (taskCmp != 0) {
+			return taskCmp;
+		}
+		return Utils.compare(closed, other.isClosed());
 	}
 
 	/** {@inheritDoc} */

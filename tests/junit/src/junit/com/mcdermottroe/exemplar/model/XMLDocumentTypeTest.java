@@ -42,7 +42,7 @@ import com.mcdermottroe.exemplar.model.XMLElementContentModel;
 import com.mcdermottroe.exemplar.model.XMLElementContentType;
 import com.mcdermottroe.exemplar.model.XMLEntity;
 import com.mcdermottroe.exemplar.model.XMLExternalIdentifier;
-import com.mcdermottroe.exemplar.model.XMLMarkupDeclaration;
+import com.mcdermottroe.exemplar.model.XMLNamedObject;
 import com.mcdermottroe.exemplar.model.XMLNotation;
 import com.mcdermottroe.exemplar.utils.PowerSet;
 
@@ -60,7 +60,7 @@ extends NormalClassTestCase<XMLDocumentType>
 	@Override public void setUp() throws Exception {
 		super.setUp();
 
-		// Create some sample XMLMarkupDeclaration objects
+		// Create some sample XMLNamedObject objects
 		XMLAttributeList attlist = new XMLAttributeList(
 			"testElement",
 			new ArrayList<XMLAttribute>()
@@ -75,17 +75,17 @@ extends NormalClassTestCase<XMLDocumentType>
 			new XMLExternalIdentifier("publicId", "systemId")
 		);
 
-		Set<XMLMarkupDeclaration> sampleMarkup;
-		sampleMarkup = new HashSet<XMLMarkupDeclaration>();
+		Set<XMLNamedObject<?>> sampleMarkup;
+		sampleMarkup = new HashSet<XMLNamedObject<?>>();
 		sampleMarkup.add(attlist);
 		sampleMarkup.add(element);
 		sampleMarkup.add(entity);
 		sampleMarkup.add(notation);
 
 		// XMLDocumentType(Collection) constructor
-		PowerSet<XMLMarkupDeclaration> perm;
-		perm = new PowerSet<XMLMarkupDeclaration>(sampleMarkup);
-		for (Set<XMLMarkupDeclaration> m : perm) {
+		PowerSet<XMLNamedObject<?>> perm;
+		perm = new PowerSet<XMLNamedObject<?>>(sampleMarkup);
+		for (Set<XMLNamedObject<?>> m : perm) {
 			if (!(m.contains(attlist) && !m.contains(element))) {
 				addSample(new XMLDocumentType(m));
 			}
@@ -110,7 +110,7 @@ extends NormalClassTestCase<XMLDocumentType>
 	public void testAttlists() {
 		for (XMLDocumentType sample : samples()) {
 			if (sample != null) {
-				Map<String, XMLMarkupDeclaration> attlists = sample.attlists();
+				Map<String, XMLAttributeList> attlists = sample.attlists();
 				assertNotNull("attlists() returned null", attlists);
 				for (String name : attlists.keySet()) {
 					assertSame(
@@ -127,7 +127,7 @@ extends NormalClassTestCase<XMLDocumentType>
 	public void testElements() {
 		for (XMLDocumentType sample : samples()) {
 			if (sample != null) {
-				Map<String, XMLMarkupDeclaration> elements = sample.elements();
+				Map<String, XMLElement> elements = sample.elements();
 				assertNotNull("elements() returned null", elements);
 				for (String name : elements.keySet()) {
 					assertSame(
@@ -144,7 +144,7 @@ extends NormalClassTestCase<XMLDocumentType>
 	public void testEntities() {
 		for (XMLDocumentType sample : samples()) {
 			if (sample != null) {
-				Map<String, XMLMarkupDeclaration> entities = sample.entities();
+				Map<String, XMLEntity> entities = sample.entities();
 				assertNotNull("entities() returned null", entities);
 				for (String name : entities.keySet()) {
 					assertSame(
@@ -162,7 +162,7 @@ extends NormalClassTestCase<XMLDocumentType>
 	public void testNotations() {
 		for (XMLDocumentType sample : samples()) {
 			if (sample != null) {
-				Map<String, XMLMarkupDeclaration> nots = sample.notations();
+				Map<String, XMLNotation> nots = sample.notations();
 				assertNotNull("notations() returned null", nots);
 				for (String name : nots.keySet()) {
 					assertSame(

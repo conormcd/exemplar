@@ -47,7 +47,6 @@ import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.model.XMLElement;
 import com.mcdermottroe.exemplar.model.XMLEntity;
 import com.mcdermottroe.exemplar.model.XMLExternalIdentifier;
-import com.mcdermottroe.exemplar.model.XMLMarkupDeclaration;
 import com.mcdermottroe.exemplar.model.XMLMixedContent;
 import com.mcdermottroe.exemplar.model.XMLNamedObject;
 import com.mcdermottroe.exemplar.model.XMLNotation;
@@ -149,12 +148,11 @@ extends XMLParserSourceGenerator<Generator>
 
 		// Create all of the DTD element and attribute declarations
 		StringBuilder elementDecls = new StringBuilder();
-		Map<String, XMLMarkupDeclaration> elements;
-		elements = new TreeMap<String, XMLMarkupDeclaration>(
+		Map<String, XMLElement> elements = new TreeMap<String, XMLElement>(
 			doctype.elements()
 		);
 		for (String elementName : elements.keySet()) {
-			XMLElement element = (XMLElement)elements.get(elementName);
+			XMLElement element = elements.get(elementName);
 
 			// The content specification for the element
 			StringBuilder contentSpec = new StringBuilder();
@@ -225,12 +223,11 @@ extends XMLParserSourceGenerator<Generator>
 
 		// Create the entity declarations
 		StringBuilder entityDecls = new StringBuilder();
-		Map<String, XMLMarkupDeclaration> entities;
-		entities = new TreeMap<String, XMLMarkupDeclaration>(
+		Map<String, XMLEntity> entities = new TreeMap<String, XMLEntity>(
 			doctype.entities()
 		);
 		for (String entityName : entities.keySet()) {
-			XMLEntity entity = (XMLEntity)entities.get(entityName);
+			XMLEntity entity = entities.get(entityName);
 
 			StringBuilder entityDeclTail = new StringBuilder();
 			if (entity.isInternal()) {
@@ -283,12 +280,11 @@ extends XMLParserSourceGenerator<Generator>
 
 		// Create the notation declarations
 		StringBuilder notationDecls = new StringBuilder();
-		Map<String, XMLMarkupDeclaration> notations;
-		notations = new TreeMap<String, XMLMarkupDeclaration>(
+		Map<String, XMLNotation> notations = new TreeMap<String, XMLNotation>(
 			doctype.notations()
 		);
 		for (String notationName : notations.keySet()) {
-			XMLNotation notation = (XMLNotation)notations.get(notationName);
+			XMLNotation notation = notations.get(notationName);
 			XMLExternalIdentifier extID = notation.getExtID();
 
 			String pubOrSys = "";

@@ -44,7 +44,7 @@ import static com.mcdermottroe.exemplar.Constants.Character.STAR;
 	@since	0.1
 */
 public class XMLMixedContent
-extends XMLAggregateObject<XMLMixedContent>
+extends XMLAggregateObject
 {
 	/** Create a new, empty {@link XMLMixedContent}. */
 	public XMLMixedContent() {

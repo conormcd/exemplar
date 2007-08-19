@@ -34,6 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.mcdermottroe.exemplar.CopyException;
+import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.utils.Strings;
 
@@ -44,10 +45,9 @@ import static com.mcdermottroe.exemplar.Constants.HASHCODE_MAGIC_NUMBER;
 
 	@author		Conor McDermottroe
 	@since		0.1
-	@param	<T>	The type of aggreagate object.
 */
-public abstract class XMLAggregateObject<T extends XMLAggregateObject<T>>
-extends XMLObject<T>
+public abstract class XMLAggregateObject
+extends XMLObject<XMLAggregateObject>
 implements Iterable<XMLObject<?>>
 {
 	/** The contents of the collection. */
@@ -94,7 +94,7 @@ implements Iterable<XMLObject<?>>
 
 		@param	other	The other {@link XMLAggregateObject}.
 	*/
-	public void append(XMLAggregateObject<?> other) {
+	public void append(XMLAggregateObject other) {
 		if (other == null) {
 			return;
 		}
@@ -112,6 +112,48 @@ implements Iterable<XMLObject<?>>
 		return new ArrayList<XMLObject<?>>(contents);
 	}
 
+	/** Implement {@link Comparable#compareTo(Object)}.
+		
+		@param	other	The {@link XMLAggregateObject} to compare with.
+		@return			A result as defined by {@link
+						Comparable#compareTo(Object)}.
+	*/
+	public int compareTo(XMLAggregateObject other) {
+		if (!getClass().equals(other.getClass())) {
+			return getClass().getName().compareTo(other.getClass().getName());
+		}
+		Iterator<XMLObject<?>> thisIter = iterator();
+		Iterator<XMLObject<?>> otherIter = other.iterator();
+		while (thisIter.hasNext() && otherIter.hasNext()) {
+			XMLObject<?> a = thisIter.next();
+			XMLObject<?> b = otherIter.next();
+			if (Comparable.class.isAssignableFrom(a.getClass())) {
+				Comparable<XMLObject<?>> ac = (Comparable<XMLObject<?>>)a;
+				try {
+					int cmp = ac.compareTo(b);
+					if (cmp != 0) {
+						return cmp;
+					}
+				} catch (ClassCastException e) {
+					DBC.IGNORED_EXCEPTION(e);
+					int cmp = a.getClass().getName().compareTo(
+						b.getClass().getName()
+					);
+					if (cmp != 0) {
+						return cmp;
+					}
+				}
+			}
+		}
+		if (thisIter.hasNext()) {
+			return 1;
+		}
+		if (otherIter.hasNext()) {
+			return -1;
+		}
+		return 0;
+	}
+
 	/** {@inheritDoc} */
 	@Override public boolean equals(Object o) {
 		if (this == o) {
@@ -121,7 +163,7 @@ implements Iterable<XMLObject<?>>
 			return false;
 		}
 
-		XMLAggregateObject<?> other = (XMLAggregateObject<?>)o;
+		XMLAggregateObject other = (XMLAggregateObject)o;
 		if (super.equals(other)) {
 			if (Utils.areDeeplyEqual(contents, other.getContents())) {
 				return true;

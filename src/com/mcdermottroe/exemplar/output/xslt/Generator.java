@@ -37,7 +37,6 @@ import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.model.XMLAttribute;
 import com.mcdermottroe.exemplar.model.XMLAttributeList;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
-import com.mcdermottroe.exemplar.model.XMLMarkupDeclaration;
 import com.mcdermottroe.exemplar.output.OutputException;
 import com.mcdermottroe.exemplar.output.OutputUtils;
 import com.mcdermottroe.exemplar.output.XMLParserGeneratorException;
@@ -109,7 +108,7 @@ extends XMLParserSourceGenerator<Generator>
 		);
 
 		// Get the attribute lists
-		Map<String, XMLMarkupDeclaration> attlists = doctype.attlists();
+		Map<String, XMLAttributeList> attlists = doctype.attlists();
 
 		// Load all the code fragments.
 		String stylesheet = loadCodeFragment("stylesheet");
@@ -126,8 +125,7 @@ extends XMLParserSourceGenerator<Generator>
 			// Make the attribute matchers if they're called for.
 			attributeMatchers.delete(0, attributeMatchers.length());
 			if (attlists != null) {
-				XMLAttributeList attlist;
-				attlist = (XMLAttributeList)attlists.get(elementName);
+				XMLAttributeList attlist = attlists.get(elementName);
 				if (attlist != null) {
 					// There are attributes for this element
 					for (XMLAttribute att : attlist) {

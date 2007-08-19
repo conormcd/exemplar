@@ -76,6 +76,19 @@ extends AbstractClassTestCase<T>
 			return null;
 		}
 
+		/** Compare this {@link TrivialXMLParserObjectGenerator} to another.
+
+			@param	other	The {@link TrivialXMLParserObjectGenerator} to
+							compare against.
+			@return			See {@link Comparable#compareTo(Object)}.
+		*/
+		public int compareTo(TrivialXMLParserObjectGenerator other) {
+			if (other == null) {
+				throw new NullPointerException();
+			}
+			return 0;
+		}
+
 		/** {@inheritDoc} */
 		public TrivialXMLParserObjectGenerator getCopy() {
 			return new TrivialXMLParserObjectGenerator();

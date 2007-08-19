@@ -65,6 +65,16 @@ extends XMLObject<T>
 		return name;
 	}
 
+	/** Implement {@link Comparable#compareTo(Object)}.
+		
+		@param	other	The {@link XMLNamedObject} to compare with.
+		@return			A result as defined by {@link
+						Comparable#compareTo(Object)}.
+	*/
+	public int compareTo(T other) {
+		return Utils.compare(name, other.getName());
+	}
+
 	/** {@inheritDoc} */
 	@Override public boolean equals(Object o) {
 		if (!super.equals(o)) {

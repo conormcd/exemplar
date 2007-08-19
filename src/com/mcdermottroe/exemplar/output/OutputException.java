@@ -32,6 +32,7 @@ package com.mcdermottroe.exemplar.output;
 import java.io.File;
 
 import com.mcdermottroe.exemplar.Exception;
+import com.mcdermottroe.exemplar.Utils;
 
 import static com.mcdermottroe.exemplar.Constants.Character.LEFT_PAREN;
 import static com.mcdermottroe.exemplar.Constants.Character.RIGHT_PAREN;
@@ -125,6 +126,21 @@ extends Exception
 	public OutputException(Throwable cause, File f) {
 		super(cause);
 		file = f;
+	}
+
+	/** {@inheritDoc} */
+	@Override public int compareTo(Exception other) {
+		int superCmp = super.compareTo(other);
+		if (superCmp != 0) {
+			return superCmp;
+		}
+
+		if (OutputException.class.isAssignableFrom(other.getClass())) {
+			OutputException oe = OutputException.class.cast(other);
+			return Utils.compare(file, oe.getFile());
+		} else {
+			return getClass().getName().compareTo(other.getClass().getName());
+		}
 	}
 
 	/** {@inheritDoc} */

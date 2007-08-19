@@ -48,13 +48,13 @@ import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
 	@param	<T>	The type of {@link Option} this is.
 */
 public abstract class Option<T extends Option<T>>
-implements Copyable<T>
+implements Comparable<T>, Copyable<T>
 {
 	/** The name of the option. */
 	protected final String name;
 
 	/** The current value(s) of the option. */
-	protected List<Object> value;
+	protected List<String> value;
 
 	/** A textual description of the option. */
 	protected final String description;
@@ -93,6 +93,52 @@ implements Copyable<T>
 		value = null;
 	}
 
+	/** Implement {@link Comparable#compareTo(Object)}.
+		
+		@param	other	The {@link Option} to compare with.
+		@return			A result as defined by {@link
+						Comparable#compareTo(Object)}.
+	*/
+	public int compareTo(T other) {
+		// cmp name
+		int nameCmp = Utils.compare(name, other.getName());
+		if (nameCmp != 0) {
+			return nameCmp;
+		}
+
+		// cmp value
+		int valueCmp = Utils.compare(value, other.getValue());
+		if (valueCmp != 0) {
+			return valueCmp;
+		}
+
+		// cmp description
+		int descCmp = Utils.compare(description, other.getDescription());
+		if (descCmp != 0) {
+			return descCmp;
+		}
+
+		// cmp mandatory
+		int mandatoryCmp = Utils.compare(mandatory, other.isMandatory());
+		if (mandatoryCmp != 0) {
+			return mandatoryCmp;
+		}
+
+		// cmp multiValue
+		int multiCmp = Utils.compare(multiValue, other.isMultiValue());
+		if (multiCmp != 0) {
+			return multiCmp;
+		}
+
+		// cmp caseSensitive
+		int caseCmp = Utils.compare(caseSensitive, other.isCaseSensitive());
+		if (caseCmp != 0) {
+			return caseCmp;
+		}
+
+		return 0;
+	}
+
 	/** Accessor for the name member.
 
 		@return The value of the name member.
@@ -105,16 +151,16 @@ implements Copyable<T>
 
 		@return A copy of the value of the name member.
 	*/
-	public List<Object> getValue() {
-		return new ArrayList<Object>(value);
+	public List<String> getValue() {
+		return new ArrayList<String>(value);
 	}
 
 	/** Setter for the value member.
 
 		@param newValue The list to copy into the value member.
 	*/
-	public void setValue(List<Object> newValue) {
-		value = new ArrayList<Object>(newValue);
+	public void setValue(List<String> newValue) {
+		value = new ArrayList<String>(newValue);
 	}
 
 	/** Accessor for the description member.

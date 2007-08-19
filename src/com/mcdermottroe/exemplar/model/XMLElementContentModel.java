@@ -39,7 +39,7 @@ import com.mcdermottroe.exemplar.Utils;
 	@since	0.2
 */
 public class XMLElementContentModel
-implements Copyable<XMLElementContentModel>
+implements Comparable<XMLElementContentModel>, Copyable<XMLElementContentModel>
 {
 	/** The type of content model. */
 	private final XMLElementContentType type;
@@ -47,7 +47,7 @@ implements Copyable<XMLElementContentModel>
 	/** For some types this will be non-null and will describe the exact content
 		allowed in the given element.
 	*/
-	private final XMLAggregateObject<?> contentSpec;
+	private final XMLAggregateObject contentSpec;
 
 	/** Create a new {@link XMLElementContentModel}.
 
@@ -95,7 +95,7 @@ implements Copyable<XMLElementContentModel>
 
 		@return	{@link #contentSpec}.
 	*/
-	public XMLAggregateObject<?> getContentSpec() {
+	public XMLAggregateObject getContentSpec() {
 		return contentSpec;
 	}
 
@@ -127,6 +127,20 @@ implements Copyable<XMLElementContentModel>
 	*/
 	@Override public int hashCode() {
 		return Utils.genericHashCode(type, contentSpec);
+	}
+
+	/** Implement {@link Comparable#compareTo(Object)}.
+		
+		@param	other	The {@link XMLElementContentModel} to compare with.
+		@return			A result as defined by {@link
+						Comparable#compareTo(Object)}.
+	*/
+	public int compareTo(XMLElementContentModel other) {
+		int typeCmp = Utils.compare(type, other.getContentType());
+		if (typeCmp != 0) {
+			return typeCmp;
+		}
+		return Utils.compare(contentSpec, other.getContentSpec());
 	}
 
 	/** {@inheritDoc} */

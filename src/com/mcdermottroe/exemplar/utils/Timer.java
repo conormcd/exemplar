@@ -49,7 +49,7 @@ double elapsed = timer.getElapsedSeconds();
 	@since	0.2
 */
 public class Timer
-implements Copyable<Timer>
+implements Comparable<Timer>, Copyable<Timer>
 {
 	/** The time at which the timer was created. */
 	private final long startTime;
@@ -88,6 +88,15 @@ implements Copyable<Timer>
 	/** {@inheritDoc} */
 	public Timer getCopy() {
 		return new Timer(startTime);
+	}
+
+	/** Implement {@link Comparable#compareTo(Object)}.
+
+		@param	other	The {@link Timer} to compare against.
+		@return			See {@link Comparable#compareTo(Object)}.
+	*/
+	public int compareTo(Timer other) {
+		return Utils.compare(startTime, other.getStartTime());
 	}
 
 	/** Implement {@link Object#equals(Object)}.

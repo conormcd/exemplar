@@ -36,6 +36,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import com.mcdermottroe.exemplar.Utils;
+
 /** Option type for dealing with enumerated options. These are options
 	that take one or more values from a fixed set.
 
@@ -81,11 +83,20 @@ extends Option<Enum>
 					isCaseSensitive
 				);
 		if (defaultValues != null) {
-			value = new ArrayList<Object>(defaultValues);
+			value = new ArrayList<String>(defaultValues);
 		} else {
-			value = new ArrayList<Object>();
+			value = new ArrayList<String>();
 		}
 		enumValues = new HashMap<String, String>(enumVals);
+	}
+
+	/** {@inheritDoc} */
+	@Override public int compareTo(Enum other) {
+		int superCmp = super.compareTo(other);
+		if (superCmp != 0) {
+			return superCmp;
+		}
+		return Utils.compare(enumValues, other.getEnumValues());
 	}
 
 	/** Accessor for the allowed values of this Enum.

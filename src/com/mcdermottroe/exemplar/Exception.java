@@ -43,7 +43,7 @@ import com.mcdermottroe.exemplar.utils.Strings;
 */
 public abstract class Exception
 extends java.lang.Exception
-implements Copyable<Exception>
+implements Comparable<Exception>, Copyable<Exception>
 {
 	/** Exception without a description. */
 	protected Exception() {
@@ -210,5 +210,19 @@ implements Copyable<Exception>
 			ret.append(Constants.EOL);
 		}
 		return ret.toString();
+	}
+
+	/** Implement {@link Comparable#compareTo(Object)}.
+
+		@param	other	The {@link Exception} to compare against.
+		@return			A result as defined by {@link
+						Comparable#compareTo(Object)}.
+	*/
+	public int compareTo(Exception other) {
+		int messageCmp = Utils.compare(getMessage(), other.getMessage());
+		if (messageCmp != 0) {
+			return messageCmp;
+		}
+		return Utils.compare(getBackTrace(), other.getBackTrace());
 	}
 }

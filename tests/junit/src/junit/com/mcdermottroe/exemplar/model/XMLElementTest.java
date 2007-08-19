@@ -179,7 +179,7 @@ extends XMLNamedObjectTestCase<XMLElement>
 		for (XMLElement sample : samples()) {
 			if (sample != null) {
 				XMLElementContentType cType = null;
-				XMLAggregateObject<?> cSpec = null;
+				XMLAggregateObject cSpec = null;
 				try {
 					cType = sample.getContentType();
 					cSpec = sample.getContentSpec();

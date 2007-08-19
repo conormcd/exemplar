@@ -41,18 +41,17 @@ import com.mcdermottroe.exemplar.model.XMLSequence;
 
 /** Parent class to all subclasses of {@link XMLAggregateObject}.
 
-	@param	<T>	The type of {@link XMLAggregateObject}.
 	@author	Conor McDermottroe
 	@since	0.2
 */
 public abstract
-class XMLAggregateObjectTestCase<T extends XMLAggregateObject<T>>
-extends XMLObjectTestCase<T>
+class XMLAggregateObjectTestCase
+extends XMLObjectTestCase<XMLAggregateObject>
 {
 	/** Test {@link XMLAggregateObject#iterator()}. */
 	public void testIterator() {
 		boolean success = true;
-		for (T sample : samples()) {
+		for (XMLAggregateObject sample : samples()) {
 			if (sample != null) {
 				int count = 0;
 				for (Object o : sample) {
@@ -69,7 +68,7 @@ extends XMLObjectTestCase<T>
 
 	/** Test {@link XMLAggregateObject#getContents()}. */
 	public void testGetContents() {
-		for (T sample : samples()) {
+		for (XMLAggregateObject sample : samples()) {
 			if (sample != null) {
 				List<XMLObject<?>> contents = sample.getContents();
 				Iterator<XMLObject<?>> i = contents.iterator();
@@ -115,7 +114,7 @@ extends XMLObjectTestCase<T>
 		}
 
 		// Now test all the non-null samples
-		for (T sample : samples()) {
+		for (XMLAggregateObject sample : samples()) {
 			if (sample != null) {
 				List<XMLObject<?>> expected = sample.getContents();
 				expected.addAll(objectsToAdd);
@@ -131,7 +130,7 @@ extends XMLObjectTestCase<T>
 
 	/** Test {@link XMLAggregateObject#append(XMLAggregateObject)}. */
 	public void testAppendNull() {
-		for (T sample : samples()) {
+		for (XMLAggregateObject sample : samples()) {
 			if (sample != null) {
 				List<XMLObject<?>> originalContents = sample.getContents();
 				sample.append(null);

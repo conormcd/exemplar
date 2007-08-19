@@ -48,19 +48,19 @@ import static com.mcdermottroe.exemplar.Constants.Character.RIGHT_PAREN;
 	@since	0.1
 */
 public class XMLDocumentType
-implements Copyable<XMLDocumentType>
+implements Comparable<XMLDocumentType>, Copyable<XMLDocumentType>
 {
 	/** A map of all the elements in this DTD/Schema. */
-	private final Map<String, XMLMarkupDeclaration> elements;
+	private final Map<String, XMLElement> elements;
 
 	/** A map of all the attribute lists in this DTD/Schema. */
-	private final Map<String, XMLMarkupDeclaration> attlists;
+	private final Map<String, XMLAttributeList> attlists;
 
 	/** A map of all the entities in this DTD/Schema. */
-	private final Map<String, XMLMarkupDeclaration> entities;
+	private final Map<String, XMLEntity> entities;
 
 	/** A map of all the notations in this DTD/Schema. */
-	private final Map<String, XMLMarkupDeclaration> notations;
+	private final Map<String, XMLNotation> notations;
 
 	/** Make an {@link XMLDocumentType} out of a {@link Collection} of markup
 		declarations.
@@ -68,7 +68,7 @@ implements Copyable<XMLDocumentType>
 		@param	markup						A {@link Collection} of markup
 											declarations.
 	*/
-	public XMLDocumentType(Collection<XMLMarkupDeclaration> markup) {
+	public XMLDocumentType(Collection<XMLNamedObject<?>> markup) {
 		DBC.REQUIRE(markup != null);
 
 		// Allocate storage for the various hashes
@@ -76,27 +76,39 @@ implements Copyable<XMLDocumentType>
 		if (markup != null) {
 			markupSize = markup.size();
 		}
-		attlists = new HashMap<String, XMLMarkupDeclaration>(markupSize);
-		elements = new HashMap<String, XMLMarkupDeclaration>(markupSize);
-		entities = new HashMap<String, XMLMarkupDeclaration>(markupSize);
-		notations = new HashMap<String, XMLMarkupDeclaration>(markupSize);
+		attlists = new HashMap<String, XMLAttributeList>(markupSize);
+		elements = new HashMap<String, XMLElement>(markupSize);
+		entities = new HashMap<String, XMLEntity>(markupSize);
+		notations = new HashMap<String, XMLNotation>(markupSize);
 
 		// Go through the list of markup declarations and put the objects in
 		// the correct hashes.
 		if (markup != null) {
-			for (XMLMarkupDeclaration xmlObject : markup) {
+			for (XMLNamedObject<?> xmlObject : markup) {
 				if (xmlObject == null) {
 					continue;
 				}
-				Class<? extends XMLMarkupDeclaration> c = xmlObject.getClass();
+				Class<? extends XMLNamedObject> c = xmlObject.getClass();
 				if (XMLAttributeList.class.isAssignableFrom(c)) {
-					attlists.put(xmlObject.getName(), xmlObject);
+					attlists.put(
+						xmlObject.getName(),
+						XMLAttributeList.class.cast(xmlObject)
+					);
 				} else if (XMLElement.class.isAssignableFrom(c)) {
-					elements.put(xmlObject.getName(), xmlObject);
+					elements.put(
+						xmlObject.getName(),
+						XMLElement.class.cast(xmlObject)
+					);
 				} else if (XMLEntity.class.isAssignableFrom(c)) {
-					entities.put(xmlObject.getName(), xmlObject);
+					entities.put(
+						xmlObject.getName(),
+						XMLEntity.class.cast(xmlObject)
+					);
 				} else if (XMLNotation.class.isAssignableFrom(c)) {
-					notations.put(xmlObject.getName(), xmlObject);
+					notations.put(
+						xmlObject.getName(),
+						XMLNotation.class.cast(xmlObject)
+					);
 				}
 			}
 		}
@@ -104,8 +116,8 @@ implements Copyable<XMLDocumentType>
 		// Associate attributes with their elements.
 		for (String name : attlists.keySet()) {
 			// Get the XMLAttributeList and corresponding XMLElement
-			XMLAttributeList attlist = (XMLAttributeList)attlists.get(name);
-			XMLElement element = (XMLElement)elements.get(name);
+			XMLAttributeList attlist = attlists.get(name);
+			XMLElement element = elements.get(name);
 
 			// Associate the two
 			if (element != null) {
@@ -130,8 +142,8 @@ implements Copyable<XMLDocumentType>
 		@return	A {@link Map} (keyed on the names) of the elements declared in
 				this {@link XMLDocumentType}.
 	*/
-	public Map<String, XMLMarkupDeclaration> elements() {
-		return new HashMap<String, XMLMarkupDeclaration>(elements);
+	public Map<String, XMLElement> elements() {
+		return new HashMap<String, XMLElement>(elements);
 	}
 
 	/** Accessor for attribute lists.
@@ -139,8 +151,8 @@ implements Copyable<XMLDocumentType>
 		@return	A {@link Map} (keyed on the names) of the attribute lists
 				declared in this {@link XMLDocumentType}
 	*/
-	public Map<String, XMLMarkupDeclaration> attlists() {
-		return new HashMap<String, XMLMarkupDeclaration>(attlists);
+	public Map<String, XMLAttributeList> attlists() {
+		return new HashMap<String, XMLAttributeList>(attlists);
 	}
 
 	/** Accessor for entities.
@@ -148,8 +160,8 @@ implements Copyable<XMLDocumentType>
 		@return A {@link Map} (keyed on the names) of the general entities
 				declared in this {@link XMLDocumentType}.
 	*/
-	public Map<String, XMLMarkupDeclaration> entities() {
-		return new HashMap<String, XMLMarkupDeclaration>(entities);
+	public Map<String, XMLEntity> entities() {
+		return new HashMap<String, XMLEntity>(entities);
 	}
 
 	/** Accessor for notations.
@@ -157,14 +169,36 @@ implements Copyable<XMLDocumentType>
 		@return	A {@link Map} (keyed on the names) of the notations declared in
 				this {@link XMLDocumentType}.
 	*/
-	public Map<String, XMLMarkupDeclaration> notations() {
-		return new HashMap<String, XMLMarkupDeclaration>(notations);
+	public Map<String, XMLNotation> notations() {
+		return new HashMap<String, XMLNotation>(notations);
 	}
 
-    /** {@inheritDoc} */
+	/** Implement {@link Comparable#compareTo(Object)}.
+		
+		@param	other	The {@link XMLDocumentType} to compare with.
+		@return			A result as defined by {@link
+						Comparable#compareTo(Object)}.
+	*/
+	public int compareTo(XMLDocumentType other) {
+		int elementsCmp = Utils.compare(elements, other.elements());
+		if (elementsCmp != 0) {
+			return elementsCmp;
+		}
+		int attlistsCmp = Utils.compare(attlists, other.attlists());
+		if (attlistsCmp != 0) {
+			return attlistsCmp;
+		}
+		int entitiesCmp = Utils.compare(entities, other.entities());
+		if (entitiesCmp != 0) {
+			return entitiesCmp;
+		}
+		return Utils.compare(notations, other.notations());
+	}
+
+	/** {@inheritDoc} */
     public XMLDocumentType getCopy() {
-		List<XMLMarkupDeclaration> all;
-		all = new ArrayList<XMLMarkupDeclaration>();
+		List<XMLNamedObject<?>> all;
+		all = new ArrayList<XMLNamedObject<?>>();
 		all.addAll(attlists.values());
 		all.addAll(elements.values());
 		all.addAll(entities.values());

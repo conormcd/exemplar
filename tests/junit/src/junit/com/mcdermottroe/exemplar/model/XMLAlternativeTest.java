@@ -40,7 +40,7 @@ import com.mcdermottroe.exemplar.model.XMLSequence;
 	@since	0.1
 */
 public class XMLAlternativeTest
-extends XMLAggregateObjectTestCase<XMLAlternative>
+extends XMLAggregateObjectTestCase
 {
 	/** {@inheritDoc} */
 	@Override public void setUp() throws Exception {

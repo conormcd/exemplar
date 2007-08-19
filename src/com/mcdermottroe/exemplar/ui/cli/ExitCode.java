@@ -38,7 +38,7 @@ import com.mcdermottroe.exemplar.Utils;
 	@since	0.2
 */
 public class ExitCode
-implements Copyable<ExitCode>
+implements Comparable<ExitCode>, Copyable<ExitCode>
 {
 	/** The numeric form to be passed to {@link System#exit(int)}. */
 	private final int numericForm;
@@ -59,6 +59,26 @@ implements Copyable<ExitCode>
 		numericForm = code;
 		mnemonic = name;
 		description = desc;
+	}
+
+	/** Implement {@link Comparable#compareTo(Object)}.
+		
+		@param	other	The {@link ExitCode} to compare with.
+		@return			A result as defined by {@link
+						Comparable#compareTo(Object)}.
+	*/
+	public int compareTo(ExitCode other) {
+		int numCmp = Utils.compare(numericForm, other.getNumericForm());
+		if (numCmp != 0) {
+			return numCmp;
+		}
+
+		int mnCmp = Utils.compare(mnemonic, other.getMnemonic());
+		if (mnCmp != 0) {
+			return mnCmp;
+		}
+
+		return Utils.compare(description, other.getDescription());
 	}
 
 	/** Getter for the {@link #numericForm} member.

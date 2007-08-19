@@ -31,6 +31,9 @@ package com.mcdermottroe.exemplar;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /** General purpose utility methods that can be used anywhere in the program.
 
@@ -150,6 +153,44 @@ public final class Utils {
 			} else {
 				return 0;
 			}
+		} else if (a != null) {
+			return 1;
+		} else if (b != null) {
+			return -1;
+		} else {
+			return 0;
+		}
+	}
+
+	/** Do a null-safe comparison of two {@link Map}s, which have {@link
+		Comparable} keys and values.
+
+		@param	<X>	A type which implements <code>Comparable&lt;X&gt;</code>.
+		@param	<Y>	A type which implements <code>Comparable&lt;Y&gt;</code>.
+		@param	a	A {@link Map} of &lt;X&gt; to &lt;Y&gt; to compare.
+		@param	b	The {@link Map} to compare with <code>a</code>.
+		@return		The kind of result you expect from an implementation of
+					{@link Comparable#compareTo(Object)}.
+	*/
+	public static <X extends Comparable<X>, Y extends Comparable<Y>> int
+	compare(Map<X, Y> a, Map<X, Y> b)
+	{
+		if (a != null && b != null) {
+			SortedSet<X> aKeys = new TreeSet<X>(a.keySet());
+			SortedSet<X> bKeys = new TreeSet<X>(b.keySet());
+			int keyCmp = compare(aKeys, bKeys);
+			if (keyCmp != 0) {
+				return keyCmp;
+			}
+
+			for (X key : aKeys) {
+				int cmp = compare(a.get(key), b.get(key));
+				if (cmp != 0) {
+					return cmp;
+				}
+			}
+
+			return 0;
 		} else if (a != null) {
 			return 1;
 		} else if (b != null) {

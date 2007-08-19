@@ -49,7 +49,7 @@ import static com.mcdermottroe.exemplar.Constants.HASHCODE_MAGIC_NUMBER;
 */
 public class XMLAttributeList
 extends XMLNamedObject<XMLAttributeList>
-implements XMLMarkupDeclaration, Iterable<XMLAttribute>
+implements Iterable<XMLAttribute>
 {
 	/** The list of attributes. */
 	private final List<XMLAttribute> attributes;

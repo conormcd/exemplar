@@ -183,6 +183,22 @@ import static com.mcdermottroe.exemplar.Constants.XMLExternalIdentifier.SYSTEM;
 		}
 	}
 
+	/** Implement {@link Comparable#compareTo(Object)}. */
+	public int compareTo(Lexer other) {
+		int dtdPathCmp = Utils.compare(dtdPath, other.dtdPath);
+		if (dtdPathCmp != 0) {
+			return dtdPathCmp;
+		}
+		int pedeclTableCmp = Utils.compare(pedeclTable, other.pedeclTable);
+		if (pedeclTableCmp != 0) {
+			return pedeclTableCmp;
+		}
+		return Utils.compare(
+			conditionalSectionState,
+			other.conditionalSectionState
+		);
+	}
+
 	/** {@inheritDoc} */
 	public Lexer getCopy() {
 		Lexer copy = new Lexer(zzReader);
@@ -260,7 +276,7 @@ conditionalSectionState.push("INCLUDE");
 %yylexthrow{
 LexerException, ParameterEntityException
 %yylexthrow}
-%implements Copyable<Lexer>
+%implements Comparable<Lexer>, Copyable<Lexer>
 %unicode
 %cup
 %state YYIGNORE

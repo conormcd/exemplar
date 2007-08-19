@@ -59,8 +59,8 @@ import com.mcdermottroe.exemplar.model.XMLElementContentType;
 import com.mcdermottroe.exemplar.model.XMLElementReference;
 import com.mcdermottroe.exemplar.model.XMLEntity;
 import com.mcdermottroe.exemplar.model.XMLExternalIdentifier;
-import com.mcdermottroe.exemplar.model.XMLMarkupDeclaration;
 import com.mcdermottroe.exemplar.model.XMLMixedContent;
+import com.mcdermottroe.exemplar.model.XMLNamedObject;
 import com.mcdermottroe.exemplar.model.XMLNotation;
 import com.mcdermottroe.exemplar.model.XMLSequence;
 import com.mcdermottroe.exemplar.ui.Log;
@@ -200,6 +200,13 @@ parser code {:
 		}
 	}
 
+	public int compareTo(Parser other) {
+		if (other == null) {
+			throw new NullPointerException();
+		}
+		return 0;
+	}
+
 	/** {@inheritDoc}
 
 		Note: The SymbolFactory, parse stack and values associated with the symbols in the lookahead are reference-copied.
@@ -307,6 +314,15 @@ parser code {:
 				) &&
 				Utils.areAllDeeplyEqual(action_table(), other.action_table()) &&
 				Utils.areAllDeeplyEqual(reduce_table(), other.reduce_table());
+	}
+
+	/** Implement {@link Object#hashCode()}. */
+	@Override public int hashCode() {
+		return Utils.genericHashCode(
+			production_table(),
+			action_table(),
+			reduce_table()
+		);
 	}
 
 	/** {@inheritDoc} */
@@ -423,7 +439,7 @@ non terminal List						extSubsetDecl;
 non terminal XMLEntity					GEDecl;
 non terminal String						GT_PRECEDED_BY_OPT_S;
 non terminal String						LPAREN_FOLLOWED_BY_OPT_S;
-non terminal XMLMarkupDeclaration		markupDecl;
+non terminal XMLNamedObject				markupDecl;
 non terminal XMLMixedContent			Mixed;
 non terminal XMLMixedContent			Mixed_NameLIST;
 non terminal String						Name;
@@ -2282,7 +2298,7 @@ ExternalID						::= SYSTEM s SystemLiteral:uri
 // Page 14
 extSubset						::= extSubsetDecl:eSD
 										{:
-											List<XMLMarkupDeclaration> newExtSubSet = new ArrayList<XMLMarkupDeclaration>();
+											List<XMLNamedObject<?>> newExtSubSet = new ArrayList<XMLNamedObject<?>>();
 
 											// Ensure that there is an element
 											// declaration for every attribute
@@ -2314,7 +2330,7 @@ extSubset						::= extSubsetDecl:eSD
 
 											// Now re-wrap and cast the markup declarations.
 											for (Object markupDecl : eSD) {
-												newExtSubSet.add((XMLMarkupDeclaration)markupDecl);
+												newExtSubSet.add((XMLNamedObject)markupDecl);
 											}
 											
 											RESULT = new XMLDocumentType(newExtSubSet);
@@ -2322,14 +2338,14 @@ extSubset						::= extSubsetDecl:eSD
 // Page 14
 extSubsetDecl					::= /* ε */
 										{:
-											RESULT = new ArrayList<XMLMarkupDeclaration>();
+											RESULT = new ArrayList<XMLNamedObject>();
 										:} |
 									markupDecl:a extSubsetDecl:b
 										{:
-											List<XMLMarkupDeclaration> newDecls = new ArrayList<XMLMarkupDeclaration>();
+											List<XMLNamedObject> newDecls = new ArrayList<XMLNamedObject>();
 											newDecls.add(a);
 											for (Object listMarkup : b) {
-												newDecls.add((XMLMarkupDeclaration)listMarkup);
+												newDecls.add((XMLNamedObject)listMarkup);
 											}
 
 											RESULT = newDecls;

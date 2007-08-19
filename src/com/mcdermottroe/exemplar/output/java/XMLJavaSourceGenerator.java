@@ -38,7 +38,6 @@ import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.model.XMLEntity;
 import com.mcdermottroe.exemplar.model.XMLEntityType;
 import com.mcdermottroe.exemplar.model.XMLExternalIdentifier;
-import com.mcdermottroe.exemplar.model.XMLMarkupDeclaration;
 import com.mcdermottroe.exemplar.output.OutputException;
 import com.mcdermottroe.exemplar.output.OutputUtils;
 import com.mcdermottroe.exemplar.output.XMLParserGeneratorException;
@@ -213,7 +212,7 @@ extends XMLParserSourceGenerator<T>
 	private void generateParserJFlexFile(
 		String vocabulary,
 		boolean usesAttlists,
-		Map<String, XMLMarkupDeclaration> entities,
+		Map<String, XMLEntity> entities,
 		File outputFile
 	)
 	throws XMLParserGeneratorException
@@ -252,7 +251,7 @@ extends XMLParserSourceGenerator<T>
 				if (entities != null) {
 					StringBuilder extEntities = new StringBuilder();
 					for (String entityName : entities.keySet()) {
-						XMLEntity entity = (XMLEntity)entities.get(entityName);
+						XMLEntity entity = entities.get(entityName);
 						switch (entity.type()) {
 							case INTERNAL:
 								// Do nothing, internal entities
@@ -363,7 +362,7 @@ extends XMLParserSourceGenerator<T>
 											not be opened.
 	*/
 	private void generateEntitiesFile(
-		Map<String, XMLMarkupDeclaration> entities,
+		Map<String, XMLEntity> entities,
 		File outputFile
 	)
 	throws XMLParserGeneratorException
@@ -385,7 +384,7 @@ extends XMLParserSourceGenerator<T>
 			// entities into the properties file string in sorted order.
 			StringBuilder entityProperties = new StringBuilder();
 			for (String entityName : entities.keySet()) {
-				XMLEntity entity = (XMLEntity)entities.get(entityName);
+				XMLEntity entity = entities.get(entityName);
 				if (entity.type().equals(XMLEntityType.INTERNAL)) {
 					entityProperties.append(entityName);
 					entityProperties.append(SPACE);

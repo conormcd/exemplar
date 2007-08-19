@@ -29,6 +29,7 @@
 */
 package junit.com.mcdermottroe.exemplar.model;
 
+import com.mcdermottroe.exemplar.model.XMLAggregateObject;
 import com.mcdermottroe.exemplar.model.XMLAlternative;
 import com.mcdermottroe.exemplar.model.XMLElementReference;
 import com.mcdermottroe.exemplar.model.XMLMixedContent;
@@ -42,7 +43,7 @@ import static com.mcdermottroe.exemplar.Constants.INFINITY;
 	@since	0.1
 */
 public class XMLSequenceTest
-extends XMLAggregateObjectTestCase<XMLSequence>
+extends XMLAggregateObjectTestCase
 {
 	/** {@inheritDoc} */
 	@Override public void setUp()
@@ -101,8 +102,15 @@ extends XMLAggregateObjectTestCase<XMLSequence>
 
 	/** Test {@link XMLSequence#setMinMaxOccurs(int, int)}. */
 	public void testSetMinMaxOccurs() {
-		for (XMLSequence sample : samples()) {
-			if (sample != null) {
+		for (XMLAggregateObject xao : samples()) {
+			if	(
+					xao != null &&
+					XMLSequence.class.isAssignableFrom(xao.getClass())
+				)
+			{
+				// Cast it
+				XMLSequence sample = XMLSequence.class.cast(xao);
+
 				// Get the original settings
 				int min = sample.getMinOccurs();
 				int max = sample.getMaxOccurs();
@@ -142,8 +150,13 @@ extends XMLAggregateObjectTestCase<XMLSequence>
 
 	/** Test {@link XMLSequence#getMinOccurs()}. */
 	public void testGetMinOccurs() {
-		for (XMLSequence sample : samples()) {
-			if (sample != null) {
+		for (XMLAggregateObject xao : samples()) {
+			if	(
+					xao != null &&
+					XMLSequence.class.isAssignableFrom(xao.getClass())
+				)
+			{
+				XMLSequence sample = XMLSequence.class.cast(xao);
 				int min = sample.getMinOccurs();
 				assertTrue("min is negative", min >= 0);
 				assertTrue("min is finite", min < INFINITY);
@@ -153,8 +166,13 @@ extends XMLAggregateObjectTestCase<XMLSequence>
 
 	/** Test {@link XMLSequence#getMaxOccurs()}. */
 	public void testGetMaxOccurs() {
-		for (XMLSequence sample : samples()) {
-			if (sample != null) {
+		for (XMLAggregateObject xao : samples()) {
+			if	(
+				xao != null &&
+				XMLSequence.class.isAssignableFrom(xao.getClass())
+				)
+			{
+				XMLSequence sample = XMLSequence.class.cast(xao);
 				int max = sample.getMaxOccurs();
 				assertTrue("max is negative or zero", max > 0);
 			}

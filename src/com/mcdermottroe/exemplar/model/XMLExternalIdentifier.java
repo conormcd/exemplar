@@ -41,7 +41,7 @@ import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
 	@since	0.1
 */
 public class XMLExternalIdentifier
-implements Copyable<XMLExternalIdentifier>
+implements Comparable<XMLExternalIdentifier>, Copyable<XMLExternalIdentifier>
 {
 	/** The public ID portion of the external identifier. */
 	private final String publicID;
@@ -76,7 +76,21 @@ implements Copyable<XMLExternalIdentifier>
 	public String systemID() {
 		return systemID;
 	}
-	
+
+	/** Implement {@link Comparable#compareTo(Object)}.
+		
+		@param	other	The {@link XMLExternalIdentifier} to compare with.
+		@return			A result as defined by {@link
+						Comparable#compareTo(Object)}.
+	*/
+	public int compareTo(XMLExternalIdentifier other) {
+		int pubIdCmp = Utils.compare(publicID, other.publicID());
+		if (pubIdCmp != 0) {
+			return pubIdCmp;
+		}
+		return Utils.compare(systemID, other.systemID());
+	}
+
 	/** {@inheritDoc} */
 	public XMLExternalIdentifier getCopy() {
 		return new XMLExternalIdentifier(publicID, systemID);

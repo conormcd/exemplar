@@ -48,7 +48,7 @@ import static com.mcdermottroe.exemplar.Constants.EOL;
 */
 public class ConsoleFormatter
 extends Formatter
-implements Copyable<ConsoleFormatter>
+implements Comparable<ConsoleFormatter>, Copyable<ConsoleFormatter>
 {
 	/** Format a log record so that it can be sent to the console.
 
@@ -94,6 +94,19 @@ implements Copyable<ConsoleFormatter>
 		} else {
 			return messageAsString;
 		}
+	}
+
+	/** Implement {@link Comparable#compareTo(Object)}.
+		
+		@param	other	The {@link ConsoleFormatter} to compare with.
+		@return			A result as defined by {@link
+						Comparable#compareTo(Object)}.
+	*/
+	public int compareTo(ConsoleFormatter other) {
+		if (other == null) {
+			throw new NullPointerException();
+		}
+		return 0;
 	}
 
 	/** {@inheritDoc} */

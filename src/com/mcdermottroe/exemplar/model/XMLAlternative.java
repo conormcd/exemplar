@@ -43,7 +43,7 @@ import static com.mcdermottroe.exemplar.Constants.Character.PIPE;
 	@since	0.1
 */
 public class XMLAlternative
-extends XMLAggregateObject<XMLAlternative>
+extends XMLAggregateObject
 {
 	/** Create a new, empty {@link XMLAlternative}. */
 	public XMLAlternative() {

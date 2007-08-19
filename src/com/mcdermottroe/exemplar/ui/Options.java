@@ -388,14 +388,14 @@ public final class Options {
 		// Make sure that the option being set is an allowed one
 		if (isLegal(optionName)) {
 			Option<?> optionToSet = get(optionName);
-			List<Object> vals = null;
+			List<String> vals = null;
 
 			if (isEnum(optionName)) {
 				// The string is a list of comma separated values
 				String[] rawValues = optionValue.split(
 					String.valueOf(COMMA)
 				);
-				vals = new ArrayList<Object>(rawValues.length);
+				vals = new ArrayList<String>(rawValues.length);
 				for (String rawV : rawValues) {
 					String rawValue;
 					if (optionToSet.isCaseSensitive()) {
@@ -410,10 +410,10 @@ public final class Options {
 					}
 				}
 			} else if (isSwitch(optionName)) {
-				vals = new ArrayList<Object>(1);
-				vals.add(Boolean.valueOf(optionValue));
+				vals = new ArrayList<String>(1);
+				vals.add(String.valueOf(Boolean.valueOf(optionValue)));
 			} else if (isArgument(optionName)) {
-				vals = new ArrayList<Object>(1);
+				vals = new ArrayList<String>(1);
 				if (optionToSet.isCaseSensitive()) {
 					vals.add(optionValue);
 				} else {
@@ -609,9 +609,9 @@ public final class Options {
 		Option<?> opt = get(optionName);
 		if (opt != null && isSwitch(optionName)) {
 			if (opt.getValue().size() == 1) {
-				Object obj = opt.getValue().get(0);
-				if (obj != null && obj instanceof Boolean) {
-					return (Boolean)obj;
+				String s = opt.getValue().get(0);
+				if (s != null) {
+					return Boolean.valueOf(s);
 				}
 			}
 		}
