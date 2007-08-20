@@ -155,14 +155,9 @@ extends XMLParserSourceGenerator<Generator>
 	{
 		Log.debug("Creating root parser class");
 		DBC.REQUIRE(dir != null);
-		if (dir == null) {
-			return;
-		}
 
 		// Ensure that the directory exists
-		if (!dir.exists()) {
-			dir.mkdirs();
-		}
+		dir.mkdirs();
 
 		// Get the template
 		String messageFormatTemplate = loadCodeFragment("ROOT_PARSER_CLASS");
@@ -211,14 +206,9 @@ extends XMLParserSourceGenerator<Generator>
 	{
 		Log.debug("Creating abstract element class");
 		DBC.REQUIRE(dir != null);
-		if (dir == null) {
-			return;
-		}
 
 		// Ensure that the directory exists
-		if (!dir.exists()) {
-			dir.mkdirs();
-		}
+		dir.mkdirs();
 
 		// Get the template
 		String messageFormatTemplate = loadCodeFragment(
@@ -262,15 +252,10 @@ extends XMLParserSourceGenerator<Generator>
 	{
 		DBC.REQUIRE(element != null);
 		DBC.REQUIRE(dir != null);
-		if (element == null || dir == null) {
-			return;
-		}
 		Log.debug("Creating the Element class for ", element.getName());
 
 		// Ensure that the directory exists
-		if (!dir.exists()) {
-			dir.mkdirs();
-		}
+		dir.mkdirs();
 
 		// Get the element name and make an appropriate class name. 
 		String elementName = element.getName();
@@ -322,8 +307,6 @@ extends XMLParserSourceGenerator<Generator>
 				constructorCode.append("Attribute.IMPLIED, null));");
 			} else if (XMLAttributeDefaultType.REQUIRED().sameType(type)) {
 				constructorCode.append("Attribute.REQUIRED, null));");
-			} else {
-				DBC.UNREACHABLE_CODE();
 			}
 			constructorCode.append(EOL);
 
@@ -453,14 +436,9 @@ extends XMLParserSourceGenerator<Generator>
 	{
 		Log.debug("Creating the XMLContent class");
 		DBC.REQUIRE(dir != null);
-		if (dir == null) {
-			return;
-		}
 
 		// Ensure that the directory exists
-		if (!dir.exists()) {
-			dir.mkdirs();
-		}
+		dir.mkdirs();
 
 		// Get the template
 		String messageFormatTemplate = loadCodeFragment(
@@ -502,14 +480,9 @@ extends XMLParserSourceGenerator<Generator>
 	{
 		Log.debug("Creating the XMLComponent class");
 		DBC.REQUIRE(dir != null);
-		if (dir == null) {
-			return;
-		}
 
 		// Ensure that the directory exists
-		if (!dir.exists()) {
-			dir.mkdirs();
-		}
+		dir.mkdirs();
 
 		// Get the template
 		String messageFormatTemplate = loadCodeFragment(
@@ -551,14 +524,9 @@ extends XMLParserSourceGenerator<Generator>
 	{
 		Log.debug("Creating the ProcessingInstruction class");
 		DBC.REQUIRE(dir != null);
-		if (dir == null) {
-			return;
-		}
 
 		// Ensure that the directory exists
-		if (!dir.exists()) {
-			dir.mkdirs();
-		}
+		dir.mkdirs();
 
 		// Get the template
 		String messageFormatTemplate = loadCodeFragment(

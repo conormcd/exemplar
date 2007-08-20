@@ -156,9 +156,6 @@ extends XMLParserSourceGenerator<T>
 	{
 		DBC.REQUIRE(vocabulary != null);
 		DBC.REQUIRE(outputFile != null);
-		if (vocabulary == null || outputFile == null) {
-			return;
-		}
 
 		// Get the template
 		String messageFormatTemplate = loadCodeFragment("JAVA_MAIN_TEMPLATE");
@@ -286,10 +283,6 @@ extends XMLParserSourceGenerator<T>
 								// These are not handled by SAX, and virtually
 								// nobody uses them either.
 								break;
-							default:
-								// We shouldn't get here ever.
-								DBC.UNREACHABLE_CODE();
-								break;
 						}
 					}
 					externalEntityRules = new String(extEntities);
@@ -369,9 +362,6 @@ extends XMLParserSourceGenerator<T>
 	{
 		DBC.REQUIRE(entities != null);
 		DBC.REQUIRE(outputFile != null);
-		if (entities == null || outputFile == null) {
-			return;
-		}
 
 		if (Options.isSet("include", "entities")) {
 			// Get the template

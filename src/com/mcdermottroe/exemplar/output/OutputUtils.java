@@ -264,10 +264,6 @@ public final class OutputUtils {
 				pair = new LanguageAPIPair(outputLanguageAPI, null);
 			}
 
-			DBC.ASSERT(pair != null);
-			if (pair == null) {
-				return null;
-			}
 			XMLParserSourceGenerator<?> gen;
 			gen = XMLParserSourceGenerator.create(
 				pair.getLanguage(),

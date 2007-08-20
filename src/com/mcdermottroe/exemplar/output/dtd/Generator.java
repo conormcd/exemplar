@@ -170,8 +170,6 @@ extends XMLParserSourceGenerator<Generator>
 					);
 					contentSpec.append(contentSpecText);
 					break;
-				default:
-					DBC.UNREACHABLE_CODE();
 			}
 
 			// Output the element declaration
@@ -262,9 +260,6 @@ extends XMLParserSourceGenerator<Generator>
 						entityDeclTail.append(SPACE);
 						entityDeclTail.append(entity.getNotation());
 						break;
-					default:
-						DBC.UNREACHABLE_CODE();
-						break;
 				}
 			}
 
@@ -301,8 +296,6 @@ extends XMLParserSourceGenerator<Generator>
 			} else if (extID.systemID() != null) {
 				pubOrSys = SYSTEM;
 				notationDeclTail.append(extID.systemID());
-			} else {
-				DBC.UNREACHABLE_CODE();
 			}
 			notationDeclTail.append(DOUBLE_QUOTE);
 
@@ -379,9 +372,7 @@ extends XMLParserSourceGenerator<Generator>
 
 			// Now put the ?, + or * on where appropriate
 			int min = seq.getMinOccurs();
-			DBC.ASSERT(min >= 0);
 			int max = seq.getMaxOccurs();
-			DBC.ASSERT(max >= 0);
 			if (min == 0) {
 				if (max == 1) {
 					ret.append(QUESTION_MARK);
@@ -429,8 +420,6 @@ extends XMLParserSourceGenerator<Generator>
 			ret.append("#PCDATA");
 		} else if (XMLNamedObject.class.isAssignableFrom(o.getClass())) {
 			ret.append(XMLNamedObject.class.cast(o).getName());
-		} else {
-			DBC.UNREACHABLE_CODE();
 		}
 
 		return ret.toString();

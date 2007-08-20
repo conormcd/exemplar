@@ -17,60 +17,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLExternalIdentifier.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLExternalIdentifier.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLContent.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLContent.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLObject.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLObject.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLElementContentModel.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLElementContentModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/OutputException.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/OutputException.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLAggregateObject.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLAggregateObject.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/options/Option.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/options/Option.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/model/XMLAggregateObjectTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/model/XMLAggregateObjectTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/InputUtils.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/InputUtils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/NormalClassTestCase.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/NormalClassTestCase.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLDocumentType.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLDocumentType.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/OutputUtilsTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/OutputUtilsTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLNotation.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLNotation.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/Lexer.jflex" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/Lexer.jflex" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/model/XMLDocumentTypeTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/model/XMLDocumentTypeTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/Options.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/Options.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLNamedObject.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLNamedObject.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/options/Switch.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/options/Switch.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/ant/Task.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/ant/Task.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/model/XMLMarkupDeclarationTest.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/model/XMLAggregateObjectTestCase.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/model/XMLAggregateObjectTestCase.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/XMLParserGenerator.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/XMLParserGenerator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/Utils.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/Utils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/model/XMLSequenceTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/model/XMLSequenceTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/Parser.cup" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/Parser.cup" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/model/XMLMixedContentTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/model/XMLMixedContentTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/utils/PowerSet.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/utils/PowerSet.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/OutputUtils.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/OutputUtils.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/Generator.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/Generator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/dtd/Generator.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/dtd/Generator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/PEDeclTable.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/PEDeclTable.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/options/Enum.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/options/Enum.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLMarkupDeclaration.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/model/XMLEntityTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/model/XMLEntityTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../build.xml" afterPath="$PROJECT_DIR$/../../build.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/options/Argument.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/options/Argument.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/java/binding/GeneratorTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/java/binding/GeneratorTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Exemplar.iws" afterPath="$PROJECT_DIR$/Exemplar.iws" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/XMLJavaSourceGenerator.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/XMLJavaSourceGenerator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/model/XMLElementTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/model/XMLElementTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLElement.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLElement.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLAttributeList.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLAttributeList.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLAlternative.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLAlternative.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/Exception.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/Exception.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLSequence.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLSequence.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLMixedContent.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLMixedContent.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/xslt/Generator.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/xslt/Generator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLEntity.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLEntity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Exemplar.iml" afterPath="$PROJECT_DIR$/Exemplar.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/XMLParserSourceGenerator.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/XMLParserSourceGenerator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/utils/Timer.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/utils/Timer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/ant/TaskLogHandler.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/ant/TaskLogHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/model/XMLAlternativeTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/model/XMLAlternativeTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/cli/ExitCode.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/cli/ExitCode.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/cli/ConsoleFormatter.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/cli/ConsoleFormatter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/XMLParserObjectGeneratorTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/XMLParserObjectGeneratorTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/dtd/Generator.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/dtd/Generator.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/OutputUtilsTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/OutputUtilsTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/dtd/ParserTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/dtd/ParserTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/Lexer.jflex" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/Lexer.jflex" />
     </list>
   </component>
   <component name="ChangeListSynchronizer" />
@@ -92,16 +47,18 @@
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLEntityTest.es" NAME="Single class test" MODIFIED="1186061047403" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLAlternativeTest.es" NAME="Single class test" MODIFIED="1186059102586" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$junit.com.mcdermottroe.exemplar.es" NAME="Exemplar JUnit Tests" MODIFIED="1187532430078" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$junit.com.mcdermottroe.exemplar.es" NAME="Exemplar JUnit Tests" MODIFIED="1187576211035" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$PEDeclTableTest.es" NAME="Single class test" MODIFIED="1185705882210" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$ParserTest.es" NAME="Single class test" MODIFIED="1186062168946" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$InputUtilsTest.es" NAME="Single class test" MODIFIED="1185638217472" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$ConstantsTest.es" NAME="Single class test" MODIFIED="1185679913216" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$PowerSetTest.es" NAME="Single class test" MODIFIED="1183336627958" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$GeneratorTest.es" NAME="Single class test" MODIFIED="1187540858815" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLNamedObjectTest.es" NAME="Single class test" MODIFIED="1185639909820" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLAttributeTest.es" NAME="Single class test" MODIFIED="1185038193187" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLDocumentTypeExceptionTest.es" NAME="Single class test" MODIFIED="1185640474117" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLAttributeContentTypeTest.es" NAME="Single class test" MODIFIED="1185634350558" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$OutputUtilsTest.es" NAME="Single class test" MODIFIED="1187574761613" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$OutputExceptionTest.es" NAME="Single class test" MODIFIED="1186060097446" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLSequenceTest.es" NAME="Single class test" MODIFIED="1186062057256" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLParserObjectGeneratorTest.es" NAME="Single class test" MODIFIED="1185671080353" />
@@ -194,7 +151,24 @@
       </breakpoint>
     </breakpoint_any>
     <breakpoint_rules />
-    <ui_properties />
+    <ui_properties>
+      <property name="exception_breakpoints_flattenPackages" value="true" />
+      <property name="line_breakpoints_groupByClasses" value="true" />
+      <property name="exception_breakpoints_groupByMethods" value="false" />
+      <property name="method_breakpoints_viewId" value="TABLE" />
+      <property name="line_breakpoints_viewId" value="TABLE" />
+      <property name="exception_breakpoints_groupByClasses" value="true" />
+      <property name="method_breakpoints_groupByMethods" value="false" />
+      <property name="field_breakpoints_flattenPackages" value="true" />
+      <property name="line_breakpoints_flattenPackages" value="true" />
+      <property name="exception_breakpoints_viewId" value="TABLE" />
+      <property name="field_breakpoints_groupByClasses" value="true" />
+      <property name="method_breakpoints_flattenPackages" value="true" />
+      <property name="field_breakpoints_viewId" value="TABLE" />
+      <property name="line_breakpoints_groupByMethods" value="false" />
+      <property name="method_breakpoints_groupByClasses" value="true" />
+      <property name="field_breakpoints_groupByMethods" value="false" />
+    </ui_properties>
   </component>
   <component name="ErrorTreeViewConfiguration">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
@@ -255,20 +229,6 @@
         <PATH_ELEMENT>
           <option name="myItemId" value="Exemplar" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="Exemplar.ipr" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="Exemplar" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="junit.com.mcdermottroe.exemplar" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
         </PATH_ELEMENT>
       </PATH>
       <PATH>
@@ -471,8 +431,8 @@
       <module name="Exemplar" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="junit.com.mcdermottroe.exemplar.input.dtd" />
-      <option name="MAIN_CLASS_NAME" value="junit.com.mcdermottroe.exemplar.input.dtd.ParserTest" />
+      <option name="PACKAGE_NAME" value="junit.com.mcdermottroe.exemplar.output" />
+      <option name="MAIN_CLASS_NAME" value="junit.com.mcdermottroe.exemplar.output.OutputUtilsTest" />
       <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
       <option name="VM_PARAMETERS" value="" />
@@ -696,100 +656,107 @@
     <option name="myLastEditedConfigurable" value="IDE Profiles" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/utils/Resources.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="66" column="8" selection-start="2608" selection-end="2608" vertical-scroll-proportion="0.96">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/utils/Strings.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="378" column="0" selection-start="12546" selection-end="12546" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/utils/XML.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="197" column="16" selection-start="6401" selection-end="6401" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/Message.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="525" column="16" selection-start="17910" selection-end="17910" vertical-scroll-proportion="0.038596492">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/Options.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="455" column="5" selection-start="14232" selection-end="14232" vertical-scroll-proportion="0.013333334">
+        <state line="390" column="4" selection-start="12445" selection-end="12445" vertical-scroll-proportion="0.30857143">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/XMLParserSourceGenerator.java">
+    <entry file="file://$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/XMLParserGeneratorTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="264" column="0" selection-start="8614" selection-end="8614" vertical-scroll-proportion="0.0">
+        <state line="41" column="13" selection-start="1943" selection-end="1943" vertical-scroll-proportion="0.37714285">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/OutputUtilsTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="82" column="39" selection-start="3404" selection-end="3404" vertical-scroll-proportion="0.4509804">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/XMLParserGeneratorTestCase.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="76" column="0" selection-start="3096" selection-end="3096" vertical-scroll-proportion="0.93">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/XMLJavaSourceGenerator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="405" column="33" selection-start="13215" selection-end="13215" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/sax2/Generator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="43" column="13" selection-start="1973" selection-end="1973" vertical-scroll-proportion="0.21052632">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/Generator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="87" column="0" selection-start="3571" selection-end="3571" vertical-scroll-proportion="0.019138755">
+        <state line="194" column="0" selection-start="6465" selection-end="6465" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/Copyable.java">
+    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/dtd/Generator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="58" column="17" selection-start="2714" selection-end="2714" vertical-scroll-proportion="0.57416266">
+        <state line="388" column="0" selection-start="12712" selection-end="12712" vertical-scroll-proportion="0.5215311">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/Constants.java">
+    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/InputUtils.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="43" column="17" selection-start="2117" selection-end="2117" vertical-scroll-proportion="0.29411766">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/Utils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="200" column="4" selection-start="6388" selection-end="6388" vertical-scroll-proportion="0.013333334">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/Classes/classes.jar!/java/lang/Object.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="13" selection-start="147" selection-end="147" vertical-scroll-proportion="0.08080808">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/Log.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="92" column="19" selection-start="3233" selection-end="3233" vertical-scroll-proportion="0.34150326">
+        <state line="152" column="16" selection-start="6316" selection-end="6316" vertical-scroll-proportion="0.48">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/utils/Files.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="19" selection-start="1945" selection-end="1945" vertical-scroll-proportion="0.19607843">
+        <state line="127" column="4" selection-start="4071" selection-end="4071" vertical-scroll-proportion="0.7320574">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/NormalClassTestCase.java">
+    <entry file="file://Lexer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="501" column="0" selection-start="13837" selection-end="13837" vertical-scroll-proportion="0.7464115">
+        <state line="581" column="12" selection-start="22853" selection-end="22853" vertical-scroll-proportion="0.017973857">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/InputUtilsTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="49" column="13" selection-start="2160" selection-end="2160" vertical-scroll-proportion="0.19138756">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/java/binding/GeneratorTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="75" column="12" selection-start="2732" selection-end="2732" vertical-scroll-proportion="0.96">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/XMLParserSourceGeneratorTestCase.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="150" column="0" selection-start="5005" selection-end="5005" vertical-scroll-proportion="0.56">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/dtd/ParserTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="65" column="33" selection-start="2580" selection-end="2580" vertical-scroll-proportion="0.96">
           <folding />
         </state>
       </provider>

@@ -36,15 +36,23 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.mcdermottroe.exemplar.Constants;
+import com.mcdermottroe.exemplar.model.XMLAttribute;
+import com.mcdermottroe.exemplar.model.XMLAttributeContentType;
+import com.mcdermottroe.exemplar.model.XMLAttributeDefaultType;
+import com.mcdermottroe.exemplar.model.XMLAttributeList;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.model.XMLElement;
 import com.mcdermottroe.exemplar.model.XMLElementContentModel;
 import com.mcdermottroe.exemplar.model.XMLElementContentType;
+import com.mcdermottroe.exemplar.model.XMLEntity;
+import com.mcdermottroe.exemplar.model.XMLExternalIdentifier;
 import com.mcdermottroe.exemplar.model.XMLNamedObject;
+import com.mcdermottroe.exemplar.model.XMLNotation;
 import com.mcdermottroe.exemplar.output.LanguageAPIPair;
 import com.mcdermottroe.exemplar.output.OutputException;
 import com.mcdermottroe.exemplar.output.OutputUtils;
@@ -70,6 +78,9 @@ extends UtilityClassTestCase<OutputUtils>
 	throws Exception
 	{
 		super.setUp();
+
+		Options.reset();
+		Options.set("include", "entities");
 
 		// Create the temp file
 		testFile = new File(TMP, getClass().getName());
@@ -142,9 +153,11 @@ extends UtilityClassTestCase<OutputUtils>
 			OutputUtils.writeStringToFile(testData, testFile.getAbsolutePath());
 		} catch (OutputException e) {
 			assertNotNull("OutputException was null", e);
+			e.printStackTrace();
 			fail("writeStringToFile(String, String) threw OutputException");
 		} catch (AssertionError e) {
 			assertNotNull("AssertionError was null", e);
+			e.printStackTrace();
 			fail("writeStringToFile(String, String) failed an assertion");
 		}
 		assertTrue("Test file was not created", testFile.exists());
@@ -391,7 +404,7 @@ extends UtilityClassTestCase<OutputUtils>
 		// Find all of the legal language and API pairs.
 		Set<LanguageAPIPair> testData = OutputUtils.availableLanguageAPIPairs();
 
-		// Make an empty doctype
+		// Make an test doctype with some sample markup
 		Collection<XMLNamedObject<?>> markup;
 		markup = new ArrayList<XMLNamedObject<?>>();
 		markup.add(
@@ -399,6 +412,56 @@ extends UtilityClassTestCase<OutputUtils>
 				"element",
 				new XMLElementContentModel(XMLElementContentType.ANY)
 			)
+		);
+		markup.add(
+			new XMLElement(
+				"elementWithAttlist",
+				new XMLElementContentModel(XMLElementContentType.ANY)
+			)
+		);
+		XMLAttribute att = new XMLAttribute(
+			"attribute",
+			XMLAttributeContentType.CDATA(),
+			XMLAttributeDefaultType.IMPLIED()
+		);
+		List<XMLAttribute> attList = new ArrayList<XMLAttribute>();
+		attList.add(att);
+		markup.add(
+			new XMLAttributeList(
+				"elementWithAttlist",
+				attList
+			)
+		);
+		markup.add(
+			new XMLElement(
+				"emptyElement",
+				new XMLElementContentModel(XMLElementContentType.EMPTY)
+			)
+		);
+		markup.add(
+			new XMLEntity("internalEntity", "intEnt")
+		);
+		markup.add(
+			new XMLEntity(
+				"externalParsedEntity",
+				new XMLExternalIdentifier("PUB", "SYS")
+			)
+		);
+		markup.add(
+			new XMLEntity(
+				"externalUnparsedEntity",
+				new XMLExternalIdentifier(null, "SYS"),
+				"notation"
+			)
+		);
+		markup.add(
+			new XMLNotation("not1", new XMLExternalIdentifier("PUB", "SYS"))
+		);
+		markup.add(
+			new XMLNotation("not2", new XMLExternalIdentifier(null, "SYS"))
+		);
+		markup.add(
+			new XMLNotation("not3", new XMLExternalIdentifier("PUB", null))
 		);
 		XMLDocumentType doctype = new XMLDocumentType(markup);
 
@@ -441,9 +504,6 @@ extends UtilityClassTestCase<OutputUtils>
 			// Make sure that something was created in the output directory,
 			// we'll leave it up to the XMLParserSourceGeneratorTestCases to
 			// actually verify the contents further.
-			if (output.list().length <= 0) {
-				System.err.println(output.getAbsolutePath() + " was empty");
-			}
 			assertTrue("Output directory was empty", output.list().length > 0);
 
 			// Now remove the test directory and its contents

@@ -37,6 +37,7 @@ import com.mcdermottroe.exemplar.input.ParserException;
 import com.mcdermottroe.exemplar.input.dtd.Parser;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.ui.Options;
+import com.mcdermottroe.exemplar.utils.Files;
 
 import junit.com.mcdermottroe.exemplar.NormalClassTestCase;
 
@@ -53,8 +54,6 @@ extends NormalClassTestCase<Parser>
 		super.setUp();
 
 		addSample(new Parser());
-
-		ignoreHashCodeTests = true;
 	}
 
 	/** Get a sample of DTDs to parse.
@@ -66,6 +65,11 @@ extends NormalClassTestCase<Parser>
 		sampleDtds.add(new File("dtds/docbook-xml-42/docbookx.dtd"));
 		sampleDtds.add(new File("dtds/docbook-xml-44/docbookx.dtd"));
 		sampleDtds.add(new File("dtds/w3cschema/XMLSchema.dtd"));
+		for (File f : Files.findFiles(new File("tests/data/valid_dtds"))) {
+			if ("test.dtd".equals(f.getName())) {
+				sampleDtds.add(f);
+			}
+		}
 		return sampleDtds;
 	}
 

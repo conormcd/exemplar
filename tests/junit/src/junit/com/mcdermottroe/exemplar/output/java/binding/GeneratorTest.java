@@ -32,6 +32,7 @@ package junit.com.mcdermottroe.exemplar.output.java.binding;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.output.java.binding.Generator;
@@ -67,6 +68,15 @@ extends XMLParserSourceGeneratorTestCase<Generator>
 		XMLDocumentType docType
 	)
 	{
+		if	(
+				docType.attlists().isEmpty() &&
+				docType.elements().isEmpty() &&
+				docType.entities().isEmpty() &&
+				docType.notations().isEmpty()
+			)
+		{
+			return Collections.EMPTY_LIST;
+		}
 		String vocabulary = Options.getString("vocabulary");
 		String rootParserClass = Strings.upperCaseFirst(vocabulary);
 

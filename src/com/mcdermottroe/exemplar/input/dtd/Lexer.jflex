@@ -86,9 +86,6 @@ import static com.mcdermottroe.exemplar.Constants.XMLExternalIdentifier.SYSTEM;
 	throws ParameterEntityException
 	{
 		DBC.REQUIRE(peDeclString != null);
-		if (peDeclString == null) {
-			return;
-		}
 
 		String name;		// The name of the parameter entity
 		String contents;	// The replacement text for the entity
