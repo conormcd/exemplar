@@ -105,4 +105,18 @@ extends UtilityClassTestCase<InputUtils>
 			}
 		}
 	}
+
+	/** Test {@link InputUtils#parse(String, String)}. */
+	public void testParseNonExistantType() {
+		boolean fellThrough = false;
+		try {
+			InputUtils.parse("", "nonexistant.type");
+			fellThrough = true;
+		} catch (InputException e) {
+			assertNotNull("InputException was null", e);
+		} catch (ParserException e) {
+			assertNotNull("ParserException was null", e);
+		}
+		assertFalse("parse(String, String) fell through", fellThrough);
+	}
 }

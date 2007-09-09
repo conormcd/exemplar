@@ -84,7 +84,6 @@ public final class ExitStatus {
 	public static int getExitCode(String mnemonic) {
 		// Mnemonics cannot be null
 		DBC.REQUIRE(mnemonic != null);
-		DBC.REQUIRE(!exitCodes.isEmpty());
 
 		// Ensure that the exit codes have been loaded.
 		initialise();

@@ -73,6 +73,21 @@ extends NormalClassTestCase<Parser>
 		return sampleDtds;
 	}
 
+	/** Get a selection of invalid DTDs which should all cause the lexer/parser
+		to throw an exception.
+
+		@return	A collection of invalid DTDs.
+	*/
+	public static Collection<File> getInvalidDTDs() {
+		Collection<File> badDtds = new ArrayList<File>();
+		for (File f : Files.findFiles(new File("tests/data/invalid_dtds"))) {
+			if ("test.dtd".equals(f.getName())) {
+				badDtds.add(f);
+			}
+		}
+		return badDtds;
+	}
+
 	/** Test {@link Parser#parse(String)}. */
 	public void testParseString() {
 		for (Parser sample : samples()) {
@@ -80,12 +95,34 @@ extends NormalClassTestCase<Parser>
 				for (File sampleFile : getSampleDTDs()) {
 					XMLDocumentType doctype = null;
 					try {
-						doctype = sample.parse(sampleFile);
+						doctype = sample.parse(sampleFile.getAbsolutePath());
 					} catch (ParserException e) {
 						assertNotNull("ParserException was null", e);
+						e.printStackTrace();
 						fail("parse(String) threw a ParserException");
 					}
 					assertNotNull("parse(String) returned null", doctype);
+				}
+			}
+		}
+	}
+
+	/** Test {@link Parser#parse(String)} with bad DTDs. */
+	public void testParseStringInvalidDTDs() {
+		for (Parser sample : samples()) {
+			if (sample != null) {
+				for (File sampleFile : getInvalidDTDs()) {
+					boolean fellThrough = false;
+					try {
+						sample.parse(sampleFile.getAbsolutePath());
+						fellThrough = true;
+					} catch (ParserException e) {
+						assertNotNull("ParserException was null", e);
+					}
+					assertFalse(
+						"parse(String) failed to throw for " + sampleFile,
+						fellThrough
+					);
 				}
 			}
 		}

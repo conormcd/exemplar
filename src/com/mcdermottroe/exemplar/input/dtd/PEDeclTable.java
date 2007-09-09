@@ -137,8 +137,6 @@ implements Comparable<PEDeclTable>, Copyable<PEDeclTable>
 					fileTable.put(name, replacePERefs(contents));
 				}
 				break;
-			default:
-				DBC.UNREACHABLE_CODE();
 		}
 	}
 

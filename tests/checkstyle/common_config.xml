@@ -66,7 +66,7 @@
 		<module name="AvoidStarImport" />
 		<module name="IllegalImport" />
 		<module name="ImportOrder">
-			<property name="groups" value="java,org.apache,junit.framework,com.mcdermottroe,junit.com.mcdermottroe" />
+			<property name="groups" value="java,org.apache,junit.framework,java_cup.runtime,com.mcdermottroe,junit.com.mcdermottroe" />
 			<property name="separated" value="true" />
 		</module>
 		<module name="RedundantImport" />

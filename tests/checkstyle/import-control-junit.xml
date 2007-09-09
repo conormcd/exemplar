@@ -52,4 +52,7 @@
 
 	<!-- Allow Apache Ant. -->
 	<allow pkg="org.apache.tools.ant" />
+
+	<!-- Allow Java CUP -->
+	<allow pkg="java_cup.runtime" />
 </import-control>

@@ -1,0 +1,79 @@
+<!ENTITY % ignore "IGNORE">
+<![%ignore;[
+<!ELEMENT foo ANY>
+<!ENTITY % foo "foo">
+<!ENTITY % bar	"bar">
+<!ENTITY % baz
+"baz">
+<!ENTITY % quux"quux">
+<![%ignore;[ ]]>
+!
+<
+>
+@
+.
+\
+""
+/
+&
+=
+丐
++
+NMTOKEN
+`
+A
+IDREF
+IDREFS
+	,
+<!-- comment -->
+-
+^
+		
+;
+#FIXED
+|	
+#REQUIRED
+,
+(
+)
+[
+]
+	,	
+	|	
+~
+_
+?
+ANY
+%
+<!NOTATION notation PUBLIC "foo">
+<!ELEMENT element ANY>
+#IMPLIED
+EMPTY
+	0
+<!ENTITY foo "foo">
+	|
+#
+|
+SYSTEM
+{
+}
+'
+ENTITIES
+ENTITY
+&#0123;
+NMTOKENS
+CDATA
+,	
+#PCDATA
+NOTATION
+*
+$
+PUBLIC
+	NDATA	
+<!ATTLIST element foo >
+:
+.
+ID
+@
+>
+]]>

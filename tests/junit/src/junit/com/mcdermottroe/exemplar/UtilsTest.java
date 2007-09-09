@@ -30,7 +30,9 @@
 package junit.com.mcdermottroe.exemplar;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.mcdermottroe.exemplar.Utils;
 
@@ -218,15 +220,67 @@ extends UtilityClassTestCase<Utils>
 		twoElementList.add("one");
 		twoElementList.add("two");
 		List<String> threeElementList = new ArrayList<String>(3);
-		threeElementList.add("one");
 		threeElementList.add("two");
+		threeElementList.add("one");
 		threeElementList.add("three");
 		List<List<String>> inputList = new ArrayList<List<String>>();
+		inputList.add(null);
 		inputList.add(emptyList);
 		inputList.add(oneElementList);
 		inputList.add(twoElementList);
 		inputList.add(threeElementList);
 		int[] expectedList = {
+			0,
+			-1,
+			-1,
+			-1,
+			-1,
+			1,
+			0,
+			-1,
+			-1,
+			-1,
+			1,
+			1,
+			0,
+			-1,
+			-1,
+			1,
+			1,
+			1,
+			0,
+			-1,
+			1,
+			1,
+			1,
+			1,
+			0,
+		};
+		int i = 0;
+		for (List<String> listA : inputList) {
+			for (List<String> listB : inputList) {
+				assertEquals(
+					"Output did not match expected",
+					expectedList[i],
+					Integer.signum(Utils.compare(listA, listB))
+				);
+				i++;
+			}
+		}
+
+		Map<String, String> emptyMap = new HashMap<String, String>();
+		Map<String, String> oneMap = new HashMap<String, String>();
+		oneMap.put("one", "one");
+		Map<String, String> twoMap = new HashMap<String, String>();
+		twoMap.put("one", "foo");
+		twoMap.put("two", "two");
+		List<Map<String, String>> inputMaps = 
+			new ArrayList<Map<String, String>>();
+		inputMaps.add(null);
+		inputMaps.add(emptyMap);
+		inputMaps.add(oneMap);
+		inputMaps.add(twoMap);
+		int[] expectedMaps = {
 			0,
 			-1,
 			-1,
@@ -244,15 +298,15 @@ extends UtilityClassTestCase<Utils>
 			1,
 			0,
 		};
-		int i = 0;
-		for (List<String> listA : inputList) {
-			for (List<String> listB : inputList) {
+		int j = 0;
+		for (Map<String, String> mapA : inputMaps) {
+			for (Map<String, String> mapB : inputMaps) {
 				assertEquals(
 					"Output did not match expected",
-					expectedList[i],
-					Integer.signum(Utils.compare(listA, listB))
+					expectedMaps[j],
+					Integer.signum(Utils.compare(mapA, mapB))
 				);
-				i++;
+				j++;
 			}
 		}
 	}

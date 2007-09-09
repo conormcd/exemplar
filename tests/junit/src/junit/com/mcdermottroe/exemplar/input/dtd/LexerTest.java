@@ -30,8 +30,11 @@
 package junit.com.mcdermottroe.exemplar.input.dtd;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+
+import java_cup.runtime.Symbol;
 
 import com.mcdermottroe.exemplar.input.dtd.Lexer;
 
@@ -56,6 +59,25 @@ extends NormalClassTestCase<Lexer>
 		addSample(new Lexer(nullReader));
 		addSample(new Lexer(new InputStreamReader(System.in)));
 		addSample(new Lexer(System.in));
+		Lexer sampleA = new Lexer(
+			new FileInputStream(
+				new File("dtds/docbook-xml-44/docbookx.dtd")
+			)
+		);
+		sampleA.setDtdPath(new File("dtds/docbook-xml-44"));
+		Lexer sampleB = new Lexer(
+			new FileInputStream(
+				new File("dtds/docbook-xml-44/docbookx.dtd")
+			)
+		);
+		sampleB.setDtdPath(new File("dtds/docbook-xml-44"));
+		Symbol sym;
+		do {
+			sym = sampleB.next_token();
+		} while (sym != null);
+		addSample(sampleB);
+		Lexer sampleC = new Lexer(nullReader);
+		sampleC.yypushStream(new InputStreamReader(System.in));
 	}
 
 	/** Test {@link Lexer#setDtdPath(File)}. */
@@ -97,7 +119,19 @@ extends NormalClassTestCase<Lexer>
 
 	/** Test {@link Lexer#yycharat(int)}. */
 	public void testYycharat() {
-		assertTrue(DELIBERATE_PASS, true);
+		for (Lexer sample : samples()) {
+			if (sample != null) {
+				try {
+					for (int i = 0; i <= 1; i++) {
+						sample.yycharat(i);
+					}
+				} catch (Throwable t) {
+					assertNotNull("Throwable was null", t);
+					t.printStackTrace();
+					fail("yycharat(int) threw an exception");
+				}
+			}
+		}
 	}
 
 	/** Test {@link Lexer#yyclose()}. */
@@ -107,7 +141,17 @@ extends NormalClassTestCase<Lexer>
 
 	/** Test {@link Lexer#yylength()}. */
 	public void testYylength() {
-		assertTrue(DELIBERATE_PASS, true);
+		for (Lexer sample : samples()) {
+			if (sample != null) {
+				try {
+					sample.yylength();
+				} catch (Throwable t) {
+					assertNotNull("Throwable was null", t);
+					t.printStackTrace();
+					fail("yylength() threw an exception");
+				}
+			}
+		}
 	}
 
 	/** Test {@link Lexer#yymoreStreams()}. */
@@ -132,12 +176,32 @@ extends NormalClassTestCase<Lexer>
 
 	/** Test {@link Lexer#yyreset(Reader)}. */
 	public void testYyreset() {
-		assertTrue(DELIBERATE_PASS, true);
+		for (Lexer sample : samples()) {
+			if (sample != null) {
+				try {
+					sample.yyreset(null);
+				} catch (Throwable t) {
+					assertNotNull("Throwable was null", t);
+					t.printStackTrace();
+					fail("yyreset(null) threw an exception");
+				}
+			}
+		}
 	}
 
 	/** Test {@link Lexer#yystate()}. */
 	public void testYystate() {
-		assertTrue(DELIBERATE_PASS, true);
+		for (Lexer sample : samples()) {
+			if (sample != null) {
+				try {
+					sample.yystate();
+				} catch (Throwable t) {
+					assertNotNull("Throwable was null", t);
+					t.printStackTrace();
+					fail("yystate() threw an exception");
+				}
+			}
+		}
 	}
 
 	/** Test {@link Lexer#yytext()}. */

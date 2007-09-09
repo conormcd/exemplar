@@ -31,10 +31,9 @@ package com.mcdermottroe.exemplar.input.dtd;
 
 import java.io.File;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import java_cup.runtime.Symbol;
 
@@ -46,8 +45,6 @@ import com.mcdermottroe.exemplar.ui.Log;
 import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.utils.XML;
 
-import static com.mcdermottroe.exemplar.Constants.BASE_DECIMAL;
-import static com.mcdermottroe.exemplar.Constants.BASE_HEXADECIMAL;
 import static com.mcdermottroe.exemplar.Constants.XMLExternalIdentifier.PUBLIC;
 import static com.mcdermottroe.exemplar.Constants.XMLExternalIdentifier.SYSTEM;
 
@@ -301,28 +298,22 @@ LexerException, ParameterEntityException
 			}
 <YYINITIAL>%[^;]+;
 			{
-				// Ensure that calling methods on the result of yytext() will
-				// not cause an NPE
-				DBC.ASSERT(yytext() != null);
-
 				// Strip off the leading % and the trailing ;
 				String peRefKey = yytext().substring(1, yytext().length() - 1);
 
 				// Create a new reader object and push it as a new input
 				yypushStream(pedeclTable.peRefReader(peRefKey, dtdPath));
 			}
-<YYINITIAL>"<!["[^\[]+"["
+<YYINITIAL>"<!["~"["
 			{
 				// Replace any parameter entity references
 				String text = pedeclTable.replacePERefs(yytext());
-				DBC.ASSERT(text != null);
 
 				// Strip off the '<![' and '[' and remove leading and trailing
 				// space.
 				text = text.substring(3, text.length() - 1).trim();
 
 				if (text.equals("IGNORE") || text.equals("INCLUDE")) {
-					DBC.ASSERT(conditionalSectionState != null);
 					conditionalSectionState.push(text);
 					if (conditionalSectionState.search("IGNORE") == -1) {
 						yybegin(YYINITIAL);
@@ -333,18 +324,15 @@ LexerException, ParameterEntityException
 					throw new LexerException(Message.LEXEREXCEPTION(Message.DTDLEXER_INVALID_CONDITIONAL_SECTION(), yytext()));
 				}
 			}
-<YYIGNORE>"<!["[^\[]+"["
+<YYIGNORE>"<!["~"["
 			{
 				// This conditional section could be either INCLUDE or IGNORE
 				// but it doesn't matter because an outer one is IGNORE.
-				DBC.ASSERT(conditionalSectionState != null);
 				conditionalSectionState.push("IGNORE");
 			}
 <YYINITIAL,YYIGNORE>"]]>"
 			{
 				String text = conditionalSectionState.pop();
-				DBC.ASSERT(text != null);
-				DBC.ASSERT(conditionalSectionState != null);
 				if (conditionalSectionState.search("IGNORE") == -1) {
 					yybegin(YYINITIAL);
 				} else {
@@ -353,103 +341,12 @@ LexerException, ParameterEntityException
 			}
 <YYINITIAL>"<?"~"?>"
 			{
-				// Ensure that calling methods on the result of yytext() will
-				// not cause an NPE
-				DBC.ASSERT(yytext() != null);
-
-				// Strip the leading and trailing <? ?> from the PI
-				String text = yytext().substring(2, yytext().length() - 2);
-
-				// Find the index of the first whitespace character so that the
-				// name of the processing instruction can be extracted.
-				int fWI = Integer.MAX_VALUE;
-				if (text.contains(" ") && text.indexOf(" ") < fWI) {
-					fWI = text.indexOf(" ");
-				}
-				if (text.contains("\t") && text.indexOf("\t") < fWI) {
-					fWI = text.indexOf("\t");
-				}
-				if (text.contains("\n") && text.indexOf("\n") < fWI) {
-					fWI = text.indexOf("\n");
-				}
-				if (text.contains("\r") && text.indexOf("\r") < fWI) {
-					fWI = text.indexOf("\r");
-				}
-
-				// Now extract the name
-				String name = text.substring(0, fWI);
-
-				// If the name of the PI is [Xx][Mm][Ll] then this is a text
-				// declaration. All other PIs are ignored.
-				if (	(name.charAt(0) == 'x' || name.charAt(0) == 'X') &&
-						(name.charAt(1) == 'm' || name.charAt(1) == 'M') &&
-						(name.charAt(2) == 'l' || name.charAt(2) == 'L'))
-				{
-					// This is a text declaration
-					String textDeclText = text.substring(fWI, text.length()).trim();
-
-					// Process the version
-					if (textDeclText.startsWith("version")) {
-						// Strip off version and whitespace immediately after
-						// it
-						textDeclText = textDeclText.substring(7, textDeclText.length()).trim();
-
-						// Now textDeclText should start with an '='
-						if (textDeclText.charAt(0) == '=') {
-							// Strip off the '=' and whitespace immediately
-							// after it.
-							textDeclText = textDeclText.substring(1, textDeclText.length()).trim();
-
-							// Get the version number
-							String versionNum;
-							char quotChar = textDeclText.charAt(0);
-							if (quotChar == '\'' || quotChar == '\"') {
-								versionNum = textDeclText.substring(1, textDeclText.indexOf(quotChar, 1));
-
-								// Now remove the version number
-								textDeclText = textDeclText.substring(versionNum.length() + 2, textDeclText.length()).trim();
-							} else {
-								throw new LexerException(Message.DTDLEXER_INVALID_TEXTDECL());
-							}
-						} else {
-							throw new LexerException(Message.DTDLEXER_INVALID_TEXTDECL());
-						}
-					}
-
-					// Process the encoding
-					if (textDeclText.startsWith("encoding")) {
-						// Strip off encoding and whitespace immediately after
-						// it
-						textDeclText = textDeclText.substring(8, textDeclText.length()).trim();
-
-						// Now textDeclText should start with an '='
-						if (textDeclText.charAt(0) == '=') {
-							// Strip off the '=' and whitespace immediately
-							// after it.
-							textDeclText = textDeclText.substring(1, textDeclText.length()).trim();
-
-							// Get the encoding name
-							char quotChar = textDeclText.charAt(0);
-							if (quotChar == '\'' || quotChar == '\"') {
-								String encName = textDeclText.substring(1, textDeclText.indexOf(quotChar, 1));
-
-								// Now remove the version number
-								textDeclText = textDeclText.substring(encName.length() + 2, textDeclText.length()).trim();
-							} else {
-								throw new LexerException(Message.DTDLEXER_INVALID_TEXTDECL());
-							}
-						} else {
-							throw new LexerException(Message.DTDLEXER_INVALID_TEXTDECL());
-						}
-					}
-
-					// If there's anything left, it's an error
-					if (! textDeclText.trim().equals("")) {
-						throw new LexerException(Message.DTDLEXER_INVALID_TEXTDECL());
-					}
-				} else {
-					// Ignore
-					Log.debug("Ignoring processing instruction: " + name);
+				Pattern textDeclRegex = Pattern.compile(
+					"<\\?xml\\s+version\\s*=\\s*(?:\"[a-zA-Z0-9_.:-]+\"|'[a-zA-Z0-9_.:-]+')(\\s+encoding\\s*=\\s*(?:\"[A-Za-z][A-Za-z0-9._-]*\"|'[A-Za-z][A-Za-z0-9._-]*'))?\\s*\\?>"
+				);
+				Matcher m = textDeclRegex.matcher(yytext());
+				if (!m.matches()) {
+					throw new LexerException(Message.DTDLEXER_INVALID_TEXTDECL());
 				}
 			}
 <YYINITIAL>"<!--"~"-->"

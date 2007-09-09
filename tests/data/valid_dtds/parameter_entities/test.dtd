@@ -1,0 +1,5 @@
+<!ENTITY % foo "foo">
+<!ENTITY % bar	"bar">
+<!ENTITY % baz
+"baz">
+<!ENTITY % quux"quux">
