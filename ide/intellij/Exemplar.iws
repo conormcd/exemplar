@@ -18,10 +18,17 @@
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../res/com/mcdermottroe/exemplar/ui/Options.properties" afterPath="$PROJECT_DIR$/../../res/com/mcdermottroe/exemplar/ui/Options.properties" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/data/valid_dtds/multiple_ideographic_elements" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_extender/test.dtd" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/DefaultElementNameConverter.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/DefaultElementNameConverter.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_extender" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/DefaultAttributeNameConverter.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/DefaultAttributeNameConverter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/OutputUtils.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/OutputUtils.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/ant/Task.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/ant/Task.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Exemplar.iws" afterPath="$PROJECT_DIR$/Exemplar.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/Parser.cup" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/Parser.cup" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/data/valid_dtds/ignore_section_most_tokens/test.dtd" afterPath="$PROJECT_DIR$/../../tests/data/valid_dtds/ignore_section_most_tokens/test.dtd" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/ui/ant/TaskTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/ui/ant/TaskTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/data/valid_dtds/multiple_ideographic_elements/test.dtd" />
     </list>
   </component>
   <component name="ChangeListSynchronizer" />
@@ -41,14 +48,14 @@
     <option name="ASSERT_NOT_NULL" value="true" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$junit.com.mcdermottroe.exemplar.es" NAME="Exemplar JUnit Tests" MODIFIED="1190568126231">
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$junit.com.mcdermottroe.exemplar.es" NAME="Exemplar JUnit Tests" MODIFIED="1190573759630">
       <FILTER>com.mcdermottroe.exemplar.*</FILTER>
     </SUITE>
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$DefaultElementNameConverterTest.es" NAME="Single class test" MODIFIED="1190328983352" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$PEDeclTableTest.es" NAME="Single class test" MODIFIED="1185705882210" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$LexerTest.es" NAME="Single class test" MODIFIED="1189181897694" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$InputUtilsTest.es" NAME="Single class test" MODIFIED="1190569504272" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$ParserTest.es" NAME="Single class test" MODIFIED="1189184908688" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$InputUtilsTest.es" NAME="Single class test" MODIFIED="1189332213240" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$PowerSetTest.es" NAME="Single class test" MODIFIED="1183336627958" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$GeneratorTest.es" NAME="Single class test" MODIFIED="1187540858815" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLNamedObjectTest.es" NAME="Single class test" MODIFIED="1185639909820" />
@@ -518,8 +525,8 @@
       <module name="Exemplar" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="junit.com.mcdermottroe.exemplar.utils" />
-      <option name="MAIN_CLASS_NAME" value="junit.com.mcdermottroe.exemplar.utils.FilesTest" />
+      <option name="PACKAGE_NAME" value="junit.com.mcdermottroe.exemplar.input" />
+      <option name="MAIN_CLASS_NAME" value="junit.com.mcdermottroe.exemplar.input.InputUtilsTest" />
       <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
       <option name="VM_PARAMETERS" value="" />
@@ -743,49 +750,6 @@
     <option name="myLastEditedConfigurable" value="Exemplar - NO NLS" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/DefaultAttributeNameConverter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="47" selection-start="1769" selection-end="1769" vertical-scroll-proportion="0.09569378">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/XMLParserSourceGenerator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="57" column="6" selection-start="2545" selection-end="2545" vertical-scroll-proportion="0.22966507">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/java/binding/AttributeNameConverterTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="1" selection-start="2042" selection-end="2042" vertical-scroll-proportion="0.30622008">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/java/binding/ElementNameConverterTestCase.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="36" column="74" selection-start="1994" selection-end="1994" vertical-scroll-proportion="0.15311004">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/java/binding/ElementNameConverterTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="41" column="13" selection-start="1936" selection-end="1936" vertical-scroll-proportion="0.24880382">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/java/binding/AttributeNameConverterTestCase.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="47" column="0" selection-start="2257" selection-end="2257" vertical-scroll-proportion="0.33333334">
@@ -827,15 +791,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/Generator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="21" selection-start="1689" selection-end="1689" vertical-scroll-proportion="0.09569378">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/Message.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="53" column="19" selection-start="2572" selection-end="2572" vertical-scroll-proportion="0.33333334">
@@ -852,16 +807,64 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/Parser.java">
+    <entry file="file://$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/ui/ant/TaskTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="939" column="58" selection-start="53757" selection-end="53757" vertical-scroll-proportion="0.50526315">
+        <state line="242" column="22" selection-start="7625" selection-end="7625" vertical-scroll-proportion="0.17862839">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/ui/ant/TaskTest.java">
+    <entry file="file://$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/InputUtilsTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="242" column="22" selection-start="7625" selection-end="7625" vertical-scroll-proportion="0.17862839">
+        <state line="40" column="0" selection-start="1908" selection-end="1908" vertical-scroll-proportion="0.22966507">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://Lexer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="1574" column="12" selection-start="51799" selection-end="51799" vertical-scroll-proportion="0.7254902">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/OutputUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="203" column="12" selection-start="6291" selection-end="6291" vertical-scroll-proportion="0.97607654">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/Generator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="146" column="0" selection-start="5436" selection-end="5436" vertical-scroll-proportion="0.15948963">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/AttributeNameConverter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="69" column="12" selection-start="2852" selection-end="2852" vertical-scroll-proportion="0.708134">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/DefaultAttributeNameConverter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="32" column="49" selection-start="1718" selection-end="1718" vertical-scroll-proportion="0.07655502">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/DefaultElementNameConverter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="47" column="0" selection-start="2118" selection-end="2118" vertical-scroll-proportion="0.28708133">
           <folding />
         </state>
       </provider>

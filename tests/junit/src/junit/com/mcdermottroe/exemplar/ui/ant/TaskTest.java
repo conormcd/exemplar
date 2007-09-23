@@ -317,6 +317,20 @@ extends NormalClassTestCase<Task>
 		);
 	}
 
+	/** Test {@link Task#setOutput_encoding(String)}. */
+	public void testSetOutput_encoding() {
+		Task.setOutput_encoding("UTF8");
+		assertNotNull(
+			"Options.getString(\"output-encoding\") == null",
+			Options.getString("output-encoding")
+		);
+		assertEquals(
+			"Options.getString(\"output-type\") != \"UTF8\"",
+			"UTF8",
+			Options.getString("output-encoding")
+		);
+	}
+
 	/** Test {@link Task#setOutput_language(String)}. */
 	public void testSetOutput_language() {
 		Task.setOutput_language("java");

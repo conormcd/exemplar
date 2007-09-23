@@ -55,7 +55,7 @@ extends ElementNameConverter<DefaultElementNameConverter>
 		} else {
 			className = Strings.upperCaseFirst(elementName);
 		}
-		return className.replaceAll("\\W", "_");
+		return className;
 	}
 
 	/** {@inheritDoc} */

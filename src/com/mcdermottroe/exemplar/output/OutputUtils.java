@@ -31,8 +31,11 @@ package com.mcdermottroe.exemplar.output;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -42,6 +45,7 @@ import java.util.TreeSet;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.ui.Message;
+import com.mcdermottroe.exemplar.ui.Options;
 import com.mcdermottroe.exemplar.utils.Packages;
 
 import static com.mcdermottroe.exemplar.Constants.Character.FULL_STOP;
@@ -158,11 +162,32 @@ public final class OutputUtils {
 		boolean outputOpen = false;
 		try {
 			// Write the string to the output file.
-			output = new BufferedWriter(new FileWriter(file));
+			output = new BufferedWriter(
+				new OutputStreamWriter(
+					new FileOutputStream(file),
+					Options.getString("output-encoding")
+				)
+			);
 			outputOpen = true;
 			output.write(s);
 			output.close();
 			outputOpen = false;
+		} catch (FileNotFoundException e) {
+			throw new OutputException(
+				Message.FILE_WRITE_IO_EXCEPTION(
+					file.getAbsolutePath()
+				),
+				e,
+				file
+			);
+		} catch (UnsupportedEncodingException e) {
+			throw new OutputException(
+				Message.FILE_WRITE_IO_EXCEPTION(
+					file.getAbsolutePath()
+				),
+				e,
+				file
+			);
 		} catch (IOException e) {
 			throw new OutputException(
 				Message.FILE_WRITE_IO_EXCEPTION(

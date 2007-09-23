@@ -227,6 +227,15 @@ implements Comparable<Task>, Copyable<Task>
 		Options.set("output-api", outputAPI);
 	}
 
+	/** Setter for the output_encoding attribute of the task.
+
+		@param	outputEncoding	This is the string value of the output_encoding
+								attribute.
+	*/
+	public static void setOutput_encoding(String outputEncoding) {
+		Options.set("output-encoding", outputEncoding);
+	}
+
 	/** Setter for the output_language attribute of the task.
 
 		@param	outputLanguage	This is the string value of the output_language

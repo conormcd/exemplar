@@ -33,6 +33,8 @@ import com.mcdermottroe.exemplar.CopyException;
 import com.mcdermottroe.exemplar.model.XMLAttribute;
 import com.mcdermottroe.exemplar.utils.Strings;
 
+import static com.mcdermottroe.exemplar.Constants.Character.COLON;
+
 /** The default {@link AttributeNameConverter}.
 
 	@author	Conor McDermottroe
@@ -44,13 +46,16 @@ extends AttributeNameConverter<DefaultAttributeNameConverter>
 	/** {@inheritDoc} */
 	@Override protected String generateVariableName(XMLAttribute attribute) {
 		String attName = attribute.getName();
-		String var = attName.replaceAll("\\W", "_");
-		if (!Strings.isLegalJavaIdentifier(var)) {
-			StringBuilder varName = new StringBuilder(var);
+		int indexOfColon = attName.indexOf((int)COLON);
+		if (indexOfColon > 0) {
+			attName = attName.substring(indexOfColon + 1);
+		}
+		if (!Strings.isLegalJavaIdentifier(attName)) {
+			StringBuilder varName = new StringBuilder(attName);
 			varName.append("Attribute");
 			return varName.toString();
 		}
-		return var;
+		return attName;
 	}
 
 	/** {@inheritDoc} */
