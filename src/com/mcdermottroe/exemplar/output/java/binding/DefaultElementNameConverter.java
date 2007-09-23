@@ -27,46 +27,41 @@
 	NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package junit.com.mcdermottroe.exemplar.output.java;
+package com.mcdermottroe.exemplar.output.java.binding;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
+import com.mcdermottroe.exemplar.CopyException;
+import com.mcdermottroe.exemplar.model.XMLElement;
+import com.mcdermottroe.exemplar.utils.Strings;
 
-import com.mcdermottroe.exemplar.model.XMLDocumentType;
-import com.mcdermottroe.exemplar.output.java.XMLJavaSourceGenerator;
-import com.mcdermottroe.exemplar.ui.Options;
+import static com.mcdermottroe.exemplar.Constants.Character.COLON;
 
-import static com.mcdermottroe.exemplar.Constants.Format.Filenames.JAVA_PARSER;
-import static com.mcdermottroe.exemplar.Constants.Format.Filenames.JFLEX;
-import static com.mcdermottroe.exemplar.Constants.Output.Java.ENTITIES_FILE;
+/** The default {@link ElementNameConverter}.
 
-import junit.com.mcdermottroe.exemplar.output.XMLParserSourceGeneratorTestCase;
-
-/** Test class for children of {@link XMLJavaSourceGenerator}.
-
-	@param	<T>	The type of {@link XMLJavaSourceGenerator} to test.
 	@author	Conor McDermottroe
-	@since	0.1
+	@since	0.2
 */
-public abstract class
-XMLJavaSourceGeneratorTestCase<T extends XMLJavaSourceGenerator<T>>
-extends XMLParserSourceGeneratorTestCase<T>
+public class DefaultElementNameConverter
+extends ElementNameConverter<DefaultElementNameConverter>
 {
 	/** {@inheritDoc} */
-	@Override public Collection<File> generatedFiles(
-		T generator,
-		File outputDir,
-		XMLDocumentType docType
-	)
-	{
-		String vocabulary = Options.getString("vocabulary");
-		Collection<File> retVal = new ArrayList<File>();
-		retVal.add(new File(outputDir, String.format(JAVA_PARSER, vocabulary)));
-		retVal.add(new File(outputDir, String.format(JFLEX, vocabulary)));
-		if (Options.isSet("include", "entities")) {
-			retVal.add(new File(outputDir, ENTITIES_FILE));
+	@Override protected String generateClassName(XMLElement element) {
+		String elementName = element.getName();
+		String className;
+		int indexOfColon = elementName.indexOf((int)COLON);
+		if (indexOfColon > 0) {
+			className = Strings.upperCaseFirst(
+				elementName.substring(indexOfColon + 1)
+			);
+		} else {
+			className = Strings.upperCaseFirst(elementName);
 		}
-		return retVal;
+		return className.replaceAll("\\W", "_");
+	}
+
+	/** {@inheritDoc} */
+	public DefaultElementNameConverter getCopy()
+	throws CopyException
+	{
+		return new DefaultElementNameConverter();
 	}
 }

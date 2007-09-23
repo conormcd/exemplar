@@ -27,46 +27,19 @@
 	NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package junit.com.mcdermottroe.exemplar.output.java;
+package junit.com.mcdermottroe.exemplar.output.java.binding;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
+import com.mcdermottroe.exemplar.output.java.binding.AttributeNameConverter;
 
-import com.mcdermottroe.exemplar.model.XMLDocumentType;
-import com.mcdermottroe.exemplar.output.java.XMLJavaSourceGenerator;
-import com.mcdermottroe.exemplar.ui.Options;
+import junit.com.mcdermottroe.exemplar.AbstractClassTestCase;
 
-import static com.mcdermottroe.exemplar.Constants.Format.Filenames.JAVA_PARSER;
-import static com.mcdermottroe.exemplar.Constants.Format.Filenames.JFLEX;
-import static com.mcdermottroe.exemplar.Constants.Output.Java.ENTITIES_FILE;
+/** Test class for {@link AttributeNameConverter}.
 
-import junit.com.mcdermottroe.exemplar.output.XMLParserSourceGeneratorTestCase;
-
-/** Test class for children of {@link XMLJavaSourceGenerator}.
-
-	@param	<T>	The type of {@link XMLJavaSourceGenerator} to test.
-	@author	Conor McDermottroe
-	@since	0.1
+	@author		Conor McDermottroe
+	@since		0.1
+	@param	<T>	The type of {@link AttributeNameConverter} to test.
 */
-public abstract class
-XMLJavaSourceGeneratorTestCase<T extends XMLJavaSourceGenerator<T>>
-extends XMLParserSourceGeneratorTestCase<T>
+public class AttributeNameConverterTest<T extends AttributeNameConverter<T>>
+extends AbstractClassTestCase<T>
 {
-	/** {@inheritDoc} */
-	@Override public Collection<File> generatedFiles(
-		T generator,
-		File outputDir,
-		XMLDocumentType docType
-	)
-	{
-		String vocabulary = Options.getString("vocabulary");
-		Collection<File> retVal = new ArrayList<File>();
-		retVal.add(new File(outputDir, String.format(JAVA_PARSER, vocabulary)));
-		retVal.add(new File(outputDir, String.format(JFLEX, vocabulary)));
-		if (Options.isSet("include", "entities")) {
-			retVal.add(new File(outputDir, ENTITIES_FILE));
-		}
-		return retVal;
-	}
 }

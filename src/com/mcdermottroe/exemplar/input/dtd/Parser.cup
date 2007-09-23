@@ -31,6 +31,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -153,7 +155,12 @@ parser code {:
 		symbolFactory = new ComplexSymbolFactory();
 
 		// Create the lexer and set it as the scanner.
-		Lexer lex = new Lexer(input);
+		Lexer lex;
+		try {
+			lex = new Lexer(new InputStreamReader(input, "UTF8"));
+		} catch (UnsupportedEncodingException e) {
+			lex = new Lexer(input);
+		}
 		lex.setDtdPath(baseDir);
 		setScanner(lex);
 
@@ -186,7 +193,7 @@ parser code {:
 					}
 				}
 			}
-			if (message != null && message.startsWith("# Current token is #")) {
+			if (message != null && message.matches(".*# Current (Symbol|token) is #.*")) {
 				try {
 					int symbolNumber = Integer.parseInt(
 						message.substring(message.lastIndexOf('#') + 1)

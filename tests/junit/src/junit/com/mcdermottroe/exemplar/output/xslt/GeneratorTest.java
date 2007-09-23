@@ -71,6 +71,7 @@ extends XMLParserSourceGeneratorTestCase<Generator>
 
 	/** {@inheritDoc} */
 	@Override public Collection<File> generatedFiles(
+		Generator generator,
 		File outputDir,
 		XMLDocumentType docType
 	)

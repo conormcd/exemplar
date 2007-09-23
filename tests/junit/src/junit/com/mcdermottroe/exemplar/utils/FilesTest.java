@@ -167,4 +167,34 @@ extends UtilityClassTestCase<Files>
 			}
 		}
 	}
+
+	/** Test {@link Files#tempDir(String)}. */
+	public void testTempDir() {
+		File systemTempDir = new File(System.getProperty("java.io.tmpdir"));
+		String[] args = {
+			null,
+			"",
+			"foo",
+			"foo",
+		};
+		File[] result = {
+			null,
+			null,
+			new File(systemTempDir, "foo"),
+			new File(systemTempDir, "foo"),
+		};
+
+		for (int i = 0; i < args.length; i++) {
+			assertEquals(
+				"Output did not match expected",
+				result[i],
+				Files.tempDir(args[i])
+			);
+		}
+		for (File f : result) {
+			if (f != null) {
+				Files.removeTree(f);
+			}
+		}
+	}
 }

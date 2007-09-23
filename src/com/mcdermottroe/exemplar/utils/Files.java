@@ -132,4 +132,43 @@ public final class Files {
 		}
 		return retVal;
 	}
+
+	/** Create a temporary directory.
+
+		@param	dirname	The name of the directory which will be placed in a
+						system-specific temporary directory.
+		@return			A {@link File} for the directory if it has been created
+						or if it already existed, null if there was any failure.
+	*/
+	public static File tempDir(String dirname) {
+		if (dirname == null) {
+			return null;
+		}
+		if (dirname.length() <= 0) {
+			return null;
+		}
+
+		// Construct the File for the temp directory
+		File tmpdir = new File(
+			System.getProperty("java.io.tmpdir"),
+			dirname
+		);
+
+		// Deal with the situation where the directory already exists.
+		if (tmpdir.exists()) {
+			if (tmpdir.isDirectory()) {
+				return tmpdir;
+			} else {
+				return null;
+			}
+		}
+
+		// Create the directory and any intervening directories
+		tmpdir.mkdirs();
+		if (!tmpdir.exists()) {
+			return null;
+		}
+
+		return tmpdir;
+	}
 }

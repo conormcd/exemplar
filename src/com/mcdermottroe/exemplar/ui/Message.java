@@ -144,14 +144,34 @@ public final class Message {
 	private static String FILE_WRITE_IO_EXCEPTION_MESSAGE_FORMAT = DEFAULT_MESSAGE;
 
 	/** {@link java.text.MessageFormat} string for {@link
-		#GENERIC_SECURITY_EXCEPTION(String, String)}.
+		#GEN_CLASS_FROM_ELEMENT_FAILED(String)}.
 	*/
-	private static String GENERIC_SECURITY_EXCEPTION_MESSAGE_FORMAT = DEFAULT_MESSAGE;
+	private static String GEN_CLASS_FROM_ELEMENT_FAILED_MESSAGE_FORMAT = DEFAULT_MESSAGE;
+
+	/** {@link java.text.MessageFormat} string for {@link
+		#GEN_GETTER_FROM_ATT_FAILED(String)}.
+	*/
+	private static String GEN_GETTER_FROM_ATT_FAILED_MESSAGE_FORMAT = DEFAULT_MESSAGE;
 
 	/** {@link java.text.MessageFormat} string for {@link
 		#GEN_NO_SUCH_DIRECTORY(String)}.
 	*/
 	private static String GEN_NO_SUCH_DIRECTORY_MESSAGE_FORMAT = DEFAULT_MESSAGE;
+
+	/** {@link java.text.MessageFormat} string for {@link
+		#GEN_SETTER_FROM_ATT_FAILED(String)}.
+	*/
+	private static String GEN_SETTER_FROM_ATT_FAILED_MESSAGE_FORMAT = DEFAULT_MESSAGE;
+
+	/** {@link java.text.MessageFormat} string for {@link
+		#GEN_VARNAME_FROM_ATT_FAILED(String)}.
+	*/
+	private static String GEN_VARNAME_FROM_ATT_FAILED_MESSAGE_FORMAT = DEFAULT_MESSAGE;
+
+	/** {@link java.text.MessageFormat} string for {@link
+		#GENERIC_SECURITY_EXCEPTION(String, String)}.
+	*/
+	private static String GENERIC_SECURITY_EXCEPTION_MESSAGE_FORMAT = DEFAULT_MESSAGE;
 
 	/** Message to say that we are ignoring an error. */
 	private static String IGNORING_ERROR = DEFAULT_MESSAGE;
@@ -559,6 +579,34 @@ public final class Message {
 		);
 	}
 
+	/** A class name could not be generated for a given element.
+
+		@param	elementName	The name of the element which could not be turned in
+							to a class name.
+		@return				A message formatted according to {@link
+							#GEN_CLASS_FROM_ELEMENT_FAILED_MESSAGE_FORMAT}.
+	*/
+	public static String GEN_CLASS_FROM_ELEMENT_FAILED(String elementName) {
+		return Strings.formatMessage(
+			GEN_CLASS_FROM_ELEMENT_FAILED_MESSAGE_FORMAT,
+			elementName
+		);
+	}
+
+	/** A getter method name could not be generated for a given attribute.
+
+		@param	attributeName	The name of the attribute which could not be
+								turned into a getter method name.
+		@return					A message formatted according to {@link
+								#GEN_GETTER_FROM_ATT_FAILED_MESSAGE_FORMAT}.
+	*/
+	public static String GEN_GETTER_FROM_ATT_FAILED(String attributeName) {
+		return Strings.formatMessage(
+			GEN_GETTER_FROM_ATT_FAILED_MESSAGE_FORMAT,
+			attributeName
+		);
+	}
+
 	/** A non-existant directory was referenced.
 
 		@param directory	The directory that doesn't exist.
@@ -569,6 +617,34 @@ public final class Message {
 		return Strings.formatMessage(
 			GEN_NO_SUCH_DIRECTORY_MESSAGE_FORMAT,
 			directory
+		);
+	}
+
+	/** A setter method name could not be generated for a given attribute.
+
+		@param	attributeName	The name of the attribute which could not be
+								turned into a setter method name.
+		@return					A message formatted according to {@link
+								#GEN_GETTER_FROM_ATT_FAILED_MESSAGE_FORMAT}.
+	*/
+	public static String GEN_SETTER_FROM_ATT_FAILED(String attributeName) {
+		return Strings.formatMessage(
+			GEN_SETTER_FROM_ATT_FAILED_MESSAGE_FORMAT,
+			attributeName
+		);
+	}
+
+	/** A getter method name could not be generated for a given attribute.
+
+		@param	attributeName	The name of the attribute which could not be
+								turned into a getter method name.
+		@return					A message formatted according to {@link
+								#GEN_GETTER_FROM_ATT_FAILED_MESSAGE_FORMAT}.
+	*/
+	public static String GEN_VARNAME_FROM_ATT_FAILED(String attributeName) {
+		return Strings.formatMessage(
+			GEN_VARNAME_FROM_ATT_FAILED_MESSAGE_FORMAT,
+			attributeName
 		);
 	}
 

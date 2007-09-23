@@ -35,6 +35,12 @@ import java.util.Collection;
 import java.util.Collections;
 
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
+import com.mcdermottroe.exemplar.model.XMLElement;
+import com.mcdermottroe.exemplar.output.XMLParserGeneratorException;
+import com.mcdermottroe.exemplar.output.java.binding.AttributeNameConverter;
+import com.mcdermottroe.exemplar.output.java.binding.DefaultAttributeNameConverter;
+import com.mcdermottroe.exemplar.output.java.binding.DefaultElementNameConverter;
+import com.mcdermottroe.exemplar.output.java.binding.ElementNameConverter;
 import com.mcdermottroe.exemplar.output.java.binding.Generator;
 import com.mcdermottroe.exemplar.ui.Options;
 import com.mcdermottroe.exemplar.utils.Strings;
@@ -64,6 +70,7 @@ extends XMLParserSourceGeneratorTestCase<Generator>
 
 	/** {@inheritDoc} */
 	@Override public Collection<File> generatedFiles(
+		Generator generator,
 		File outputDir,
 		XMLDocumentType docType
 	)
@@ -86,21 +93,19 @@ extends XMLParserSourceGeneratorTestCase<Generator>
 		Collection<File> retVal = new ArrayList<File>();
 		retVal.add(new File(outputDir, String.format(JAVA, rootParserClass)));
 		retVal.add(elementDir);
-		for (String elementName : docType.elements().keySet()) {
-			String className;
-			if (elementName.contains(":")) {
-				className = Strings.upperCaseFirst(
-					elementName.substring(elementName.indexOf((int)':') + 1)
+		for (XMLElement element : docType.elements().values()) {
+			ElementNameConverter<?> conv = generator.getElementNameConverter();
+			try {
+				retVal.add(
+					new File(
+						elementDir,
+						String.format(JAVA, conv.getClassName(element))
+					)
 				);
-			} else {
-				className = Strings.upperCaseFirst(elementName);
+			} catch (XMLParserGeneratorException e) {
+				assertNotNull("XMLParserGeneratorException was null", e);
+				fail("Failed to generate class name.");
 			}
-			retVal.add(
-				new File(
-					elementDir,
-					String.format(JAVA, className)
-				)
-			);
 		}
 		retVal.add(supportDir);
 		retVal.add(
@@ -112,5 +117,63 @@ extends XMLParserSourceGeneratorTestCase<Generator>
 			new File(supportDir, String.format(JAVA, "exemplarElement"))
 		);
 		return retVal;
+	}
+
+	/** Test {@link Generator#getAttributeNameConverter()}. */
+	public void testGetAttributeNameConverter() {
+		for (Generator sample : samples()) {
+			if (sample != null) {
+				AttributeNameConverter<?> conv =
+					sample.getAttributeNameConverter();
+				assertNotNull(
+					"getAttributeNameConverter() returned null",
+					conv
+				);
+			}
+		}
+	}
+
+	/** Test {@link
+		Generator#setAttributeNameConverter(AttributeNameConverter)}.
+	*/
+	public void testSetAttributeNameConverter() {
+		for (Generator sample : samples()) {
+			if (sample != null) {
+				try {
+					sample.setAttributeNameConverter(
+						new DefaultAttributeNameConverter()
+					);
+				} catch (Exception e) {
+					assertNotNull("Exception was null", e);
+					fail("setAttributeNameConverter threw an exception");
+				}
+			}
+		}
+	}
+
+	/** Test {@link Generator#getElementNameConverter()}. */
+	public void testGetElementNameConverter() {
+		for (Generator sample : samples()) {
+			if (sample != null) {
+				ElementNameConverter<?> conv = sample.getElementNameConverter();
+				assertNotNull("getElementNameConverter() returned null", conv);
+			}
+		}
+	}
+
+	/** Test {@link Generator#setElementNameConverter(ElementNameConverter)}. */
+	public void testSetElementNameConverter() {
+		for (Generator sample : samples()) {
+			if (sample != null) {
+				try {
+					sample.setElementNameConverter(
+						new DefaultElementNameConverter()
+					);
+				} catch (Exception e) {
+					assertNotNull("Exception was null", e);
+					fail("setElementNameConverter threw an exception");
+				}
+			}
+		}
 	}
 }

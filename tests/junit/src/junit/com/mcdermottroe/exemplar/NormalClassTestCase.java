@@ -614,7 +614,9 @@ extends ExemplarTestCase<T>
 		if (sampleObjects != null) {
 			samples.addAll(sampleObjects);
 		} else {
-			throw new UnsupportedOperationException();
+			throw new UnsupportedOperationException(
+				"No sample objects provided"
+			);
 		}
 
 		return samples;

@@ -30,6 +30,7 @@
 package com.mcdermottroe.exemplar.output.java.binding;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.mcdermottroe.exemplar.CopyException;
@@ -47,7 +48,6 @@ import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.Options;
 import com.mcdermottroe.exemplar.utils.Strings;
 
-import static com.mcdermottroe.exemplar.Constants.Character.COLON;
 import static com.mcdermottroe.exemplar.Constants.Character.RIGHT_CURLY;
 import static com.mcdermottroe.exemplar.Constants.Character.TAB;
 import static com.mcdermottroe.exemplar.Constants.EOL;
@@ -65,6 +65,16 @@ extends XMLParserSourceGenerator<Generator>
 	/** The base package, if any, where the output code is going to live. */
 	protected String basePackage;
 
+	/** The converter for creating class names from element names. */
+	protected ElementNameConverter<? extends ElementNameConverter<?>>
+		elementNameGenerator;
+
+	/** The converter for creating variable, getter and setter names from
+		attribute names.
+	*/
+	protected AttributeNameConverter<? extends AttributeNameConverter<?>>
+		attNameGenerator;
+
 	/** Creates a source generator which produces data binding parsers in the
 		Java language.
 
@@ -74,22 +84,36 @@ extends XMLParserSourceGenerator<Generator>
 	public Generator()
 	throws XMLParserGeneratorException
 	{
-		// The parent does all the work.
 		super();
 		basePackage = null;
+		elementNameGenerator = new DefaultElementNameConverter();
+		attNameGenerator = new DefaultAttributeNameConverter();
 	}
 
 	/** Copy constructor, see {@link
 		XMLParserSourceGenerator#XMLParserSourceGenerator(Map, String)} for
 		details.
 
-		@param	code	The code fragments.
-		@param	time	The timestamp.
-		@param	pkg		The {@link #basePackage}.
+		@param	code					The code fragments.
+		@param	time					The timestamp.
+		@param	pkg						The {@link #basePackage}.
+		@param	elementNameConverter	The {@link #elementNameGenerator}.
+		@param	attNameConverter		The {@link #attNameGenerator}.
 	*/
-	protected Generator(Map<String, String> code, String time, String pkg) {
+	protected Generator(
+		Map<String, String> code,
+		String time,
+		String pkg,
+		ElementNameConverter<? extends ElementNameConverter<?>>
+			elementNameConverter,
+		AttributeNameConverter<? extends AttributeNameConverter<?>>
+			attNameConverter
+	)
+	{
 		super(code, time);
 		basePackage = pkg;
+		elementNameGenerator = elementNameConverter;
+		attNameGenerator = attNameConverter;
 	}
 
 	/** {@inheritDoc} */
@@ -112,6 +136,29 @@ extends XMLParserSourceGenerator<Generator>
 
 		// Only create code if there are some elements
 		if (elements != null && !elements.isEmpty()) {
+			// Ensure that we can create unique class names for all of the
+			// elements.
+			Map<String, XMLElement> classNames =
+				new HashMap<String, XMLElement>();
+			for (XMLElement element : elements.values()) {
+				String className = elementNameGenerator.getClassName(element);
+				if (classNames.containsKey(className)) {
+					XMLElement previous = classNames.get(className);
+					throw new XMLParserGeneratorException(
+						Strings.join(
+							" ",
+							"Both",
+							previous,
+							"and",
+							element,
+							"want the class name of",
+							className
+						)
+					);
+				}
+				classNames.put(className, element);
+			}
+
 			// Create the root parser class
 			Log.debug("Creating root parser class");
 			createRootParserClass(targetDirectory);
@@ -141,6 +188,56 @@ extends XMLParserSourceGenerator<Generator>
 	/** {@inheritDoc} */
 	@Override public String describeAPI() {
 		return "A data binding API.";
+	}
+
+	/** Get the {@link ElementNameConverter} used to generate names from
+		elements.
+
+		@return	The {@link ElementNameConverter} used to generate names from
+				elements.
+	*/
+	public ElementNameConverter<? extends ElementNameConverter<?>>
+	getElementNameConverter()
+	{
+		return elementNameGenerator;
+	}
+
+	/** Set the {@link ElementNameConverter} to use to generate names from
+		elements.
+
+		@param	converter	The {@link ElementNameConverter} to use to generate
+							names from elements.
+	*/
+	public void setElementNameConverter(
+		ElementNameConverter<? extends ElementNameConverter<?>> converter
+	)
+	{
+		elementNameGenerator = converter;
+	}
+
+	/** Get the {@link AttributeNameConverter} used to generate names from
+		attributes.
+
+		@return The {@link AttributeNameConverter} used to generate names from
+				attributes.
+	*/
+	public AttributeNameConverter<? extends AttributeNameConverter<?>>
+	getAttributeNameConverter()
+	{
+		return attNameGenerator;
+	}
+
+	/** Set the {@link AttributeNameConverter} to use to generate names from
+		attributes.
+
+		@param	converter	The {@link AttributeNameConverter} to use to
+							generate names from attributes.
+	*/
+	public void setAttributeNameConverter(
+		AttributeNameConverter<? extends AttributeNameConverter<?>> converter
+	)
+	{
+		attNameGenerator = converter;
 	}
 
 	/** Create the base parser class which can be used to parse the input.
@@ -258,17 +355,7 @@ extends XMLParserSourceGenerator<Generator>
 		dir.mkdirs();
 
 		// Get the element name and make an appropriate class name. 
-		String elementName = element.getName();
-		String className;
-		int indexOfColon = elementName.indexOf((int)COLON);
-		if (indexOfColon > 0) {
-			className = Strings.upperCaseFirst(
-				elementName.substring(indexOfColon + 1)
-			);
-		} else {
-			className = Strings.upperCaseFirst(elementName);
-		}
-		className = className.replaceAll("\\W", "_");
+		String className = elementNameGenerator.getClassName(element);
 
 		// Make a member and getters and setters  for each attribute of the
 		// class.
@@ -276,13 +363,6 @@ extends XMLParserSourceGenerator<Generator>
 		StringBuilder accessMethods = new StringBuilder();
 		for (XMLAttribute attribute : element.getAttlist()) {
 			String attributeName = attribute.getName();
-
-			StringBuilder attributeMethodName = new StringBuilder(
-				Strings.upperCaseFirst(attributeName.replaceAll("\\W+", "_"))
-			);
-			if ("Class".equals(attributeMethodName.toString())) {
-				attributeMethodName.append("Attribute");
-			}
 
 			String fixedValue = null;
 			constructorCode.append(TAB);
@@ -328,8 +408,8 @@ extends XMLParserSourceGenerator<Generator>
 			accessMethods.append("*/");
 			accessMethods.append(EOL);
 			accessMethods.append(TAB);
-			accessMethods.append("public String get");
-			accessMethods.append(attributeMethodName);
+			accessMethods.append("public String ");
+			accessMethods.append(attNameGenerator.getGetterName(attribute));
 			accessMethods.append("() {");
 			accessMethods.append(EOL);
 			accessMethods.append(TAB);
@@ -367,8 +447,8 @@ extends XMLParserSourceGenerator<Generator>
 				accessMethods.append("*/");
 				accessMethods.append(EOL);
 				accessMethods.append(TAB);
-				accessMethods.append("public void set");
-				accessMethods.append(attributeMethodName);
+				accessMethods.append("public void ");
+				accessMethods.append(attNameGenerator.getSetterName(attribute));
 				accessMethods.append("(String value) {");
 				accessMethods.append(EOL);
 				accessMethods.append(TAB);
@@ -404,7 +484,7 @@ extends XMLParserSourceGenerator<Generator>
 			PROGRAM_NAME,
 			timestamp,
 			basePackage,
-			elementName,
+			element.getName(),
 			className,
 			constructorCode,
 			accessMethods
@@ -560,6 +640,12 @@ extends XMLParserSourceGenerator<Generator>
 	public Generator getCopy()
 	throws CopyException
 	{
-		return new Generator(codeFragments, timestamp, basePackage);
+		return new Generator(
+			codeFragments,
+			timestamp,
+			basePackage,
+			elementNameGenerator.getCopy(),
+			attNameGenerator.getCopy()
+		);
 	}
 }

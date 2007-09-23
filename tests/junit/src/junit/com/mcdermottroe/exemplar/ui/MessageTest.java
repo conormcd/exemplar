@@ -207,9 +207,37 @@ extends UtilityClassTestCase<Message>
 		assertNotSame("Message was a zero-length String", 0,  message.length());
 	}
 
+	/** Test {@link Message#GEN_CLASS_FROM_ELEMENT_FAILED(String)}. */
+	public void testGEN_CLASS_FROM_ELEMENT_FAILED() {
+		String message = Message.GEN_CLASS_FROM_ELEMENT_FAILED("foo");
+		assertNotNull("Message was null", message);
+		assertNotSame("Message was a zero-length String", 0,  message.length());
+	}
+
+	/** Test {@link Message#GEN_GETTER_FROM_ATT_FAILED(String)}. */
+	public void testGEN_GETTER_FROM_ATT_FAILED() {
+		String message = Message.GEN_GETTER_FROM_ATT_FAILED("foo");
+		assertNotNull("Message was null", message);
+		assertNotSame("Message was a zero-length String", 0,  message.length());
+	}
+
 	/** Test {@link Message#GEN_NO_SUCH_DIRECTORY(String)}. */
 	public void testGEN_NO_SUCH_DIRECTORY() {
 		String message = Message.GEN_NO_SUCH_DIRECTORY("foo");
+		assertNotNull("Message was null", message);
+		assertNotSame("Message was a zero-length String", 0,  message.length());
+	}
+
+	/** Test {@link Message#GEN_SETTER_FROM_ATT_FAILED(String)}. */
+	public void testGEN_SETTER_FROM_ATT_FAILED() {
+		String message = Message.GEN_SETTER_FROM_ATT_FAILED("foo");
+		assertNotNull("Message was null", message);
+		assertNotSame("Message was a zero-length String", 0,  message.length());
+	}
+
+	/** Test {@link Message#GEN_VARNAME_FROM_ATT_FAILED(String)}. */
+	public void testGEN_VARNAME_FROM_ATT_FAILED() {
+		String message = Message.GEN_VARNAME_FROM_ATT_FAILED("foo");
 		assertNotNull("Message was null", message);
 		assertNotSame("Message was a zero-length String", 0,  message.length());
 	}

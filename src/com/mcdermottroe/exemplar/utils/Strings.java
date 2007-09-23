@@ -394,4 +394,89 @@ public final class Strings {
 		retVal.replace(0, 1, string.subSequence(0, 1).toString().toUpperCase());
 		return retVal.toString();
 	}
+
+	/** Check whether or not a sequence of characters constitutes a legal Java
+		identifier.
+
+		@param	string	The string to check.
+		@return			True if <code>string</code> is a legal Java identifier,
+						false otherwise.
+	*/
+	public static boolean isLegalJavaIdentifier(CharSequence string) {
+		if (string == null) {
+			return false;
+		}
+		if (string.length() <= 0) {
+			return false;
+		}
+		for (int i = 0; i < string.length(); i++) {
+			if (i == 0) {
+				if (!Character.isJavaIdentifierStart(string.charAt(i))) {
+					return false;
+				}
+			} else {
+				if (!Character.isJavaIdentifierPart(string.charAt(i))) {
+					return false;
+				}
+			}
+		}
+		String[] javaKeywords = {
+			"abstract",
+			"assert",
+			"boolean",
+			"break",
+			"byte",
+			"case",
+			"catch",
+			"char",
+			"class",
+			"const",
+			"continue",
+			"default",
+			"do",
+			"double",
+			"else",
+			"enum",
+			"extends",
+			"final",
+			"finally",
+			"float",
+			"for",
+			"goto",
+			"if",
+			"implements",
+			"import",
+			"instanceof",
+			"int",
+			"interface",
+			"long",
+			"native",
+			"new",
+			"package",
+			"private",
+			"protected",
+			"public",
+			"return",
+			"short",
+			"static",
+			"strictfp",
+			"super",
+			"switch",
+			"synchronized",
+			"this",
+			"throw",
+			"throws",
+			"transient",
+			"try",
+			"void",
+			"volatile",
+			"while",
+		};
+		for (String keyword : javaKeywords) {
+			if (string.equals(keyword)) {
+				return false;
+			}
+		}
+		return true;
+	}
 }
