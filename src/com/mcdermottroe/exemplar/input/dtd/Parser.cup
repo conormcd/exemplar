@@ -157,7 +157,9 @@ parser code {:
 		// Create the lexer and set it as the scanner.
 		Lexer lex;
 		try {
-			lex = new Lexer(new InputStreamReader(input, "UTF8"));
+			lex = new Lexer(
+				new InputStreamReader(input, Options.getString("input-encoding"))
+			);
 		} catch (UnsupportedEncodingException e) {
 			lex = new Lexer(input);
 		}

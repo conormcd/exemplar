@@ -192,6 +192,15 @@ implements Comparable<Task>, Copyable<Task>
 		Options.set("input", input);
 	}
 
+	/** Setter for the input_encoding attribute of the task.
+
+		@param	inputEncoding	This is the string value of the input_encoding
+								attribute.
+	*/
+	public static void setInput_encoding(String inputEncoding) {
+		Options.set("input-encoding", inputEncoding);
+	}
+
 	/** Setter for the input_type attribute of the task.
 
 		@param	inputType	This is the string value of the input_type

@@ -261,6 +261,20 @@ extends NormalClassTestCase<Task>
 		);
 	}
 
+	/** Test {@link Task#setInput_encoding(String)}. */
+	public void testSetInput_encoding() {
+		Task.setInput_encoding("UTF8");
+		assertNotNull(
+			"Options.getString(\"input-encoding\") == null",
+			Options.getString("input-encoding")
+		);
+		assertEquals(
+			"Options.getString(\"input-type\") != \"UTF8\"",
+			"UTF8",
+			Options.getString("input-encoding")
+		);
+	}
+
 	/** Test {@link Task#setInput_type(String)}. */
 	public void testSetInput_type() {
 		Task.setInput_type("dtd");

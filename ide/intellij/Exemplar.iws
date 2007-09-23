@@ -17,54 +17,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/xslt/GeneratorTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/xslt/GeneratorTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/utils/StringsTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/utils/StringsTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_notation/test.dtd" afterPath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_notation/test.dtd" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/java/binding/AttributeNameConverterTest.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/data/valid_dtds/ideographic_element_declaration" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../res/com/mcdermottroe/exemplar/ui/Message.properties" afterPath="$PROJECT_DIR$/../../res/com/mcdermottroe/exemplar/ui/Message.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_gt/test.dtd" afterPath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_gt/test.dtd" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_lsquare/test.dtd" afterPath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_lsquare/test.dtd" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/NormalClassTestCase.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/NormalClassTestCase.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_star/test.dtd" afterPath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_star/test.dtd" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Exemplar.ipr" afterPath="$PROJECT_DIR$/Exemplar.ipr" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/AttributeNameConverter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_id/test.dtd" afterPath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_id/test.dtd" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/Lexer.jflex" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/Lexer.jflex" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/java/binding/ElementNameConverterTest.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/java/binding/AttributeNameConverterTestCase.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/utils/Strings.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/utils/Strings.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_dot/test.dtd" afterPath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_dot/test.dtd" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/ui/MessageTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/ui/MessageTest.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/java/binding/ElementNameConverterTestCase.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_entities/test.dtd" afterPath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_entities/test.dtd" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/utils/Files.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/utils/Files.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_lbrace/test.dtd" afterPath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_lbrace/test.dtd" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_attlist_head/test.dtd" afterPath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_attlist_head/test.dtd" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/ElementNameConverter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/Parser.cup" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/Parser.cup" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/dtd/GeneratorTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/dtd/GeneratorTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_public/test.dtd" afterPath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_public/test.dtd" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/Generator.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/Generator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_comma_followed_by_s/test.dtd" afterPath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_comma_followed_by_s/test.dtd" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/data/valid_dtds/ideographic_element_declaration/test.dtd" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_colon/test.dtd" afterPath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_colon/test.dtd" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../res/com/mcdermottroe/exemplar/ui/Options.properties" afterPath="$PROJECT_DIR$/../../res/com/mcdermottroe/exemplar/ui/Options.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/ant/Task.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/ant/Task.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Exemplar.iws" afterPath="$PROJECT_DIR$/Exemplar.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_plus/test.dtd" afterPath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_plus/test.dtd" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/DefaultAttributeNameConverter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/Message.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/Message.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/DefaultElementNameConverter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_entity/test.dtd" afterPath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_entity/test.dtd" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/java/binding/GeneratorTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/java/binding/GeneratorTest.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/java/binding/DefaultElementNameConverterTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_at/test.dtd" afterPath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_at/test.dtd" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/XMLParserSourceGeneratorTestCase.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/XMLParserSourceGeneratorTestCase.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/utils/FilesTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/utils/FilesTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/java/XMLJavaSourceGeneratorTestCase.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/java/XMLJavaSourceGeneratorTestCase.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_nmtokens/test.dtd" afterPath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_nmtokens/test.dtd" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/java/binding/DefaultAttributeNameConverterTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_hash_pcdata/test.dtd" afterPath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_hash_pcdata/test.dtd" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_dollar/test.dtd" afterPath="$PROJECT_DIR$/../../tests/data/invalid_dtds/rogue_token_dollar/test.dtd" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/Parser.cup" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/Parser.cup" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/ui/ant/TaskTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/ui/ant/TaskTest.java" />
     </list>
   </component>
   <component name="ChangeListSynchronizer" />
@@ -84,20 +41,20 @@
     <option name="ASSERT_NOT_NULL" value="true" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$junit.com.mcdermottroe.exemplar.es" NAME="Exemplar JUnit Tests" MODIFIED="1190562236798">
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$junit.com.mcdermottroe.exemplar.es" NAME="Exemplar JUnit Tests" MODIFIED="1190568126231">
       <FILTER>com.mcdermottroe.exemplar.*</FILTER>
     </SUITE>
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$PEDeclTableTest.es" NAME="Single class test" MODIFIED="1185705882210" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$DefaultElementNameConverterTest.es" NAME="Single class test" MODIFIED="1190328983352" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$PEDeclTableTest.es" NAME="Single class test" MODIFIED="1185705882210" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$LexerTest.es" NAME="Single class test" MODIFIED="1189181897694" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$InputUtilsTest.es" NAME="Single class test" MODIFIED="1189332213240" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$ParserTest.es" NAME="Single class test" MODIFIED="1189184908688" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$InputUtilsTest.es" NAME="Single class test" MODIFIED="1189332213240" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$PowerSetTest.es" NAME="Single class test" MODIFIED="1183336627958" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$GeneratorTest.es" NAME="Single class test" MODIFIED="1187540858815" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLAttributeTest.es" NAME="Single class test" MODIFIED="1185038193187" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLNamedObjectTest.es" NAME="Single class test" MODIFIED="1185639909820" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$OutputUtilsTest.es" NAME="Single class test" MODIFIED="1187574761613" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLAttributeTest.es" NAME="Single class test" MODIFIED="1185038193187" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$OutputExceptionTest.es" NAME="Single class test" MODIFIED="1186060097446" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$OutputUtilsTest.es" NAME="Single class test" MODIFIED="1187574761613" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLSequenceTest.es" NAME="Single class test" MODIFIED="1186062057256" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$ElementNameConverterTestCase.es" NAME="Single class test" MODIFIED="1190327614858" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLParserObjectGeneratorTest.es" NAME="Single class test" MODIFIED="1185671080353" />
@@ -112,8 +69,8 @@
     </SUITE>
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$ConstantsTest.es" NAME="Single class test" MODIFIED="1185679913216" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$FilesTest.es" NAME="Single class test" MODIFIED="1190556199283" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLAttributeContentTypeTest.es" NAME="Single class test" MODIFIED="1185634350558" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLDocumentTypeExceptionTest.es" NAME="Single class test" MODIFIED="1185640474117" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLAttributeContentTypeTest.es" NAME="Single class test" MODIFIED="1185634350558" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$UtilsTest.es" NAME="Single class test" MODIFIED="1189301932093" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLAttributeListTest.es" NAME="Single class test" MODIFIED="1186057487985" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLParserSourceGeneratorTest.es" NAME="Single class test" MODIFIED="1189300506953" />
@@ -455,7 +412,7 @@
       <showLibraryContents />
       <hideEmptyPackages />
       <abbreviatePackageNames />
-      <showStructure PackagesPane="false" ProjectPane="false" Scope="false" Favorites="false" />
+      <showStructure Favorites="false" PackagesPane="false" Scope="false" ProjectPane="false" />
       <autoscrollToSource />
       <autoscrollFromSource />
       <sortByType />
@@ -477,13 +434,6 @@
   <component name="RecentsManager" />
   <component name="RestoreUpdateTree" />
   <component name="RunManager" selected="JUnit.Exemplar JUnit Tests">
-    <configuration default="true" type="Remote" factoryName="Remote">
-      <option name="USE_SOCKET_TRANSPORT" value="true" />
-      <option name="SERVER_MODE" value="false" />
-      <option name="SHMEM_ADDRESS" value="javadebug" />
-      <option name="HOST" value="localhost" />
-      <option name="PORT" value="5005" />
-    </configuration>
     <configuration default="true" type="Application" factoryName="Application" enabled="false" merge="false">
       <option name="MAIN_CLASS_NAME" />
       <option name="VM_PARAMETERS" />
@@ -496,6 +446,13 @@
       <method>
         <option name="Make" value="true" />
       </method>
+    </configuration>
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
     </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit" enabled="false" merge="false">
       <module name="" />
@@ -786,29 +743,6 @@
     <option name="myLastEditedConfigurable" value="Exemplar - NO NLS" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/utils/Files.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="155" column="0" selection-start="4740" selection-end="4740" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/utils/XML.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="197" column="16" selection-start="6401" selection-end="6401" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/AttributeNameConverter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="209" column="0" selection-start="6928" selection-end="6928" vertical-scroll-proportion="0.97607654">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/DefaultAttributeNameConverter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="33" column="47" selection-start="1769" selection-end="1769" vertical-scroll-proportion="0.09569378">
@@ -908,6 +842,27 @@
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/ant/Task.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="55" column="13" selection-start="2522" selection-end="2522" vertical-scroll-proportion="0.33333334">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/Parser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="939" column="58" selection-start="53757" selection-end="53757" vertical-scroll-proportion="0.50526315">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/ui/ant/TaskTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="242" column="22" selection-start="7625" selection-end="7625" vertical-scroll-proportion="0.17862839">
+          <folding />
         </state>
       </provider>
     </entry>
