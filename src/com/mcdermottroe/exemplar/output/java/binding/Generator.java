@@ -123,6 +123,9 @@ extends XMLParserSourceGenerator<Generator>
 	)
 	throws XMLParserGeneratorException
 	{
+		DBC.REQUIRE(doctype != null);
+		DBC.REQUIRE(targetDirectory != null);
+
 		// Set some of the common stuff
 		basePackage = Options.getString("output-package");
 		if (basePackage == null) {

@@ -221,6 +221,11 @@ public final class Message {
 	*/
 	private static String MISSING_MANDATORY_OPTION_MESSAGE_FORMAT = DEFAULT_MESSAGE;
 
+	/** {@link java.text.MessageFormat} string for {@link #NO_GENERATOR(String,
+		String)}.
+	*/
+	private static String NO_GENERATOR_MESSAGE_FORMAT = DEFAULT_MESSAGE;
+
 	/** {@link java.text.MessageFormat} string for {@link
 		#OPTION_DEFAULT(String)}.
 	*/
@@ -784,6 +789,21 @@ public final class Message {
 		return Strings.formatMessage(
 			MISSING_MANDATORY_OPTION_MESSAGE_FORMAT,
 			optionName
+		);
+	}
+
+	/** There was no such generator found.
+
+		@param	language	The language selected.
+		@param	api			The API selected.
+		@return				A message formatted according to {@link
+							#NO_GENERATOR_MESSAGE_FORMAT}.
+	*/
+	public static String NO_GENERATOR(String language, String api) {
+		return Strings.formatMessage(
+			NO_GENERATOR_MESSAGE_FORMAT,
+			language,
+			api
 		);
 	}
 

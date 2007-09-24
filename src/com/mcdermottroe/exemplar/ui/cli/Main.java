@@ -50,6 +50,7 @@ import com.mcdermottroe.exemplar.utils.Resources;
 import com.mcdermottroe.exemplar.utils.Strings;
 import com.mcdermottroe.exemplar.utils.Timer;
 
+import static com.mcdermottroe.exemplar.Constants.CWD;
 import static com.mcdermottroe.exemplar.Constants.Character.MINUS;
 import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
 import static com.mcdermottroe.exemplar.Constants.EOL;
@@ -202,11 +203,15 @@ public final class Main {
 		}
 
 		// Create the output
+		String output = Options.getString("output");
+		if (output == null) {
+			output = CWD;
+		}
 		try {
 			Log.info(Message.UI_PROGRESS_GENERATING_PARSER());
 			OutputUtils.generateParser(
 				doctype,
-				Options.getString("output"),
+				output,
 				Options.getString("output-language"),
 				Options.getString("output-api")
 			);

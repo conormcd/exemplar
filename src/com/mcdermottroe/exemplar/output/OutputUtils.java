@@ -92,10 +92,16 @@ public final class OutputUtils {
 		if (language == null) {
 			throw new OutputException(Message.SOURCE_GENERATOR_LANGUAGE_NULL());
 		}
+		DBC.REQUIRE(doctype != null);
+		DBC.REQUIRE(filename != null);
+		DBC.REQUIRE(language != null);
 
 		// Make the generator
 		XMLParserSourceGenerator<?> gen;
 		gen = XMLParserSourceGenerator.create(language, api);
+		if (gen == null) {
+			throw new OutputException(Message.NO_GENERATOR(language, api));
+		}
 
 		// The output file
 		File outputFile = null;
