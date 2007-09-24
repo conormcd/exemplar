@@ -333,6 +333,13 @@ extends UtilityClassTestCase<Message>
 		assertNotSame("Message was a zero-length String", 0,  message.length());
 	}
 
+	/** Test {@link Message#NO_GENERATOR(String, String)}. */
+	public void testNO_GENERATOR() {
+		String message = Message.NO_GENERATOR("foo", "bar");
+		assertNotNull("Message was null", message);
+		assertNotSame("Message was a zero-length String", 0,  message.length());
+	}
+
 	/** Test {@link Message#OPTION_DEFAULT(String)}. */
 	public void testOPTION_DEFAULT() {
 		String message = Message.OPTION_DEFAULT("foo");
