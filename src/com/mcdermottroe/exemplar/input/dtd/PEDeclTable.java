@@ -191,13 +191,13 @@ implements Comparable<PEDeclTable>, Copyable<PEDeclTable>
 						);
 					} catch(IOException ioe) {
 						throw new ParameterEntityException(
-							Message.DTDPE_UNRESOLVED_PE_REF(),
+							Message.DTDPE_UNRESOLVED_PE_REF(name),
 							ioe
 						);
 					}
 				} catch (MalformedURLException mfue) {
 					throw new ParameterEntityException(
-						Message.DTDPE_UNRESOLVED_PE_REF(),
+						Message.DTDPE_UNRESOLVED_PE_REF(name),
 						mfue
 					);
 				}
@@ -209,7 +209,7 @@ implements Comparable<PEDeclTable>, Copyable<PEDeclTable>
 			peRefReader = new StringReader(contents);
 		} else {
 			throw new ParameterEntityException(
-				Message.DTDPE_UNRESOLVED_PE_REF()
+				Message.DTDPE_UNRESOLVED_PE_REF(name)
 			);
 		}
 

@@ -126,7 +126,7 @@ public final class Message {
 	private static String DTDPE_UNDECLARED_PE_MESSAGE_FORMAT = DEFAULT_MESSAGE;
 
 	/** A reference to a parameter entity could not be resolved. */
-	private static String DTDPE_UNRESOLVED_PE_REF = DEFAULT_MESSAGE;
+	private static String DTDPE_UNRESOLVED_PE_REF_MESSAGE_FORMAT = DEFAULT_MESSAGE;
 
 	/** What to display when an {@link com.mcdermottroe.exemplar.Exception} has
 		no message.
@@ -545,10 +545,15 @@ public final class Message {
 
 	/** A reference to a parameter entity could not be resolved.
 
-		@return The message.
+		@param	reference	The PE reference which could not be resolved.
+		@return				A message formatted according to {@link
+							#DTDPE_UNRESOLVED_PE_REF_MESSAGE_FORMAT}.
 	*/
-	public static String DTDPE_UNRESOLVED_PE_REF() {
-		return DTDPE_UNRESOLVED_PE_REF;
+	public static String DTDPE_UNRESOLVED_PE_REF(String reference) {
+		return Strings.formatMessage(
+			DTDPE_UNRESOLVED_PE_REF_MESSAGE_FORMAT,
+			reference
+		);
 	}
 
 	/** What to display when an {@link com.mcdermottroe.exemplar.Exception} has

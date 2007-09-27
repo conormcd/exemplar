@@ -179,9 +179,9 @@ extends UtilityClassTestCase<Message>
 		assertNotSame("Message was a zero-length String", 0,  message.length());
 	}
 
-	/** Test {@link Message#DTDPE_UNRESOLVED_PE_REF()}. */
+	/** Test {@link Message#DTDPE_UNRESOLVED_PE_REF(String)}. */
 	public void testDTDPE_UNRESOLVED_PE_REF() {
-		String message = Message.DTDPE_UNRESOLVED_PE_REF();
+		String message = Message.DTDPE_UNRESOLVED_PE_REF("foo");
 		assertNotNull("Message was null", message);
 		assertNotSame("Message was a zero-length String", 0,  message.length());
 	}
