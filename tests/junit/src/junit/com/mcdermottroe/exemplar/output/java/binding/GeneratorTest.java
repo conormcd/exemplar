@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006, 2007
+	Copyright (c) 2006-2008
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,6 @@ package junit.com.mcdermottroe.exemplar.output.java.binding;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
 import com.mcdermottroe.exemplar.model.XMLDocumentType;
 import com.mcdermottroe.exemplar.model.XMLElement;
@@ -82,10 +81,12 @@ extends XMLParserSourceGeneratorTestCase<Generator>
 				docType.notations().isEmpty()
 			)
 		{
-			return Collections.EMPTY_LIST;
+			return new ArrayList<File>();
 		}
 		String vocabulary = Options.getString("vocabulary");
 		String rootParserClass = Strings.upperCaseFirst(vocabulary);
+		String exceptionClass = rootParserClass + "Exception";
+		String treeOpInterface = rootParserClass + "TreeOp";
 
 		File elementDir = new File(outputDir, "element");
 		File supportDir = new File(outputDir, "support");
@@ -113,6 +114,11 @@ extends XMLParserSourceGeneratorTestCase<Generator>
 		);
 		retVal.add(new File(supportDir, String.format(JAVA, "XMLComponent")));
 		retVal.add(new File(supportDir, String.format(JAVA, "XMLContent")));
+		retVal.add(new File(supportDir, String.format(JAVA, exceptionClass)));
+		retVal.add(new File(supportDir, String.format(JAVA, treeOpInterface)));
+		retVal.add(
+			new File(supportDir, String.format(JAVA, "exemplarAttribute"))
+		);
 		retVal.add(
 			new File(supportDir, String.format(JAVA, "exemplarElement"))
 		);

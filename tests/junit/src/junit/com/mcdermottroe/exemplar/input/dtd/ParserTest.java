@@ -60,7 +60,7 @@ extends NormalClassTestCase<Parser>
 
 		@return	A sample collection of DTDs for using as test input.
 	*/
-	public static Collection<File> getSampleDTDs() {
+	public static Collection<File> getSamples() {
 		Collection<File> sampleDtds = new ArrayList<File>();
 		sampleDtds.add(new File("dtds/docbook-xml-42/docbookx.dtd"));
 		sampleDtds.add(new File("dtds/docbook-xml-44/docbookx.dtd"));
@@ -92,7 +92,7 @@ extends NormalClassTestCase<Parser>
 	public void testParseString() {
 		for (Parser sample : samples()) {
 			if (sample != null) {
-				for (File sampleFile : getSampleDTDs()) {
+				for (File sampleFile : getSamples()) {
 					XMLDocumentType doctype = null;
 					try {
 						doctype = sample.parse(sampleFile.getAbsolutePath());

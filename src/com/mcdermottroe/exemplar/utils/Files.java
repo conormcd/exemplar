@@ -30,6 +30,12 @@
 package com.mcdermottroe.exemplar.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -170,5 +176,49 @@ public final class Files {
 		}
 
 		return tmpdir;
+	}
+
+	/** Read from a path or a URL.
+
+		@param	pathOrURL	Either a full path, a partial path or a URL.
+		@param	baseDir		The directory to resolve partial paths from.
+		@return				An {@link InputStream} for the content.
+		@throws	IOException	If the content cannot be read.
+	*/
+	public static InputStream readFile(String pathOrURL, File baseDir)
+	throws IOException
+	{
+		DBC.REQUIRE(pathOrURL != null);
+
+		// Attempt to read it as a URL
+		try {
+			URL url = new URL(pathOrURL);
+			return url.openStream();
+		} catch (MalformedURLException e) {
+			DBC.IGNORED_EXCEPTION(e);
+		}
+
+		// Attempt to read it as an absolute path
+		File absolute = new File(pathOrURL);
+		try {
+			return new FileInputStream(absolute);
+		} catch (FileNotFoundException e) {
+			DBC.IGNORED_EXCEPTION(e);
+		}
+
+		// Try to read as a relative path
+		if (baseDir != null) {
+			if (!baseDir.exists()) {
+				throw new FileNotFoundException(baseDir.getAbsolutePath());
+			}
+
+			File relative = new File(baseDir, pathOrURL);
+			if (relative.exists()) {
+				return new FileInputStream(relative);
+			}
+		}
+
+		// Not found in the end
+		throw new FileNotFoundException(pathOrURL);
 	}
 }

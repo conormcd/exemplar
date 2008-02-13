@@ -3,7 +3,7 @@
 	vim:filetype=ant:ts=4
 -->
 <!--
-	Copyright (c) 2004-2007
+	Copyright (c) 2004-2008
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -102,42 +102,72 @@
 			<fileset dir="${res}" includes="com/**" />
 		</copy>
 	</target>
-	<target name="build-lexer" depends="build-configure">
-		<jflex file="${lexer-spec}" skeleton="${lexer-skeleton}" />
-		<replace	file="${lexer-file}"
+	<target name="build-dtd-lexer" depends="build-configure">
+		<jflex file="${dtd-lexer-spec}" skeleton="${dtd-lexer-skeleton}" />
+		<replace	file="${dtd-lexer-file}"
 					token="private java.util.Stack zzStreams = new java.util.Stack();"
 					value="private java.util.Stack&lt;ZzFlexStreamInfo&gt; zzStreams = new java.util.Stack&lt;ZzFlexStreamInfo&gt;();"
 		/> 
 	</target>
-	<target	name="build-parser"
-			depends="build-configure,build-lexer"
+	<target	name="build-dtd-parser"
+			depends="build-configure,build-dtd-lexer"
 	>
-		<java jar="${cup-jar}" fork="yes" classpathref="build-classpath" dir="${src}/${namespace}/input/dtd">
+		<java jar="${cup-jar}" fork="yes" classpathref="build-classpath" dir="${input-module}/dtd">
 			<arg value="-package" />
 			<arg value="${package}.input.dtd" />
 			<arg value="-parser" />
-			<arg value="${parser-name}" />
+			<arg value="${dtd-parser-name}" />
 			<arg value="-symbols" />
-			<arg value="${parser-symbols}" />
+			<arg value="${dtd-parser-symbols}" />
 			<arg value="-compact_red" />
 			<arg value="-nopositions" />
 			<arg value="-interface" />
 			<arg value="Parser.cup" />
 		</java>
-		<replace	file="${src}/${namespace}/input/dtd/${parser-file}"
+		<replace	file="${input-module}/dtd/${dtd-parser-file}"
 					token="extends java_cup.runtime.lr_parser implements Comparable&lt;Parser&gt;, Copyable&lt;Parser&gt;, InputModule"
 					value="extends java_cup.runtime.lr_parser"
 		/> 
-		<replace	file="${src}/${namespace}/input/dtd/${parser-file}"
+		<replace	file="${input-module}/dtd/${dtd-parser-file}"
 					token="extends java_cup.runtime.lr_parser"
 					value="extends java_cup.runtime.lr_parser implements Comparable&lt;Parser&gt;, Copyable&lt;Parser&gt;, InputModule"
 		/> 
 	</target>
-	<target	name="build"
-			depends="pre-build,build-lexer,build-parser,set-up-classpaths"
+	<target	name="build-bootstrap"
+			depends="pre-build,build-dtd-lexer,build-dtd-parser,set-up-classpaths"
 	>
-		<javac
-				classpathref="build-classpath"
+		<javac	classpathref="build-classpath"
+				destdir="${classes}"
+				debug="true"
+				debuglevel="lines,vars,source"
+				source="1.5"
+				target="1.5"
+		>
+			<src path="${src}" />
+			<exclude name="${namespace}/input/schema/**" />
+			<exclude name="${namespace}/generated/**" />
+			<compilerarg value="-Xlint:deprecation" />
+			<compilerarg value="-Xlint:unchecked" />
+			<compilerarg value="+Z0" compiler="jikes" />
+		</javac>
+	</target>
+	<target name="build"
+			depends="jar-bootstrap"
+	>
+		<typedef	name="bootstrap-exemplar"
+					classname="${package}.ui.ant.Task"
+					adapter="org.apache.tools.ant.TaskAdapter"
+					adaptto="org.apache.tools.ant.Task"
+					classpath="${dist}/Exemplar.jar"
+		/>
+		<bootstrap-exemplar	input="dtds/w3cschema/XMLSchema.dtd"
+							output="${src}/${namespace}/generated/schema"
+							output_api="binding"
+							output_language="java"
+							output_package="${package}.generated.schema"
+							vocabulary="W3CSchema"
+		/>
+		<javac	classpathref="build-classpath"
 				srcdir="${src}"
 				destdir="${classes}"
 				debug="true"
@@ -161,6 +191,18 @@
 				<include name="java_cup/runtime/*" />
 			</patternset>
 		</unjar>
+	</target>
+	<target name="jar-bootstrap" depends="build-bootstrap,pre-jar">
+		<jar	destfile="${dist}/Exemplar.jar"
+				basedir="${classes}"
+				index="true"
+		>
+			<manifest>
+				<attribute	name="Main-Class"
+							value="${package}.ui.cli.Main"
+				/>
+			</manifest>
+		</jar>
 	</target>
 	<target	name="jar"
 			depends="build,pre-jar"
@@ -273,17 +315,26 @@
 		<taskdef	classpathref="build-classpath"
 					resource="checkstyletask.properties"
 		/>
-		<checkstyle
-			config="tests/checkstyle/common_config.xml"
-			classpathref="jar-classpath"
-			failOnViolation="false"
-			failureProperty="checkstyle.common.failed"
+		<checkstyle	config="tests/checkstyle/common_config.xml"
+					classpathref="jar-classpath"
+					failOnViolation="false"
+					failureProperty="checkstyle.common.failed"
 		>
 			<fileset dir="${src}/${namespace}">
 				<include name="**/*.java" />
+				<exclude name="generated/**/*.java" />
 				<exclude name="input/dtd/Lexer.java" />
 				<exclude name="input/dtd/Parser.java" />
 				<exclude name="input/dtd/ParserSymbols.java" />
+			</fileset>
+		</checkstyle>
+		<checkstyle	config="tests/checkstyle/common_config_generated.xml"
+					classpathref="jar-classpath"
+					failOnViolation="false"
+					failureProperty="checkstyle.common.generated.failed"
+		>
+			<fileset dir="${src}/${namespace}/generated">
+				<include name="**/*.java" />
 			</fileset>
 		</checkstyle>
 		<checkstyle
@@ -419,10 +470,10 @@
 				<include name="ui/ant/Task.java" />
 			</fileset>
 		</checkstyle>
-
 		<condition property="checkstyle.failed">
 			<or>
 				<isset property="checkstyle.common.failed" />
+				<isset property="checkstyle.common.generated.failed" />
 				<isset property="checkstyle.common.junit.failed" />
 				<isset property="checkstyle.import.src.failed" />
 				<isset property="checkstyle.import.junit.failed" />
@@ -474,7 +525,7 @@
 			description="Create all of the documentation for the project."
 	/>
 	<target	name="doc-api"
-			depends="build-parser"
+			depends="build"
 			description="Generate all of the API documentation using Javadoc"
 	>
 		<javadoc
@@ -732,18 +783,21 @@
 		</delete>
 	</target>
 	<target	name="clean-dynamic-files"
-			depends="clean-parser-files,clean-lexer-file"
+			depends="clean-dtd-parser-files,clean-dtd-lexer-file,clean-generated-files"
 	/>
-	<target name="clean-lexer-file">
-		<delete file="${lexer-file}" quiet="true" />
+	<target name="clean-dtd-lexer-file">
+		<delete file="${dtd-lexer-file}" quiet="true" />
 	</target>
-	<target name="clean-parser-files">
-		<delete	file="${src}/${namespace}/input/dtd/${parser-file}"
+	<target name="clean-dtd-parser-files">
+		<delete	file="${input-module}/dtd/${dtd-parser-file}"
 				quiet="true"
 		/>
-		<delete	file="${src}/${namespace}/input/dtd/${parser-symbols}.java"
+		<delete	file="${input-module}/dtd/${dtd-parser-symbols}.java"
 				quiet="true"
 		/>
+	</target>
+	<target name="clean-generated-files">
+		<delete dir="${src}/${namespace}/generated" quiet="true" />
 	</target>
 	<target name="clean-jar">
 		<delete includeEmptyDirs="true" quiet="true">

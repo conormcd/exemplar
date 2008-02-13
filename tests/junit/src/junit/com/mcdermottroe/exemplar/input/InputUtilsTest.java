@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006, 2007
+	Copyright (c) 2006-2008
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,8 @@
 package junit.com.mcdermottroe.exemplar.input;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,9 +58,45 @@ extends UtilityClassTestCase<InputUtils>
 		@return	Some sample input languages and files.
 	*/
 	public static Map<String, Collection<File>> getSampleData() {
-		Map<String, Collection<File>> retVal;
-		retVal = new HashMap<String, Collection<File>>();
-		retVal.put("dtd", ParserTest.getSampleDTDs());
+		// All the input modules to test.
+		Map<String, Class<?>> inputModules = new HashMap<String, Class<?>>();
+		inputModules.put("dtd", ParserTest.class);
+		inputModules.put(
+			"schema",
+			junit.com.mcdermottroe.exemplar.input.schema.ParserTest.class
+		);
+
+		Map<String, Collection<File>> retVal =
+			new HashMap<String, Collection<File>>();
+		for (String inputModuleName : inputModules.keySet()) {
+			Class<?> inputModule = inputModules.get(inputModuleName);
+
+			// Find the getSamples() method.
+			Method samplesMethod;
+			try {
+				samplesMethod = inputModule.getMethod("getSamples");
+			} catch (NoSuchMethodException e) {
+				assertNotNull("NoSuchMethodException was null", e);
+				fail("Failed to find sample input.");
+				break;
+			}
+
+			// Call getSamples()
+			try {
+				retVal.put(
+					inputModuleName,
+					(Collection<File>)samplesMethod.invoke(null)
+				);
+			} catch (IllegalAccessException e) {
+				assertNotNull("InvocationTargetException was null", e);
+				fail("Failed to access getSamples()");
+				break;
+			} catch (InvocationTargetException e) {
+				assertNotNull("InvocationTargetException was null", e);
+				fail("getSamples() threw an exception");
+				break;
+			}
+		}
 		return retVal;
 	}
 
@@ -100,6 +138,7 @@ extends UtilityClassTestCase<InputUtils>
 					fail("parse(String, String) threw an InputException");
 				} catch (ParserException e) {
 					assertNotNull("ParserException was null", e);
+					e.printStackTrace();
 					fail("parse(String, String) threw an ParserException");
 				}
 			}

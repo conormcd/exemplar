@@ -30,14 +30,10 @@
 package com.mcdermottroe.exemplar.input.dtd;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -46,6 +42,7 @@ import com.mcdermottroe.exemplar.Copyable;
 import com.mcdermottroe.exemplar.DBC;
 import com.mcdermottroe.exemplar.Utils;
 import com.mcdermottroe.exemplar.ui.Message;
+import com.mcdermottroe.exemplar.utils.Files;
 
 import static com.mcdermottroe.exemplar.Constants.Character.PERCENT;
 import static com.mcdermottroe.exemplar.Constants.Character.SEMI_COLON;
@@ -162,45 +159,15 @@ implements Comparable<PEDeclTable>, Copyable<PEDeclTable>
 
 		Reader peRefReader;
 		if (fileTable.containsKey(name)) {
-			// Get the entry from the table
-			String fileTableEntry = fileTable.get(name);
-
 			try {
-				// Construct the path to the file
-				File file;
-				if (fileTableEntry.startsWith(File.separator)) {
-					file = new File(fileTableEntry);
-				} else {
-					file = new File(dtdPath, fileTableEntry);
-				}
-
 				peRefReader = new InputStreamReader(
-					new FileInputStream(
-						file
-					)
+					Files.readFile(fileTable.get(name), dtdPath)
 				);
-			} catch (FileNotFoundException e) {
-				// OK, so it's not a file, try and make a URL out of it
-				DBC.IGNORED_EXCEPTION(e);
-				try {
-					URL url = new URL(fileTableEntry);
-
-					try {
-						peRefReader = new InputStreamReader(
-							url.openConnection().getInputStream()
-						);
-					} catch(IOException ioe) {
-						throw new ParameterEntityException(
-							Message.DTDPE_UNRESOLVED_PE_REF(name),
-							ioe
-						);
-					}
-				} catch (MalformedURLException mfue) {
-					throw new ParameterEntityException(
-						Message.DTDPE_UNRESOLVED_PE_REF(name),
-						mfue
-					);
-				}
+			} catch (IOException e) {
+				throw new ParameterEntityException(
+					Message.DTDPE_UNRESOLVED_PE_REF(name),
+					e
+				);
 			}
 		} else if (table.containsKey(name)) {
 			// Construct a string reader so that the contents can be properly

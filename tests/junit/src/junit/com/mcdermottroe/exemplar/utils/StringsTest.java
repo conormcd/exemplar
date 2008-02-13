@@ -456,6 +456,32 @@ extends UtilityClassTestCase<Strings>
 		}
 	}
 
+	/** Test {@link Strings#lowerCaseFirst(CharSequence)}. */
+	public void testLowerCaseFirst() {
+		String[] input = {
+			null,
+			"",
+			"foo",
+			"FOO",
+			"!",
+		};
+		String[] expected = {
+			null,
+			"",
+			"foo",
+			"fOO",
+			"!",
+		};
+		assertEquals("Broken test data", input.length, expected.length);
+		for (int i = 0; i < input.length; i++) {
+			assertEquals(
+				"Input does not match expected output",
+				expected[i],
+				Strings.lowerCaseFirst(input[i])
+			);
+		}
+	}
+
 	/** Test {@link Strings#isLegalJavaIdentifier(CharSequence)}. */
 	public void testIsLegalJavaIdentifier() {
 		String[] input = {
@@ -578,6 +604,132 @@ extends UtilityClassTestCase<Strings>
 				"Input does not match expected output",
 				expected[i],
 				Strings.isLegalJavaIdentifier(input[i])
+			);
+		}
+	}
+
+	/** Test {@link Strings#isJavaKeyword(CharSequence)}. */
+	public void testIsJavaKeyword() {
+		String[] input = {
+			null,
+			"",
+			"foo",
+			"!bar",
+			"b!ar",
+			"abstract",
+			"assert",
+			"boolean",
+			"break",
+			"byte",
+			"case",
+			"catch",
+			"char",
+			"class",
+			"const",
+			"continue",
+			"default",
+			"do",
+			"double",
+			"else",
+			"enum",
+			"extends",
+			"final",
+			"finally",
+			"float",
+			"for",
+			"goto",
+			"if",
+			"implements",
+			"import",
+			"instanceof",
+			"int",
+			"interface",
+			"long",
+			"native",
+			"new",
+			"package",
+			"private",
+			"protected",
+			"public",
+			"return",
+			"short",
+			"static",
+			"strictfp",
+			"super",
+			"switch",
+			"synchronized",
+			"this",
+			"throw",
+			"throws",
+			"transient",
+			"try",
+			"void",
+			"volatile",
+			"while",
+		};
+		boolean[] expected = {
+			false,
+			false,
+			false,
+			false,
+			false,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+		};
+		assertEquals("Broken test data", input.length, expected.length);
+		for (int i = 0; i < input.length; i++) {
+			assertEquals(
+				"Input does not match expected output",
+				expected[i],
+				Strings.isJavaKeyword(input[i])
 			);
 		}
 	}

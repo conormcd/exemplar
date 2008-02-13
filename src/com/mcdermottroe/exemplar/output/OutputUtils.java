@@ -92,9 +92,7 @@ public final class OutputUtils {
 		if (language == null) {
 			throw new OutputException(Message.SOURCE_GENERATOR_LANGUAGE_NULL());
 		}
-		DBC.REQUIRE(doctype != null);
 		DBC.REQUIRE(filename != null);
-		DBC.REQUIRE(language != null);
 
 		// Make the generator
 		XMLParserSourceGenerator<?> gen;
@@ -294,6 +292,8 @@ public final class OutputUtils {
 			} else {
 				pair = new LanguageAPIPair(outputLanguageAPI, null);
 			}
+			DBC.ASSERT(pair != null);
+			assert pair != null;
 
 			XMLParserSourceGenerator<?> gen;
 			gen = XMLParserSourceGenerator.create(

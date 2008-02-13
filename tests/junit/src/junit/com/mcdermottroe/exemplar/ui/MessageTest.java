@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006, 2007
+	Copyright (c) 2006-2008
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -91,13 +91,6 @@ extends UtilityClassTestCase<Message>
 	/** Test {@link Message#DTDLEXER_ILLEGAL_CHARACTER()}. */
 	public void testDTDLEXER_ILLEGAL_CHARACTER() {
 		String message = Message.DTDLEXER_ILLEGAL_CHARACTER();
-		assertNotNull("Message was null", message);
-		assertNotSame("Message was a zero-length String", 0,  message.length());
-	}
-
-	/** Test {@link Message#DTDLEXER_INPUT_NOT_FOUND(String)}. */
-	public void testDTDLEXER_INPUT_NOT_FOUND() {
-		String message = Message.DTDLEXER_INPUT_NOT_FOUND("foo");
 		assertNotNull("Message was null", message);
 		assertNotSame("Message was a zero-length String", 0,  message.length());
 	}
@@ -193,6 +186,13 @@ extends UtilityClassTestCase<Message>
 		assertNotSame("Message was a zero-length String", 0,  message.length());
 	}
 
+	/** Test {@link Message#FILE_NOT_FOUND(String)}. */
+	public void testFILE_NOT_FOUND() {
+		String message = Message.FILE_NOT_FOUND("foo");
+		assertNotNull("Message was null", message);
+		assertNotSame("Message was a zero-length String", 0,  message.length());
+	}
+
 	/** Test {@link Message#FILE_WRITE_FAILED(String)}. */
 	public void testFILE_WRITE_FAILED() {
 		String message = Message.FILE_WRITE_FAILED("foo");
@@ -266,6 +266,20 @@ extends UtilityClassTestCase<Message>
 	/** Test {@link Message#LANGUAGE_DTD()}. */
 	public void testLANGUAGE_DTD() {
 		String message = Message.LANGUAGE_DTD();
+		assertNotNull("Message was null", message);
+		assertNotSame("Message was a zero-length String", 0,  message.length());
+	}
+
+	/** Test {@link Message#LANGUAGE_LEVEL_JAVA_14()}. */
+	public void testLANGUAGE_LEVEL_JAVA_14() {
+		String message = Message.LANGUAGE_LEVEL_JAVA_14();
+		assertNotNull("Message was null", message);
+		assertNotSame("Message was a zero-length String", 0,  message.length());
+	}
+
+	/** Test {@link Message#LANGUAGE_LEVEL_JAVA_15()}. */
+	public void testLANGUAGE_LEVEL_JAVA_15() {
+		String message = Message.LANGUAGE_LEVEL_JAVA_15();
 		assertNotNull("Message was null", message);
 		assertNotSame("Message was a zero-length String", 0,  message.length());
 	}
@@ -385,6 +399,34 @@ extends UtilityClassTestCase<Message>
 	/** Test {@link Message#OPTIONS_NO_SUCH_OPTION(String)}. */
 	public void testOPTIONS_NO_SUCH_OPTION() {
 		String message = Message.OPTIONS_NO_SUCH_OPTION("foo");
+		assertNotNull("Message was null", message);
+		assertNotSame("Message was a zero-length String", 0,  message.length());
+	}
+
+	/** Test {@link Message#SCHEMA_ATTRIBUTE_ILLEGAL_CONTENT(String)}. */
+	public void testSCHEMA_ATTRIBUTE_ILLEGAL_CONTENT() {
+		String message = Message.SCHEMA_ATTRIBUTE_ILLEGAL_CONTENT("foo");
+		assertNotNull("Message was null", message);
+		assertNotSame("Message was a zero-length String", 0,  message.length());
+	}
+
+	/** Test {@link Message#SCHEMA_BAD_SIMPLE_TYPE_CONTENT_MODEL(String)}. */
+	public void testSCHEMA_BAD_SIMPLE_TYPE_CONTENT_MODEL() {
+		String message = Message.SCHEMA_BAD_SIMPLE_TYPE_CONTENT_MODEL("foo");
+		assertNotNull("Message was null", message);
+		assertNotSame("Message was a zero-length String", 0,  message.length());
+	}
+
+	/** Test {@link Message#SCHEMA_MULTIPLE_ROOT_ELEMENTS()}. */
+	public void testSCHEMA_MULTIPLE_ROOT_ELEMENTS() {
+		String message = Message.SCHEMA_MULTIPLE_ROOT_ELEMENTS();
+		assertNotNull("Message was null", message);
+		assertNotSame("Message was a zero-length String", 0,  message.length());
+	}
+
+	/** Test {@link Message#SCHEMA_READ_ERROR()}. */
+	public void testSCHEMA_READ_ERROR() {
+		String message = Message.SCHEMA_READ_ERROR();
 		assertNotNull("Message was null", message);
 		assertNotSame("Message was a zero-length String", 0,  message.length());
 	}

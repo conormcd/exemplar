@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006, 2007
+	Copyright (c) 2006-2008
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -29,11 +29,11 @@
 */
 package junit.com.mcdermottroe.exemplar;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.mcdermottroe.exemplar.CopyException;
+import com.mcdermottroe.exemplar.Copyable;
 import com.mcdermottroe.exemplar.Exception;
 
 /** Test class for all exception classes.
@@ -43,17 +43,8 @@ import com.mcdermottroe.exemplar.Exception;
 	@since	0.1
 */
 public abstract class ExceptionClassTestCase<T extends Exception>
-extends NormalClassTestCase<Exception>
+extends GeneratedExceptionClassTestCase<T>
 {
-	/** {@inheritDoc} */
-	@Override public void setUp() throws java.lang.Exception {
-		super.setUp();
-		addSample(sampleFromNoArgConstructor());
-		addSample(sampleFromStringConstructor());
-		addSample(sampleFromThrowableConstructor());
-		addSample(sampleFromStringThrowableConstructor());
-	}
-
 	/** Test to ensure that Exception classes inherit from {@link Throwable}
 		via the exemplar version of {@link Exception} rather than from the
 		standard {@link java.lang.Exception}.
@@ -65,97 +56,6 @@ extends NormalClassTestCase<Exception>
 		);
 	}
 
-	/** Test that a no-arg constructor is available and can be used to create 
-		an instance of the {@link Exception} class.
-
-		@see Exception#Exception()
-	*/
-	public void testNoArgConstructor() {
-		try {
-			assertNotNull(
-				"The no-arg constructor works.",
-				sampleFromNoArgConstructor()
-			);
-		} catch (IllegalAccessException e) {
-			fail("Forbidden from instantiating the class.");
-		} catch (InstantiationException e) {
-			fail("Failed to instantiate the class.");
-		} catch (InvocationTargetException e) {
-			fail("An exception was thrown when instantiating the class.");
-		} catch (NoSuchMethodException e) {
-			fail("Class does not have a no-arg constructor.");
-		}
-	}
-
-	/** Test that a constructor which takes a single argument of type {@link 
-		String} is available and can be used to create an instance of the
-		{@link Exception} class.
-
-		@see Exception#Exception(String)
-	*/
-	public void testOneStringConstructor() {
-		try {
-			assertNotNull(
-				"The (String) constructor works.",
-				sampleFromStringThrowableConstructor()
-			);
-		} catch (IllegalAccessException e) {
-			fail("Forbidden from instantiating the class.");
-		} catch (InstantiationException e) {
-			fail("Failed to instantiate the class.");
-		} catch (InvocationTargetException e) {
-			fail("An exception was thrown when instantiating the class.");
-		} catch (NoSuchMethodException e) {
-			fail("Class does not have a (String) constructor.");
-		}
-	}
-
-	/** Test that a constructor which takes a single argument of type {@link 
-		Throwable} is available and can be used to create an instance of the
-		{@link Exception} class.
-
-		@see Exception#Exception(Throwable)
-	*/
-	public void testOneThrowableConstructor() {
-		try {
-			assertNotNull(
-				"The (Throwable) constructor works.",
-				sampleFromThrowableConstructor()
-			);
-		} catch (IllegalAccessException e) {
-			fail("Forbidden from instantiating the class.");
-		} catch (InstantiationException e) {
-			fail("Failed to instantiate the class.");
-		} catch (InvocationTargetException e) {
-			fail("An exception was thrown when instantiating the class.");
-		} catch (NoSuchMethodException e) {
-			fail("Class does not have a (Throwable) constructor.");
-		}
-	}
-
-	/** Test that a constructor which takes two arguments, a {@link String} and
-		a {@link Throwable} in that order, is available and can be used to
-		create an instance of the {@link Exception} class.
-
-		@see Exception#Exception(String, Throwable)
-	*/
-	public void testStringThrowableConstructor() {
-		try {
-			assertNotNull(
-				"The (String, Throwable) constructor works.",
-				sampleFromStringThrowableConstructor()
-			);
-		} catch (IllegalAccessException e) {
-			fail("Forbidden from instantiating the class.");
-		} catch (InstantiationException e) {
-			fail("Failed to instantiate the class.");
-		} catch (InvocationTargetException e) {
-			fail("An exception was thrown when instantiating the class.");
-		} catch (NoSuchMethodException e) {
-			fail("Class does not have a (String, Throwable) constructor.");
-		}
-	}
-
 	/** Test the method {@link Exception#getBackTrace()} on a set of sample
 		objects.
 	*/
@@ -165,7 +65,7 @@ extends NormalClassTestCase<Exception>
 			"[A-Za-z0-9$]+(?:\\.[A-Za-z0-9$]+)+:\\s+.+?[\\r\\n]+" +
 			"(?:\\s+[A-Za-z0-9$]+(?:\\.[A-Za-z0-9$]+)+\\(.*?\\)[\\r\\n]+)*"
 		);
-		for (Exception sample : samples()) {
+		for (T sample : samples()) {
 			if (sample != null) {
 				for (String trace : sample.getBackTrace()) {
 					Matcher m = traceElement.matcher(trace);
@@ -198,95 +98,199 @@ extends NormalClassTestCase<Exception>
 		}
 	}
 
-	/** Create a sample object using the no-arg constructor.
-
-		@return								An {@link Exception} created using
-											the no-arg constructor.
-		@throws IllegalAccessException		if the constructor is not
-											accessible.
-		@throws InstantiationException		if the constructor fails to be
-											called.
-		@throws InvocationTargetException	if the constructor throws an
-											exception.
-		@throws NoSuchMethodException		if the no-arg constructor does not
-											exist.
-	*/
-	protected Exception sampleFromNoArgConstructor()
-	throws	IllegalAccessException, InstantiationException,
-			InvocationTargetException, NoSuchMethodException
-	{
-		return (Exception)testedClass.newInstance();
+	/** Ensure that all classes are {@link Copyable}. */
+	public void testImplementsCopyable() {
+		assertTrue(
+			"Class implements Copyable",
+			Copyable.class.isAssignableFrom(testedClass)
+		);
 	}
 
-	/** Create a sample object using the {@link String} constructor.
-
-		@return								An {@link Exception} created using
-											the {@link String} constructor.
-		@throws IllegalAccessException		if the constructor is not
-											accessible.
-		@throws InstantiationException		if the constructor fails to be
-											called.
-		@throws InvocationTargetException	if the constructor throws an
-											exception.
-		@throws NoSuchMethodException		if the no-arg constructor does not
-											exist.
-	*/
-	protected Exception sampleFromStringConstructor()
-	throws	IllegalAccessException, InstantiationException,
-			InvocationTargetException, NoSuchMethodException
-	{
-		Constructor<?> oneString = testedClass.getDeclaredConstructor(
-			String.class
-		);
-		return (Exception)oneString.newInstance("test");
+	/** This ensures that it is possible to call {@link Copyable#getCopy()} and
+	 not have an exception thrown.
+	 */
+	public void testCopyable() {
+		for (T sample : samples()) {
+			if (sample != null) {
+				// Invoke the getCopy method.
+				try {
+					sample.getCopy();
+				} catch (CopyException e) {
+					e.printStackTrace();
+					fail("getCopy() threw a CopyException"); // NON-NLS
+					return;
+				}
+			}
+		}
 	}
 
-	/** Create a sample object using the {@link Throwable} constructor.
+	/** This ensures that it is possible to call {@link Copyable#getCopy()} and
+	 get an object which is equal to, but not the same (referentially) to the
+	 original object.
+	 */
+	public void testGetCopyProducesIdenticalObject() {
+		for (T sample : samples()) {
+			if (sample != null) {
+				// Invoke the getCopy method.
+				Object copy;
+				try {
+					copy = sample.getCopy();
+				} catch (CopyException e) {
+					e.printStackTrace();
+					fail("getCopy() threw a CopyException");
+					return;
+				}
 
-		@return								An {@link Exception} created using
-											the {@link Throwable} constructor.
-		@throws IllegalAccessException		if the constructor is not
-											accessible.
-		@throws InstantiationException		if the constructor fails to be
-											called.
-		@throws InvocationTargetException	if the constructor throws an
-											exception.
-		@throws NoSuchMethodException		if the no-arg constructor does not
-											exist.
-	*/
-	protected Exception sampleFromThrowableConstructor()
-	throws	IllegalAccessException, InstantiationException,
-			InvocationTargetException, NoSuchMethodException
-	{
-		Constructor<?> oneString = testedClass.getDeclaredConstructor(
-			Throwable.class
-		);
-		return (Exception)oneString.newInstance(new Throwable("test"));
+				// Fail if the copy is the same object
+				assertFalse("The copy is the same object", sample == copy);
+
+				// Fail if the original and copy are not equal
+				assertEquals(
+					"The copy is not equal to the original",
+					sample,
+					copy
+				);
+
+				// Ensure that the hashcodes are the same
+				assertEquals(
+					"The copy has a different hashcode to the original",
+					sample.hashCode(),
+					copy.hashCode()
+				);
+			}
+		}
 	}
 
-	/** Create a sample object using the {@link String}, {@link Throwable}
-		constructor.
+	/** Test that:
+	 Integer.signum(a.compareTo(b)) == -Integer.signum(b.compareTo(a))
+	 as required by the contract of {@link Comparable#compareTo(Object)}.
+	 */
+	public void testCompareToSignsConsistent() {
+		for (T a : samples()) {
+			for (T b : samples()) {
+				if (a != null && b != null) {
+					int ab = 0;
+					boolean abThrew = false;
+					int ba = 0;
+					boolean baThrew = false;
+					try {
+						ab = Integer.signum(a.compareTo(b));
+					} catch (Throwable t) {
+						t.printStackTrace();
+						abThrew = true;
+					}
+					try {
+						ba = Integer.signum(b.compareTo(a));
+					} catch (Throwable t) {
+						t.printStackTrace();
+						baThrew = true;
+					}
+					assertEquals(
+						"Threw exception in one direction only",
+						abThrew,
+						baThrew
+					);
+					assertEquals(
+						"sgn(a.compareTo(b)) != -sgn(b.compareTo(a))",
+						ab,
+						-ba
+					);
+				}
+			}
+		}
+	}
 
-		@return								An {@link Exception} created using
-											the {@link String}, {@link
-											Throwable} constructor.
-		@throws IllegalAccessException		if the constructor is not
-											accessible.
-		@throws InstantiationException		if the constructor fails to be
-											called.
-		@throws InvocationTargetException	if the constructor throws an
-											exception.
-		@throws NoSuchMethodException		if the no-arg constructor does not
-											exist.
-	*/
-	protected Exception sampleFromStringThrowableConstructor()
-	throws	IllegalAccessException, InstantiationException,
-			InvocationTargetException, NoSuchMethodException
-	{
-		Constructor<?> oneString = testedClass.getDeclaredConstructor(
-			String.class,
-			Throwable.class
-		);
-		return (Exception)oneString.newInstance("test", new Throwable("test"));
+	/** Test to ensure that:
+	 (a.compareTo(b) op 0 && b.compareTo(c) op 0)
+	 implies
+	 a.compareTo(c) op 0.
+	 */
+	public void testCompareToTransitive() {
+		for (T a : samples()) {
+			for (T b : samples()) {
+				for (T c : samples()) {
+					if (a != null && b != null) {
+						int ab = 0;
+						int bc = 0;
+						int ac = 0;
+						boolean abThrew = false;
+						boolean bcThrew = false;
+						boolean acThrew = false;
+						try {
+							ab = Integer.signum(a.compareTo(b));
+						} catch (Throwable t) {
+							abThrew = true;
+						}
+						try {
+							bc = Integer.signum(b.compareTo(c));
+						} catch (Throwable t) {
+							bcThrew = true;
+						}
+						try {
+							ac = Integer.signum(a.compareTo(c));
+						} catch (Throwable t) {
+							acThrew = true;
+						}
+
+						if (abThrew && bcThrew) {
+							assertTrue("a.compareTo(c) did not throw", acThrew);
+						} else if (abThrew) {
+							// Only one threw, we don't care
+						} else if (bcThrew) {
+							// Only one threw, we don't care
+						} else {
+							if (ab == bc) {
+								assertEquals(
+									"comparable(T) not transitive",
+									ab,
+									ac
+								);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/** Test that {@link Comparable#compareTo(Object)} throws a {@link
+	NullPointerException} when given null as its parameter.
+	 */
+	public void testCompareToNullThrowsNPE() {
+		for (T a : samples()) {
+			try {
+				a.compareTo(null);
+				fail("compareTo(null) did not throw an NPE");
+			} catch (NullPointerException e) {
+				assertNotNull("NullPointerException was null", e);
+			}
+		}
+	}
+
+	/** Test to ensure that a.compareTo(b) == 0 implies a.equals(b). */
+	public void testCompareToConsistentWithEquals() {
+		for (T a : samples()) {
+			for (T b : samples()) {
+				if (a != null && b != null) {
+					// Test forward
+					if (a.compareTo(b) == 0) {
+						assertEquals(
+							"compareTo not consistent with equals",
+							a,
+							b
+						);
+					}
+
+					// Test reverse
+					if (a.equals(b)) {
+						assertEquals(
+							"equals not consistent with compareTo",
+							0,
+							a.compareTo(b)
+						);
+					}
+				}
+			}
+		}
 	}
 }

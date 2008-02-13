@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2007
+	Copyright (c) 2007, 2008
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -214,7 +214,7 @@ implements	Comparable<XMLAttributeContentType>,
 			return cmp;
 		}
 
-		return Utils.compare(values, other.getValues());
+		return Utils.compare(getValues(), other.getValues());
 	}
 
 	/** Access the values for an enumerated type.
@@ -225,7 +225,7 @@ implements	Comparable<XMLAttributeContentType>,
 		if (values != null) {
 			return new ArrayList<String>(values);
 		} else {
-			return null;
+			return new ArrayList<String>(0);
 		}
 	}
 
@@ -262,8 +262,7 @@ implements	Comparable<XMLAttributeContentType>,
 			return false;
 		}
 
-		XMLAttributeContentType other = (XMLAttributeContentType)o;
-		return compareTo(other) == 0;
+		return compareTo(XMLAttributeContentType.class.cast(o)) == 0;
 	}
 
 	/** Implement {@link Object#hashCode()}.

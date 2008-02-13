@@ -62,16 +62,79 @@ implements Comparable<T>, Copyable<T>
 	public final String getVariableName(XMLAttribute attribute)
 	throws XMLParserGeneratorException
 	{
+		return getVariableName(attribute, null, null);
+	}
+
+
+	/** Convert an XML attribute into a variable name.
+
+		@param	attribute					The attribute.
+		@param	prefix						A prefix for the variable name.
+		@return								A name close to the attribute name
+											which conforms to Java rules and
+											customs for variable names.
+		@throws XMLParserGeneratorException	if a legal identifier could not be
+											created.
+	*/
+	public final String getVariableName(XMLAttribute attribute, String prefix)
+	throws XMLParserGeneratorException
+	{
+		return getVariableName(attribute, prefix, null);
+	}
+
+	/** Convert an XML attribute into a variable name.
+
+		@param	attribute					The attribute.
+		@param	prefix						A prefix for the variable name.
+		@param	suffix						A suffix for the variable name.
+		@return								A name close to the attribute name
+											which conforms to Java rules and
+											customs for variable names.
+		@throws XMLParserGeneratorException	if a legal identifier could not be
+											created.
+	*/
+	public final String getVariableName(
+		XMLAttribute attribute,
+		String prefix,
+		String suffix
+	)
+	throws XMLParserGeneratorException
+	{
 		if (attribute == null) {
 			return null;
 		}
-		String varName = generateVariableName(attribute);
-		if (!Strings.isLegalJavaIdentifier(varName)) {
-			throw new XMLParserGeneratorException(
-				Message.GEN_VARNAME_FROM_ATT_FAILED(attribute.getName())
+
+		// Build the variable name
+		StringBuilder variableName = new StringBuilder();
+		if (prefix != null) {
+			variableName.append(Strings.lowerCaseFirst(prefix));
+			variableName.append(
+				Strings.upperCaseFirst(generateVariableName(attribute))
+			);
+		} else {
+			variableName.append(
+				Strings.lowerCaseFirst(generateVariableName(attribute))
 			);
 		}
-		return varName;
+		if (suffix != null) {
+			variableName.append(Strings.upperCaseFirst(suffix));
+		}
+
+		// Make sure that the variable name is legal
+		if (Strings.isLegalJavaIdentifier(variableName)) {
+			return variableName.toString();
+		} else {
+			StringBuilder varName = new StringBuilder(variableName);
+			varName.append("Attribute");
+			String var = varName.toString();
+			if (Strings.isLegalJavaIdentifier(var)) {
+				return var;
+			} else {
+				throw new XMLParserGeneratorException(
+					Message.GEN_VARNAME_FROM_ATT_FAILED(attribute.getName())
+				);
+			}
+		}
 	}
 
 	/** Convert an XML attribute into a variable name.
@@ -125,7 +188,7 @@ implements Comparable<T>, Copyable<T>
 	throws XMLParserGeneratorException
 	{
 		StringBuilder getter = new StringBuilder("get");
-		getter.append(Strings.upperCaseFirst(getVariableName(attribute)));
+		getter.append(Strings.upperCaseFirst(generateVariableName(attribute)));
 		return getter.toString();
 	}
 
@@ -168,7 +231,7 @@ implements Comparable<T>, Copyable<T>
 	throws XMLParserGeneratorException
 	{
 		StringBuilder setter = new StringBuilder("set");
-		setter.append(Strings.upperCaseFirst(getVariableName(attribute)));
+		setter.append(Strings.upperCaseFirst(generateVariableName(attribute)));
 		return setter.toString();
 	}
 

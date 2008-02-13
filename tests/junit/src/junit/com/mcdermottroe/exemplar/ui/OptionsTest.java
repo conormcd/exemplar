@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006, 2007
+	Copyright (c) 2006-2008
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -126,9 +126,9 @@ extends UtilityClassTestCase<Options>
 					descriptions.isEmpty()
 				);
 			} else {
-				assertNull(
-					"getEnumDescriptions returned non-null for a non-enum",
-					descriptions
+				assertTrue(
+					"getEnumDescriptions returned non-empty for a non-enum",
+					descriptions.isEmpty()
 				);
 			}
 		}

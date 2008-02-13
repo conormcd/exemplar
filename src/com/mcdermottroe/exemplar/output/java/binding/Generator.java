@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2007
+	Copyright (c) 2007, 2008
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,9 @@
 package com.mcdermottroe.exemplar.output.java.binding;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import com.mcdermottroe.exemplar.CopyException;
 import com.mcdermottroe.exemplar.DBC;
@@ -48,7 +49,9 @@ import com.mcdermottroe.exemplar.ui.Message;
 import com.mcdermottroe.exemplar.ui.Options;
 import com.mcdermottroe.exemplar.utils.Strings;
 
+import static com.mcdermottroe.exemplar.Constants.Character.DOUBLE_QUOTE;
 import static com.mcdermottroe.exemplar.Constants.Character.RIGHT_CURLY;
+import static com.mcdermottroe.exemplar.Constants.Character.RIGHT_PAREN;
 import static com.mcdermottroe.exemplar.Constants.Character.TAB;
 import static com.mcdermottroe.exemplar.Constants.EOL;
 import static com.mcdermottroe.exemplar.Constants.Format.Filenames.JAVA;
@@ -75,6 +78,15 @@ extends XMLParserSourceGenerator<Generator>
 	protected AttributeNameConverter<? extends AttributeNameConverter<?>>
 		attNameGenerator;
 
+	/** The name of the root parser class. */
+	protected String rootParserClassName;
+
+	/** The name of the exception class. */
+	protected String exceptionClassName;
+
+	/** The name of the tree operation interface. */
+	protected String treeOpInterfaceName;
+
 	/** Creates a source generator which produces data binding parsers in the
 		Java language.
 
@@ -88,6 +100,9 @@ extends XMLParserSourceGenerator<Generator>
 		basePackage = null;
 		elementNameGenerator = new DefaultElementNameConverter();
 		attNameGenerator = new DefaultAttributeNameConverter();
+		exceptionClassName = null;
+		treeOpInterfaceName = null;
+		rootParserClassName = null;
 	}
 
 	/** Copy constructor, see {@link
@@ -99,6 +114,9 @@ extends XMLParserSourceGenerator<Generator>
 		@param	pkg						The {@link #basePackage}.
 		@param	elementNameConverter	The {@link #elementNameGenerator}.
 		@param	attNameConverter		The {@link #attNameGenerator}.
+		@param	rootParserClass			The {@link #rootParserClassName}.
+		@param	exceptionClass			The {@link #exceptionClassName}.
+		@param	treeOpInterface			The {@link #treeOpInterfaceName}.
 	*/
 	protected Generator(
 		Map<String, String> code,
@@ -107,13 +125,19 @@ extends XMLParserSourceGenerator<Generator>
 		ElementNameConverter<? extends ElementNameConverter<?>>
 			elementNameConverter,
 		AttributeNameConverter<? extends AttributeNameConverter<?>>
-			attNameConverter
+			attNameConverter,
+		String rootParserClass,
+		String exceptionClass,
+		String treeOpInterface
 	)
 	{
 		super(code, time);
 		basePackage = pkg;
 		elementNameGenerator = elementNameConverter;
 		attNameGenerator = attNameConverter;
+		rootParserClassName = rootParserClass;
+		exceptionClassName = exceptionClass;
+		treeOpInterfaceName = treeOpInterface;
 	}
 
 	/** {@inheritDoc} */
@@ -124,15 +148,25 @@ extends XMLParserSourceGenerator<Generator>
 	throws XMLParserGeneratorException
 	{
 		DBC.REQUIRE(doctype != null);
+		assert doctype != null;
 		DBC.REQUIRE(targetDirectory != null);
+		assert targetDirectory != null;
 
 		// Set some of the common stuff
+		String vocabularyName = Options.getString("vocabulary");
+		rootParserClassName = Strings.upperCaseFirst(vocabularyName);
 		basePackage = Options.getString("output-package");
 		if (basePackage == null) {
 			throw new XMLParserGeneratorException(
 				Message.MANDATORY_OPTIONS_NOT_SET()
 			);
 		}
+		StringBuilder exClassName = new StringBuilder(rootParserClassName);
+		exClassName.append("Exception");
+		exceptionClassName = exClassName.toString();
+		StringBuilder treeOpIntName = new StringBuilder(rootParserClassName);
+		treeOpIntName.append("TreeOp");
+		treeOpInterfaceName = treeOpIntName.toString();
 
 		// Get the elements
 		Map<String, XMLElement> elements = doctype.elements();
@@ -141,8 +175,8 @@ extends XMLParserSourceGenerator<Generator>
 		if (elements != null && !elements.isEmpty()) {
 			// Ensure that we can create unique class names for all of the
 			// elements.
-			Map<String, XMLElement> classNames =
-				new HashMap<String, XMLElement>();
+			SortedMap<String, XMLElement> classNames =
+				new TreeMap<String, XMLElement>();
 			for (XMLElement element : elements.values()) {
 				String className = elementNameGenerator.getClassName(element);
 				if (classNames.containsKey(className)) {
@@ -164,7 +198,7 @@ extends XMLParserSourceGenerator<Generator>
 
 			// Create the root parser class
 			Log.debug("Creating root parser class");
-			createRootParserClass(targetDirectory);
+			createRootParserClass(targetDirectory, classNames);
 
 			// Create the support classes
 			Log.debug("Creating support classes");
@@ -172,7 +206,10 @@ extends XMLParserSourceGenerator<Generator>
 			createXMLComponentClass(supportDir);
 			createXMLContentClass(supportDir);
 			createAbstractElementClass(supportDir);
+			createAttributeClass(supportDir);
 			createProcessingInstructionClass(supportDir);
+			createExceptionClass(supportDir);
+			createTreeOpInterface(supportDir);
 
 			// Create one class per element
 			Log.debug("Creating element classes");
@@ -247,14 +284,21 @@ extends XMLParserSourceGenerator<Generator>
 
 		@param	dir							The directory in which the base
 											parser class will be put.
+		@param	classNames					A {@link Map} of class names to
+											{@link XMLElement}s for generating
+											the visitor methods.
 		@throws XMLParserGeneratorException	if the base parser class cannot be
 											created.
 	*/
-	protected void createRootParserClass(File dir)
+	protected void createRootParserClass(
+		File dir,
+		Map<String, XMLElement> classNames
+	)
 	throws XMLParserGeneratorException
 	{
 		Log.debug("Creating root parser class");
 		DBC.REQUIRE(dir != null);
+		assert dir != null;
 
 		// Ensure that the directory exists
 		dir.mkdirs();
@@ -263,17 +307,15 @@ extends XMLParserSourceGenerator<Generator>
 		String messageFormatTemplate = loadCodeFragment("ROOT_PARSER_CLASS");
 		DBC.ASSERT(messageFormatTemplate != null);
 
-		// Make the root parser class name
-		String vocabularyName = Options.getString("vocabulary");
-		String rootParserClassName = Strings.upperCaseFirst(vocabularyName);
-
 		// Make the contents of the output file
 		String outputFileContents = Strings.formatMessage(
 			messageFormatTemplate,
 			PROGRAM_NAME,
 			timestamp,
 			basePackage,
-			rootParserClassName
+			rootParserClassName,
+			exceptionClassName,
+			treeOpInterfaceName
 		);
 
 		// Write out the file
@@ -306,6 +348,7 @@ extends XMLParserSourceGenerator<Generator>
 	{
 		Log.debug("Creating abstract element class");
 		DBC.REQUIRE(dir != null);
+		assert dir != null;
 
 		// Ensure that the directory exists
 		dir.mkdirs();
@@ -338,6 +381,51 @@ extends XMLParserSourceGenerator<Generator>
 		}
 	}
 
+	/** Create the attribute class.
+
+		@param	dir							The directory in which to place the
+											class.
+		@throws	XMLParserGeneratorException	if the attribute class cannot be
+											generated.
+	*/
+	protected void createAttributeClass(File dir)
+	throws XMLParserGeneratorException
+	{
+		Log.debug("Creating attribute class");
+		DBC.REQUIRE(dir != null);
+		assert dir != null;
+
+		// Ensure that the directory exists
+		dir.mkdirs();
+
+		// Get the template
+		String messageFormatTemplate = loadCodeFragment(
+			"ATTRIBUTE_CLASS"
+		);
+		DBC.ASSERT(messageFormatTemplate != null);
+
+		// Make the contents of the output file
+		String outputFileContents = Strings.formatMessage(
+			messageFormatTemplate,
+			PROGRAM_NAME,
+			timestamp,
+			basePackage
+		);
+
+		// Write out the file
+		File file = new File(dir, PROGRAM_NAME + "Attribute.java");
+		try {
+			OutputUtils.writeStringToFile(outputFileContents, file);
+		} catch (OutputException e) {
+			throw new XMLParserGeneratorException(
+				Message.FILE_WRITE_FAILED(
+					file.getAbsolutePath()
+				),
+				e
+			);
+		}
+	}
+
 	/** Create a class for a given element.
 
 		@param	element						The element to create the class
@@ -351,7 +439,9 @@ extends XMLParserSourceGenerator<Generator>
 	throws XMLParserGeneratorException
 	{
 		DBC.REQUIRE(element != null);
+		assert element != null;
 		DBC.REQUIRE(dir != null);
+		assert dir != null;
 		Log.debug("Creating the Element class for ", element.getName());
 
 		// Ensure that the directory exists
@@ -364,33 +454,110 @@ extends XMLParserSourceGenerator<Generator>
 		// class.
 		StringBuilder constructorCode = new StringBuilder();
 		StringBuilder accessMethods = new StringBuilder();
+		StringBuilder compareToBody = new StringBuilder();
+		StringBuilder hashCodeBody = new StringBuilder();
 		for (XMLAttribute attribute : element.getAttlist()) {
 			String attributeName = attribute.getName();
 
 			String fixedValue = null;
 			constructorCode.append(TAB);
 			constructorCode.append(TAB);
-			constructorCode.append("attributes.put(\"");
+			constructorCode.append("attributes.put(");
+			constructorCode.append(EOL);
+			constructorCode.append(TAB);
+			constructorCode.append(TAB);
+			constructorCode.append(TAB);
+			constructorCode.append(DOUBLE_QUOTE);
 			constructorCode.append(attributeName);
-			constructorCode.append("\", new Attribute(\"");
+			constructorCode.append("\",");
+			constructorCode.append(EOL);
+			constructorCode.append(TAB);
+			constructorCode.append(TAB);
+			constructorCode.append(TAB);
+			constructorCode.append("new ");
+			constructorCode.append(PROGRAM_NAME);
+			constructorCode.append("Attribute(");
+			constructorCode.append(EOL);
+			constructorCode.append(TAB);
+			constructorCode.append(TAB);
+			constructorCode.append(TAB);
+			constructorCode.append(TAB);
+			constructorCode.append(DOUBLE_QUOTE);
 			constructorCode.append(attributeName);
-			constructorCode.append("\", ");
+			constructorCode.append("\",");
+			constructorCode.append(EOL);
+			constructorCode.append(TAB);
+			constructorCode.append(TAB);
+			constructorCode.append(TAB);
+			constructorCode.append(TAB);
 
 			XMLAttributeDefaultType type = attribute.getDefaultDeclType();
 			if (XMLAttributeDefaultType.ATTVALUE("foo").sameType(type)) {
-				constructorCode.append("Attribute.DEFAULT, \"");
+				constructorCode.append(PROGRAM_NAME);
+				constructorCode.append("Attribute.DEFAULT,");
+				constructorCode.append(EOL);
+				constructorCode.append(TAB);
+				constructorCode.append(TAB);
+				constructorCode.append(TAB);
+				constructorCode.append(TAB);
+				constructorCode.append(DOUBLE_QUOTE);
 				constructorCode.append(type.getValue());
-				constructorCode.append("\"));");
+				constructorCode.append(DOUBLE_QUOTE);
+				constructorCode.append(EOL);
+				constructorCode.append(TAB);
+				constructorCode.append(TAB);
+				constructorCode.append(TAB);
+				constructorCode.append(RIGHT_PAREN);
 			} else if (XMLAttributeDefaultType.FIXED("foo").sameType(type)) {
-				constructorCode.append("Attribute.FIXED, \"");
+				constructorCode.append(PROGRAM_NAME);
+				constructorCode.append("Attribute.FIXED,");
+				constructorCode.append(EOL);
+				constructorCode.append(TAB);
+				constructorCode.append(TAB);
+				constructorCode.append(TAB);
+				constructorCode.append(TAB);
+				constructorCode.append(DOUBLE_QUOTE);
 				constructorCode.append(type.getValue());
-				constructorCode.append("\"));");
+				constructorCode.append(DOUBLE_QUOTE);
+				constructorCode.append(EOL);
+				constructorCode.append(TAB);
+				constructorCode.append(TAB);
+				constructorCode.append(TAB);
+				constructorCode.append(RIGHT_PAREN);
 				fixedValue = type.getValue();
 			} else if (XMLAttributeDefaultType.IMPLIED().sameType(type)) {
-				constructorCode.append("Attribute.IMPLIED, null));");
+				constructorCode.append(PROGRAM_NAME);
+				constructorCode.append("Attribute.IMPLIED,");
+				constructorCode.append(EOL);
+				constructorCode.append(TAB);
+				constructorCode.append(TAB);
+				constructorCode.append(TAB);
+				constructorCode.append(TAB);
+				constructorCode.append("null");
+				constructorCode.append(EOL);
+				constructorCode.append(TAB);
+				constructorCode.append(TAB);
+				constructorCode.append(TAB);
+				constructorCode.append(RIGHT_PAREN);
 			} else if (XMLAttributeDefaultType.REQUIRED().sameType(type)) {
-				constructorCode.append("Attribute.REQUIRED, null));");
+				constructorCode.append(PROGRAM_NAME);
+				constructorCode.append("Attribute.REQUIRED,");
+				constructorCode.append(EOL);
+				constructorCode.append(TAB);
+				constructorCode.append(TAB);
+				constructorCode.append(TAB);
+				constructorCode.append(TAB);
+				constructorCode.append("null");
+				constructorCode.append(EOL);
+				constructorCode.append(TAB);
+				constructorCode.append(TAB);
+				constructorCode.append(TAB);
+				constructorCode.append(RIGHT_PAREN);
 			}
+			constructorCode.append(EOL);
+			constructorCode.append(TAB);
+			constructorCode.append(TAB);
+			constructorCode.append(");");
 			constructorCode.append(EOL);
 
 			// The getter
@@ -414,14 +581,17 @@ extends XMLParserSourceGenerator<Generator>
 			accessMethods.append("public String ");
 			accessMethods.append(attNameGenerator.getGetterName(attribute));
 			accessMethods.append("() {");
-			accessMethods.append(EOL);
-			accessMethods.append(TAB);
-			accessMethods.append(TAB);
 			if (fixedValue == null) {
-				accessMethods.append("return ((Attribute)attributes.get(\"");
+				accessMethods.append(EOL);
+				accessMethods.append(TAB);
+				accessMethods.append(TAB);
+				accessMethods.append("return attributes.get(\"");
 				accessMethods.append(attributeName);
-				accessMethods.append("\")).getValue();");
+				accessMethods.append("\").getValue();");
 			} else {
+				accessMethods.append(EOL);
+				accessMethods.append(TAB);
+				accessMethods.append(TAB);
 				accessMethods.append("return \"");
 				accessMethods.append(fixedValue);
 				accessMethods.append("\";");
@@ -456,7 +626,8 @@ extends XMLParserSourceGenerator<Generator>
 				accessMethods.append(EOL);
 				accessMethods.append(TAB);
 				accessMethods.append(TAB);
-				accessMethods.append("Attribute att = (Attribute)");
+				accessMethods.append(PROGRAM_NAME);
+				accessMethods.append("Attribute att = ");
 				accessMethods.append("attributes.remove(\"");
 				accessMethods.append(attributeName);
 				accessMethods.append("\");");
@@ -475,6 +646,127 @@ extends XMLParserSourceGenerator<Generator>
 				accessMethods.append(RIGHT_CURLY);
 				accessMethods.append(EOL);
 			}
+
+			// Make the comparator
+			if (fixedValue == null) {
+				String cmpVar = attNameGenerator.getVariableName(
+					attribute,
+					"cmp"
+				);
+				String getterName = attNameGenerator.getGetterName(attribute);
+				compareToBody.append(EOL);
+				compareToBody.append(TAB);
+				compareToBody.append(TAB);
+				compareToBody.append("// Compare the ");
+				compareToBody.append(attributeName);
+				compareToBody.append(" attribute.");
+				compareToBody.append(EOL);
+				compareToBody.append(TAB);
+				compareToBody.append(TAB);
+				compareToBody.append("if (");
+				compareToBody.append(getterName);
+				compareToBody.append("() != null && other.");
+				compareToBody.append(getterName);
+				compareToBody.append("() != null) {");
+				compareToBody.append(EOL);
+				compareToBody.append(TAB);
+				compareToBody.append(TAB);
+				compareToBody.append(TAB);
+				compareToBody.append("int ");
+				compareToBody.append(cmpVar);
+				compareToBody.append(" = ");
+				compareToBody.append(getterName);
+				compareToBody.append("().compareTo(other.");
+				compareToBody.append(getterName);
+				compareToBody.append("());");
+				compareToBody.append(EOL);
+				compareToBody.append(TAB);
+				compareToBody.append(TAB);
+				compareToBody.append(TAB);
+				compareToBody.append("if (");
+				compareToBody.append(cmpVar);
+				compareToBody.append(" != 0) {");
+				compareToBody.append(EOL);
+				compareToBody.append(TAB);
+				compareToBody.append(TAB);
+				compareToBody.append(TAB);
+				compareToBody.append(TAB);
+				compareToBody.append("return ");
+				compareToBody.append(cmpVar);
+				compareToBody.append(';');
+				compareToBody.append(EOL);
+				compareToBody.append(TAB);
+				compareToBody.append(TAB);
+				compareToBody.append(TAB);
+				compareToBody.append(RIGHT_CURLY);
+				compareToBody.append(EOL);
+				compareToBody.append(TAB);
+				compareToBody.append(TAB);
+				compareToBody.append("} else if (");
+				compareToBody.append(getterName);
+				compareToBody.append("() != null) {");
+				compareToBody.append(EOL);
+				compareToBody.append(TAB);
+				compareToBody.append(TAB);
+				compareToBody.append(TAB);
+				compareToBody.append("return 1;");
+				compareToBody.append(EOL);
+				compareToBody.append(TAB);
+				compareToBody.append(TAB);
+				compareToBody.append("} else if (other.");
+				compareToBody.append(getterName);
+				compareToBody.append("() != null) {");
+				compareToBody.append(EOL);
+				compareToBody.append(TAB);
+				compareToBody.append(TAB);
+				compareToBody.append(TAB);
+				compareToBody.append("return -1;");
+				compareToBody.append(EOL);
+				compareToBody.append(TAB);
+				compareToBody.append(TAB);
+				compareToBody.append(RIGHT_CURLY);
+				compareToBody.append(EOL);
+
+				hashCodeBody.append(TAB);
+				hashCodeBody.append(TAB);
+				if (hashCodeBody.length() == 2) {
+					hashCodeBody.append("String ");
+				}
+				hashCodeBody.append("fieldValue = ");
+				hashCodeBody.append(getterName);
+				hashCodeBody.append("();");
+				hashCodeBody.append(EOL);
+				hashCodeBody.append(TAB);
+				hashCodeBody.append(TAB);
+				hashCodeBody.append("if (fieldValue != null) {");
+				hashCodeBody.append(EOL);
+				hashCodeBody.append(TAB);
+				hashCodeBody.append(TAB);
+				hashCodeBody.append(TAB);
+				hashCodeBody.append("code += fieldValue.hashCode();");
+				hashCodeBody.append(EOL);
+				hashCodeBody.append(TAB);
+				hashCodeBody.append(TAB);
+				hashCodeBody.append(RIGHT_CURLY);
+				hashCodeBody.append(EOL);
+				hashCodeBody.append(TAB);
+				hashCodeBody.append(TAB);
+				hashCodeBody.append("code *= HASHCODE_MAGIC;");
+				hashCodeBody.append(EOL);
+			}
+		}
+
+		String attributeClassImport;
+		if (!element.getAttlist().getAttributes().isEmpty()) {
+			StringBuilder attClassImport = new StringBuilder("import ");
+			attClassImport.append(basePackage);
+			attClassImport.append(".support.");
+			attClassImport.append(PROGRAM_NAME);
+			attClassImport.append("Attribute;");
+			attClassImport.append(EOL);
+			attributeClassImport = attClassImport.toString();
+		} else {
+			attributeClassImport = "";
 		}
 
 		// Get the template
@@ -490,7 +782,10 @@ extends XMLParserSourceGenerator<Generator>
 			element.getName(),
 			className,
 			constructorCode,
-			accessMethods
+			accessMethods,
+			compareToBody,
+			hashCodeBody,
+			attributeClassImport
 		);
 
 		// Write out the file
@@ -519,6 +814,7 @@ extends XMLParserSourceGenerator<Generator>
 	{
 		Log.debug("Creating the XMLContent class");
 		DBC.REQUIRE(dir != null);
+		assert dir != null;
 
 		// Ensure that the directory exists
 		dir.mkdirs();
@@ -563,6 +859,7 @@ extends XMLParserSourceGenerator<Generator>
 	{
 		Log.debug("Creating the XMLComponent class");
 		DBC.REQUIRE(dir != null);
+		assert dir != null;
 
 		// Ensure that the directory exists
 		dir.mkdirs();
@@ -607,6 +904,7 @@ extends XMLParserSourceGenerator<Generator>
 	{
 		Log.debug("Creating the ProcessingInstruction class");
 		DBC.REQUIRE(dir != null);
+		assert dir != null;
 
 		// Ensure that the directory exists
 		dir.mkdirs();
@@ -639,6 +937,101 @@ extends XMLParserSourceGenerator<Generator>
 		}
 	}
 
+	/** Create the exception class.
+
+		@param	dir							The directory in which the base
+											parser class will be put.
+		@throws XMLParserGeneratorException	if the base parser class cannot be
+											created.
+	*/
+	protected void createExceptionClass(File dir)
+	throws XMLParserGeneratorException
+	{
+		Log.debug("Creating exception class");
+		DBC.REQUIRE(dir != null);
+		assert dir != null;
+
+		// Ensure that the directory exists
+		dir.mkdirs();
+
+		// Get the template
+		String messageFormatTemplate = loadCodeFragment("EXCEPTION_CLASS");
+		DBC.ASSERT(messageFormatTemplate != null);
+
+		// Make the contents of the output file
+		String outputFileContents = Strings.formatMessage(
+			messageFormatTemplate,
+			PROGRAM_NAME,
+			timestamp,
+			basePackage,
+			exceptionClassName
+		);
+
+		// Write out the file
+		try {
+			OutputUtils.writeStringToFile(
+				outputFileContents,
+				dir,
+				String.format(JAVA, exceptionClassName)
+			);
+		} catch (OutputException e) {
+			throw new XMLParserGeneratorException(
+				Message.FILE_WRITE_FAILED(
+					e.getFile().getAbsolutePath()
+				),
+				e
+			);
+		}
+	}
+
+	/** Create the TreeOp interface.
+
+		@param	dir							The directory in which the base
+											parser class will be put.
+		@throws XMLParserGeneratorException	if the base parser class cannot be
+											created.
+	*/
+	protected void createTreeOpInterface(File dir)
+	throws XMLParserGeneratorException
+	{
+		Log.debug("Creating TreeOp interface");
+		DBC.REQUIRE(dir != null);
+		assert dir != null;
+
+		// Ensure that the directory exists
+		dir.mkdirs();
+
+		// Get the template
+		String messageFormatTemplate = loadCodeFragment("TREEOP_INTERFACE");
+		DBC.ASSERT(messageFormatTemplate != null);
+
+		// Make the contents of the output file
+		String outputFileContents = Strings.formatMessage(
+			messageFormatTemplate,
+			PROGRAM_NAME,
+			timestamp,
+			basePackage,
+			treeOpInterfaceName,
+			exceptionClassName
+		);
+
+		// Write out the file
+		try {
+			OutputUtils.writeStringToFile(
+				outputFileContents,
+				dir,
+				String.format(JAVA, treeOpInterfaceName)
+			);
+		} catch (OutputException e) {
+			throw new XMLParserGeneratorException(
+				Message.FILE_WRITE_FAILED(
+					e.getFile().getAbsolutePath()
+				),
+				e
+			);
+		}
+	}
+
 	/** {@inheritDoc} */
 	public Generator getCopy()
 	throws CopyException
@@ -648,7 +1041,10 @@ extends XMLParserSourceGenerator<Generator>
 			timestamp,
 			basePackage,
 			elementNameGenerator.getCopy(),
-			attNameGenerator.getCopy()
+			attNameGenerator.getCopy(),
+			rootParserClassName,
+			exceptionClassName,
+			treeOpInterfaceName
 		);
 	}
 }

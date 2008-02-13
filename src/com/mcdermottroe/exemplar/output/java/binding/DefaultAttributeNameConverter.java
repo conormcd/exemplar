@@ -31,7 +31,6 @@ package com.mcdermottroe.exemplar.output.java.binding;
 
 import com.mcdermottroe.exemplar.CopyException;
 import com.mcdermottroe.exemplar.model.XMLAttribute;
-import com.mcdermottroe.exemplar.utils.Strings;
 
 import static com.mcdermottroe.exemplar.Constants.Character.COLON;
 
@@ -49,11 +48,6 @@ extends AttributeNameConverter<DefaultAttributeNameConverter>
 		int indexOfColon = attName.indexOf((int)COLON);
 		if (indexOfColon > 0) {
 			attName = attName.substring(indexOfColon + 1);
-		}
-		if (!Strings.isLegalJavaIdentifier(attName)) {
-			StringBuilder varName = new StringBuilder(attName);
-			varName.append("Attribute");
-			return varName.toString();
 		}
 		return attName;
 	}

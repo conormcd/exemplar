@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006, 2007
+	Copyright (c) 2006-2008
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -345,6 +345,20 @@ extends NormalClassTestCase<Task>
 		);
 	}
 
+	/** Test {@link Task#setOutput_language_level(String)}. */
+	public void testSetOutput_language_level() {
+		Task.setOutput_language_level("java15");
+		assertNotNull(
+			"Options.getString(\"output-language-level\") == null",
+			Options.getString("output-language-level")
+		);
+		assertEquals(
+			"Options.getString(\"output-language-level\") != \"java15\"",
+			"java15",
+			Options.getString("output-language-level")
+		);
+	}
+
 	/** Test {@link Task#setOutput_package(String)}. */
 	public void testSetOutput_package() {
 		Task.setOutput_package("foo");
@@ -423,5 +437,24 @@ extends NormalClassTestCase<Task>
 			"foo",
 			Options.getString("vocabulary")
 		);
+	}
+
+	/** Test {@link Task#clone()}. */
+	public void testClone() {
+		for (Task sample : samples()) {
+			if (sample != null) {
+				try {
+					Object sampleClone = sample.clone();
+					assertEquals(
+						"Clone was not the same as the sample",
+						sample,
+						sampleClone
+					);
+				} catch (CloneNotSupportedException e) {
+					assertNotNull("CloneNotSupportedException was null", e);
+					fail("clone() failed");
+				}
+			}
+		}
 	}
 }

@@ -57,8 +57,20 @@
 	<allow pkg="com.mcdermottroe.exemplar.Constants" />
 	
 	<!-- Per-subpackage rules -->
+	<subpackage name="generated">
+		<subpackage name="schema">
+			<allow pkg="org.xml.sax" />
+			<allow pkg="com.mcdermottroe.exemplar.generated.schema.support" />
+		</subpackage>
+	</subpackage>
 	<subpackage name="input">
-		<allow class="java.net.MalformedURLException" />
+		<subpackage name="schema">
+			<allow class="org.xml.sax.SAXException" />
+			<allow pkg="com.mcdermottroe.exemplar.generated.schema" />
+			<allow pkg="com.mcdermottroe.exemplar.input" />
+			<allow pkg="com.mcdermottroe.exemplar.input.schema.type" />
+			<allow pkg="com.mcdermottroe.exemplar.model" />
+		</subpackage>
 	</subpackage>
 	<subpackage name="output">
 		<allow class="com.mcdermottroe.exemplar.output.OutputException" />
@@ -89,5 +101,6 @@
 	</subpackage>
 	<subpackage name="utils">
 		<allow class="java.math.BigInteger" />
+		<allow class="java.net.MalformedURLException" />
 	</subpackage>
 </import-control>

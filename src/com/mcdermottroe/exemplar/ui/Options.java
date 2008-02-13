@@ -518,7 +518,7 @@ public final class Options {
 		if (opt != null && isEnum(optionName)) {
 			return Enum.class.cast(opt).getEnumValues();
 		}
-		return null;
+		return new HashMap<String, String>();
 	}
 
 	/** Format the current value of the {@link Option} as a human readable

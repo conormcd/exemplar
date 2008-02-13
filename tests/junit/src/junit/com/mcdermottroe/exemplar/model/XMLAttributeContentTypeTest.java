@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2007
+	Copyright (c) 2007, 2008
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -241,10 +241,7 @@ extends NormalClassTestCase<XMLAttributeContentType>
 	public void testGetValues() {
 		for (XMLAttributeContentType sample : samples()) {
 			if (sample != null) {
-				List<String> values = sample.getValues();
-				if (values != null) {
-					assertFalse(
-						"sample was a type with no values",
+				if	(
 						sample.equals(XMLAttributeContentType.CDATA()) ||
 						sample.equals(XMLAttributeContentType.ENTITIES()) ||
 						sample.equals(XMLAttributeContentType.ENTITY()) ||
@@ -253,18 +250,16 @@ extends NormalClassTestCase<XMLAttributeContentType>
 						sample.equals(XMLAttributeContentType.IDREFS()) ||
 						sample.equals(XMLAttributeContentType.NMTOKEN()) ||
 						sample.equals(XMLAttributeContentType.NMTOKENS())
+					)
+				{
+					assertTrue(
+						"sample has values but shoiuldn't have",
+						sample.getValues().isEmpty()
 					);
 				} else {
-					assertTrue(
-						"sample was a type with values",
-						sample.equals(XMLAttributeContentType.CDATA()) ||
-						sample.equals(XMLAttributeContentType.ENTITIES()) ||
-						sample.equals(XMLAttributeContentType.ENTITY()) ||
-						sample.equals(XMLAttributeContentType.ID()) ||
-						sample.equals(XMLAttributeContentType.IDREF()) ||
-						sample.equals(XMLAttributeContentType.IDREFS()) ||
-						sample.equals(XMLAttributeContentType.NMTOKEN()) ||
-						sample.equals(XMLAttributeContentType.NMTOKENS())
+					assertFalse(
+						"sample has no values but should have",
+						sample.getValues().isEmpty()
 					);
 				}
 			}

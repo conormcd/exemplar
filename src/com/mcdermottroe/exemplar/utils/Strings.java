@@ -377,6 +377,24 @@ public final class Strings {
 		return wrap(string, width, 0);
 	}
 
+	/** Return the input with the first character lower-cased.
+
+		@param	string	The {@link CharSequence} to transform.
+		@return			The input {@link CharSequence} with the first character
+						lower-cased.
+	*/
+	public static String lowerCaseFirst(CharSequence string) {
+		if (string == null) {
+			return null;
+		}
+		if (string.length() < 1) {
+			return string.toString();
+		}
+		StringBuilder retVal = new StringBuilder(string);
+		retVal.replace(0, 1, string.subSequence(0, 1).toString().toLowerCase());
+		return retVal.toString();
+	}
+
 	/** Return the input with the first character upper-cased.
 
 		@param	string	The {@link CharSequence} to transform.
@@ -419,6 +437,22 @@ public final class Strings {
 					return false;
 				}
 			}
+		}
+		if (isJavaKeyword(string)) {
+			return false;
+		}
+		return true;
+	}
+
+	/** Test if something is a Java keyword.
+
+		@param	string	The {@link String} to test for keyword-ness.
+		@return			True if <code>string</code> is a keyword, false
+						otherwise.
+	*/
+	public static boolean isJavaKeyword(CharSequence string) {
+		if (string == null) {
+			return false;
 		}
 		String[] javaKeywords = {
 			"abstract",
@@ -474,9 +508,9 @@ public final class Strings {
 		};
 		for (String keyword : javaKeywords) {
 			if (string.equals(keyword)) {
-				return false;
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 }

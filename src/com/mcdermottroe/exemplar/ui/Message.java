@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2004-2007
+	Copyright (c) 2004-2008
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -73,11 +73,6 @@ public final class Message {
 	*/
 	private static String DTDLEXER_ILLEGAL_CHARACTER = DEFAULT_MESSAGE;
 
-	/** {@link java.text.MessageFormat} string for {@link
-		#DTDLEXER_INPUT_NOT_FOUND(String)}.
-	*/
-	private static String DTDLEXER_INPUT_NOT_FOUND_MESSAGE_FORMAT = DEFAULT_MESSAGE;
-
 	/** Error from the {@link com.mcdermottroe.exemplar.input.dtd.Lexer DTD
 		Lexer} indicating that an invalid conditional section was encountered.
 	*/
@@ -134,6 +129,11 @@ public final class Message {
 	private static String EXCEPTION_NO_MESSAGE = DEFAULT_MESSAGE;
 
 	/** {@link java.text.MessageFormat} string for {@link
+		#FILE_NOT_FOUND(String)}.
+	*/
+	private static String FILE_NOT_FOUND_MESSAGE_FORMAT = DEFAULT_MESSAGE;
+
+	/** {@link java.text.MessageFormat} string for {@link
 		#FILE_WRITE_FAILED(String)}.
 	*/
 	private static String FILE_WRITE_FAILED_MESSAGE_FORMAT = DEFAULT_MESSAGE;
@@ -184,6 +184,12 @@ public final class Message {
 
 	/** The Java language. */
 	private static String LANGUAGE_JAVA = DEFAULT_MESSAGE;
+
+	/** Describe Java 1.4. */
+	private static String LANGUAGE_LEVEL_JAVA_14 = DEFAULT_MESSAGE;
+
+	/** Describe Java 1.5. */
+	private static String LANGUAGE_LEVEL_JAVA_15 = DEFAULT_MESSAGE;
 
 	/** The XSLT language. */
 	private static String LANGUAGE_XSLT = DEFAULT_MESSAGE;
@@ -258,6 +264,22 @@ public final class Message {
 		#OPTIONS_NO_SUCH_OPTION(String)}.
 	*/
 	private static String OPTIONS_NO_SUCH_OPTION_MESSAGE_FORMAT = DEFAULT_MESSAGE;
+
+	/** {@link java.text.MessageFormat} string for {@link
+		#SCHEMA_ATTRIBUTE_ILLEGAL_CONTENT(String)}.
+	*/
+	private static String SCHEMA_ATTRIBUTE_ILLEGAL_CONTENT_MESSAGE_FORMAT = DEFAULT_MESSAGE;
+
+	/** {@link java.text.MessageFormat} string for {@link
+		#SCHEMA_BAD_SIMPLE_TYPE_CONTENT_MODEL(String)}.
+	*/
+	private static String SCHEMA_BAD_SIMPLE_TYPE_CONTENT_MODEL_MESSAGE_FORMAT = DEFAULT_MESSAGE;
+
+	/** Multiple root elements were found in the schema. */
+	private static String SCHEMA_MULTIPLE_ROOT_ELEMENTS = DEFAULT_MESSAGE;
+
+	/** An error occurred reading a W3C XML schema. */
+	private static String SCHEMA_READ_ERROR = DEFAULT_MESSAGE;
 
 	/** Someone passed a null doctype to {@link
 		com.mcdermottroe.exemplar.output.OutputUtils#generateParser(
@@ -422,20 +444,6 @@ public final class Message {
 		return DTDLEXER_ILLEGAL_CHARACTER;
 	}
 
-	/** The input DTD was not found.
-
-		@param fileName	The name of the DTD file that was attempled to be
-						opened.
-		@return			An error message formatted by {@link
-						#DTDLEXER_INPUT_NOT_FOUND_MESSAGE_FORMAT}.
-	*/
-	public static String DTDLEXER_INPUT_NOT_FOUND(String fileName) {
-		return Strings.formatMessage(
-			DTDLEXER_INPUT_NOT_FOUND_MESSAGE_FORMAT,
-			fileName
-		);
-	}
-
 	/** Error from the {@link com.mcdermottroe.exemplar.input.dtd.Lexer DTD
 		Lexer} indicating that an invalid conditional section was encountered.
 
@@ -563,6 +571,16 @@ public final class Message {
 	*/
 	public static String EXCEPTION_NO_MESSAGE() {
 		return EXCEPTION_NO_MESSAGE;
+	}
+
+	/** A file was not found.
+
+		@param	filename	The file that was not found.
+		@return				A message formatted according to {@link
+							Message#FILE_NOT_FOUND_MESSAGE_FORMAT}.
+	*/
+	public static String FILE_NOT_FOUND(String filename) {
+		return Strings.formatMessage(FILE_NOT_FOUND_MESSAGE_FORMAT, filename);
 	}
 
 	/** A write to a file failed for some reason.
@@ -704,6 +722,22 @@ public final class Message {
 	*/
 	public static String LANGUAGE_JAVA() {
 		return LANGUAGE_JAVA;
+	}
+
+	/** Describe Java 1.4.
+
+		@return	A description of Java 1.4.
+	*/
+	public static String LANGUAGE_LEVEL_JAVA_14() {
+		return LANGUAGE_LEVEL_JAVA_14;
+	}
+
+	/** Describe Java 1.5.
+
+		@return	A description of Java 1.5.
+	*/
+	public static String LANGUAGE_LEVEL_JAVA_15() {
+		return LANGUAGE_LEVEL_JAVA_15;
 	}
 
 	/** The XSLT language.
@@ -881,6 +915,48 @@ public final class Message {
 			OPTIONS_NO_SUCH_OPTION_MESSAGE_FORMAT,
 			optionName
 		);
+	}
+
+	/** The content model of an attribute definition was illegal.
+
+		@param	attributeName	The name of the illegal attribute.
+		@return					A message formatted according to {@link
+								#SCHEMA_ATTRIBUTE_ILLEGAL_CONTENT_MESSAGE_FORMAT}.
+	*/
+	public static String SCHEMA_ATTRIBUTE_ILLEGAL_CONTENT(String attributeName) {
+		return Strings.formatMessage(
+			SCHEMA_ATTRIBUTE_ILLEGAL_CONTENT_MESSAGE_FORMAT,
+			attributeName
+		);
+	}
+
+	/** The content model description of a simple type definition was illegal.
+
+		@param	simpleTypeName	The name of the broken simple type.
+		@return					A message formatted according to {@link
+								#SCHEMA_BAD_SIMPLE_TYPE_CONTENT_MODEL_MESSAGE_FORMAT}.
+	*/
+	public static String SCHEMA_BAD_SIMPLE_TYPE_CONTENT_MODEL(String simpleTypeName) {
+		return Strings.formatMessage(
+			SCHEMA_BAD_SIMPLE_TYPE_CONTENT_MODEL_MESSAGE_FORMAT,
+			simpleTypeName
+		);
+	}
+
+	/** Multiple root elements were found in a W3C XML schema.
+
+		@return	The message.
+	*/
+	public static String SCHEMA_MULTIPLE_ROOT_ELEMENTS() {
+		return SCHEMA_MULTIPLE_ROOT_ELEMENTS;
+	}
+
+	/** An error occurred reading a W3C XML Schema.
+
+		@return	The message;
+	*/
+	public static String SCHEMA_READ_ERROR() {
+		return SCHEMA_READ_ERROR;
 	}
 
 	/** Someone passed a null doctype to {@link

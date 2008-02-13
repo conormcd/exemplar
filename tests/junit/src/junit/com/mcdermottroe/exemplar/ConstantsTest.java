@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2006, 2007
+	Copyright (c) 2006-2008
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -35,10 +35,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import com.mcdermottroe.exemplar.Constants;
+import com.mcdermottroe.exemplar.utils.Strings;
 
 import static com.mcdermottroe.exemplar.Constants.Character.DOLLAR;
 import static com.mcdermottroe.exemplar.Constants.Character.EXCLAMATION_MARK;
@@ -117,6 +120,7 @@ extends InterfaceTestCase<Constants>
 
 		// Now find all the classes in the JARs and check for matching test
 		// classes.
+		SortedSet<String> missingTestCases = new TreeSet<String>();
 		for (JarFile jf : jars) {
 			Enumeration<JarEntry> entries = jf.entries();
 			while (entries.hasMoreElements()) {
@@ -136,11 +140,20 @@ extends InterfaceTestCase<Constants>
 							Class.forName(className.toString());
 						} catch (ClassNotFoundException e) {
 							assertNotNull("ClassNotFoundException was null", e);
-							fail("Missing test class: " + className);
+							missingTestCases.add(className.toString());
 						}
 					}
 				}
 			}
+		}
+
+		// If there were any missing, we need to fail.
+		if (!missingTestCases.isEmpty()) {
+			StringBuilder failureMessage = new StringBuilder(
+				"Missing test classes: "
+			);
+			failureMessage.append(Strings.join(", ", missingTestCases));
+			fail(failureMessage.toString());
 		}
 	}
 }

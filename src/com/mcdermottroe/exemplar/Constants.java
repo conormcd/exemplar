@@ -52,7 +52,7 @@ public interface Constants {
 		by the roadmap. A copy of the roadmap can be found in the root
 		directory of the source distribution.
 	*/
-	String PROGRAM_VERSION = "0.1.1";
+	String PROGRAM_VERSION = "0.1.2";
 
 	/** A short message about the copyright and license. The years mentioned in
 		this message correspond to the range of years for all of the files
@@ -60,7 +60,7 @@ public interface Constants {
 		an error to modify the contents of this array from code.
 	*/
 	String[] COPYRIGHT_MESSAGE = {
-		"Copyright (c) 2003-2007",
+		"Copyright (c) 2003-2008",
 		"Conor McDermottroe. All rights reserved.",
 		"See LICENSE and README files for licensing information.",
 	};
@@ -363,7 +363,7 @@ public interface Constants {
 		String EXIT_STATUS_MNEMONIC = "^[A-Z0-9][A-Z0-9_]+[A-Z0-9]$";
 
 		/** A regex matching valid parameter entity names. */
-		Pattern VALID_PE_NAME = Pattern.compile("^[A-Za-z0-9\\._:-]+$"); // NON-NLS
+		Pattern VALID_PE_NAME = Pattern.compile("^[A-Za-z0-9\\._:-]+$");
 	}
 
 	/** Constants for UI. */

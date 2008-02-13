@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2004-2007
+	Copyright (c) 2004-2008
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -45,7 +45,7 @@ import static com.mcdermottroe.exemplar.Constants.Character.SPACE;
 	@param	<T>	The type of {@link XMLObject}
 */
 public abstract class XMLObject<T extends XMLObject<T>>
-implements Comparable<T>, Copyable<T>
+implements Copyable<T>
 {
 	/** Protect the constructor. */
 	protected XMLObject() {

@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2007
+	Copyright (c) 2007, 2008
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -77,6 +77,18 @@ implements Comparable<PowerSet<T>>, Copyable<PowerSet<T>>
 	public PowerSet(Set<T> objects) {
 		super();
 		baseSet = new ArrayList<T>(objects);
+	}
+
+	/** Create a new power set of a set of objects.
+
+		@param	objects The original set to create the power set from.
+	*/
+	public PowerSet(T... objects) {
+		super();
+		baseSet = new ArrayList<T>(objects.length);
+		for (T object : objects) {
+			baseSet.add(object);
+		}
 	}
 
 	/** A copy constructor.

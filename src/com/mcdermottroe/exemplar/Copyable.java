@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2007
+	Copyright (c) 2007, 2008
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -56,7 +56,9 @@ package com.mcdermottroe.exemplar;
 				String} implemented this interface it would do so as {@link
 				Copyable}&lt;{@link String}&gt;.
 */
-public interface Copyable<T> {
+public interface Copyable<T>
+extends Comparable<T>
+{
 	/** Creates a deep copy of the current object and returns it.
 	
 		@return					A deep copy of the current object.

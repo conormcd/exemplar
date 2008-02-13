@@ -43,7 +43,7 @@ extends XMLNamedObject<XMLElementReference>
 		@param	elementName			The name of the element to refer to.
 	*/
 	public XMLElementReference(String elementName) {
-		super(elementName);
+		super(XMLElement.getLocalName(elementName));
 	}
 
 	/** {@inheritDoc} */

@@ -280,4 +280,30 @@ extends XMLNamedObjectTestCase<XMLElement>
 			}
 		}
 	}
+
+	/** Test {@link XMLElement#getLocalName(String)}. */
+	public void testGetLocalName() {
+		String[] input = {
+			null,
+			"",
+			"foo",
+			"foo:bar",
+			"foo:bar:baz",
+		};
+		String[] expected = {
+			null,
+			"",
+			"foo",
+			"bar",
+			"bar:baz",
+		};
+
+		for (int i = 0; i < input.length; i++) {
+			assertEquals(
+				"Output did not match expected",
+				expected[i],
+				XMLElement.getLocalName(input[i])
+			);
+		}
+	}
 }

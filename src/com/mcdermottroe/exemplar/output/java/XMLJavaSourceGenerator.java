@@ -156,6 +156,8 @@ extends XMLParserSourceGenerator<T>
 	{
 		DBC.REQUIRE(vocabulary != null);
 		DBC.REQUIRE(outputFile != null);
+		assert vocabulary != null;
+		assert outputFile != null;
 
 		// Get the template
 		String messageFormatTemplate = loadCodeFragment("JAVA_MAIN_TEMPLATE");
@@ -362,6 +364,8 @@ extends XMLParserSourceGenerator<T>
 	{
 		DBC.REQUIRE(entities != null);
 		DBC.REQUIRE(outputFile != null);
+		assert entities != null;
+		assert outputFile != null;
 
 		if (Options.isSet("include", "entities")) {
 			// Get the template

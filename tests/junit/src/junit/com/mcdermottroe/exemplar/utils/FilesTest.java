@@ -30,6 +30,8 @@
 package junit.com.mcdermottroe.exemplar.utils;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -115,6 +117,71 @@ extends UtilityClassTestCase<Files>
 		createTestTree();
 		Files.removeTree(testDirectory);
 		assertFalse("Test directory still exists", testDirectory.exists());
+	}
+
+	/** Test {@link Files#readFile(String, File)}. */
+	public void testReadFile() {
+		removeTestTree();
+		createTestTree();
+		String[] strings = {
+			new File(new File(testDirectory, "foo"), "baz").getAbsolutePath(),
+			"baz",
+		};
+		File[] files = {
+			null,
+			new File(testDirectory, "foo"),
+		};
+
+		assertEquals("Broken test data", strings.length, files.length);
+		for (int i = 0; i < strings.length; i++) {
+			try {
+				InputStream result = Files.readFile(strings[i], files[i]);
+				result.close();
+				assertNotNull("readFile returned null", result);
+			} catch (IOException e) {
+				assertNotNull("IOException was null", e);
+				e.printStackTrace();
+				fail("readFile threw an exception");
+			}
+		}
+	}
+
+	/** Test {@link Files#readFile(String, File)}. */
+	public void testReadFileNegative() {
+		removeTestTree();
+		createTestTree();
+		String[] strings = {
+			null,
+			"foo",
+			"foo",
+			"http://non.existant.url.this.does.not.exist.com/nothere.html",
+		};
+		File[] files = {
+			null,
+			testDirectory,
+			new File("foo"),
+			null,
+		};
+
+		assertEquals("Broken test data", strings.length, files.length);
+		for (int i = 0; i < strings.length; i++) {
+			try {
+				InputStream result = null;
+				boolean failed = false;
+				try {
+					result = Files.readFile(strings[i], files[i]);
+					assertNotNull("readFile returned null", result);
+				} catch (AssertionError e) {
+					failed = true;
+					assertNotNull("AssertionError was null", e);
+				}
+				if (!failed) {
+					fail("readFile fell through");
+				}
+			} catch (IOException e) {
+				assertNotNull("IOException was null", e);
+			}
+		}
 	}
 
 	/** Create a test tree of files and directories. */

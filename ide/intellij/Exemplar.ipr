@@ -8,8 +8,8 @@
       <customJdkName value="" />
       <maximumHeapSize value="128" />
       <properties />
-      <executeOn event="beforeRun" target="build-tests" runConfigurationType="JUnit" runConfigurationName="Single class test" />
       <executeOn event="beforeRun" target="build-tests" runConfigurationType="JUnit" runConfigurationName="Exemplar JUnit Tests" />
+      <executeOn event="beforeRun" target="build-tests" runConfigurationType="JUnit" runConfigurationName="Single class test" />
     </buildFile>
   </component>
   <component name="BuildJarProjectSettings">
@@ -946,6 +946,13 @@
     <library name="java-cup-11a">
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/../../lib/java-cup-11a.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="junit-4.2">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/../../lib/junit-4.2.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />

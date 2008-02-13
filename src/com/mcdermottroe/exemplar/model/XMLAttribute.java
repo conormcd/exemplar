@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2004-2007
+	Copyright (c) 2004-2008
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -150,18 +150,7 @@ implements Comparable<XMLAttribute>, Copyable<XMLAttribute>
 			return false;
 		}
 
-		XMLAttribute other = (XMLAttribute)o;
-		Object[] thisFields = {
-			attributeType,
-			defaultDeclType,
-			name,
-		};
-		Object[] otherFields = {
-			other.getType(),
-			other.getDefaultDeclType(),
-			other.getName(),
-		};
-		return Utils.areAllDeeplyEqual(thisFields, otherFields);
+		return compareTo(XMLAttribute.class.cast(o)) == 0;
 	}
 
 	/** See {@link Object#hashCode()}.

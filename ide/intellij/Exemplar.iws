@@ -17,13 +17,194 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/Message.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/Message.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../res/com/mcdermottroe/exemplar/ui/Message.properties" afterPath="$PROJECT_DIR$/../../res/com/mcdermottroe/exemplar/ui/Message.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Exemplar.iws" afterPath="$PROJECT_DIR$/Exemplar.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/PEDeclTable.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/PEDeclTable.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/NotationProcessorTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/dtd/ParserTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/dtd/ParserTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/utils/PowerSet.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/utils/PowerSet.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/UniqueTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/support/W3CSchemaTreeOpTestCase.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/type/facet/MaxInclusiveFacetTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/PatternTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/support/XMLComponentTestCase.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/DocumentationTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/TypeManagerTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/type/AtomicTypeTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/ConstantsTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/ConstantsTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/utils/StringsTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/utils/StringsTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/model/XMLElementTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/model/XMLElementTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/ExceptionClassTestCase.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/ExceptionClassTestCase.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/UnionType.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/data/valid_w3c_schemas/docbook-xml-44/htmltblx.xsd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/facet/MaxInclusiveFacet.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/TypeProcessorTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/AttributeGroupTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/checkstyle/import-control-junit.xml" afterPath="$PROJECT_DIR$/../../tests/checkstyle/import-control-junit.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/IncludeManager.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/IncludeProcessor.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/type/facet/WhitespaceBehaviourTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/MaxInclusiveTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/facet/MaxExclusiveFacet.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/LanguageLevelTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/SelectorTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/FieldTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/type/facet/FractionDigitsFacetTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/ant/Task.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/ant/Task.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/LanguageLevels.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/XMLJavaSourceGenerator.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/XMLJavaSourceGenerator.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/AppinfoTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/type/facet/MinExclusiveFacetTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/IncludeProcessorTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/facet/PatternFacet.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/ListTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/AbstractInputModule.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/facet/FractionDigitsFacet.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/Parser.cup" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/Parser.cup" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/RedefineTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLAttributeList.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLAttributeList.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/type/FinalityTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/type" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/NotationProcessor.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/support" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/data/valid_w3c_schemas/docbook-xml-44/calstblx.xsd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/type/facet/MaxLengthFacetTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Exemplar.ipr" afterPath="$PROJECT_DIR$/Exemplar.ipr" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/support/exemplarElementTestCase.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/GroupTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/checkstyle/common_config_junit.xml" afterPath="$PROJECT_DIR$/../../tests/checkstyle/common_config_junit.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/KeyrefTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/RestrictionTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/AttributeTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/GeneratedExceptionClassTestCase.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/Copyable.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/Copyable.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/AnnotationTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/ParserTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/AnyTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/type/TypeTestCase.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/KeyTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/facet/MinInclusiveFacet.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/ui/MessageTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/ui/MessageTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/ChoiceTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/ElementProcessor.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLAttributeContentType.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLAttributeContentType.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/UnionTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/FractionDigitsTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/Type.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/checkstyle/java.header" afterPath="$PROJECT_DIR$/../../tests/checkstyle/java.header" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Exemplar.iws" afterPath="$PROJECT_DIR$/Exemplar.iws" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/type/facet/MaxExclusiveFacetTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/NormalGeneratedClassTestCase.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/Constants.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/Constants.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/type/facet" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/InputUtilsTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/InputUtilsTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/facet/MinLengthFacet.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/IncludeManagerTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/ElementTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/ImportTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/support/exemplarElementTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/Parser.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../build.xml" afterPath="$PROJECT_DIR$/../../build.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/AttributeNameConverter.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/AttributeNameConverter.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/support/W3CSchemaTreeOpTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/LanguageLevelsTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/type/facet/MinLengthFacetTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/data/valid_w3c_schemas/docbook-xml-44/xml.xsd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/utils/Strings.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/utils/Strings.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/utils/FilesTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/utils/FilesTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/support/W3CSchemaExceptionTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/ImportProcessor.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/WhiteSpaceTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/facet/WhitespaceFacet.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/EnumerationTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/checkstyle/common_config.xml" afterPath="$PROJECT_DIR$/../../tests/checkstyle/common_config.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/facet/TotalDigitsFacet.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/support/exemplarAttributeTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/SimpleContentTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/MinLengthTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/type/facet/MinInclusiveFacetTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/type/facet/PatternFacetTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/PEDeclTable.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/PEDeclTable.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/facet/MaxLengthFacet.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/type/ListTypeTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/SchemaTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Exemplar.iml" afterPath="$PROJECT_DIR$/Exemplar.iml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/ElementProcessorTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../res/com/mcdermottroe/exemplar/output/java/binding/Generator.properties" afterPath="$PROJECT_DIR$/../../res/com/mcdermottroe/exemplar/output/java/binding/Generator.properties" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/AllTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/Finality.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/checkstyle/return_count_config.xml" afterPath="$PROJECT_DIR$/../../tests/checkstyle/return_count_config.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLObject.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLObject.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/type/facet/LengthFacetTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/support/ProcessingInstructionTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/data/valid_w3c_schemas/docbook-xml-44/dbnotnx.xsd" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/NormalClassTestCase.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/NormalClassTestCase.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/facet/WhitespaceBehaviour.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/java/binding/GeneratorTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/output/java/binding/GeneratorTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../LICENSE" afterPath="$PROJECT_DIR$/../../LICENSE" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/type/facet/WhitespaceFacetTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/checkstyle/java.header.generated" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/checkstyle/common_config_generated.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/type/facet/TotalDigitsFacetTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/MaxLengthTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/ComplexTypeTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/support/XMLComponentTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/model/XMLAttributeContentTypeTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/model/XMLAttributeContentTypeTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/ui/OptionsTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/ui/OptionsTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/data/valid_w3c_schemas/docbook-xml-44/docbook.xsd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/facet" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../build/conf/build.properties" afterPath="$PROJECT_DIR$/../../build/conf/build.properties" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/ListType.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/OutputUtils.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/OutputUtils.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/MinExclusiveTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/type/UnionTypeTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/checkstyle/import-control.xml" afterPath="$PROJECT_DIR$/../../tests/checkstyle/import-control.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/TotalDigitsTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/SequenceTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/data/valid_w3c_schemas/docbook-xml-44" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/DefaultAttributeNameConverter.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/DefaultAttributeNameConverter.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/facet/MinExclusiveFacet.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/Generator.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/Generator.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/IncludeTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/SimpleTypeTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/type/facet/FacetTestCase.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/utils/Files.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/utils/Files.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/facet/Facet.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/ImportProcessorTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/MinInclusiveTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/Options.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/Options.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLElementReference.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLElementReference.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/W3CSchemaTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/AnyAttributeTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/LanguageLevel.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/data/valid_w3c_schemas/docbook-xml-44/dbpoolx.xsd" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/Message.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/Message.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLElement.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLElement.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/AbstractInputModuleTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/ui/ant/TaskTest.java" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/ui/ant/TaskTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/Utils.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/Utils.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../res/com/mcdermottroe/exemplar/ui/Options.properties" afterPath="$PROJECT_DIR$/../../res/com/mcdermottroe/exemplar/ui/Options.properties" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/type/facet/FacetTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/TypeProcessor.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/type/TypeTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/LengthTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/facet/EnumerationFacet.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/facet/LengthFacet.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/NotationTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/ComplexContentTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/ExtensionTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLAttribute.java" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/model/XMLAttribute.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/TypeManager.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/type/facet/EnumerationFacetTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../res/com/mcdermottroe/exemplar/ui/Message.properties" afterPath="$PROJECT_DIR$/../../res/com/mcdermottroe/exemplar/ui/Message.properties" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/data/valid_w3c_schemas/docbook-xml-44/dbhierx.xsd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/support/XMLContentTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/element/MaxExclusiveTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../tests/data/valid_w3c_schemas" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/AtomicType.java" />
     </list>
   </component>
   <component name="ChangeListSynchronizer" />
@@ -43,39 +224,94 @@
     <option name="ASSERT_NOT_NULL" value="true" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$DefaultElementNameConverterTest.es" NAME="Single class test" MODIFIED="1190328983352" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$PEDeclTableTest.es" NAME="Single class test" MODIFIED="1185705882210" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$junit.com.mcdermottroe.exemplar.es" NAME="Exemplar JUnit Tests" MODIFIED="1190767907663">
-      <FILTER>com.mcdermottroe.exemplar.*</FILTER>
-    </SUITE>
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$LexerTest.es" NAME="Single class test" MODIFIED="1189181897694" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$InputUtilsTest.es" NAME="Single class test" MODIFIED="1190569504272" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$ParserTest.es" NAME="Single class test" MODIFIED="1190767733378" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$PowerSetTest.es" NAME="Single class test" MODIFIED="1183336627958" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$GeneratorTest.es" NAME="Single class test" MODIFIED="1187540858815" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLNamedObjectTest.es" NAME="Single class test" MODIFIED="1185639909820" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLAttributeTest.es" NAME="Single class test" MODIFIED="1185038193187" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$OutputExceptionTest.es" NAME="Single class test" MODIFIED="1186060097446" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$OutputUtilsTest.es" NAME="Single class test" MODIFIED="1187574761613" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLSequenceTest.es" NAME="Single class test" MODIFIED="1186062057256" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$ElementNameConverterTestCase.es" NAME="Single class test" MODIFIED="1190327614858" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLParserObjectGeneratorTest.es" NAME="Single class test" MODIFIED="1185671080353" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLDocumentTypeTest.es" NAME="Single class test" MODIFIED="1186059335136" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLNotationTest.es" NAME="Single class test" MODIFIED="1186057925734" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLElementTest.es" NAME="Single class test" MODIFIED="1186057521884" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLAttributeContentTypeTest.es" NAME="Single class test" MODIFIED="1185634350558" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$FieldTest.es" NAME="Single class test" MODIFIED="1201114427337" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$DBCTest.es" NAME="Single class test" MODIFIED="1189330963477" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLEntityTest.es" NAME="Single class test" MODIFIED="1186061047403" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$ParserTest.es" NAME="Single class test" MODIFIED="1201110964534" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLAlternativeTest.es" NAME="Single class test" MODIFIED="1186059102586" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$W3CSchemaExceptionTest.es" NAME="Single class test" MODIFIED="1202218991704" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$ImportTest.es" NAME="Single class test" MODIFIED="1201115389619" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$DocumentationTest.es" NAME="Single class test" MODIFIED="1201113296603" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$ConstantsTest.es" NAME="Single class test" MODIFIED="1185679913216" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$FacetTest.es" NAME="Single class test" MODIFIED="1201885807894" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$TaskTest.es" NAME="Single class test" MODIFIED="1199553408759" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLElementTest.es" NAME="Single class test" MODIFIED="1186057521884" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$AnyAttributeTest.es" NAME="Single class test" MODIFIED="1200875728838" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$OptionsTest.es" NAME="Single class test" MODIFIED="1199553521353" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$IncludeManagerTest.es" NAME="Single class test" MODIFIED="1202838937696" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$ListTypeTest.es" NAME="Single class test" MODIFIED="1201901162303" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$ImportProcessorTest.es" NAME="Single class test" MODIFIED="1202300684116" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLNotationTest.es" NAME="Single class test" MODIFIED="1186057925734" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$StringsTest.testIsLegalJavaIdentifier.es" NAME="StringsTest.testIsLegalJavaIdentifier" MODIFIED="1190072447501">
       <FILTER>junit.com.mcdermottroe.exemplar.utils.*</FILTER>
     </SUITE>
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$ConstantsTest.es" NAME="Single class test" MODIFIED="1185679913216" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$FilesTest.es" NAME="Single class test" MODIFIED="1190556199283" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLContentTest.es" NAME="Single class test" MODIFIED="1199671266207" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$NotationProcessorTest.es" NAME="Single class test" MODIFIED="1202300989039" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$TypeProcessorTest.es" NAME="Single class test" MODIFIED="1202301195314" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$KeyrefTest.es" NAME="Single class test" MODIFIED="1201117013633" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$WhitespaceFacetTest.es" NAME="Single class test" MODIFIED="1201551048856" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLDocumentTypeTest.es" NAME="Single class test" MODIFIED="1186059335136" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLEntityTest.es" NAME="Single class test" MODIFIED="1186061047403" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$LexerTest.es" NAME="Single class test" MODIFIED="1189181897694" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLDocumentTypeExceptionTest.es" NAME="Single class test" MODIFIED="1185640474117" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLAttributeContentTypeTest.es" NAME="Single class test" MODIFIED="1185634350558" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$UtilsTest.es" NAME="Single class test" MODIFIED="1189301932093" />
-    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLAttributeListTest.es" NAME="Single class test" MODIFIED="1186057487985" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$AttributeTest.es" NAME="Single class test" MODIFIED="1200881783347" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$ConstantsTest.es" NAME="Single class test" MODIFIED="1199556316039" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$GeneratorTest.es" NAME="Single class test" MODIFIED="1187540858815" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLSequenceTest.es" NAME="Single class test" MODIFIED="1186062057256" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$InputUtilsTest.es" NAME="Single class test" MODIFIED="1190569504272" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$AnyTest.es" NAME="Single class test" MODIFIED="1200879067904" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$EnumerationFacetTest.es" NAME="Single class test" MODIFIED="1201572017240" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$MessageTest.es" NAME="Single class test" MODIFIED="1199553880937" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$PowerSetTest.es" NAME="Single class test" MODIFIED="1183336627958" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$AttributeGroupTest.es" NAME="Single class test" MODIFIED="1200879754779" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$LanguageLevelsTest.es" NAME="Single class test" MODIFIED="1199208416046" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$FinalityTest.es" NAME="Single class test" MODIFIED="1201911058482" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$EnumerationTest.es" NAME="Single class test" MODIFIED="1201114260765" />
     <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLParserSourceGeneratorTest.es" NAME="Single class test" MODIFIED="1189300506953" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$exemplarAttributeTest.es" NAME="Single class test" MODIFIED="1201225539412" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$AllTest.es" NAME="Single class test" MODIFIED="1200780531724" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$FractionDigitsTest.es" NAME="Single class test" MODIFIED="1201114741554" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$junit.com.mcdermottroe.exemplar.es" NAME="Exemplar JUnit Tests" MODIFIED="1202348210694">
+      <FILTER>com.mcdermottroe.exemplar.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLParserObjectGeneratorTest.es" NAME="Single class test" MODIFIED="1185671080353" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$W3CSchemaTest.es" NAME="Single class test" MODIFIED="1202348153385" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$GroupTest.es" NAME="Single class test" MODIFIED="1201115028180" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$InputUtilsTest.es" NAME="Single class test" MODIFIED="1202844961020" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$ProcessingInstructionTest.es" NAME="Single class test" MODIFIED="1199668612711" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLAttributeTest.es" NAME="Single class test" MODIFIED="1199555314196" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLAttributeListTest.es" NAME="Single class test" MODIFIED="1186057487985" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$ElementProcessorTest.es" NAME="Single class test" MODIFIED="1202222392152" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$OutputExceptionTest.es" NAME="Single class test" MODIFIED="1200150369462" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$WhitespaceBehaviourTest.es" NAME="Single class test" MODIFIED="1201551331028" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$TypeManagerTest.es" NAME="Single class test" MODIFIED="1202865981065" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLNamedObjectTest.es" NAME="Single class test" MODIFIED="1185639909820" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$DefaultElementNameConverterTest.es" NAME="Single class test" MODIFIED="1190328983352" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$OutputUtilsTest.es" NAME="Single class test" MODIFIED="1187574761613" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$OutputExceptionTest.es" NAME="Single class test" MODIFIED="1186060097446" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$KeyTest.es" NAME="Single class test" MODIFIED="1201117113319" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$PEDeclTableTest.es" NAME="Single class test" MODIFIED="1185705882210" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$AppinfoTest.es" NAME="Single class test" MODIFIED="1200879295661" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$FilesTest.es" NAME="Single class test" MODIFIED="1193591152213" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLAttributeTest.es" NAME="Single class test" MODIFIED="1185038193187" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$UtilsTest.es" NAME="Single class test" MODIFIED="1189301932093" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$LanguageLevelTest.es" NAME="Single class test" MODIFIED="1199209589872" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$IncludeProcessorTest.es" NAME="Single class test" MODIFIED="1202300600554" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$ElementTest.es" NAME="Single class test" MODIFIED="1201114117384" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLComponentTest.es" NAME="Single class test" MODIFIED="1198455089296" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$XMLAttributeContentTypeTest.es" NAME="Single class test" MODIFIED="1199555267496" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$junit.com.mcdermottroe.exemplar.es" NAME="Exemplar JUnit Tests" MODIFIED="1193591209313">
+      <FILTER>com.mcdermottroe.exemplar.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$ElementNameConverterTestCase.es" NAME="Single class test" MODIFIED="1190327614858" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$IncludeTest.es" NAME="Single class test" MODIFIED="1201115790287" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$AtomicTypeTest.es" NAME="Single class test" MODIFIED="1201898713178" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$ExtensionTest.es" NAME="Single class test" MODIFIED="1201114354690" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$DefaultAttributeNameConverterTest.es" NAME="Single class test" MODIFIED="1198453085830" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$AnnotationTest.es" NAME="Single class test" MODIFIED="1200780578918" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$UnionTypeTest.es" NAME="Single class test" MODIFIED="1201903030207" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$ChoiceTest.es" NAME="Single class test" MODIFIED="1200881894487" />
+    <SUITE FILE_PATH="$PROJECT_DIR$/../../../../Library/Caches/IntelliJIDEA60/coverage/Exemplar$ParserTest.es" NAME="Single class test" MODIFIED="1190767733378" />
   </component>
   <component name="Cvs2Configuration">
     <option name="PRUNE_EMPTY_DIRECTORIES" value="true" />
@@ -128,6 +364,21 @@
     <disable_hints />
   </component>
   <component name="DebuggerManager">
+    <line_breakpoints>
+      <breakpoint url="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/Type.java" line="165" class="com.mcdermottroe.exemplar.input.schema.type.Type" package="com.mcdermottroe.exemplar.input.schema.type">
+        <option name="ENABLED" value="true" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="false" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+    </line_breakpoints>
     <breakpoint_any>
       <breakpoint>
         <option name="NOTIFY_CAUGHT" value="true" />
@@ -198,7 +449,19 @@
     </subPane>
   </component>
   <component name="FileEditorManager">
-    <leaf />
+    <leaf>
+      <file leaf-file-name="W3CSchemaTest.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/W3CSchemaTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="55" column="13" selection-start="2424" selection-end="2424" vertical-scroll-proportion="0.5209003">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -207,7 +470,7 @@
   </component>
   <component name="HierarchyBrowserManager">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
-    <option name="SORT_ALPHABETICALLY" value="false" />
+    <option name="SORT_ALPHABETICALLY" value="true" />
     <option name="HIDE_CLASSES_WHERE_METHOD_NOT_IMPLEMENTED" value="false" />
   </component>
   <component name="InspectionManager">
@@ -217,10 +480,10 @@
     <option name="FILTER_RESOLVED_ITEMS" value="true" />
     <option name="ANALYZE_TEST_SOURCES" value="true" />
     <option name="SHOW_DIFF_WITH_PREVIOUS_RUN" value="false" />
-    <option name="SCOPE_TYPE" value="3" />
-    <option name="CUSTOM_SCOPE_NAME" value="Project Files" />
+    <option name="SCOPE_TYPE" value="8" />
+    <option name="CUSTOM_SCOPE_NAME" value="Non auto generated classes" />
     <option name="SHOW_ONLY_DIFF" value="false" />
-    <option name="myCurrentProfileName" value="Project Default" />
+    <option name="myCurrentProfileName" value="Java 1.5" />
   </component>
   <component name="J2EEProjectPane" />
   <component name="JspContextManager" />
@@ -239,6 +502,38 @@
         <PATH_ELEMENT>
           <option name="myItemId" value="Exemplar" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="Exemplar.ipr" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="Exemplar" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="junit.com.mcdermottroe.exemplar" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="Exemplar.ipr" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="Exemplar" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="junit.com.mcdermottroe.exemplar" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="generated.schema" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
         </PATH_ELEMENT>
       </PATH>
       <PATH>
@@ -337,11 +632,151 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../src" />
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../tests" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar" />
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../tests/junit" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../tests/junit/src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="Exemplar.ipr" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="Exemplar" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../.." />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../tests" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../tests/junit" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../tests/junit/src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="Exemplar.ipr" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="Exemplar" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../.." />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../tests" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../tests/junit" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../tests/junit/src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="Exemplar.ipr" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="Exemplar" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../.." />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../tests" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../tests/junit" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../tests/junit/src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/type" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="Exemplar.ipr" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="Exemplar" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../.." />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../tests" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -364,40 +799,6 @@
         </PATH_ELEMENT>
         <PATH_ELEMENT>
           <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="Exemplar.ipr" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="Exemplar" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../.." />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../src" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -414,7 +815,7 @@
       <showLibraryContents />
       <hideEmptyPackages />
       <abbreviatePackageNames />
-      <showStructure Scope="false" ProjectPane="false" PackagesPane="false" Favorites="false" />
+      <showStructure PackagesPane="false" ProjectPane="false" Scope="false" Favorites="false" />
       <autoscrollToSource />
       <autoscrollFromSource />
       <sortByType />
@@ -435,7 +836,21 @@
   </component>
   <component name="RecentsManager" />
   <component name="RestoreUpdateTree" />
-  <component name="RunManager" selected="JUnit.Exemplar JUnit Tests">
+  <component name="RunManager" selected="JUnit.Single class test">
+    <configuration default="true" type="Application" factoryName="Application" enabled="false" merge="false">
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <module name="" />
+      <method>
+        <option name="Make" value="true" />
+        <option name="Run ant target" value="false" />
+      </method>
+    </configuration>
     <configuration default="true" type="Applet" factoryName="Applet">
       <module name="" />
       <option name="MAIN_CLASS_NAME" />
@@ -447,6 +862,13 @@
       <option name="VM_PARAMETERS" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
+    </configuration>
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
     </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit" enabled="false" merge="false">
       <module name="" />
@@ -467,24 +889,26 @@
         <option name="Make" value="true" />
       </method>
     </configuration>
-    <configuration default="true" type="Remote" factoryName="Remote">
-      <option name="USE_SOCKET_TRANSPORT" value="true" />
-      <option name="SERVER_MODE" value="false" />
-      <option name="SHMEM_ADDRESS" value="javadebug" />
-      <option name="HOST" value="localhost" />
-      <option name="PORT" value="5005" />
-    </configuration>
-    <configuration default="true" type="Application" factoryName="Application" enabled="false" merge="false">
-      <option name="MAIN_CLASS_NAME" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <configuration default="false" name="Test main" type="Application" factoryName="Application" enabled="false" merge="false">
+      <option name="MAIN_CLASS_NAME" value="com.mcdermottroe.exemplar.ui.cli.Main" />
+      <option name="VM_PARAMETERS" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/../.." />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ALTERNATIVE_JRE_PATH" value="" />
       <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <module name="" />
+      <module name="Exemplar" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="62119" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Debug" />
+      <ConfigurationWrapper RunnerId="Run" />
       <method>
         <option name="Make" value="true" />
+        <option name="Run ant target" value="false" />
       </method>
     </configuration>
     <configuration default="false" name="Exemplar JUnit Tests" type="JUnit" factoryName="JUnit" enabled="true" merge="false">
@@ -520,8 +944,8 @@
       <module name="Exemplar" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="junit.com.mcdermottroe.exemplar.input.dtd" />
-      <option name="MAIN_CLASS_NAME" value="junit.com.mcdermottroe.exemplar.input.dtd.ParserTest" />
+      <option name="PACKAGE_NAME" value="junit.com.mcdermottroe.exemplar.input.schema" />
+      <option name="MAIN_CLASS_NAME" value="junit.com.mcdermottroe.exemplar.input.schema.TypeManagerTest" />
       <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
       <option name="VM_PARAMETERS" value="" />
@@ -607,7 +1031,7 @@
     <option name="UPDATE_RUN_STATUS" value="false" />
     <option name="UPDATE_RECURSIVELY" value="true" />
     <option name="MERGE_DRY_RUN" value="false" />
-    <configuration useDefault="true">$PROJECT_DIR$/../../../../.subversion</configuration>
+    <configuration useDefault="true">$PROJECT_DIR$/../../../../../.subversion</configuration>
     <checkoutURL>https://exemplar.googlecode.com/svn/trunk/</checkoutURL>
     <upgradeMode>none</upgradeMode>
   </component>
@@ -626,34 +1050,34 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="22" width="1280" height="774" extended-state="0" />
-    <editor active="false" />
+    <frame x="0" y="22" width="1280" height="774" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
-      <window_info id="CVS" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
+      <window_info id="CVS" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="14" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3293944" order="7" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3151909" order="0" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3293944" order="1" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.30869213" order="0" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32935917" order="1" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24939074" order="1" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3293944" order="8" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32637855" order="9" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3988183" order="6" />
-      <window_info id="Module Dependencies" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
-      <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
-      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
+      <window_info id="Module Dependencies" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="6" />
+      <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="10" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="4" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24939074" order="1" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3293944" order="8" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.47267357" order="2" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32935917" order="11" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.35916543" order="2" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24939074" order="2" />
-      <window_info id="File View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.6395864" order="4" />
+      <window_info id="File View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="5" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.46199703" order="4" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39967507" order="0" />
-      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
+      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="13" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="0" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="2" />
       <window_info id="EJB" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="3" />
-      <window_info id="WebServices" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
+      <window_info id="WebServices" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="12" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="5" />
     </layout>
   </component>
@@ -741,116 +1165,126 @@
     <option name="myPlainMode" value="false" />
     <option name="myLastEditedConfigurable" value="Exemplar" />
   </component>
-  <component name="com.intellij.profile.ui.ErrorOptionsConfigurable" proportions="0.11111111,0.60142857" version="1">
-    <option name="myLastEditedConfigurable" value="Exemplar - NO NLS" />
+  <component name="com.intellij.profile.ui.ErrorOptionsConfigurable" proportions="0.11111111,0.5985714" version="1">
+    <option name="myLastEditedConfigurable" value="Java 1.5" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/Generator.java">
+    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/facet/Facet.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="608" column="12" selection-start="18587" selection-end="18587" vertical-scroll-proportion="0.004784689">
+        <state line="39" column="1" selection-start="1871" selection-end="1871" vertical-scroll-proportion="0.22">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/OutputUtils.java">
+    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/utils/Strings.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="79" column="16" selection-start="3244" selection-end="3244" vertical-scroll-proportion="0.97607654">
+        <state line="222" column="16" selection-start="7851" selection-end="7851" vertical-scroll-proportion="0.98">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/generated/schema/element/SimpleType.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="45" column="12" selection-start="924" selection-end="924" vertical-scroll-proportion="0.22">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/generated/schema/support/XMLComponent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="89" column="8" selection-start="2494" selection-end="2494" vertical-scroll-proportion="0.88">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/generated/schema/support/exemplarElement.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="45" column="8" selection-start="1132" selection-end="1132" vertical-scroll-proportion="0.22">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/Type.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="165" column="0" selection-start="4838" selection-end="4838" vertical-scroll-proportion="0.15666667">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/XMLParserSourceGenerator.java">
+    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/AtomicType.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="237" column="4" selection-start="7916" selection-end="7916" vertical-scroll-proportion="0.004784689">
+        <state line="62" column="4" selection-start="2410" selection-end="2410" vertical-scroll-proportion="0.96256685">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/cli/ExitStatus.java">
+    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/ListType.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="64" column="19" selection-start="2456" selection-end="2456" vertical-scroll-proportion="0.004784689">
+        <state line="43" column="13" selection-start="1930" selection-end="1930" vertical-scroll-proportion="0.21221864">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/cli/Main.java">
+    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/UnionType.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="138" column="19" selection-start="5772" selection-end="5772" vertical-scroll-proportion="0.007974481">
+        <state line="42" column="13" selection-start="1857" selection-end="1857" vertical-scroll-proportion="0.19292605">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/Utils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="193" column="4" selection-start="6355" selection-end="6355" vertical-scroll-proportion="0.5755627">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/Lexer.jflex">
+    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/type/facet/EnumerationFacet.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="640" column="0" selection-start="24412" selection-end="24412" vertical-scroll-proportion="0.50980395">
-          <folding />
+        <state line="33" column="0" selection-start="1719" selection-end="1719" vertical-scroll-proportion="0.096463025">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/dtd/LexerTest.java">
+    <entry file="file://$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/IncludeManagerTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="81" column="0" selection-start="2836" selection-end="2836" vertical-scroll-proportion="0.76555026">
-          <folding />
+        <state line="33" column="4" selection-start="1757" selection-end="1757" vertical-scroll-proportion="0.09163987">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/InputException.java">
+    <entry file="file://$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/schema/TypeManagerTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="39" column="13" selection-start="1819" selection-end="1819" vertical-scroll-proportion="0.21052632">
-          <folding />
+        <state line="32" column="0" selection-start="1646" selection-end="1646" vertical-scroll-proportion="0.07717042">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/input/dtd/ParserTest.java">
+    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/schema/TypeManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="97" column="0" selection-start="3490" selection-end="3490" vertical-scroll-proportion="0.33333334">
-          <folding />
+        <state line="411" column="66" selection-start="10621" selection-end="10621" vertical-scroll-proportion="0.69453377">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/ElementNameConverter.java">
+    <entry file="file://$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/generated/schema/W3CSchemaTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="22" selection-start="2081" selection-end="2081" vertical-scroll-proportion="0.22966507">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/DefaultElementNameConverter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="13" selection-start="1940" selection-end="1940" vertical-scroll-proportion="0.19138756">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/input/dtd/PEDeclTable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="211" column="51" selection-start="6968" selection-end="6968" vertical-scroll-proportion="0.33333334">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/output/java/binding/DefaultAttributeNameConverter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="52" column="0" selection-start="2305" selection-end="2305" vertical-scroll-proportion="0.38277513">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../src/com/mcdermottroe/exemplar/ui/Message.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="553" column="50" selection-start="19056" selection-end="19056" vertical-scroll-proportion="0.54901963">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../tests/junit/src/junit/com/mcdermottroe/exemplar/ui/MessageTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="181" column="57" selection-start="7367" selection-end="7367" vertical-scroll-proportion="0.2950558">
-          <folding />
+        <state line="55" column="13" selection-start="2424" selection-end="2424" vertical-scroll-proportion="0.5209003">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -61,7 +61,7 @@ extends XMLNamedObject<XMLElement>
 		@param	content		The content model of the element.
 	*/
 	public XMLElement(String elementName, XMLElementContentModel content) {
-		super(elementName);
+		super(getLocalName(elementName));
 		DBC.REQUIRE(content != null);
 		contentModel = content;
 		attlist = new XMLAttributeList(
@@ -117,6 +117,24 @@ extends XMLNamedObject<XMLElement>
 	public XMLAttributeList getAttlist() {
 		DBC.ENSURE(attlist != null);
 		return attlist;
+	}
+
+	/** Given a potentially namespace-qualified element name, return the local
+		name (the name without the namespace qualifier).
+
+		@param	qualifiedElementName	The name of an element, potentially
+										qualified with a namespace prefix.
+		@return							A local name with no namespace prefix.
+	*/
+	public static String getLocalName(String qualifiedElementName) {
+		if (qualifiedElementName == null) {
+			return null;
+		}
+		if (qualifiedElementName.contains(":")) {
+		 	return qualifiedElementName.split(":", 2)[1];
+		} else {
+			return qualifiedElementName;
+		}
 	}
 
 	/** {@inheritDoc} */

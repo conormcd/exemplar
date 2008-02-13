@@ -5,7 +5,7 @@
 	vim:filetype=xml:ts=4
 -->
 <!--
-	Copyright (c) 2006, 2007
+	Copyright (c) 2006-2008
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -55,4 +55,7 @@
 
 	<!-- Allow Java CUP -->
 	<allow pkg="java_cup.runtime" />
+
+	<!-- Allow SAX stuff -->
+	<allow pkg="org.xml.sax" />
 </import-control>

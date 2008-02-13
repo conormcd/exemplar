@@ -53,7 +53,7 @@ import static com.mcdermottroe.exemplar.Constants.EOL;
 	@author	Conor McDermottroe
 	@since	0.1
 */
-public class Task
+public final class Task
 extends org.apache.tools.ant.Task
 implements Comparable<Task>, Copyable<Task>
 {
@@ -245,6 +245,15 @@ implements Comparable<Task>, Copyable<Task>
 		Options.set("output-language", outputLanguage);
 	}
 
+	/** Setter for the output_language_level attribute of the task.
+
+		@param	outputLanguageLevel	This is the string value of the
+									output_language_level attribute.
+	*/
+	public static void setOutput_language_level(String outputLanguageLevel) {
+		Options.set("output-language-level", outputLanguageLevel);
+	}
+
 	/** Setter for the output_package attribute of the task.
 
 		@param	outputPackage	This is the string value of the output_package
@@ -327,5 +336,13 @@ implements Comparable<Task>, Copyable<Task>
 	*/
 	@Override public String toString() {
 		return getClass().getName();
+	}
+
+	/** {@inheritDoc} */
+	@Override public Object clone()
+	throws CloneNotSupportedException
+	{
+		// This class has no internal state to modify.
+		return super.clone();
 	}
 }

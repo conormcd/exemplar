@@ -1,6 +1,6 @@
 // vim:filetype=java:ts=4
 /*
-	Copyright (c) 2005, 2006, 2007
+	Copyright (c) 2005-2008
 	Conor McDermottroe.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,7 @@ package com.mcdermottroe.exemplar;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -117,23 +118,29 @@ public final class Utils {
 	/** Do a null-safe comparison of two {@link Collection}s of comparable
 		{@link Object}s.
 
-		@param	<X>	A type which implements <code>Comparable&lt;Y&gt;</code>.
-		@param	<Y>	A type which can be compared with <code>&lt;X&gt;</code>.
+		@param	<X>	A type which implements <code>Comparable&lt;X&gt;</code>.
 		@param	a	A {@link Collection} of {@link Object}s to compare.
 		@param	b	The {@link Collection} to compare with <code>a</code>.
 		@return		The kind of result you expect from an implementation of
 					{@link Comparable#compareTo(Object)}.
 	*/
-	public static <X extends Comparable<Y>, Y> int
-	compare(Collection<X> a, Collection<Y> b)
+	public static <X extends Comparable<X>> int
+	compare(Collection<X> a, Collection<X> b)
 	{
 		if (a != null && b != null) {
+			if	(
+					Set.class.isAssignableFrom(a.getClass()) &&
+					Set.class.isAssignableFrom(b.getClass())
+				)
+			{
+				return compareSet((Set<X>)a, (Set<X>)b);
+			}
 			Iterator<X> aIter = a.iterator();
-			Iterator<Y> bIter = b.iterator();
+			Iterator<X> bIter = b.iterator();
 			if (aIter.hasNext() && bIter.hasNext()) {
 				while (aIter.hasNext() && bIter.hasNext()) {
 					X aElem = aIter.next();
-					Y bElem = bIter.next();
+					X bElem = bIter.next();
 					int elemCompare = compare(aElem, bElem);
 					if (elemCompare != 0) {
 						return elemCompare;
@@ -156,6 +163,62 @@ public final class Utils {
 		} else if (a != null) {
 			return 1;
 		} else if (b != null) {
+			return -1;
+		} else {
+			return 0;
+		}
+	}
+
+	/** Do a null-safe comparison of two {@link Set}s of comparable
+		{@link Object}s.
+
+		@param	<X>	A type which implements <code>Comparable&lt;X&gt;</code>.
+		@param	a	A {@link Set} of {@link Object}s to compare.
+		@param	b	The {@link Set} to compare with <code>a</code>.
+		@return		The kind of result you expect from an implementation of
+					{@link Comparable#compareTo(Object)}.
+	 */
+	public static <X extends Comparable<X>> int compare(Set<X> a, Set<X> b) {
+		return compareSet(a, b);
+	}
+
+	/** Implement {@link #compare(Set, Set)}.
+
+		@param	<X>	A type which implements <code>Comparable&lt;X&gt;</code>.
+		@param	a	A {@link Set} of {@link Object}s to compare.
+		@param	b	The {@link Set} to compare with <code>a</code>.
+		@return		The kind of result you expect from an implementation of
+					{@link Comparable#compareTo(Object)}.
+	*/
+	private static <X extends Comparable<X>> int compareSet(
+		Set<X> a,
+		Set<X> b
+	)
+	{
+		// Deal with the cases where either is null
+		if (a == null && b == null) {
+			return 0;
+		} else if (a == null) {
+			return -1;
+		} else if (b == null) {
+			return 1;
+		}
+
+		SortedSet<X> sortedA = new TreeSet<X>(a);
+		SortedSet<X> sortedB = new TreeSet<X>(b);
+		Iterator<X> aIter = sortedA.iterator();
+		Iterator<X> bIter = sortedB.iterator();
+		while (aIter.hasNext() && bIter.hasNext()) {
+			X aElem = aIter.next();
+			X bElem = bIter.next();
+			int elemCompare = compare(aElem, bElem);
+			if (elemCompare != 0) {
+				return elemCompare;
+			}
+		}
+		if (aIter.hasNext()) {
+			return 1;
+		} else if (bIter.hasNext()) {
 			return -1;
 		} else {
 			return 0;

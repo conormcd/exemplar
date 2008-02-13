@@ -112,7 +112,7 @@ parser code {:
 			}
 		} catch (FileNotFoundException e) {
 			throw new ParserException(
-				Message.DTDLEXER_INPUT_NOT_FOUND(dtdFile.getAbsolutePath()),
+				Message.FILE_NOT_FOUND(dtdFile.getAbsolutePath()),
 				e
 			);
 		}

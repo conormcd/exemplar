@@ -63,7 +63,7 @@ implements Iterable<XMLAttribute>
 	*/
 	public XMLAttributeList(String elementName, List<XMLAttribute> atts) {
 		// Do the base class initialisation
-		super(elementName);
+		super(XMLElement.getLocalName(elementName));
 
 		// Create the attribute list.
 		attributes = new ArrayList<XMLAttribute>(atts);
