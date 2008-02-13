@@ -112,7 +112,7 @@
 	<target	name="build-dtd-parser"
 			depends="build-configure,build-dtd-lexer"
 	>
-		<java jar="${cup-jar}" fork="yes" classpathref="build-classpath" dir="${input-module}/dtd">
+		<java jar="${cup-jar}" fork="yes" dir="${input-module}/dtd">
 			<arg value="-package" />
 			<arg value="${package}.input.dtd" />
 			<arg value="-parser" />
@@ -144,8 +144,12 @@
 				target="1.5"
 		>
 			<src path="${src}" />
-			<exclude name="${namespace}/input/schema/**" />
 			<exclude name="${namespace}/generated/**" />
+			<exclude name="${namespace}/input/dtd/Lexer.jflex" />
+			<exclude name="${namespace}/input/dtd/Parser.cup" />
+			<exclude name="${namespace}/input/schema/**" />
+			<exclude name="**/overview.html" />
+			<exclude name="**/package.html" />
 			<compilerarg value="-Xlint:deprecation" />
 			<compilerarg value="-Xlint:unchecked" />
 			<compilerarg value="+Z0" compiler="jikes" />
