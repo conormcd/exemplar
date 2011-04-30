@@ -1016,25 +1016,6 @@
     <option name="myValidatorValidationEnabled" value="true" />
     <option name="myReportErrorsAsWarnings" value="true" />
   </component>
-  <component name="SvnChangesBrowserSettings">
-    <option name="USE_AUTHOR_FIELD" value="true" />
-    <option name="AUTHOR" value="" />
-    <option name="LOCATION" value="" />
-    <option name="USE_PROJECT_SETTINGS" value="true" />
-    <option name="USE_ALTERNATE_LOCATION" value="false" />
-  </component>
-  <component name="SvnConfiguration">
-    <option name="USER" value="" />
-    <option name="PASSWORD" value="" />
-    <option name="PROCESS_UNRESOLVED" value="false" />
-    <option name="LAST_MERGED_REVISION" />
-    <option name="UPDATE_RUN_STATUS" value="false" />
-    <option name="UPDATE_RECURSIVELY" value="true" />
-    <option name="MERGE_DRY_RUN" value="false" />
-    <configuration useDefault="true">$PROJECT_DIR$/../../../../../.subversion</configuration>
-    <checkoutURL>https://exemplar.googlecode.com/svn/trunk/</checkoutURL>
-    <upgradeMode>none</upgradeMode>
-  </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
       <are-packages-shown value="false" />

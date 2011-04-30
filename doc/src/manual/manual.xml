@@ -184,7 +184,7 @@
 			<title>Known Bugs</title>
 
 			<para>All known bugs are tracked in the <ulink
-					url="http://code.google.com/p/exemplar/issues/list">The
+					url="https://github.com/conormcd/exemplar/issues">The
 					Exemplar Issue Tracker</ulink>, check there for the latest
 					list of known bugs.
 			</para>
@@ -196,7 +196,7 @@
 			<para>If you find a bug, try to reproduce it. The easier it is to 
 					reproduce, the easier it is to fix. File a bug report via
 					<ulink
-					url="http://code.google.com/p/exemplar/issues/list">The
+						url="https://github.com/conormcd/exemplar/issues">The
 					Exemplar Issue Tracker</ulink> with as much information as
 					possible. The following is the minimum I recommend.
 			</para>
